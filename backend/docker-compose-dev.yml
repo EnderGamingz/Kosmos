@@ -1,0 +1,9 @@
+services:
+  kosmos_db:
+    image: postgres:16.2-alpine
+    environment:
+      - POSTGRES_USER=kosmos
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=kosmos
+    ports:
+      - 5432:5432
