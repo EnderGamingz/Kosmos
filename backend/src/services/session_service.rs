@@ -5,6 +5,8 @@ use crate::response::error_handling::AppError;
 #[derive(Clone)]
 pub struct SessionService;
 
+pub type UserId = i64;
+
 impl SessionService {
     /// Asynchronously retrieves the user ID from the session.
     ///
@@ -16,8 +18,8 @@ impl SessionService {
     ///
     /// Returns an `Option<String>` representing the user ID if it exists in the session, otherwise returns `None`.
     ///
-    pub async fn get_session_id(session: &Session) -> Option<String> {
-        let id = session.get::<String>("user_id").await;
+    pub async fn get_user_id(session: &Session) -> Option<UserId> {
+        let id = session.get::<UserId>("user_id").await;
 
         id.unwrap_or_else(|_| None)
     }
@@ -36,8 +38,8 @@ impl SessionService {
     ///
     /// Returns an `AppError::NotLoggedIn` error if the user is not logged in.
     ///
-    pub async fn check_logged_in(session: &Session) -> Result<String, AppError> {
-        let id = SessionService::get_session_id(session).await;
+    pub async fn check_logged_in(session: &Session) -> Result<UserId, AppError> {
+        let id = SessionService::get_user_id(session).await;
         match id {
             Some(user) => Ok(user),
             None => return Err(AppError::NotLoggedIn)?,

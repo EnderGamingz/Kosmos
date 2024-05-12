@@ -3,10 +3,10 @@ use sonyflake::Sonyflake;
 use tower_sessions::Session;
 
 use crate::db::KosmosDbResult;
+use crate::KosmosPool;
 use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
-use crate::KosmosPool;
+use crate::services::session_service::{SessionService, UserId};
 
 #[derive(Deserialize)]
 pub struct AccountUpdatePayload {
@@ -72,7 +72,7 @@ impl UserService {
         }
     }
 
-    pub async fn get_auth_user(&self, user_id: String) -> Result<UserModel, AppError> {
+    pub async fn get_auth_user(&self, user_id: UserId) -> Result<UserModel, AppError> {
         sqlx::query_as::<_, UserModel>("SELECT * FROM users WHERE id = $1")
             .bind(user_id)
             .fetch_one(&self.db_pool)
@@ -84,7 +84,7 @@ impl UserService {
         &self,
         session: &Session,
     ) -> Result<Option<UserModel>, AppError> {
-        let user_id = SessionService::get_session_id(session).await;
+        let user_id = SessionService::get_user_id(session).await;
 
         match user_id {
             Some(user) => self.get_user(user).await,
@@ -92,7 +92,7 @@ impl UserService {
         }
     }
 
-    pub async fn get_user(&self, user_id: String) -> Result<Option<UserModel>, AppError> {
+    pub async fn get_user(&self, user_id: UserId) -> Result<Option<UserModel>, AppError> {
         sqlx::query_as::<_, UserModel>("SELECT * FROM users WHERE id = $1 LIMIT 1")
             .bind(user_id)
             .fetch_optional(&self.db_pool)

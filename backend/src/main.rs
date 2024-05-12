@@ -1,7 +1,7 @@
 use std::net::SocketAddr;
 
-use axum::http::header::{ACCESS_CONTROL_ALLOW_CREDENTIALS, CONTENT_TYPE};
 use axum::http::{HeaderValue, Method};
+use axum::http::header::{ACCESS_CONTROL_ALLOW_CREDENTIALS, CONTENT_TYPE};
 use tower_http::cors::CorsLayer;
 
 use crate::db::KosmosPool;
@@ -33,6 +33,9 @@ async fn main() {
         .init();
 
     tracing::info!(name: "bootstrap", "Starting bootstrap process");
+
+    std::env::var("UPLOAD_LOCATION")
+        .expect("UPLOAD_LOCATION must be set");
 
     let cors_origin = std::env::var("CORS_ORIGIN")
         .expect("CORS_ORIGIN must be set")

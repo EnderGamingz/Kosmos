@@ -19,7 +19,7 @@ pub async fn login(
     session: Session,
     Json(payload): Json<LoginCredentials>,
 ) -> ResponseResult {
-    let user_id = SessionService::get_session_id(&session).await;
+    let user_id = SessionService::get_user_id(&session).await;
     if user_id.is_some() {
         return Ok(AppSuccess::OK { data: None });
     }
@@ -50,7 +50,7 @@ pub async fn login(
     }
 
     session
-        .insert("user_id", user.id.to_string())
+        .insert("user_id", user.id)
         .await
         .unwrap();
 
