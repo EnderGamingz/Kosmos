@@ -22,7 +22,6 @@ pub struct PasswordUpdatePayload {
 
 #[derive(Serialize, Deserialize)]
 pub struct RegisterCredentials {
-    pub email: String,
     pub username: String,
     pub password: String,
 }
@@ -49,17 +48,18 @@ impl UserService {
         &self,
         payload: RegisterCredentials,
         hash: String,
-    ) -> Result<UserModel, AppError> {
-        sqlx::query_as::<_, UserModel>(
-            "INSERT INTO users (id, email, username, password_hash) VALUES (?, ?, ?) RETURNING *",
-        )
-        .bind(self.sf.next_id().unwrap() as i64)
-        .bind(&payload.email)
-        .bind(&payload.username)
-        .bind(hash)
-        .fetch_one(&self.db_pool)
-        .await
-        .map_err(|_| return AppError::InternalError)
+    ) -> Result<(), AppError> {
+        sqlx::query("INSERT INTO users (id, username, password_hash) VALUES ($1, $2, $3)")
+            .bind(self.sf.next_id().unwrap() as i64)
+            .bind(&payload.username)
+            .bind(hash)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error creating user: {}", e);
+                return AppError::InternalError;
+            })
+            .map(|_| ())
     }
 
     pub async fn check_user(&self, session: &Session) -> Result<UserModel, AppError> {

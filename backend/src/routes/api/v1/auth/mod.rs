@@ -1,3 +1,7 @@
-pub mod login;
-pub mod logout;
-pub mod register;
+pub use login::*;
+pub use logout::*;
+pub use register::*;
+
+mod login;
+mod logout;
+mod register;

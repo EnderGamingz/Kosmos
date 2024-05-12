@@ -29,7 +29,7 @@ pub async fn register(
             state.user_service.create_user(payload, hash).await?;
         }
         Err(e) => {
-            println!("Error hashing password: {}", e);
+            tracing::error!("Error hashing password: {}", e);
             Err(AppError::InternalError)?
         }
     };

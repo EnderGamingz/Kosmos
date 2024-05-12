@@ -10,7 +10,7 @@ tokio = { version = "1.37.0", features = ["full"] }
 axum = { version = "0.7.5", features = ["json"] }
 serde = { version = "1.0.201", features = ["derive"] }
 serde_json = { version = "1.0.117" }
-sqlx = { version = "0.7.4", features = ["runtime-async-std-rustls", "postgres"] }
+sqlx = { version = "0.7.4", features = ["runtime-async-std-rustls", "postgres", "chrono"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 tracing = "0.1.40"
 tower-sessions = { version = "0.12.2" }
@@ -19,3 +19,4 @@ tower-http = { version = "0.5.2", features = ["cors", "trace"] }
 dotenvy = "0.15.7"
 log = "0.4.21"
 sonyflake = "0.2.0"
+chrono = { version = "0.4.38", features = ["serde"] }

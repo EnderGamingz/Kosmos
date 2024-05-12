@@ -5,14 +5,16 @@ use tower_http::trace;
 use tower_http::trace::TraceLayer;
 use tracing::Level;
 
-use crate::routes::api::v1::auth::login::login;
 use crate::session::KosmosSession;
 use crate::state::AppState;
 
 pub type KosmosRouter = Router<AppState>;
 
 fn get_auth_router() -> KosmosRouter {
-    Router::new().route("/login", post(login))
+    Router::new()
+        .route("/login", post(crate::routes::api::v1::auth::login))
+        .route("/register", post(crate::routes::api::v1::auth::register))
+        .route("/logout", post(crate::routes::api::v1::auth::logout))
 }
 
 pub fn init(cors: CorsLayer, session_layer: KosmosSession, state: AppState) -> Router {
