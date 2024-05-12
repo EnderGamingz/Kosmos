@@ -1,16 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { BASE_URL } from '../vars.ts';
-
-export interface UserModel {
-  id: number;
-  username: string;
-  password_hash: string;
-  full_name?: string;
-  email?: string;
-  created_at: string;
-  updated_at: string;
-}
+import { UserModel } from '../type/user.ts';
 
 export interface UserState {
   user?: UserModel;

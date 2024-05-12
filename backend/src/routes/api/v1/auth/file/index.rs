@@ -1,8 +1,11 @@
 use std::io;
 
+use crate::model::file::FileModel;
 use axum::body::Bytes;
-use axum::BoxError;
 use axum::extract::{Multipart, State};
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
+use axum::{BoxError, Json};
 use futures::{Stream, TryStreamExt};
 use tokio::fs::File;
 use tokio::io::BufWriter;
@@ -14,6 +17,16 @@ use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::file_service::FileService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+
+pub async fn get_files(
+    State(state): KosmosState,
+    session: Session,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let files = state.file_service.get_files(user_id, None).await?;
+
+    Ok(Json(serde_json::json!(files)))
+}
 
 pub async fn upload_file(
     State(state): KosmosState,
@@ -68,9 +81,9 @@ pub async fn upload_file(
 }
 
 async fn stream_to_file<S, E>(path: &str, name: &str, stream: S) -> Result<u64, String>
-    where
-        S: Stream<Item=Result<Bytes, E>>,
-        E: Into<BoxError>,
+where
+    S: Stream<Item = Result<Bytes, E>>,
+    E: Into<BoxError>,
 {
     async {
         // Convert the stream into an `AsyncRead`.
@@ -92,6 +105,6 @@ async fn stream_to_file<S, E>(path: &str, name: &str, stream: S) -> Result<u64, 
             Ok(len) => Ok(len),
         }
     }
-        .await
-        .map_err(|err| err.to_string())
+    .await
+    .map_err(|err| err.to_string())
 }

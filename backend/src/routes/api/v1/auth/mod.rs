@@ -8,3 +8,4 @@ mod logout;
 mod register;
 mod auth;
 pub mod file;
+pub(crate) mod folder;

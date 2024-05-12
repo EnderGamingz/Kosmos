@@ -1,6 +1,6 @@
 use axum::extract::DefaultBodyLimit;
-use axum::Router;
 use axum::routing::{get, post};
+use axum::Router;
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
@@ -11,9 +11,21 @@ use crate::state::AppState;
 
 pub type KosmosRouter = Router<AppState>;
 
+fn get_folder_router() -> KosmosRouter {
+    Router::new().route(
+        "/",
+        post(crate::routes::api::v1::auth::folder::create_folder)
+            .get(crate::routes::api::v1::auth::folder::get_folders),
+    )
+}
+
 fn get_file_router() -> KosmosRouter {
     Router::new()
-        .route("/", post(crate::routes::api::v1::auth::file::upload_file))
+        .route(
+            "/",
+            post(crate::routes::api::v1::auth::file::upload_file)
+                .get(crate::routes::api::v1::auth::file::get_files),
+        )
         .layer(DefaultBodyLimit::disable())
 }
 
@@ -24,6 +36,7 @@ fn get_auth_router() -> KosmosRouter {
         .route("/register", post(crate::routes::api::v1::auth::register))
         .route("/logout", post(crate::routes::api::v1::auth::logout))
         .nest("/file", get_file_router())
+        .nest("/folder", get_folder_router())
 }
 
 pub fn init(cors: CorsLayer, session_layer: KosmosSession, state: AppState) -> Router {

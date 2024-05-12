@@ -3,6 +3,7 @@ import { Login } from './pages/login.tsx';
 import { useEffect } from 'react';
 import { useUserState } from './stores/userStore.ts';
 import Dashboard from './pages/dashboard.tsx';
+import { Register } from './pages/register.tsx';
 
 export function Router() {
   const user = useUserState(s => s.user);
@@ -14,6 +15,7 @@ export function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path={'/auth/register'} element={<Register />} />
         <Route path={'/'} element={user ? <Dashboard /> : <Login />} />
       </Routes>
     </BrowserRouter>

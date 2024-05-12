@@ -3,7 +3,7 @@ use std::path::Path;
 use sonyflake::Sonyflake;
 
 use crate::db::KosmosPool;
-use crate::model::file::FileType;
+use crate::model::file::{FileModel, FileType};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 
@@ -16,6 +16,23 @@ pub struct FileService {
 impl FileService {
     pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
         FileService { db_pool, sf }
+    }
+
+    pub async fn get_files(
+        &self,
+        user_id: UserId,
+        parent_folder_id: Option<i64>,
+    ) -> Result<Vec<FileModel>, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT * FROM files WHERE user_id = $1 AND parent_folder_id IS NOT DISTINCT FROM $2",
+            user_id,
+            parent_folder_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|_| AppError::InternalError)
+        .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
     pub async fn create_file(
@@ -68,12 +85,12 @@ impl FileService {
         tokio::fs::remove_file(
             Path::new(std::env::var("UPLOAD_LOCATION").unwrap().as_str()).join(file_id.to_string()),
         )
-            .await
-            .map_err(|_| {
-                tracing::error!("Error deleting file: {}", file_id);
-                AppError::InternalError
-            })
-            .map(|_| ())?;
+        .await
+        .map_err(|_| {
+            tracing::error!("Error deleting file: {}", file_id);
+            AppError::InternalError
+        })
+        .map(|_| ())?;
         sqlx::query!("DELETE FROM files WHERE id = $1", file_id)
             .execute(&self.db_pool)
             .await

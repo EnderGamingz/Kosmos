@@ -2,6 +2,7 @@ import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../vars.ts';
+import { queryClient } from '../../main.tsx';
 
 export function FileUpload() {
   const [files, setFiles] = useState<FileList | null>(null);
@@ -13,7 +14,15 @@ export function FileUpload() {
   };
 
   useEffect(() => {
-    handleUpload().then(() => setFiles(null));
+    handleUpload().then(() => {
+      setFiles(null);
+      queryClient
+        .invalidateQueries({
+          exact: false,
+          queryKey: ['files'],
+        })
+        .then();
+    });
   }, [files]);
 
   const handleUpload = async () => {
