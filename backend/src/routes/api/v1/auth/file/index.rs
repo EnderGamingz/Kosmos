@@ -1,10 +1,7 @@
 use std::io;
 
-use crate::model::file::FileModel;
 use axum::body::Bytes;
-use axum::extract::{Multipart, State};
-use axum::http::StatusCode;
-use axum::response::IntoResponse;
+use axum::extract::{Multipart, Path, State};
 use axum::{BoxError, Json};
 use futures::{Stream, TryStreamExt};
 use tokio::fs::File;
@@ -23,7 +20,30 @@ pub async fn get_files(
     session: Session,
 ) -> Result<Json<serde_json::Value>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let files = state.file_service.get_files(user_id, None).await?;
+    let files = state
+        .file_service
+        .get_files(user_id, None)
+        .await?
+        .into_iter()
+        .map(FileService::parse_file)
+        .collect::<Vec<_>>();
+
+    Ok(Json(serde_json::json!(files)))
+}
+
+pub async fn get_files_from_parent(
+    State(state): KosmosState,
+    session: Session,
+    Path(folder_id): Path<i64>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let files = state
+        .file_service
+        .get_files(user_id, Some(folder_id))
+        .await?
+        .into_iter()
+        .map(FileService::parse_file)
+        .collect::<Vec<_>>();
 
     Ok(Json(serde_json::json!(files)))
 }
@@ -75,9 +95,7 @@ pub async fn upload_file(
         };
     }
 
-    Ok(AppSuccess::OK {
-        data: Some(serde_json::to_string("test").unwrap()),
-    })
+    Ok(AppSuccess::OK { data: None })
 }
 
 async fn stream_to_file<S, E>(path: &str, name: &str, stream: S) -> Result<u64, String>

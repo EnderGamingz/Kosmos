@@ -26,3 +26,17 @@ pub struct FileModel {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Serialize)]
+pub struct ParsedFileModel {
+    pub id: String,
+    pub user_id: String,
+    pub file_name: String,
+    pub file_size: i64,
+    pub file_type: i16,
+    pub mime_type: String,
+    pub metadata: Option<JsonValue>,
+    pub parent_folder_id: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}

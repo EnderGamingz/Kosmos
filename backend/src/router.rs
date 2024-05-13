@@ -12,19 +12,28 @@ use crate::state::AppState;
 pub type KosmosRouter = Router<AppState>;
 
 fn get_folder_router() -> KosmosRouter {
-    Router::new().route(
-        "/",
-        post(crate::routes::api::v1::auth::folder::create_folder)
-            .get(crate::routes::api::v1::auth::folder::get_folders),
-    )
+    Router::new()
+        .route(
+            "/",
+            post(crate::routes::api::v1::auth::folder::create_folder),
+        )
+        .route(
+            "/all",
+            get(crate::routes::api::v1::auth::folder::get_folders),
+        )
+        .route(
+            "/all/:folder_id",
+            get(crate::routes::api::v1::auth::folder::get_folders_from_parent),
+        )
 }
 
 fn get_file_router() -> KosmosRouter {
     Router::new()
+        .route("/", post(crate::routes::api::v1::auth::file::upload_file))
+        .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(
-            "/",
-            post(crate::routes::api::v1::auth::file::upload_file)
-                .get(crate::routes::api::v1::auth::file::get_files),
+            "/all/:file_id",
+            get(crate::routes::api::v1::auth::file::get_files_from_parent),
         )
         .layer(DefaultBodyLimit::disable())
 }

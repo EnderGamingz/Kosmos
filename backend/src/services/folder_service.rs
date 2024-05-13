@@ -1,10 +1,7 @@
-use std::path::Path;
-
 use sonyflake::Sonyflake;
 
 use crate::db::KosmosPool;
-use crate::model::file::{FileModel, FileType};
-use crate::model::folder::FolderModel;
+use crate::model::folder::{FolderModel, ParsedFolderModel};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 
@@ -34,6 +31,29 @@ impl FolderService {
         .await
         .map_err(|_| AppError::InternalError)
         .map(|rows| rows.into_iter().map(FolderModel::from).collect())
+    }
+
+    pub async fn get_folder(&self, folder_id: i64) -> Result<FolderModel, AppError> {
+        sqlx::query_as!(FolderModel, "SELECT * FROM folder WHERE id = $1", folder_id)
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting folder: {}", e);
+                AppError::NotFound {
+                    error: "Folder not found".to_string(),
+                }
+            })
+    }
+
+    pub fn parse_folder(folder: FolderModel) -> ParsedFolderModel {
+        ParsedFolderModel {
+            id: folder.id.to_string(),
+            user_id: folder.user_id.to_string(),
+            folder_name: folder.folder_name,
+            parent_id: folder.parent_id.map(|x| x.to_string()),
+            created_at: folder.created_at,
+            updated_at: folder.updated_at,
+        }
     }
 
     pub async fn create_folder(

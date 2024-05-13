@@ -1,21 +1,18 @@
 use std::path::Path;
 
-use sonyflake::Sonyflake;
-
 use crate::db::KosmosPool;
-use crate::model::file::{FileModel, FileType};
+use crate::model::file::{FileModel, FileType, ParsedFileModel};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 
 #[derive(Clone)]
 pub struct FileService {
     db_pool: KosmosPool,
-    sf: Sonyflake,
 }
 
 impl FileService {
-    pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
-        FileService { db_pool, sf }
+    pub fn new(db_pool: KosmosPool) -> Self {
+        FileService { db_pool }
     }
 
     pub async fn get_files(
@@ -57,6 +54,21 @@ impl FileService {
             .await
             .map_err(|_| AppError::InternalError)
             .map(|row| row.id)
+    }
+
+    pub fn parse_file(file: FileModel) -> ParsedFileModel {
+        ParsedFileModel {
+            id: file.id.to_string(),
+            user_id: file.user_id.to_string(),
+            file_name: file.file_name,
+            file_size: file.file_size,
+            file_type: file.file_type,
+            mime_type: file.mime_type,
+            metadata: file.metadata,
+            parent_folder_id: file.parent_folder_id.map(|x| x.to_string()),
+            created_at: file.created_at,
+            updated_at: file.updated_at,
+        }
     }
 
     pub async fn check_file_exists(

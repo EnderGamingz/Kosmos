@@ -2,13 +2,22 @@ import { useUserState } from '../stores/userStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '../vars.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const navigate = useNavigate();
   const updateUser = useUserState(s => s.setUser);
+  const user = useUserState(s => s.user);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  }, [user]);
 
   const loginFn = () =>
     axios.post(BASE_URL + 'auth/login', {
@@ -21,6 +30,7 @@ export function Login() {
     onSuccess: res => {
       const userRes = JSON.parse(res.data.message);
       updateUser(userRes);
+      navigate('/home');
     },
   });
 

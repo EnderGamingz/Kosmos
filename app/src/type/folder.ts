@@ -1,8 +1,13 @@
 export interface FolderModel {
-  id: number;
-  user_id: number;
+  id: string;
+  user_id: string;
   folder_name: string;
-  parent_id?: number;
+  parent_id?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface FolderResponse {
+  folder: FolderModel;
+  folders: FolderModel[];
 }

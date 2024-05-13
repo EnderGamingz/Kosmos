@@ -19,7 +19,7 @@ pub struct AppState {
 pub(crate) fn init(db: &KosmosPool) -> AppState {
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
-    let file_service = FileService::new(db.clone(), sf.clone());
+    let file_service = FileService::new(db.clone());
     let folder_service = FolderService::new(db.clone(), sf.clone());
     AppState {
         user_service,

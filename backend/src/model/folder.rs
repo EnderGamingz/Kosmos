@@ -11,3 +11,13 @@ pub struct FolderModel {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Serialize)]
+pub struct ParsedFolderModel {
+    pub id: String,
+    pub user_id: String,
+    pub folder_name: String,
+    pub parent_id: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
