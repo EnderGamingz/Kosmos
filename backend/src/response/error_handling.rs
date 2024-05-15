@@ -15,8 +15,8 @@ pub enum AppError {
 }
 
 #[derive(Serialize)]
-pub struct AppResponseBody {
-    pub(crate) message: Option<String>,
+pub struct ErrorResponse {
+    pub(crate) error: Option<String>,
 }
 
 impl IntoResponse for AppError {
@@ -59,9 +59,7 @@ impl IntoResponse for AppError {
             }
         }
 
-        let response_body = AppResponseBody {
-            message: Some(body),
-        };
+        let response_body = ErrorResponse { error: Some(body) };
 
         (status_code, serde_json::to_string(&response_body).unwrap()).into_response()
     }

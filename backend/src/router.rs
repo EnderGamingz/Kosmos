@@ -18,6 +18,14 @@ fn get_folder_router() -> KosmosRouter {
             post(crate::routes::api::v1::auth::folder::create_folder),
         )
         .route(
+            "/:folder_id",
+            post(crate::routes::api::v1::auth::folder::create_folder),
+        )
+        .route(
+            "/:folder_id",
+            delete(crate::routes::api::v1::auth::folder::delete_folder),
+        )
+        .route(
             "/all",
             get(crate::routes::api::v1::auth::folder::get_folders),
         )
@@ -29,14 +37,18 @@ fn get_folder_router() -> KosmosRouter {
 
 fn get_file_router() -> KosmosRouter {
     Router::new()
-        .route("/upload", post(crate::routes::api::v1::auth::file::upload_file))
+        .route(
+            "/upload",
+            post(crate::routes::api::v1::auth::file::upload_file),
+        )
         .route(
             "/upload/:folder_id",
             post(crate::routes::api::v1::auth::file::upload_file),
         )
         .route(
             "/:file_id",
-            delete(crate::routes::api::v1::auth::file::delete_file),
+            get(crate::routes::api::v1::auth::file::download_raw_file)
+                .delete(crate::routes::api::v1::auth::file::delete_file),
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(

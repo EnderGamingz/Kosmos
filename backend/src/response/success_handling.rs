@@ -1,9 +1,15 @@
-use crate::response::error_handling::{AppError, AppResponseBody};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use serde::Serialize;
 
+use crate::response::error_handling::AppError;
+
 pub type ResponseResult = Result<AppSuccess, AppError>;
+
+#[derive(Serialize)]
+pub struct SuccessResponse {
+    pub(crate) message: Option<String>,
+}
 
 #[derive(Serialize)]
 pub enum AppSuccess {
@@ -35,7 +41,7 @@ impl IntoResponse for AppSuccess {
             Self::DELETED | Self::UPDATED => status_code = StatusCode::ACCEPTED,
         }
 
-        let response_body = AppResponseBody {
+        let response_body = SuccessResponse {
             message: Some(body),
         };
 
