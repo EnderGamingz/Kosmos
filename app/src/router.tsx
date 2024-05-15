@@ -2,22 +2,31 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Login } from './pages/login.tsx';
 import { useEffect } from 'react';
 import { useUserState } from './stores/userStore.ts';
-import Dashboard, { FileList } from './pages/dashboard.tsx';
 import { Register } from './pages/register.tsx';
+import { FileList } from './pages/fileList.tsx';
+import Dashboard from './pages/dashboard.tsx';
+import { AccessWrapper } from './accessWrapper.tsx';
 
 export function Router() {
-  const userFetch = useUserState(state => state.fetchUser);
+  const user = useUserState(state => state);
+
   useEffect(() => {
-    userFetch();
+    user.fetchUser();
   }, []);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path={'auth/register'} element={<Register />} />
-        <Route path={'home'} element={<Dashboard />}>
-          <Route index element={<FileList />} />
-          <Route path={':folder'} element={<FileList />} />
+        <Route
+          path={'home'}
+          element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
+          {user.user && (
+            <>
+              <Route index element={<FileList />} />
+              <Route path={':folder'} element={<FileList />} />
+            </>
+          )}
         </Route>
         <Route path={''} element={<Login />} />
       </Routes>

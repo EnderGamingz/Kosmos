@@ -1,9 +1,11 @@
 use std::io;
 
 use axum::body::Bytes;
-use axum::extract::{Multipart, Path, State};
+use axum::extract::rejection::PathRejection;
+use axum::extract::{Multipart, Path, Query, State};
 use axum::{BoxError, Json};
 use futures::{Stream, TryStreamExt};
+use serde::Deserialize;
 use tokio::fs::File;
 use tokio::io::BufWriter;
 use tokio_util::io::StreamReader;
@@ -18,11 +20,18 @@ use crate::state::KosmosState;
 pub async fn get_files(
     State(state): KosmosState,
     session: Session,
+    folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
+    let folder = match folder_id {
+        Ok(Path(id)) => Some(id),
+        Err(_) => None,
+    };
+
     let user_id = SessionService::check_logged_in(&session).await?;
+
     let files = state
         .file_service
-        .get_files(user_id, None)
+        .get_files(user_id, folder)
         .await?
         .into_iter()
         .map(FileService::parse_file)
@@ -31,28 +40,78 @@ pub async fn get_files(
     Ok(Json(serde_json::json!(files)))
 }
 
-pub async fn get_files_from_parent(
+#[derive(Deserialize)]
+pub struct MoveParams {
+    pub folder_id: i64,
+}
+
+pub async fn move_file(
     State(state): KosmosState,
     session: Session,
-    Path(folder_id): Path<i64>,
-) -> Result<Json<serde_json::Value>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let files = state
-        .file_service
-        .get_files(user_id, Some(folder_id))
-        .await?
-        .into_iter()
-        .map(FileService::parse_file)
-        .collect::<Vec<_>>();
+    Path(file_id): Path<i64>,
+    params: Option<Query<MoveParams>>,
+) -> ResponseResult {
+    let move_to_folder = params.map(|params| params.folder_id);
 
-    Ok(Json(serde_json::json!(files)))
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    // Check if file exists and     returns not found if it doesn't
+    let file = match state
+        .file_service
+        .check_file_exists_by_id(file_id, user_id)
+        .await?
+    {
+        None => {
+            return Err(AppError::NotFound {
+                error: "File not found".to_string(),
+            })
+        }
+        Some(file) => file,
+    };
+
+    if let Some(move_to_folder) = move_to_folder {
+        if !state
+            .folder_service
+            .check_folder_exists_by_id(move_to_folder, user_id)
+            .await?
+            .is_some()
+        {
+            return Err(AppError::NotFound {
+                error: "Folder not found".to_string(),
+            });
+        }
+    }
+
+    let is_file_already_in_destination_folder = state
+        .file_service
+        .check_file_exists_in_folder(file.file_name, move_to_folder)
+        .await?;
+
+    if is_file_already_in_destination_folder {
+        return Err(AppError::BadRequest {
+            error: Some("File already exists in destination folder".to_string()),
+        });
+    }
+
+    state
+        .file_service
+        .move_file(user_id, file_id, move_to_folder)
+        .await?;
+
+    Ok(AppSuccess::OK { data: None })
 }
 
 pub async fn upload_file(
     State(state): KosmosState,
     session: Session,
+    folder_id: Result<Path<i64>, PathRejection>,
     mut multipart: Multipart,
 ) -> ResponseResult {
+    let folder = match folder_id {
+        Ok(Path(id)) => Some(id),
+        Err(_) => None,
+    };
+
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let location = std::env::var("UPLOAD_LOCATION").unwrap();
@@ -73,7 +132,7 @@ pub async fn upload_file(
 
         let exists = state
             .file_service
-            .check_file_exists(&file_name, user_id, None)
+            .check_file_exists_by_name(&file_name, user_id, folder)
             .await?;
 
         if let Some(file) = exists {
@@ -85,7 +144,7 @@ pub async fn upload_file(
             Ok(len) => {
                 state
                     .file_service
-                    .create_file(user_id, id, file_name, len as i64, file_type, ct)
+                    .create_file(user_id, id, file_name, len as i64, file_type, ct, folder)
                     .await?;
             }
             Err(err) => {

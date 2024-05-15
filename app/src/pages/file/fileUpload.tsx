@@ -3,8 +3,11 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../vars.ts';
 import { queryClient } from '../../main.tsx';
+import { useParams } from 'react-router-dom';
 
 export function FileUpload() {
+  const { folder } = useParams();
+
   const [files, setFiles] = useState<FileList | null>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +24,9 @@ export function FileUpload() {
           exact: false,
           queryKey: ['files'],
         })
-        .then();
+        .then(() => {
+          setFiles(null);
+        });
     });
   }, [files]);
 
@@ -34,17 +39,16 @@ export function FileUpload() {
     }
 
     try {
-      const uploadResponse = await axios
-        .postForm(BASE_URL + 'auth/file', formData)
+      await axios
+        .postForm(`${BASE_URL}auth/file${folder ? `/${folder}` : ''}`, formData)
         .then(res => res.data);
-      console.log(uploadResponse);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div>
+    <form>
       <input
         type={'file'}
         name={'file'}
@@ -60,6 +64,6 @@ export function FileUpload() {
         }>
         <ArrowUpTrayIcon className={'h-5 w-5'} /> Upload
       </label>
-    </div>
+    </form>
   );
 }

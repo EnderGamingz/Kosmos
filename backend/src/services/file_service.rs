@@ -40,20 +40,57 @@ impl FileService {
         file_size: i64,
         file_type: FileType,
         mime_type: String,
+        parent_folder_id: Option<i64>,
     ) -> Result<i64, AppError> {
         sqlx::query!(
-            "INSERT INTO files (id, user_id, file_name, file_size, file_type, mime_type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+            "INSERT INTO files (id, user_id, file_name, file_size, file_type, mime_type, parent_folder_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
             file_id,
             user_id,
             file_name,
             file_size,
             file_type as i16,
-            mime_type
+            mime_type,
+            parent_folder_id
         )
             .fetch_one(&self.db_pool)
             .await
             .map_err(|_| AppError::InternalError)
             .map(|row| row.id)
+    }
+
+    /// Move file that is known to exist for the current user
+    pub async fn move_file(
+        &self,
+        user_id: UserId,
+        file_id: i64,
+        parent_folder_id: Option<i64>,
+    ) -> Result<i64, AppError> {
+        sqlx::query!(
+            "UPDATE files SET parent_folder_id = $1 WHERE id = $2 AND user_id = $3 RETURNING id",
+            parent_folder_id,
+            file_id,
+            user_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|_| AppError::InternalError)
+        .map(|row| row.id)
+    }
+
+    pub async fn check_file_exists_in_folder(
+        &self,
+        file_name: String,
+        folder_id: Option<i64>,
+    ) -> Result<bool, AppError> {
+        sqlx::query!(
+            "SELECT id FROM files WHERE file_name = $1 AND parent_folder_id is not distinct from $2",
+            file_name,
+            folder_id
+        )
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|_| AppError::InternalError)
+        .map(|row| row.is_some())
     }
 
     pub fn parse_file(file: FileModel) -> ParsedFileModel {
@@ -71,7 +108,7 @@ impl FileService {
         }
     }
 
-    pub async fn check_file_exists(
+    pub async fn check_file_exists_by_name(
         &self,
         file_name: &String,
         user_id: UserId,
@@ -85,11 +122,31 @@ impl FileService {
         )
             .fetch_optional(&self.db_pool)
             .await
-            .map_err(|_| {
-                tracing::error!("Error checking if file exists: {}", file_name);
+            .map_err(|e| {
+                tracing::error!("Error checking if file {} exists: {}", file_name, e);
                 AppError::InternalError
             })?
             .map(|row| row.id);
+        Ok(result)
+    }
+
+    pub async fn check_file_exists_by_id(
+        &self,
+        file_id: i64,
+        user_id: UserId,
+    ) -> Result<Option<FileModel>, AppError> {
+        let result = sqlx::query_as!(
+            FileModel,
+            "SELECT * from files WHERE id = $1 AND user_id = $2",
+            file_id,
+            user_id
+        )
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error checking if file {} exists: {}", file_id, e);
+            AppError::InternalError
+        })?;
         Ok(result)
     }
 

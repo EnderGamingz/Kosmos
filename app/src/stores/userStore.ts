@@ -7,19 +7,24 @@ export interface UserState {
   user?: UserModel;
   fetchUser: () => void;
   setUser: (user: UserModel) => void;
+  initialized: boolean;
 }
 
 export const useUserState = create<UserState>(set => ({
   user: undefined,
+  initialized: false,
   fetchUser: async () => {
     const user = await axios
       .get(BASE_URL + 'auth')
       .then(({ data }) => data)
-      .catch();
+      .catch()
+      .finally(() => {
+        set({ initialized: true });
+      });
 
     if (user) set({ user });
   },
   setUser: (data: UserModel) => {
-    set({ user: data });
+    set({ user: data, initialized: true });
   },
 }));

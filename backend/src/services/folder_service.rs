@@ -76,7 +76,7 @@ impl FolderService {
             .map(|row| row.id)
     }
 
-    pub async fn check_folder_exists(
+    pub async fn check_folder_exists_by_name(
         &self,
         folder_name: &String,
         user_id: UserId,
@@ -95,6 +95,27 @@ impl FolderService {
                 AppError::InternalError
             })?
             .map(|row| row.id);
+        Ok(result)
+    }
+
+    pub async fn check_folder_exists_by_id(
+        &self,
+        folder_id: i64,
+        user_id: UserId,
+    ) -> Result<Option<FolderModel>, AppError> {
+        let result = sqlx::query_as!(
+            FolderModel,
+            "SELECT * from folder WHERE id = $1 AND user_id = $2",
+            folder_id,
+            user_id
+        )
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error checking if folder {} exists: {}", folder_id, e);
+            AppError::InternalError
+        })?
+        .map(FolderModel::from);
         Ok(result)
     }
 
