@@ -16,6 +16,16 @@ export function FileItem({ file }: { file: FileModel }) {
     },
   });
 
+  const deleteAction = useMutation({
+    mutationFn: () => axios.delete(`${BASE_URL}auth/file/${file.id}`),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        exact: false,
+        queryKey: ['files'],
+      });
+    },
+  });
+
   return (
     <li className={'flex items-center justify-between'}>
       <div>{file.file_name}</div>
@@ -24,6 +34,11 @@ export function FileItem({ file }: { file: FileModel }) {
           onClick={() => moveAction.mutate()}
           disabled={moveAction.isPending}>
           Move to home
+        </button>
+        <button
+          onClick={() => deleteAction.mutate()}
+          disabled={deleteAction.isPending}>
+          Delete
         </button>
       </div>
     </li>

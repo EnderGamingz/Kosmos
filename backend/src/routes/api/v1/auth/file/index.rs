@@ -40,6 +40,26 @@ pub async fn get_files(
     Ok(Json(serde_json::json!(files)))
 }
 
+pub async fn delete_file(
+    State(state): KosmosState,
+    session: Session,
+    Path(file_id): Path<i64>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let file = state
+        .file_service
+        .check_file_exists_by_id(file_id, user_id)
+        .await?
+        .ok_or(AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
+
+    state.file_service.delete_file(file.id).await?;
+
+    Ok(AppSuccess::DELETED)
+}
+
 #[derive(Deserialize)]
 pub struct MoveParams {
     pub folder_id: i64,

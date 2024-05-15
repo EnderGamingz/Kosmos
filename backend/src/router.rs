@@ -1,5 +1,5 @@
 use axum::extract::DefaultBodyLimit;
-use axum::routing::{get, post, put};
+use axum::routing::{delete, get, post, put};
 use axum::Router;
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
@@ -29,17 +29,24 @@ fn get_folder_router() -> KosmosRouter {
 
 fn get_file_router() -> KosmosRouter {
     Router::new()
-        .route("/", post(crate::routes::api::v1::auth::file::upload_file))
+        .route("/upload", post(crate::routes::api::v1::auth::file::upload_file))
         .route(
-            "/:folder_id",
+            "/upload/:folder_id",
             post(crate::routes::api::v1::auth::file::upload_file),
+        )
+        .route(
+            "/:file_id",
+            delete(crate::routes::api::v1::auth::file::delete_file),
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(
             "/all/:file_id",
             get(crate::routes::api::v1::auth::file::get_files),
         )
-        .route("/move/:file_id", put(crate::routes::api::v1::auth::file::move_file))
+        .route(
+            "/move/:file_id",
+            put(crate::routes::api::v1::auth::file::move_file),
+        )
         .layer(DefaultBodyLimit::disable())
 }
 

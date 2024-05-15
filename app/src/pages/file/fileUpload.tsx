@@ -40,7 +40,10 @@ export function FileUpload() {
 
     try {
       await axios
-        .postForm(`${BASE_URL}auth/file${folder ? `/${folder}` : ''}`, formData)
+        .postForm(
+          `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
+          formData,
+        )
         .then(res => res.data);
     } catch (error) {
       console.error(error);
