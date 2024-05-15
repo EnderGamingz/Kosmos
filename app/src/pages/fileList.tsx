@@ -15,7 +15,7 @@ export function FileList() {
   const files = useQuery({
     queryFn: () =>
       axios
-        .get(`${BASE_URL}auth/file/all${folder ? '/' + folder : ''}`)
+        .get(`${BASE_URL}auth/file/all${folder ? `/${folder}` : ''}`)
         .then(res => res.data as FileModel[]),
     queryKey: ['files', folder],
   });
@@ -23,7 +23,7 @@ export function FileList() {
   const folders = useQuery({
     queryFn: () =>
       axios
-        .get(`${BASE_URL}auth/folder/all${folder ? '/' + folder : ''}`)
+        .get(`${BASE_URL}auth/folder/all${folder ? `/${folder}` : ''}`)
         .then(res => res.data as FolderResponse),
     queryKey: ['folders', folder],
   });

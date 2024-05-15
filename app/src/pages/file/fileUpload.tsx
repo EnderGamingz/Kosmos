@@ -1,5 +1,5 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../vars.ts';
 import { queryClient } from '../../main.tsx';
@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 
 export function FileUpload() {
   const { folder } = useParams();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [files, setFiles] = useState<FileList | null>(null);
 
@@ -17,16 +18,13 @@ export function FileUpload() {
   };
 
   useEffect(() => {
-    handleUpload().then(() => {
+    handleUpload().then(async () => {
       setFiles(null);
-      queryClient
-        .invalidateQueries({
-          exact: false,
-          queryKey: ['files'],
-        })
-        .then(() => {
-          setFiles(null);
-        });
+      formRef.current?.reset();
+      await queryClient.invalidateQueries({
+        exact: false,
+        queryKey: ['files'],
+      });
     });
   }, [files]);
 
@@ -51,7 +49,7 @@ export function FileUpload() {
   };
 
   return (
-    <form>
+    <form ref={formRef}>
       <input
         type={'file'}
         name={'file'}

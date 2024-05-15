@@ -4,12 +4,17 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '../../vars.ts';
 import { queryClient } from '../../main.tsx';
+import { useParams } from 'react-router-dom';
 
 export default function CreateFolder() {
+  const { folder } = useParams();
   const [name, setName] = useState('');
 
   const { mutate } = useMutation({
-    mutationFn: () => axios.post(BASE_URL + 'auth/folder', { name }),
+    mutationFn: () =>
+      axios.post(`${BASE_URL}auth/folder${folder ? `/${folder}` : ''}`, {
+        name,
+      }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         exact: false,
