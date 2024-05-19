@@ -2,29 +2,39 @@ import { FileModel, FileType, getFileTypeById } from '../../../models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '../../vars.ts';
-import { queryClient } from '../../main.tsx';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { invalidateFiles, invalidateFolders } from '../../lib/query.ts';
 
 export function FileItem({ file }: { file: FileModel }) {
+  const [fileName, setFileName] = useState(file.file_name);
+
   const moveAction = useMutation({
     mutationFn: () =>
       axios.put(`${BASE_URL}auth/file/move/${file.id}?folder_id=`),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        exact: false,
-        queryKey: ['files'],
-      });
-    },
+    onSuccess: invalidateFiles,
   });
 
   const deleteAction = useMutation({
     mutationFn: () => axios.delete(`${BASE_URL}auth/file/${file.id}`),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        exact: false,
-        queryKey: ['files'],
-      });
-    },
+    onSuccess: invalidateFolders,
   });
+
+  const renameAction = useMutation({
+    mutationFn: () =>
+      axios.patch(`${BASE_URL}auth/file/${file.id}`, {
+        name: fileName,
+      }),
+    onSuccess: invalidateFiles,
+  });
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setFileName(e.target.value);
+  }
+
+  function handleNameSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    renameAction.mutate();
+  }
 
   return (
     <li className={'flex items-center justify-between'}>
@@ -32,11 +42,19 @@ export function FileItem({ file }: { file: FileModel }) {
         x => x === getFileTypeById(file.file_type),
       ) && (
         <img
+          className={'aspect-square h-20 object-cover'}
           src={`${BASE_URL}auth/file/image/${file.id}/0`}
           alt={file.file_name}
         />
       )}
-      <div>{file.file_name}</div>
+      <form onSubmit={handleNameSubmit}>
+        <input
+          disabled={renameAction.isPending}
+          className={'overflow-ellipsis bg-transparent'}
+          onChange={handleChange}
+          value={fileName}
+        />
+      </form>
       <div>
         <button
           onClick={() => moveAction.mutate()}

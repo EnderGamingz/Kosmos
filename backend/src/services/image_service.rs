@@ -104,11 +104,14 @@ impl ImageService {
 
         let format = format as i16;
 
+        let aspect_ratio = image.get_width() as f32 / image.get_height() as f32;
+        let format_height = (format_width as f32 / aspect_ratio) as i32;
+
         let resized_image = photon_rs::transform::resize(
             image,
             format_width,
-            format_width,
-            SamplingFilter::Nearest,
+            format_height.try_into().unwrap(),
+            SamplingFilter::Triangle,
         )
         .get_bytes_jpeg(100);
 

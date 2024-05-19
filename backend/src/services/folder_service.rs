@@ -105,7 +105,7 @@ impl FolderService {
 
     pub async fn check_folder_exists_in_folder(
         &self,
-        folder_name: String,
+        folder_name: &String,
         destination_folder_id: Option<i64>,
     ) -> Result<bool, AppError> {
         sqlx::query!("SELECT id FROM folder WHERE folder_name = $1 AND parent_id IS NOT DISTINCT FROM $2 LIMIT 1", folder_name, destination_folder_id)
@@ -116,6 +116,36 @@ impl FolderService {
                 AppError::InternalError
             })
             .map(|row| row.is_some())
+    }
+
+    pub async fn rename_folder(
+        &self,
+        user_id: UserId,
+        folder_id: i64,
+        folder_name: String,
+        parent_id: Option<i64>,
+    ) -> Result<i64, AppError> {
+        if self
+            .check_folder_exists_in_folder(&folder_name, parent_id)
+            .await?
+        {
+            return Err(AppError::DataConflict {
+                error: "Folder already exists in this folder".to_string(),
+            });
+        }
+        sqlx::query!(
+            "UPDATE folder SET folder_name = $1 WHERE id = $2 AND user_id = $3 RETURNING id",
+            &folder_name,
+            folder_id,
+            user_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error renaming folder {}: {}", folder_id, e);
+            AppError::InternalError
+        })
+        .map(|row| row.id)
     }
 
     pub async fn check_folder_exists_by_name(

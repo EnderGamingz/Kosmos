@@ -110,7 +110,7 @@ pub async fn move_file(
 
     let is_file_already_in_destination_folder = state
         .file_service
-        .check_file_exists_in_folder(file.file_name, move_to_folder)
+        .check_file_exists_in_folder(&file.file_name, move_to_folder)
         .await?;
 
     if is_file_already_in_destination_folder {
@@ -190,6 +190,35 @@ pub async fn upload_file(
     }
 
     Ok(AppSuccess::OK { data: None })
+}
+
+#[derive(Deserialize)]
+pub struct RenameParams {
+    pub name: String,
+}
+
+pub async fn rename_file(
+    State(state): KosmosState,
+    session: Session,
+    Path(file_id): Path<i64>,
+    Json(params): Json<RenameParams>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let file = state
+        .file_service
+        .check_file_exists_by_id(file_id, user_id)
+        .await?
+        .ok_or(AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
+
+    state
+        .file_service
+        .rename_file(user_id, file.id, params.name, file.parent_folder_id)
+        .await?;
+
+    Ok(AppSuccess::UPDATED)
 }
 
 pub async fn download_raw_file(

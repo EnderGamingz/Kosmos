@@ -27,7 +27,7 @@ impl ImageFormat {
 
     pub fn get_width_by_format(num: ImageFormat) -> u32 {
         match num {
-            ImageFormat::Thumbnail => 128,
+            ImageFormat::Thumbnail => 256,
         }
     }
 }

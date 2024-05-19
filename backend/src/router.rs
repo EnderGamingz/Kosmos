@@ -1,5 +1,5 @@
 use axum::extract::DefaultBodyLimit;
-use axum::routing::{delete, get, post, put};
+use axum::routing::{get, post, put};
 use axum::Router;
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
@@ -19,11 +19,9 @@ fn get_folder_router() -> KosmosRouter {
         )
         .route(
             "/:folder_id",
-            post(crate::routes::api::v1::auth::folder::create_folder),
-        )
-        .route(
-            "/:folder_id",
-            delete(crate::routes::api::v1::auth::folder::delete_folder),
+            post(crate::routes::api::v1::auth::folder::create_folder)
+                .delete(crate::routes::api::v1::auth::folder::delete_folder)
+                .patch(crate::routes::api::v1::auth::folder::rename_folder),
         )
         .route(
             "/all",
@@ -40,8 +38,10 @@ fn get_folder_router() -> KosmosRouter {
 }
 
 fn get_image_router() -> KosmosRouter {
-    Router::new()
-        .route("/:file_id/:format", get(crate::routes::api::v1::auth::file::image::get_image_by_format))
+    Router::new().route(
+        "/:file_id/:format",
+        get(crate::routes::api::v1::auth::file::image::get_image_by_format),
+    )
 }
 
 fn get_file_router() -> KosmosRouter {
@@ -57,7 +57,8 @@ fn get_file_router() -> KosmosRouter {
         .route(
             "/:file_id",
             get(crate::routes::api::v1::auth::file::download_raw_file)
-                .delete(crate::routes::api::v1::auth::file::delete_file),
+                .delete(crate::routes::api::v1::auth::file::delete_file)
+                .patch(crate::routes::api::v1::auth::file::rename_file),
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(

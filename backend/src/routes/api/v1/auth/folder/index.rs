@@ -6,7 +6,7 @@ use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::routes::api::v1::auth::file::MoveParams;
+use crate::routes::api::v1::auth::file::{MoveParams, RenameParams};
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
@@ -140,7 +140,7 @@ pub async fn move_folder(
 
     let is_folder_already_in_destination = state
         .folder_service
-        .check_folder_exists_in_folder(folder.folder_name, move_to_folder)
+        .check_folder_exists_in_folder(&folder.folder_name, move_to_folder)
         .await?;
 
     if is_folder_already_in_destination {
@@ -155,4 +155,28 @@ pub async fn move_folder(
         .await?;
 
     Ok(AppSuccess::MOVED)
+}
+
+pub async fn rename_folder(
+    State(state): KosmosState,
+    session: Session,
+    Path(folder_id): Path<i64>,
+    Json(payload): Json<RenameParams>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let folder = state
+        .folder_service
+        .check_folder_exists_by_id(folder_id, user_id)
+        .await?
+        .ok_or(AppError::NotFound {
+            error: "Folder not found".to_string(),
+        })?;
+
+    state
+        .folder_service
+        .rename_folder(user_id, folder_id, payload.name, folder.parent_id)
+        .await?;
+
+    Ok(AppSuccess::UPDATED)
 }

@@ -88,7 +88,7 @@ impl FileService {
 
     pub async fn check_file_exists_in_folder(
         &self,
-        file_name: String,
+        file_name: &String,
         folder_id: Option<i64>,
     ) -> Result<bool, AppError> {
         sqlx::query!(
@@ -103,6 +103,36 @@ impl FileService {
             AppError::InternalError
         })
         .map(|row| row.is_some())
+    }
+
+    pub async fn rename_file(
+        &self,
+        user_id: UserId,
+        file_id: i64,
+        file_name: String,
+        parent_folder_id: Option<i64>,
+    ) -> Result<i64, AppError> {
+        if self
+            .check_file_exists_in_folder(&file_name, parent_folder_id)
+            .await?
+        {
+            return Err(AppError::DataConflict {
+                error: "File already exists in folder".to_string(),
+            });
+        }
+        sqlx::query!(
+            "UPDATE files SET file_name = $1 WHERE id = $2 AND user_id = $3 RETURNING id",
+            file_name,
+            file_id,
+            user_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error renaming file {}: {}", file_id, e);
+            AppError::InternalError
+        })
+        .map(|row| row.id)
     }
 
     pub fn parse_file(file: FileModel) -> ParsedFileModel {
