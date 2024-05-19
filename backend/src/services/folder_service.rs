@@ -59,6 +59,27 @@ impl FolderService {
         }
     }
 
+    pub async fn move_folder(
+        &self,
+        user_id: UserId,
+        folder_id: i64,
+        new_parent_id: Option<i64>,
+    ) -> Result<i64, AppError> {
+        sqlx::query!(
+            "UPDATE folder SET parent_id = $1 WHERE id = $2 AND user_id = $3 RETURNING id",
+            new_parent_id,
+            folder_id,
+            user_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error moving folder {}: {}", folder_id, e);
+            AppError::InternalError
+        })
+        .map(|row| row.id)
+    }
+
     pub async fn create_folder(
         &self,
         user_id: UserId,
@@ -80,6 +101,21 @@ impl FolderService {
                 AppError::InternalError
             })
             .map(|row| row.id)
+    }
+
+    pub async fn check_folder_exists_in_folder(
+        &self,
+        folder_name: String,
+        destination_folder_id: Option<i64>,
+    ) -> Result<bool, AppError> {
+        sqlx::query!("SELECT id FROM folder WHERE folder_name = $1 AND parent_id IS NOT DISTINCT FROM $2 LIMIT 1", folder_name, destination_folder_id)
+            .fetch_optional(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error checking if folder {} exists in folder {:?}: {}", folder_name, destination_folder_id, e);
+                AppError::InternalError
+            })
+            .map(|row| row.is_some())
     }
 
     pub async fn check_folder_exists_by_name(

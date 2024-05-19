@@ -1,13 +1,15 @@
-use crate::response::error_handling::AppError;
-use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::folder_service::FolderService;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
 use axum::extract::rejection::PathRejection;
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
+
+use crate::response::error_handling::AppError;
+use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::routes::api::v1::auth::file::MoveParams;
+use crate::services::folder_service::FolderService;
+use crate::services::session_service::SessionService;
+use crate::state::KosmosState;
 
 pub async fn get_folders(
     State(state): KosmosState,
@@ -98,4 +100,59 @@ pub async fn delete_folder(
     state.folder_service.delete_folder(folder_id).await?;
 
     Ok(AppSuccess::DELETED)
+}
+
+pub async fn move_folder(
+    State(state): KosmosState,
+    session: Session,
+    Path(folder_id): Path<i64>,
+    params: Option<Query<MoveParams>>,
+) -> ResponseResult {
+    let move_to_folder = params.map(|params| params.folder_id);
+
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let folder = match state
+        .folder_service
+        .check_folder_exists_by_id(folder_id, user_id)
+        .await?
+    {
+        None => {
+            return Err(AppError::NotFound {
+                error: "Folder not found".to_string(),
+            })
+        }
+        Some(folder) => folder,
+    };
+
+    if let Some(move_to_folder) = move_to_folder {
+        if !state
+            .folder_service
+            .check_folder_exists_by_id(move_to_folder, user_id)
+            .await?
+            .is_some()
+        {
+            return Err(AppError::NotFound {
+                error: "Folder not found".to_string(),
+            });
+        }
+    }
+
+    let is_folder_already_in_destination = state
+        .folder_service
+        .check_folder_exists_in_folder(folder.folder_name, move_to_folder)
+        .await?;
+
+    if is_folder_already_in_destination {
+        return Err(AppError::Forbidden {
+            error: Some("Folder already exists in destination folder".to_string()),
+        });
+    }
+
+    state
+        .folder_service
+        .move_folder(user_id, folder_id, move_to_folder)
+        .await?;
+
+    Ok(AppSuccess::MOVED)
 }

@@ -124,7 +124,7 @@ pub async fn move_file(
         .move_file(user_id, file_id, move_to_folder)
         .await?;
 
-    Ok(AppSuccess::OK { data: None })
+    Ok(AppSuccess::MOVED)
 }
 
 pub async fn upload_file(

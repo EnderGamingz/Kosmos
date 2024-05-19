@@ -33,6 +33,10 @@ fn get_folder_router() -> KosmosRouter {
             "/all/:folder_id",
             get(crate::routes::api::v1::auth::folder::get_folders),
         )
+        .route(
+            "/move/:folder_id",
+            put(crate::routes::api::v1::auth::folder::move_folder),
+        )
 }
 
 fn get_image_router() -> KosmosRouter {

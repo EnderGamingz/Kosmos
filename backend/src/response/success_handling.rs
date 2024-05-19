@@ -17,6 +17,7 @@ pub enum AppSuccess {
     CREATED { id: Option<i64> },
     DELETED,
     UPDATED,
+    MOVED,
 }
 
 impl IntoResponse for AppSuccess {
@@ -38,7 +39,7 @@ impl IntoResponse for AppSuccess {
                     body = id.to_string();
                 }
             }
-            Self::DELETED | Self::UPDATED => status_code = StatusCode::ACCEPTED,
+            Self::DELETED | Self::UPDATED | Self::MOVED => status_code = StatusCode::ACCEPTED,
         }
 
         let response_body = SuccessResponse {
