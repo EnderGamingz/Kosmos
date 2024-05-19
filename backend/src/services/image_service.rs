@@ -55,9 +55,6 @@ impl ImageService {
                 .await
                 .map_err(|e| {
                     tracing::error!("Error while deleting image format: {}", e);
-                })
-                .map(|_| {
-                    println!("Image format deleted");
                 });
 
             // Delete image format from database

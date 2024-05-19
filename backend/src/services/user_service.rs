@@ -49,17 +49,23 @@ impl UserService {
         payload: RegisterCredentials,
         hash: String,
     ) -> Result<(), AppError> {
-        sqlx::query("INSERT INTO users (id, username, password_hash) VALUES ($1, $2, $3)")
-            .bind(self.sf.next_id().unwrap() as i64)
-            .bind(&payload.username)
-            .bind(hash)
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error creating user: {}", e);
-                return AppError::InternalError;
-            })
-            .map(|_| ())
+        sqlx::query!(
+            "INSERT INTO users (id, username, password_hash) VALUES ($1, $2, $3)",
+            self.sf.next_id().unwrap() as i64,
+            &payload.username,
+            hash
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating user: {}", e);
+            return AppError::InternalError;
+        })
+        .map(|_|{
+            tracing::info!("User created successfully with username: {}", payload.username);
+            ()
+        })
+
     }
 
     pub fn parse_user(user: UserModel) -> ParsedUserModel {
@@ -88,7 +94,10 @@ impl UserService {
             .bind(user_id)
             .fetch_one(&self.db_pool)
             .await
-            .map_err(|_| AppError::UserNotFound)
+            .map_err(|e| {
+                tracing::error!("Error fetching user: {}", e);
+                AppError::UserNotFound
+            })
     }
 
     pub async fn check_user_optional(
@@ -108,7 +117,10 @@ impl UserService {
             .bind(user_id)
             .fetch_optional(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error fetching user: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn get_user_by_username(&self, username: String) -> Result<UserModel, AppError> {
@@ -116,7 +128,10 @@ impl UserService {
             .bind(username)
             .fetch_optional(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)?;
+            .map_err(|e| {
+                tracing::error!("Error fetching user by username: {}", e);
+                AppError::InternalError
+            })?;
         match user {
             Some(user) => Ok(user),
             None => Err(AppError::UserNotFound)?,
@@ -142,7 +157,10 @@ impl UserService {
             .bind(user_id)
             .execute(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error deleting user: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn update_user(
@@ -157,13 +175,19 @@ impl UserService {
             .bind(user_id)
             .execute(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error updating user: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn get_all_users(&self) -> Result<Vec<UserModel>, AppError> {
         sqlx::query_as::<_, UserModel>("SELECT * FROM users")
             .fetch_all(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error fetching all users: {}", e);
+                AppError::InternalError
+            })
     }
 }

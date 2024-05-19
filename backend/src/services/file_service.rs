@@ -28,7 +28,10 @@ impl FileService {
         )
         .fetch_all(&self.db_pool)
         .await
-        .map_err(|_| AppError::InternalError)
+        .map_err(|e| {
+            tracing::error!("Error getting files for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
         .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
@@ -54,7 +57,10 @@ impl FileService {
         )
             .fetch_one(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error creating file {}: {}", file_id, e);
+                AppError::InternalError
+            })
             .map(|row| row.id)
     }
 
@@ -73,7 +79,10 @@ impl FileService {
         )
         .fetch_one(&self.db_pool)
         .await
-        .map_err(|_| AppError::InternalError)
+        .map_err(|e| {
+            tracing::error!("Error moving file {}: {}", file_id, e);
+            AppError::InternalError
+        })
         .map(|row| row.id)
     }
 
@@ -89,7 +98,10 @@ impl FileService {
         )
         .fetch_optional(&self.db_pool)
         .await
-        .map_err(|_| AppError::InternalError)
+        .map_err(|e| {
+            tracing::error!("Error checking if file {} exists in folder {:?}: {}", file_name, folder_id, e);
+            AppError::InternalError
+        })
         .map(|row| row.is_some())
     }
 

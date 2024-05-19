@@ -29,7 +29,10 @@ impl FolderService {
         )
         .fetch_all(&self.db_pool)
         .await
-        .map_err(|_| AppError::InternalError)
+        .map_err(|e| {
+            tracing::error!("Error getting folders for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
         .map(|rows| rows.into_iter().map(FolderModel::from).collect())
     }
 
@@ -38,7 +41,7 @@ impl FolderService {
             .fetch_one(&self.db_pool)
             .await
             .map_err(|e| {
-                tracing::error!("Error getting folder: {}", e);
+                tracing::error!("Error getting folder {}: {}", folder_id, e);
                 AppError::NotFound {
                     error: "Folder not found".to_string(),
                 }
@@ -72,7 +75,10 @@ impl FolderService {
         )
             .fetch_one(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error creating folder {}: {}", folder_name, e);
+                AppError::InternalError
+            })
             .map(|row| row.id)
     }
 
@@ -90,8 +96,8 @@ impl FolderService {
         )
             .fetch_optional(&self.db_pool)
             .await
-            .map_err(|_| {
-                tracing::error!("Error checking if folder exists: {}", folder_name);
+            .map_err(|e| {
+                tracing::error!("Error checking if folder {} exists: {}", folder_name, e);
                 AppError::InternalError
             })?
             .map(|row| row.id);
@@ -123,7 +129,10 @@ impl FolderService {
         sqlx::query!("DELETE FROM folder WHERE id = $1", folder_id)
             .execute(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
+            .map_err(|e| {
+                tracing::error!("Error deleting folder {}: {}", folder_id, e);
+                AppError::InternalError
+            })
             .map(|_| ())
     }
 }
