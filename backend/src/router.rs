@@ -35,6 +35,11 @@ fn get_folder_router() -> KosmosRouter {
         )
 }
 
+fn get_image_router() -> KosmosRouter {
+    Router::new()
+        .route("/:file_id/:format", get(crate::routes::api::v1::auth::file::image::get_image_by_format))
+}
+
 fn get_file_router() -> KosmosRouter {
     Router::new()
         .route(
@@ -60,6 +65,7 @@ fn get_file_router() -> KosmosRouter {
             put(crate::routes::api::v1::auth::file::move_file),
         )
         .layer(DefaultBodyLimit::disable())
+        .nest("/image", get_image_router())
 }
 
 fn get_auth_router() -> KosmosRouter {

@@ -1,4 +1,4 @@
-import { FolderModel } from '../../type/folder.ts';
+import { FolderModel } from '../../../models/folder.ts';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';

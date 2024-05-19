@@ -1,12 +1,12 @@
-use std::net::SocketAddr;
-
 use axum::http::header::{ACCESS_CONTROL_ALLOW_CREDENTIALS, CONTENT_TYPE};
 use axum::http::{HeaderValue, Method};
+use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 
 use crate::db::KosmosPool;
 
 pub mod db;
+mod folders;
 pub mod model;
 pub mod response;
 mod router;
@@ -64,6 +64,8 @@ async fn main() {
     let state = state::init(&db);
 
     let router = router::init(cors, session_layer, state);
+
+    folders::init().await;
 
     let port = std::env::var("PORT").unwrap_or(5000.to_string());
 

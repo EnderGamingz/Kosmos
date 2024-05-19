@@ -1,3 +1,4 @@
+use crate::model::file::FileType;
 use axum::body::{Body, Bytes};
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Multipart, Path, Query, State};
@@ -56,6 +57,10 @@ pub async fn delete_file(
             error: "File not found".to_string(),
         })?;
 
+    state
+        .image_service
+        .delete_formats_from_file_id(file_id)
+        .await?;
     state.file_service.delete_file(file.id).await?;
 
     Ok(AppSuccess::DELETED)
@@ -76,7 +81,7 @@ pub async fn move_file(
 
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    // Check if file exists and     returns not found if it doesn't
+    // Check if file exists and returns not found if it doesn't
     let file = match state
         .file_service
         .check_file_exists_by_id(file_id, user_id)
@@ -157,16 +162,25 @@ pub async fn upload_file(
             .await?;
 
         if let Some(file) = exists {
+            state
+                .image_service
+                .delete_formats_from_file_id(file)
+                .await?;
             state.file_service.delete_file(file).await?;
+
             tracing::info!("File {} deleted for replacement {}", file, id);
         }
 
         match stream_to_file(&location, &id.to_string(), field).await {
             Ok(len) => {
-                state
+                let new_file = state
                     .file_service
                     .create_file(user_id, id, file_name, len as i64, file_type, ct, folder)
                     .await?;
+
+                if file_type == FileType::Image {
+                    state.image_service.generate_image_sizes(new_file).await?;
+                }
             }
             Err(err) => {
                 tracing::error!("{}", err);
@@ -195,9 +209,11 @@ pub async fn download_raw_file(
 
     let file_path =
         std::path::Path::new(&std::env::var("UPLOAD_LOCATION").unwrap()).join(file.id.to_string());
-    let system_file = File::open(file_path).await.map_err(|_| AppError::NotFound {
-        error: "File to download not found".to_string(),
-    })?;
+    let system_file = File::open(file_path)
+        .await
+        .map_err(|_| AppError::NotFound {
+            error: "File to download not found".to_string(),
+        })?;
 
     let metadata = system_file
         .metadata()

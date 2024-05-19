@@ -151,20 +151,25 @@ impl FileService {
     }
 
     pub async fn delete_file(&self, file_id: i64) -> Result<(), AppError> {
-        tokio::fs::remove_file(
-            Path::new(std::env::var("UPLOAD_LOCATION").unwrap().as_str()).join(file_id.to_string()),
-        )
-        .await
-        .map_err(|_| {
-            tracing::error!("Error deleting file: {}", file_id);
-            AppError::InternalError
-        })
-        .map(|_| ())?;
+        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
+        let upload_path = Path::new(&upload_location);
+
+        tokio::fs::remove_file(upload_path.join(file_id.to_string()))
+            .await
+            .map_err(|e| {
+                tracing::error!("Error deleting file {} from storage: {}", file_id, e);
+                AppError::InternalError
+            })?;
+
         sqlx::query!("DELETE FROM files WHERE id = $1", file_id)
             .execute(&self.db_pool)
             .await
-            .map_err(|_| AppError::InternalError)
-            .map(|_| ())
+            .map_err(|e| {
+                tracing::error!("Error deleting file {} from database: {}", file_id, e);
+                AppError::InternalError
+            })?;
+
+        Ok(())
     }
 
     pub fn get_file_type(mime_type: &str) -> FileType {
@@ -172,7 +177,7 @@ impl FileService {
             ("image/gif", FileType::Image),
             ("image/jpeg", FileType::Image),
             ("image/png", FileType::Image),
-            ("image/svg+xml", FileType::Image),
+            ("image/svg+xml", FileType::RawImage),
             ("image/webp", FileType::Image),
             ("image/x-icon", FileType::Image),
             ("video/mp4", FileType::Video),

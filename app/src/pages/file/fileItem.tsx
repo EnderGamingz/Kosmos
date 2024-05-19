@@ -1,4 +1,4 @@
-import { FileModel } from '../../type/file.ts';
+import { FileModel, FileType, getFileTypeById } from '../../../models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '../../vars.ts';
@@ -28,6 +28,14 @@ export function FileItem({ file }: { file: FileModel }) {
 
   return (
     <li className={'flex items-center justify-between'}>
+      {[FileType.Image, FileType.RawImage].some(
+        x => x === getFileTypeById(file.file_type),
+      ) && (
+        <img
+          src={`${BASE_URL}auth/file/image/${file.id}/0`}
+          alt={file.file_name}
+        />
+      )}
       <div>{file.file_name}</div>
       <div>
         <button

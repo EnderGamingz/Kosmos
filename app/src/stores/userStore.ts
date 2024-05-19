@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { BASE_URL } from '../vars.ts';
-import { UserModel } from '../type/user.ts';
+import { UserModel } from '../../models/user.ts';
 
 export interface UserState {
   user?: UserModel;
