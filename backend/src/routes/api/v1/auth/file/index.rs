@@ -1,16 +1,14 @@
 use crate::model::file::FileType;
-use axum::body::{Body, Bytes};
+use axum::body::Bytes;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Multipart, Path, Query, State};
-use axum::http::header;
-use axum::response::{IntoResponse, Response};
 use axum::{BoxError, Json};
 use futures::{Stream, TryStreamExt};
 use serde::Deserialize;
 use std::io;
 use tokio::fs::File;
 use tokio::io::BufWriter;
-use tokio_util::io::{ReaderStream, StreamReader};
+use tokio_util::io::StreamReader;
 use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
@@ -219,59 +217,6 @@ pub async fn rename_file(
         .await?;
 
     Ok(AppSuccess::UPDATED)
-}
-
-pub async fn download_raw_file(
-    State(state): KosmosState,
-    session: Session,
-    Path(file_id): Path<i64>,
-) -> Result<Response, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    let file = state
-        .file_service
-        .check_file_exists_by_id(file_id, user_id)
-        .await?
-        .ok_or(AppError::NotFound {
-            error: "File not found".to_string(),
-        })?;
-
-    let file_path =
-        std::path::Path::new(&std::env::var("UPLOAD_LOCATION").unwrap()).join(file.id.to_string());
-    let system_file = File::open(file_path)
-        .await
-        .map_err(|_| AppError::NotFound {
-            error: "File to download not found".to_string(),
-        })?;
-
-    let metadata = system_file
-        .metadata()
-        .await
-        .map_err(|_| AppError::NotFound {
-            error: "File to download not found".to_string(),
-        })?;
-
-    let stream = ReaderStream::new(system_file);
-
-    let body = Body::from_stream(stream);
-
-    let headers = [
-        (header::CONTENT_LENGTH, metadata.len().to_string()),
-        (
-            header::CONTENT_TYPE,
-            format!("{}; charset=utf-8", file.mime_type),
-        ),
-        (
-            header::CONTENT_DISPOSITION,
-            format!("attachment; filename=\"{}\"", file.file_name),
-        ),
-        (header::ETAG, format!("\"{}\"", file.id)),
-        (header::CACHE_CONTROL, "no-cache".to_string()),
-        (header::PRAGMA, "no-cache".to_string()),
-        (header::LAST_MODIFIED, file.updated_at.to_rfc3339()),
-    ];
-
-    Ok((headers, body).into_response())
 }
 
 async fn stream_to_file<S, E>(path: &str, name: &str, stream: S) -> Result<u64, String>

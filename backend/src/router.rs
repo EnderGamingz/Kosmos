@@ -75,8 +75,9 @@ fn get_file_router() -> KosmosRouter {
 fn get_download_router() -> KosmosRouter {
     Router::new().route(
         "/file/:file_id",
-        get(crate::routes::api::v1::auth::file::download_raw_file),
+        get(crate::routes::api::v1::auth::download::download_raw_file),
     )
+        .route("/multi", post(crate::routes::api::v1::auth::download::multi_download))
 }
 
 fn get_auth_router() -> KosmosRouter {

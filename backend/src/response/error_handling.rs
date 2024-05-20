@@ -12,6 +12,7 @@ pub enum AppError {
     DataConflict { error: String },
     NotFound { error: String },
     Forbidden { error: Option<String> },
+    UnprocessableEntity { error: String },
 }
 
 #[derive(Serialize)]
@@ -56,6 +57,10 @@ impl IntoResponse for AppError {
             Self::Forbidden { error } => {
                 status_code = StatusCode::FORBIDDEN;
                 body = error.unwrap_or("".to_string());
+            }
+            Self::UnprocessableEntity { error } => {
+                status_code = StatusCode::UNPROCESSABLE_ENTITY;
+                body = error;
             }
         }
 

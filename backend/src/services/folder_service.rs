@@ -1,7 +1,7 @@
 use sonyflake::Sonyflake;
 
 use crate::db::KosmosPool;
-use crate::model::folder::{FolderModel, ParsedFolderModel};
+use crate::model::folder::{Directory, FolderModel, ParsedFolderModel};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 
@@ -200,5 +200,45 @@ impl FolderService {
                 AppError::InternalError
             })
             .map(|_| ())
+    }
+
+    pub async fn get_folder_structure(
+        &self,
+        folders: Vec<i64>,
+        user_id: UserId,
+    ) -> Result<Vec<Directory>, AppError> {
+        let folders = folders.into_iter().collect::<Vec<_>>();
+        let folder_res = sqlx::query_as::<_, Directory>(
+            "WITH RECURSIVE directories AS (SELECT f.id,
+                                      f.folder_name,
+                                      f.user_id,
+                                      ARRAY []::TEXT[] AS path
+                               FROM folder f
+                               WHERE f.id = ANY ($1) AND f.user_id = $2
+
+                               UNION ALL
+
+                               SELECT f.id,
+                                      f.folder_name,
+                                      f.user_id,
+                                      d.path || d.folder_name
+                               FROM folder f
+                                        JOIN directories d ON f.parent_id = d.id)
+        SELECT d.*,
+               COALESCE(ARRAY_AGG(f.id) FILTER (WHERE f.id IS NOT NULL), ARRAY []::BIGINT[])             AS files,
+               COALESCE(ARRAY_AGG(f.file_name) FILTER (WHERE f.file_name IS NOT NULL), ARRAY []::TEXT[]) AS file_names
+        FROM directories d
+                 LEFT JOIN files f ON f.parent_folder_id = d.id
+        GROUP BY d.folder_name, d.user_id, d.id, d.path",
+        ).bind(&folders)
+        .bind(user_id)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting folder structure: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(folder_res)
     }
 }

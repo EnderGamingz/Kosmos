@@ -21,3 +21,13 @@ pub struct ParsedFolderModel {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Clone, FromRow, Debug, Serialize)]
+pub struct Directory {
+    pub(crate) id: i64,
+    pub(crate) folder_name: String,
+    pub(crate) user_id: i64,
+    pub(crate) path: Vec<String>,
+    pub(crate) files: Vec<i64>,
+    pub(crate) file_names: Vec<String>,
+}
