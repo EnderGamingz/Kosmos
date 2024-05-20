@@ -3,8 +3,8 @@ import { Login } from './pages/login.tsx';
 import { useEffect } from 'react';
 import { useUserState } from './stores/userStore.ts';
 import { Register } from './pages/register.tsx';
-import { FileList } from './pages/fileList.tsx';
-import Dashboard from './pages/dashboard.tsx';
+import { FileList } from './pages/explorer/fileList.tsx';
+import Dashboard from './pages/explorer/dashboard.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 
 export function Router() {

@@ -1,9 +1,9 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
-import { queryClient } from '../../main.tsx';
+import { BASE_URL } from '../../../vars.ts';
 import { useParams } from 'react-router-dom';
+import { queryClient } from '../../../lib/query.ts';
 
 export function FileUpload() {
   const { folder } = useParams();

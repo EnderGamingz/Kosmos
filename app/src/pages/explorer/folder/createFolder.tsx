@@ -2,9 +2,9 @@ import { FormEvent, useState } from 'react';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
-import { queryClient } from '../../main.tsx';
+import { BASE_URL } from '../../../vars.ts';
 import { useParams } from 'react-router-dom';
+import { queryClient } from '../../../lib/query.ts';
 
 export default function CreateFolder() {
   const { folder } = useParams();

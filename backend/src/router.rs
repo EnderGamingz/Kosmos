@@ -1,5 +1,5 @@
 use axum::extract::DefaultBodyLimit;
-use axum::routing::{get, post, put};
+use axum::routing::{delete, get, post, put};
 use axum::Router;
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
@@ -56,8 +56,7 @@ fn get_file_router() -> KosmosRouter {
         )
         .route(
             "/:file_id",
-            get(crate::routes::api::v1::auth::file::download_raw_file)
-                .delete(crate::routes::api::v1::auth::file::delete_file)
+            delete(crate::routes::api::v1::auth::file::delete_file)
                 .patch(crate::routes::api::v1::auth::file::rename_file),
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
@@ -73,6 +72,13 @@ fn get_file_router() -> KosmosRouter {
         .nest("/image", get_image_router())
 }
 
+fn get_download_router() -> KosmosRouter {
+    Router::new().route(
+        "/file/:file_id",
+        get(crate::routes::api::v1::auth::file::download_raw_file),
+    )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -81,6 +87,7 @@ fn get_auth_router() -> KosmosRouter {
         .route("/logout", post(crate::routes::api::v1::auth::logout))
         .nest("/file", get_file_router())
         .nest("/folder", get_folder_router())
+        .nest("/download", get_download_router())
 }
 
 pub fn init(cors: CorsLayer, session_layer: KosmosSession, state: AppState) -> Router {

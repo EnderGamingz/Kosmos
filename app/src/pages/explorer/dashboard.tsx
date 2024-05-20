@@ -1,7 +1,7 @@
 import { FileUpload } from './file/fileUpload.tsx';
 import CreateFolder from './folder/createFolder.tsx';
 import { Outlet } from 'react-router-dom';
-import { useUserState } from '../stores/userStore.ts';
+import { useUserState } from '../../stores/userStore.ts';
 
 export default function Dashboard() {
   const user = useUserState(s => s.user);

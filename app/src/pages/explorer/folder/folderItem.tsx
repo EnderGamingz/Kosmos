@@ -1,9 +1,10 @@
-import { FolderModel } from '../../../models/folder.ts';
+import { FolderModel } from '../../../../models/folder.ts';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
-import { queryClient } from '../../main.tsx';
+import { BASE_URL } from '../../../vars.ts';
+
+import { queryClient } from '../../../lib/query.ts';
 
 export function FolderItem({ folder }: { folder: FolderModel }) {
   const moveAction = useMutation({

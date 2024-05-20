@@ -1,23 +1,19 @@
-import { FileModel, FileType, getFileTypeById } from '../../../models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
+import { BASE_URL } from '../../../vars.ts';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { invalidateFiles, invalidateFolders } from '../../lib/query.ts';
+import { invalidateFiles } from '../../../lib/query.ts';
+import { DeleteAction } from '../components/delete.tsx';
+import { MoveAction } from '../components/move.tsx';
+import {
+  FileModel,
+  FileType,
+  getFileTypeById,
+} from '../../../../models/file.ts';
+import { DownloadSingleAction } from '../components/download.tsx';
 
 export function FileItem({ file }: { file: FileModel }) {
   const [fileName, setFileName] = useState(file.file_name);
-
-  const moveAction = useMutation({
-    mutationFn: () =>
-      axios.put(`${BASE_URL}auth/file/move/${file.id}?folder_id=`),
-    onSuccess: invalidateFiles,
-  });
-
-  const deleteAction = useMutation({
-    mutationFn: () => axios.delete(`${BASE_URL}auth/file/${file.id}`),
-    onSuccess: invalidateFolders,
-  });
 
   const renameAction = useMutation({
     mutationFn: () =>
@@ -56,16 +52,13 @@ export function FileItem({ file }: { file: FileModel }) {
         />
       </form>
       <div>
-        <button
-          onClick={() => moveAction.mutate()}
-          disabled={moveAction.isPending}>
-          Move to home
-        </button>
-        <button
-          onClick={() => deleteAction.mutate()}
-          disabled={deleteAction.isPending}>
-          Delete
-        </button>
+        <DownloadSingleAction
+          type={'file'}
+          id={file.id}
+          name={file.file_name}
+        />
+        <DeleteAction type={'file'} id={file.id} />
+        <MoveAction type={'file'} id={file.id} destination={null} />
       </div>
     </li>
   );

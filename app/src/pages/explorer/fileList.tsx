@@ -1,11 +1,11 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../vars.ts';
-import { FileModel } from '../../models/file.ts';
-import { FolderModel, FolderResponse } from '../../models/folder.ts';
+import { BASE_URL } from '../../vars.ts';
+import { FileModel } from '../../../models/file.ts';
+import { FolderModel, FolderResponse } from '../../../models/folder.ts';
 import { useMemo } from 'react';
-import BreadCrumbs, { BreadCrumb } from '../components/BreadCrumbs.tsx';
+import BreadCrumbs, { BreadCrumb } from '../../components/BreadCrumbs.tsx';
 import { FolderItem } from './folder/folderItem.tsx';
 import { FileItem } from './file/fileItem.tsx';
 
