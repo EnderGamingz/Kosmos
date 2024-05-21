@@ -106,17 +106,24 @@ pub async fn multi_download(
     let user_id = SessionService::check_logged_in(&session).await?;
     let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
     let upload_path = std::path::Path::new(&upload_location);
+    let temp_location = std::path::Path::new(&upload_location).join("temp");
+    let temp_path = std::path::Path::new(&temp_location);
 
     let folder_structure = state
         .folder_service
         .get_folder_structure(request.folders, user_id)
         .await?;
 
-    const TEMP_FILE: &str = "temp.zip";
+    let file_name = format!(
+        "Kosmos_Archive_{}.zip",
+        chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S")
+    );
+    let temp_zip_path = temp_path.join(&file_name);
+    let temp_zip_path_str = temp_zip_path.to_str().unwrap();
 
-    let _ = tokio::fs::remove_file(TEMP_FILE).await;
+    let _ = tokio::fs::remove_file(temp_zip_path_str).await;
 
-    let file = std::fs::File::create(TEMP_FILE).map_err(|e| {
+    let file = std::fs::File::create(temp_zip_path_str).map_err(|e| {
         tracing::error!("Error creating zip file: {}", e);
         AppError::InternalError
     })?;
@@ -181,7 +188,7 @@ pub async fn multi_download(
         AppError::InternalError
     })?;
 
-    let data = File::open("temp.zip").await.map_err(|e| {
+    let data = File::open(temp_zip_path_str).await.map_err(|e| {
         tracing::error!("Error reading zip file: {}", e);
         AppError::InternalError
     })?;
@@ -194,15 +201,19 @@ pub async fn multi_download(
     let stream = ReaderStream::new(data);
     let body = Body::from_stream(stream);
 
-    let file_name =  format!("Kosmos_Archive_{}.zip", chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S"));
     let header = [
         (header::CONTENT_TYPE, "application/zip".to_string()),
         (header::CONTENT_LENGTH, meta_data.len().to_string()),
-        (header::CONTENT_DISPOSITION, format!("attachment; filename={}", file_name)),
+        (
+            header::CONTENT_DISPOSITION,
+            format!("attachment; filename={}", file_name),
+        ),
     ];
+
+    // This way of doing it is not ideal, but it seems to work, this can maybe break in the future
     let response: Result<Response<Body>, AppError> = Ok((header, body).into_response());
 
-    let _ = tokio::fs::remove_file(TEMP_FILE).await;
+    let _ = tokio::fs::remove_file(temp_zip_path_str).await;
     response
 }
 
