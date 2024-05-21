@@ -12,7 +12,7 @@ use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 use tokio_util::io::ReaderStream;
 use tower_sessions::Session;
-use zip::write::SimpleFileOptions;
+use zip::write::{FileOptions, SimpleFileOptions};
 use zip::ZipWriter;
 
 pub async fn download_raw_file(
@@ -116,7 +116,29 @@ pub async fn multi_download(
     let options = SimpleFileOptions::default().compression_method(zip::CompressionMethod::Stored);
     let mut zip = ZipWriter::new(buf);
 
+    for file_id in request.files {
+        let database_file = state
+            .file_service
+            .check_file_exists_by_id(file_id, user_id)
+            .await?
+            .ok_or(AppError::NotFound {
+                error: "File not found".to_string(),
+            })?;
+
+        let path_to_file = upload_path.join(database_file.id.to_string());
+
+        if let Ok(mut file) = File::open(&path_to_file).await {
+            write_file_to_zip(options, &mut zip, &database_file.file_name, &mut file).await?;
+        }
+    }
+
     for dir in &folder_structure {
+        let mut dir_paths = vec![];
+        dir_paths.push((&dir.path.join("/")).to_owned());
+        dir_paths.push((&dir.folder_name).to_owned());
+
+        let path_in_zip = dir_paths.join("/");
+
         for i in 0..dir.files.len() {
             let file_id: &i64 = &dir.files[i];
             let file_name: &String = &dir.file_names[i];
@@ -124,33 +146,14 @@ pub async fn multi_download(
             let path_to_file = upload_path.join(file_id.to_string());
 
             if let Ok(mut file) = File::open(&path_to_file).await {
-                let mut dir_paths = vec![];
-                dir_paths.push((&dir.path.join("/")).to_owned());
-                dir_paths.push((&dir.folder_name).to_owned());
-
-                let path_in_zip = dir_paths.join("/");
-
                 zip.add_directory(&path_in_zip, options).map_err(|e| {
                     tracing::error!("Error adding directory to zip: {}", e);
                     AppError::InternalError
                 })?;
 
                 let file_in_zip = format!("{}/{}", path_in_zip, file_name);
-                zip.start_file(&*file_in_zip, options).map_err(|e| {
-                    tracing::error!("Error adding file to zip: {}", e);
-                    AppError::InternalError
-                })?;
 
-                let mut buffer = vec![0; 1024];
-                while let Ok(n) = file.read(&mut buffer).await {
-                    if n == 0 {
-                        break;
-                    }
-                    zip.write_all(&buffer[..n]).map_err(|e| {
-                        tracing::error!("Error writing file to zip: {}", e);
-                        AppError::InternalError
-                    })?;
-                }
+                write_file_to_zip(options, &mut zip, &file_in_zip, &mut file).await?;
             } else {
                 return Err(AppError::NotFound {
                     error: "File not found".to_string(),
@@ -170,4 +173,27 @@ pub async fn multi_download(
 
     let header = [(header::CONTENT_TYPE, "application/zip")];
     Ok((header, body).into_response())
+}
+
+async fn write_file_to_zip(
+    options: FileOptions<'_, ()>,
+    zip: &mut ZipWriter<Cursor<Vec<u8>>>,
+    file_name: &str,
+    file: &mut File,
+) -> Result<(), AppError> {
+    zip.start_file(file_name, options).map_err(|e| {
+        tracing::error!("Error adding file to zip: {}", e);
+        AppError::InternalError
+    })?;
+    let mut buffer = vec![0; 1024];
+    while let Ok(n) = file.read(&mut buffer).await {
+        if n == 0 {
+            break;
+        }
+        zip.write_all(&buffer[..n]).map_err(|e| {
+            tracing::error!("Error writing file to zip: {}", e);
+            AppError::InternalError
+        })?;
+    }
+    Ok(())
 }
