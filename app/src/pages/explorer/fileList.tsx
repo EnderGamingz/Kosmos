@@ -38,28 +38,31 @@ export function FileList() {
           files: selectedFiles,
           folders: selectedFolders,
         },
-        { responseType: 'blob' },
+        {
+          responseType: 'blob',
+          withCredentials: true,
+          onDownloadProgress: progressEvent => {
+            const percentCompleted = Math.floor(
+              (progressEvent.loaded * 100) / (progressEvent.total || 100),
+            );
+            console.log(`Download Progress: ${percentCompleted}%`); // you can play around with this line of code depending on how you want to display this progress
+          },
+        },
       );
 
-      if (response.status === 200) {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-          'download',
-          `Kosmos_Archive_${new Date().toLocaleString('de-de', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-          })}.zip`,
-        );
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      const contentDisposition = response.headers['content-disposition'];
+      let fileName = 'archive.zip';
+      if (contentDisposition) {
+        fileName = contentDisposition.split('filename=')[1].replace(/"/g, '');
       }
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
   });
 

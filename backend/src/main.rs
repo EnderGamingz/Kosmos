@@ -1,4 +1,7 @@
-use axum::http::header::{ACCESS_CONTROL_ALLOW_CREDENTIALS, CONTENT_TYPE};
+use axum::http::header::{
+    ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_EXPOSE_HEADERS,
+    CONTENT_DISPOSITION, CONTENT_TYPE,
+};
 use axum::http::{HeaderValue, Method};
 use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
@@ -52,7 +55,12 @@ async fn main() {
             Method::PUT,
         ])
         .allow_origin(cors_origin)
-        .allow_headers([CONTENT_TYPE, ACCESS_CONTROL_ALLOW_CREDENTIALS])
+        .allow_headers([
+            CONTENT_TYPE,
+            ACCESS_CONTROL_ALLOW_CREDENTIALS,
+            ACCESS_CONTROL_EXPOSE_HEADERS,
+        ])
+        .expose_headers([CONTENT_DISPOSITION])
         .allow_credentials(true);
 
     let session_layer = session::init();

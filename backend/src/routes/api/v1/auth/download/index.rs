@@ -194,9 +194,11 @@ pub async fn multi_download(
     let stream = ReaderStream::new(data);
     let body = Body::from_stream(stream);
 
+    let file_name =  format!("Kosmos_Archive_{}.zip", chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S"));
     let header = [
         (header::CONTENT_TYPE, "application/zip".to_string()),
         (header::CONTENT_LENGTH, meta_data.len().to_string()),
+        (header::CONTENT_DISPOSITION, format!("attachment; filename={}", file_name)),
     ];
     let response: Result<Response<Body>, AppError> = Ok((header, body).into_response());
 
