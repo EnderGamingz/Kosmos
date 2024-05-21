@@ -5,6 +5,7 @@ export enum FileType {
   Audio = 3,
   Document = 4,
   RawImage = 5,
+  LargeImage = 6,
 }
 
 export interface FileModel {
@@ -20,19 +21,13 @@ export interface FileModel {
   updated_at: string;
 }
 
-export function getFileTypeById(num: number): FileType {
-  switch (num) {
-    case 1:
-      return FileType.Image;
-    case 2:
-      return FileType.Video;
-    case 3:
-      return FileType.Audio;
-    case 4:
-      return FileType.Document;
-    case 5:
-      return FileType.RawImage;
-    default:
-      return FileType.Generic;
-  }
+/**
+ * Retrieves the file type based on the given ID.
+ *
+ * @param {number} id - The ID of the file type.
+ *
+ * @return {FileType} - The corresponding file type.
+ */
+export function getFileTypeById(id: number): FileType {
+  return id in FileType ? id : FileType.Generic;
 }

@@ -43,7 +43,8 @@ pub async fn get_files(
         sort_order: sort_params.sort_order.unwrap_or(SortOrder::Desc),
     };
 
-    println!("{:#?}", sort);
+    //TODO: Add sorting
+
 
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),

@@ -12,6 +12,7 @@ pub enum FileType {
     Audio = 3,
     Document = 4,
     RawImage = 5,
+    LargeImage = 6
 }
 
 impl FileType {
@@ -22,6 +23,7 @@ impl FileType {
             3 => FileType::Audio,
             4 => FileType::Document,
             5 => FileType::RawImage,
+            6 => FileType::LargeImage,
             _ => FileType::Generic,
         }
     }
