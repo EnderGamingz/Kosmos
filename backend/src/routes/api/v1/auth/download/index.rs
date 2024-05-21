@@ -7,7 +7,7 @@ use axum::http::header;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
 use serde::Deserialize;
-use std::io::{Cursor, Write};
+use std::io::{BufWriter, Write};
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 use tokio_util::io::ReaderStream;
@@ -69,7 +69,7 @@ pub async fn download_raw_file(
 }
 
 #[derive(Deserialize)]
-pub struct MultiDownloadResponse {
+pub struct MultiDownloadRequest {
     pub files: Vec<String>,
     pub folders: Vec<String>,
 }
@@ -82,7 +82,7 @@ pub struct MultiDownloadParsed {
 pub async fn multi_download(
     State(state): KosmosState,
     session: Session,
-    Json(request_data): Json<MultiDownloadResponse>,
+    Json(request_data): Json<MultiDownloadRequest>,
 ) -> Result<Response, AppError> {
     let request = MultiDownloadParsed {
         files: request_data
@@ -112,9 +112,18 @@ pub async fn multi_download(
         .get_folder_structure(request.folders, user_id)
         .await?;
 
-    let buf = Cursor::new(Vec::new());
+    const TEMP_FILE: &str = "temp.zip";
+
+    let _ = tokio::fs::remove_file(TEMP_FILE).await;
+
+    let file = std::fs::File::create(TEMP_FILE).map_err(|e| {
+        tracing::error!("Error creating zip file: {}", e);
+        AppError::InternalError
+    })?;
+
     let options = SimpleFileOptions::default().compression_method(zip::CompressionMethod::Stored);
-    let mut zip = ZipWriter::new(buf);
+    let mut writer = BufWriter::new(&file);
+    let mut zip = ZipWriter::new(&mut writer);
 
     for file_id in request.files {
         let database_file = state
@@ -162,22 +171,42 @@ pub async fn multi_download(
         }
     }
 
-    let result: Cursor<Vec<u8>> = zip.finish().map_err(|e| {
+    zip.finish().map_err(|e| {
         tracing::error!("Error finishing zip: {}", e);
         AppError::InternalError
     })?;
 
-    let data = result.into_inner();
+    writer.flush().map_err(|e| {
+        tracing::error!("Error flushing zip data to file: {}", e);
+        AppError::InternalError
+    })?;
 
-    let body = Body::from(data);
+    let data = File::open("temp.zip").await.map_err(|e| {
+        tracing::error!("Error reading zip file: {}", e);
+        AppError::InternalError
+    })?;
 
-    let header = [(header::CONTENT_TYPE, "application/zip")];
-    Ok((header, body).into_response())
+    let meta_data = data.metadata().await.map_err(|e| {
+        tracing::error!("Error getting metadata of zip file: {}", e);
+        AppError::InternalError
+    })?;
+
+    let stream = ReaderStream::new(data);
+    let body = Body::from_stream(stream);
+
+    let header = [
+        (header::CONTENT_TYPE, "application/zip".to_string()),
+        (header::CONTENT_LENGTH, meta_data.len().to_string()),
+    ];
+    let response: Result<Response<Body>, AppError> = Ok((header, body).into_response());
+
+    let _ = tokio::fs::remove_file(TEMP_FILE).await;
+    response
 }
 
 async fn write_file_to_zip(
     options: FileOptions<'_, ()>,
-    zip: &mut ZipWriter<Cursor<Vec<u8>>>,
+    zip: &mut ZipWriter<&mut BufWriter<&std::fs::File>>,
     file_name: &str,
     file: &mut File,
 ) -> Result<(), AppError> {

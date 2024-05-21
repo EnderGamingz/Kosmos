@@ -17,11 +17,34 @@ use crate::services::file_service::FileService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
+#[derive(Debug, Deserialize)]
+pub enum SortOrder {
+    Asc,
+    Desc,
+}
+
+#[derive(Deserialize)]
+pub struct SortParams {
+    pub sort_order: Option<SortOrder>,
+}
+
+#[derive(Debug)]
+pub struct Sort {
+    pub sort_order: SortOrder,
+}
+
 pub async fn get_files(
     State(state): KosmosState,
     session: Session,
+    Query(sort_params): Query<SortParams>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
+    let sort = Sort {
+        sort_order: sort_params.sort_order.unwrap_or(SortOrder::Desc),
+    };
+
+    println!("{:#?}", sort);
+
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
