@@ -8,7 +8,7 @@ import Dashboard from './pages/explorer/dashboard.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 
 export function Router() {
-  const user = useUserState(state => state);
+  const user = useUserState();
 
   useEffect(() => {
     user.fetchUser();

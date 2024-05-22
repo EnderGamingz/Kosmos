@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { useUserState } from './stores/userStore.ts';
 
 export function AccessWrapper({ el, page }: { el: ReactNode; page: string }) {
-  const user = useUserState(state => state);
+  const user = useUserState();
 
   if (!user.initialized) {
     return 'Loading';
