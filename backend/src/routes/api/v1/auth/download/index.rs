@@ -211,6 +211,11 @@ pub async fn multi_download(
     ];
 
     // This way of doing it is not ideal, but it seems to work, this can maybe break in the future
+
+    // The tokio remove file function uses the underlying 'unlink' syscall
+    // which causes the file to be marked as deleted until no process has any handles for it
+    // the stream is closed when the request is finished and the file is deleted
+
     let response: Result<Response<Body>, AppError> = Ok((header, body).into_response());
 
     let _ = tokio::fs::remove_file(temp_zip_path_str).await;
