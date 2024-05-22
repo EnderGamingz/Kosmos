@@ -6,6 +6,7 @@ import {
 } from '../../../stores/downloadStore.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
+import { useState } from 'react';
 
 export function MultiDownload({
   files,
@@ -14,18 +15,17 @@ export function MultiDownload({
   files: string[];
   folders: string[];
 }) {
+  const [fileId, setFileId] = useState('');
   const downloadStateActions = useDownloadState(s => s.actions);
 
   const downloadAction = useMutation({
     mutationFn: async () => {
-      let downloadId = new Date().toISOString();
-
       const description = [];
       if (!!files.length) description.push(`${files.length} Files`);
       if (!!folders.length) description.push(`${folders.length} Folders`);
 
       downloadStateActions.addDownload({
-        id: downloadId,
+        id: fileId,
         name: `Multi Download`,
         description: description.join(', '),
         status: DownloadStatus.INITIATED,
@@ -45,7 +45,7 @@ export function MultiDownload({
       });
 
       downloadStateActions.updateDownloadStatus(
-        downloadId,
+        fileId,
         DownloadStatus.PROGRESS,
       );
 
@@ -57,7 +57,7 @@ export function MultiDownload({
         );
       }
 
-      downloadStateActions.updateDownloadTitle(downloadId, fileName);
+      downloadStateActions.updateDownloadTitle(fileId, fileName);
 
       if (!window.WritableStream) {
         // @ts-ignore
@@ -73,7 +73,7 @@ export function MultiDownload({
       if (readableStream?.pipeTo) {
         return readableStream.pipeTo(fileStream).then(() => {
           downloadStateActions.updateDownloadStatus(
-            downloadId,
+            fileId,
             DownloadStatus.FINISHED,
           );
         });
@@ -88,7 +88,7 @@ export function MultiDownload({
           if (res.done) {
             return writer.close().then(() => {
               downloadStateActions.updateDownloadStatus(
-                downloadId,
+                fileId,
                 DownloadStatus.FINISHED,
               );
             });
@@ -100,12 +100,18 @@ export function MultiDownload({
 
       handleRead();
     },
+    onError: () => {
+      downloadStateActions.removeDownload(fileId);
+    },
   });
 
   return (
     <button
       className={'disabled:bg-gray-400'}
-      onClick={() => downloadAction.mutate()}
+      onClick={() => {
+        setFileId(new Date().toISOString());
+        downloadAction.mutate();
+      }}
       disabled={!files.length && !folders.length}>
       Multi Download
     </button>

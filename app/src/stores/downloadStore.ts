@@ -29,7 +29,7 @@ export const useDownloadState = create<DownloadState>(set => ({
   actions: {
     addDownload: (data: DownloadItem) => {
       set(state => ({
-        items: [...state.items, data],
+        items: [data, ...state.items],
       }));
     },
     updateDownloadStatus: (id: string, status: DownloadStatus) => {

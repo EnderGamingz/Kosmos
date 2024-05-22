@@ -1,8 +1,9 @@
 import {
+  DownloadItem,
   DownloadStatus,
   useDownloadState,
 } from '../../stores/downloadStore.ts';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Collapse } from 'react-collapse';
 import {
   ArrowDownTrayIcon,
@@ -10,13 +11,71 @@ import {
   ChevronDownIcon,
 } from '@heroicons/react/24/solid';
 import cn from '../../lib/classMerge.ts';
-import { CircularProgress } from '@nextui-org/react';
+import { CircularProgress, Progress } from '@nextui-org/react';
+
+function DownloadListItem({ item }: { item: DownloadItem }) {
+  const STATUS_MESSAGES: { [key in DownloadStatus]?: string } = {
+    [DownloadStatus.INITIATED]: 'Processing archive...',
+    [DownloadStatus.PROGRESS]: 'Downloading...',
+    [DownloadStatus.FINISHED]: 'Complete',
+  };
+
+  return (
+    <div className={'flex py-1'}>
+      <div>
+        <p
+          className={
+            'max-w-72 overflow-hidden overflow-ellipsis whitespace-nowrap'
+          }>
+          {item.name}
+        </p>
+        {item.description && (
+          <p className={'inline text-xs text-slate-500'}>
+            {item.description} &bull;{' '}
+          </p>
+        )}
+        <p className={'inline text-xs text-slate-500'}>
+          {STATUS_MESSAGES[item.status] || null}
+        </p>
+      </div>
+      <CircularProgress
+        className={'ml-auto'}
+        valueLabel={<CheckIcon className={'h-5 w-5 text-green-500'} />}
+        showValueLabel={item.status === DownloadStatus.FINISHED}
+        classNames={{
+          indicator:
+            item.status === DownloadStatus.FINISHED
+              ? 'stroke-green-500'
+              : item.status === DownloadStatus.FAILED
+                ? 'stroke-red-500'
+                : '',
+        }}
+        size={'sm'}
+        value={
+          [DownloadStatus.FINISHED, DownloadStatus.FAILED].some(
+            x => x === item.status,
+          )
+            ? 100
+            : undefined
+        }
+        aria-label={'Loading...'}
+      />
+    </div>
+  );
+}
 
 export default function DownloadsList() {
   const [open, setOpen] = useState(false);
   const downloads = useDownloadState(s => s.items);
 
-  console.log(downloads);
+  const isLoading = useMemo(() => {
+    return downloads.some(
+      x =>
+        x.status === DownloadStatus.INITIATED ||
+        x.status === DownloadStatus.PROGRESS,
+    );
+  }, [downloads]);
+
   return (
     <div
       className={cn(
@@ -41,6 +100,11 @@ export default function DownloadsList() {
             />
           </div>
         </div>
+        {isLoading ? (
+          <Progress isIndeterminate className={'h-0.5'} />
+        ) : (
+          <div className={'h-0.5'} />
+        )}
         <Collapse isOpened={open}>
           <div
             className={
@@ -48,40 +112,7 @@ export default function DownloadsList() {
             }>
             {!!downloads.length ? (
               downloads.map(item => (
-                <div className={'flex py-1'} key={item.id}>
-                  <div>
-                    {item.name}
-                    {item.description && (
-                      <p className={'text-xs text-slate-500'}>
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
-                  <CircularProgress
-                    className={'ml-auto'}
-                    valueLabel={
-                      <CheckIcon className={'h-5 w-5 text-green-500'} />
-                    }
-                    showValueLabel={item.status === DownloadStatus.FINISHED}
-                    classNames={{
-                      indicator:
-                        item.status === DownloadStatus.FINISHED
-                          ? 'stroke-green-500'
-                          : item.status === DownloadStatus.FAILED
-                            ? 'stroke-red-500'
-                            : '',
-                    }}
-                    size={'sm'}
-                    value={
-                      [DownloadStatus.FINISHED, DownloadStatus.FAILED].some(
-                        x => x === item.status,
-                      )
-                        ? 100
-                        : undefined
-                    }
-                    aria-label={'Loading...'}
-                  />
-                </div>
+                <DownloadListItem key={item.id} item={item} />
               ))
             ) : (
               <p className={'text-center text-sm text-slate-500'}>
