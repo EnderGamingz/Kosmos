@@ -79,7 +79,6 @@ export function MultiDownload({
         });
       }
 
-      // @ts-ignore
       const writer = fileStream.getWriter();
       const reader = response.body?.getReader();
 

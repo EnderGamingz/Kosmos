@@ -4,10 +4,15 @@ import axios from 'axios';
 import { BASE_URL } from '../../../vars.ts';
 import { useParams } from 'react-router-dom';
 import { queryClient } from '../../../lib/query.ts';
+import {
+  Severity,
+  useNotifications,
+} from '../../../stores/notificationStore.ts';
 
 export function FileUpload() {
   const { folder } = useParams();
   const formRef = useRef<HTMLFormElement>(null);
+  const notification = useNotifications(s => s.actions);
 
   const [files, setFiles] = useState<FileList | null>(null);
 
@@ -42,9 +47,23 @@ export function FileUpload() {
           `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
           formData,
         )
-        .then(res => res.data);
+        .then(res => {
+          notification.notify({
+            id: new Date().toISOString(),
+            timeout: 2000,
+            title: 'Upload complete',
+            description: `Uploaded ${files.length} files`,
+            severity: Severity.SUCCESS,
+          });
+          return res.data;
+        });
     } catch (error) {
-      console.error(error);
+      notification.notify({
+        id: new Date().toISOString(),
+        severity: Severity.ERROR,
+        title: 'Upload error',
+        description: 'Check console for more information',
+      });
     }
   };
 
