@@ -97,6 +97,17 @@ pub async fn delete_folder(
         });
     }
 
+    let is_empty = state
+        .folder_service
+        .check_folder_contains_elements(folder_id)
+        .await?;
+
+    if is_empty {
+        return Err(AppError::DataConflict {
+            error: "Folder is not empty".to_string(),
+        });
+    }
+
     state.folder_service.delete_folder(folder_id).await?;
 
     Ok(AppSuccess::DELETED)
@@ -144,8 +155,8 @@ pub async fn move_folder(
         .await?;
 
     if is_folder_already_in_destination {
-        return Err(AppError::Forbidden {
-            error: Some("Folder already exists in destination folder".to_string()),
+        return Err(AppError::DataConflict {
+            error: "Folder already exists in destination folder".to_string(),
         });
     }
 

@@ -28,14 +28,15 @@ export default function NotificationIndicator() {
 
 function NotificationStatus({ data }: { data: Notification }) {
   const isSuccess = data.severity === Severity.SUCCESS;
+  const isError = data.severity === Severity.ERROR;
   if (data.loading) {
     return (
       <Progress
-        isIndeterminate={!isSuccess}
+        isIndeterminate={!isSuccess && !isError}
         value={100}
         className={'h-0.5'}
         classNames={{
-          indicator: isSuccess ? 'bg-green-600' : '',
+          indicator: isSuccess ? 'bg-green-600' : isError ? 'bg-red-600' : '',
         }}
         aria-label={'Loading...'}
       />
@@ -68,6 +69,7 @@ function NotificationItem({ data }: { data: Notification }) {
       className={cn(
         'rounded-md border border-slate-500 bg-slate-100 shadow-sm transition-colors',
         data.severity === Severity.SUCCESS && 'border-green-500 bg-green-100',
+        data.severity === Severity.ERROR && 'border-red-500 bg-red-100',
       )}>
       <div className={'flex items-center justify-between px-3 py-1'}>
         <div>

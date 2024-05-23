@@ -6,6 +6,7 @@ import {
   Severity,
   useNotifications,
 } from '../../../stores/notificationStore.ts';
+import { useState } from 'react';
 
 export function DeleteAction({
   type,
@@ -14,24 +15,44 @@ export function DeleteAction({
   type: 'file' | 'folder';
   id: string;
 }) {
-  const notify = useNotifications(s => s.actions.notify);
+  const [actionId, setActionId] = useState('');
+  const notification = useNotifications(s => s.actions);
   const deleteAction = useMutation({
-    mutationFn: () => axios.delete(`${BASE_URL}auth/${type}/${id}`),
+    mutationFn: () => {
+      notification.notify({
+        id: actionId,
+        title: `Deleting ${type}`,
+        loading: true,
+        severity: Severity.INFO,
+      });
+      return axios.delete(`${BASE_URL}auth/${type}/${id}`);
+    },
     onSuccess: async () => {
-      notify({
-        id: new Date().toISOString(),
-        title: `${type === 'file' ? 'File' : 'Folder'} deleted`,
+      notification.updateNotification(actionId, {
         severity: Severity.SUCCESS,
+        status: 'Deleted successfully',
         timeout: 1000,
       });
+
       if (type === 'file') await invalidateFiles();
       else await invalidateFolders();
+    },
+    onError: err => {
+      notification.updateNotification(actionId, {
+        severity: Severity.ERROR,
+        // @ts-ignore
+        description: err.response?.data?.error || 'Error',
+        timeout: 2000,
+      });
     },
   });
 
   return (
     <button
-      onClick={() => deleteAction.mutate()}
+      onClick={() => {
+        setActionId(new Date().toISOString());
+        deleteAction.mutate();
+      }}
       disabled={deleteAction.isPending}>
       Delete
     </button>

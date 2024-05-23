@@ -170,6 +170,26 @@ impl FolderService {
         Ok(result)
     }
 
+    pub async fn check_folder_contains_elements(&self, folder_id: i64) -> Result<bool, AppError> {
+        let result = sqlx::query!(
+            "SELECT COUNT(*) FROM files WHERE parent_folder_id = $1",
+            folder_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!(
+                "Error checking if folder {} contains elements: {}",
+                folder_id,
+                e
+            );
+            AppError::InternalError
+        })?
+        .count
+        .unwrap_or(0);
+        Ok(result > 0)
+    }
+
     pub async fn check_folder_exists_by_id(
         &self,
         folder_id: i64,
