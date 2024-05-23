@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { invalidateFiles, useFolders } from '../../../../lib/query.ts';
+import {
+  invalidateFiles,
+  invalidateFolders,
+  useFolders,
+} from '../../../../lib/query.ts';
 import {
   ModalBody,
   ModalFooter,
@@ -41,7 +45,10 @@ export function MoveModalContent({
       ),
     onSuccess: async () => {
       onClose();
-      await invalidateFiles();
+
+      if (moveData.type == 'folder') await invalidateFolders();
+      else await invalidateFiles();
+
       notify({
         title: `Move ${moveData.type}`,
         status: 'Moved successfully',

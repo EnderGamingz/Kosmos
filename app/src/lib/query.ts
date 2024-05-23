@@ -16,7 +16,7 @@ export async function invalidateFiles() {
 export async function invalidateFolders() {
   await queryClient.invalidateQueries({
     exact: false,
-    queryKey: ['files'],
+    queryKey: ['folders'],
   });
 }
 

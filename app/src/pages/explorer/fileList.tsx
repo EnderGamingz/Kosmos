@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { FileModel } from '../../../models/file.ts';
 import { FolderModel } from '../../../models/folder.ts';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BreadCrumbs, { BreadCrumb } from '../../components/BreadCrumbs.tsx';
 import { FolderItem } from './folder/folderItem.tsx';
 import { FileItem } from './file/fileItem.tsx';
@@ -13,13 +13,18 @@ export function FileList() {
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
   const { folder } = useParams();
 
+  useEffect(() => {
+    setSelectedFolders([]);
+    setSelectedFiles([]);
+  }, [folder]);
+
   const files = useFiles(folder);
   const folders = useFolders(folder);
 
   const crumbs = useMemo(() => {
     const arr = [{ name: 'Home', href: folder && '/home' }] as BreadCrumb[];
     if (folder && folders.data)
-      arr.push({ name: folders.data.folder.folder_name });
+      arr.push({ name: folders.data.folder?.folder_name || 'Folder' });
     return arr;
   }, [folder, folders]);
 
