@@ -7,13 +7,14 @@ import {
   useNotifications,
 } from '../../../stores/notificationStore.ts';
 import { useState } from 'react';
+import { OperationType } from '../../../../models/file.ts';
 
 export function DownloadSingleAction({
   type,
   id,
   name,
 }: {
-  type: 'file' | 'folder';
+  type: OperationType;
   id: string;
   name: string;
 }) {

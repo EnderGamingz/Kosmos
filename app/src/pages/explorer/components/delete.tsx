@@ -7,12 +7,13 @@ import {
   useNotifications,
 } from '../../../stores/notificationStore.ts';
 import { useState } from 'react';
+import { OperationType } from '../../../../models/file.ts';
 
 export function DeleteAction({
   type,
   id,
 }: {
-  type: 'file' | 'folder';
+  type: OperationType;
   id: string;
 }) {
   const [actionId, setActionId] = useState('');

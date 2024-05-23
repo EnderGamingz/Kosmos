@@ -8,6 +8,6 @@ export interface FolderModel {
 }
 
 export interface FolderResponse {
-  folder: FolderModel;
+  folder?: FolderModel;
   folders: FolderModel[];
 }

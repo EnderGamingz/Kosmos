@@ -4,7 +4,7 @@ import { BASE_URL } from '../../../vars.ts';
 import { ChangeEvent, FormEvent, useMemo, useState } from 'react';
 import { invalidateFiles } from '../../../lib/query.ts';
 import { DeleteAction } from '../components/delete.tsx';
-import { MoveAction } from '../components/move.tsx';
+import { MoveAction } from '../components/move/move.tsx';
 import {
   FileModel,
   FileType,
@@ -78,7 +78,12 @@ export function FileItem({
           name={file.file_name}
         />
         <DeleteAction type={'file'} id={file.id} />
-        <MoveAction type={'file'} id={file.id} destination={null} />
+        <MoveAction
+          type={'file'}
+          name={file.file_name}
+          id={file.id}
+          current_parent={file.parent_folder_id}
+        />
       </div>
     </li>
   );

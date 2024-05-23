@@ -21,6 +21,8 @@ export interface FileModel {
   updated_at: string;
 }
 
+export type OperationType = 'file' | 'folder';
+
 /**
  * Retrieves the file type based on the given ID.
  *
