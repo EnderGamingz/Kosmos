@@ -2,7 +2,7 @@ import { FileUpload } from './file/fileUpload.tsx';
 import CreateFolder from './folder/createFolder.tsx';
 import { Outlet } from 'react-router-dom';
 import { useUserState } from '../../stores/userStore.ts';
-import DownloadsList from '../../components/downloadsList';
+import NotificationIndicator from '../../components/notifications';
 
 export default function Dashboard() {
   const user = useUserState(s => s.user);
@@ -10,7 +10,7 @@ export default function Dashboard() {
   return (
     <div className={'container'}>
       <pre>{JSON.stringify(user, null, 2)}</pre>
-      <DownloadsList />
+      <NotificationIndicator />
       <div className={'grid grid-cols-3 gap-5'}>
         <FileUpload />
         <CreateFolder />

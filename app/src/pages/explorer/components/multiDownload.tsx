@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { BASE_URL } from '../../../vars.ts';
-import {
-  DownloadStatus,
-  useDownloadState,
-} from '../../../stores/downloadStore.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { useState } from 'react';
+import {
+  Severity,
+  useNotifications,
+} from '../../../stores/notificationStore.ts';
 
 export function MultiDownload({
   files,
@@ -16,7 +16,7 @@ export function MultiDownload({
   folders: string[];
 }) {
   const [fileId, setFileId] = useState('');
-  const downloadStateActions = useDownloadState(s => s.actions);
+  const notificationActions = useNotifications(s => s.actions);
 
   const downloadAction = useMutation({
     mutationFn: async () => {
@@ -24,11 +24,13 @@ export function MultiDownload({
       if (!!files.length) description.push(`${files.length} Files`);
       if (!!folders.length) description.push(`${folders.length} Folders`);
 
-      downloadStateActions.addDownload({
+      notificationActions.notify({
         id: fileId,
-        name: `Multi Download`,
+        title: 'Multi Download',
         description: description.join(', '),
-        status: DownloadStatus.INITIATED,
+        status: 'Processing archive',
+        loading: true,
+        severity: Severity.INFO,
       });
 
       // noinspection JSUnusedGlobalSymbols
@@ -44,10 +46,9 @@ export function MultiDownload({
         }),
       });
 
-      downloadStateActions.updateDownloadStatus(
-        fileId,
-        DownloadStatus.PROGRESS,
-      );
+      notificationActions.updateNotification(fileId, {
+        status: 'Downloading',
+      });
 
       const contentDisposition = response.headers.get('content-disposition');
       let fileName = 'archive.zip';
@@ -56,8 +57,6 @@ export function MultiDownload({
           contentDisposition.lastIndexOf('=') + 1,
         );
       }
-
-      downloadStateActions.updateDownloadTitle(fileId, fileName);
 
       if (!window.WritableStream) {
         // @ts-ignore
@@ -72,10 +71,11 @@ export function MultiDownload({
       // If pipeTo exists, use it as it is more optimized
       if (readableStream?.pipeTo) {
         return readableStream.pipeTo(fileStream).then(() => {
-          downloadStateActions.updateDownloadStatus(
-            fileId,
-            DownloadStatus.FINISHED,
-          );
+          notificationActions.updateNotification(fileId, {
+            status: 'Download complete',
+            severity: Severity.SUCCESS,
+            timeout: 2500,
+          });
         });
       }
 
@@ -87,10 +87,11 @@ export function MultiDownload({
         return reader?.read().then(res => {
           if (res.done) {
             return writer.close().then(() => {
-              downloadStateActions.updateDownloadStatus(
-                fileId,
-                DownloadStatus.FINISHED,
-              );
+              notificationActions.updateNotification(fileId, {
+                status: 'Download complete',
+                severity: Severity.SUCCESS,
+                timeout: 2500,
+              });
             });
           } else {
             return writer.write(res.value).then(handleRead);
@@ -101,7 +102,11 @@ export function MultiDownload({
       handleRead();
     },
     onError: () => {
-      downloadStateActions.removeDownload(fileId);
+      notificationActions.updateNotification(fileId, {
+        title: 'Download failed',
+        severity: Severity.ERROR,
+        timeout: 2500,
+      });
     },
   });
 

@@ -3,12 +3,12 @@ import axios from 'axios';
 import { BASE_URL } from '../vars.ts';
 import { UserModel } from '../../models/user.ts';
 
-export interface UserState {
+export type UserState = {
   user?: UserModel;
   fetchUser: () => void;
   setUser: (user: UserModel) => void;
   initialized: boolean;
-}
+};
 
 export const useUserState = create<UserState>(set => ({
   user: undefined,
