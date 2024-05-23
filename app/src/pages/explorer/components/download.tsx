@@ -31,13 +31,13 @@ export function DownloadSingleAction({
         },
       });
 
-      notification.notify({
-        id: fileId,
+      const fileId = notification.notify({
         title: 'File Download',
         status: 'Downloading...',
         loading: true,
         severity: Severity.INFO,
       });
+      setFileId(fileId);
 
       if (!window.WritableStream) {
         // @ts-ignore
@@ -92,10 +92,7 @@ export function DownloadSingleAction({
 
   return (
     <button
-      onClick={() => {
-        setFileId(new Date().toISOString());
-        downloadAction.mutate();
-      }}
+      onClick={() => downloadAction.mutate()}
       disabled={downloadAction.isPending}>
       Download Single
     </button>

@@ -8,7 +8,6 @@ export enum Severity {
 }
 
 export type CreateNotificationPayload = {
-  id: string;
   title: string;
   description?: string;
   status?: string;
@@ -28,6 +27,7 @@ export type UpdateNotificationPayload = {
 };
 
 export type Notification = CreateNotificationPayload & {
+  id: string;
   popup: boolean;
 };
 
@@ -35,7 +35,7 @@ export type NotificationState = {
   notifications: Notification[];
   actions: {
     clearNotifications: () => void;
-    notify: (data: CreateNotificationPayload) => void;
+    notify: (data: CreateNotificationPayload) => string;
     updateNotification: (id: string, data: UpdateNotificationPayload) => void;
     removeNotification: (id: string) => void;
   };
@@ -45,15 +45,18 @@ export const useNotifications = create<NotificationState>(set => ({
   notifications: [],
   actions: {
     notify: (data: CreateNotificationPayload) => {
+      const id = new Date().toISOString();
       set(state => ({
         notifications: [
           {
             ...data,
             popup: true,
+            id,
           },
           ...state.notifications,
         ],
       }));
+      return id;
     },
     removeNotification: id => {
       set(state => ({

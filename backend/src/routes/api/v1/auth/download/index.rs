@@ -162,10 +162,9 @@ pub async fn multi_download(
             let path_to_file = upload_path.join(file_id.to_string());
 
             if let Ok(mut file) = File::open(&path_to_file).await {
-                zip.add_directory(&path_in_zip, options).map_err(|e| {
-                    tracing::error!("Error adding directory to zip: {}", e);
-                    AppError::InternalError
-                })?;
+
+                // Ignore error as this can fail when a folder with the name already exists
+                let _ = zip.add_directory(&path_in_zip, options);
 
                 let file_in_zip = format!("{}/{}", path_in_zip, file_name);
 

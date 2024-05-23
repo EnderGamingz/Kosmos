@@ -11,7 +11,7 @@ import {
   getFileTypeById,
 } from '../../../../models/file.ts';
 import { DownloadSingleAction } from '../components/download.tsx';
-import cx from 'classnames';
+import tw from '../../../lib/classMerge.ts';
 
 export function FileItem({
   file,
@@ -45,7 +45,7 @@ export function FileItem({
 
   return (
     <li
-      className={cx(
+      className={tw(
         'flex items-center justify-between',
         isSelected && 'bg-indigo-100',
       )}>

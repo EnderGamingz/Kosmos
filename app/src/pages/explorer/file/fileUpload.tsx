@@ -41,30 +41,32 @@ export function FileUpload() {
       formData.append('file', file);
     }
 
-    try {
-      await axios
-        .postForm(
-          `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
-          formData,
-        )
-        .then(res => {
-          notification.notify({
-            id: new Date().toISOString(),
-            timeout: 2000,
-            title: 'Upload complete',
-            description: `Uploaded ${files.length} files`,
-            severity: Severity.SUCCESS,
-          });
-          return res.data;
+    const uploadId = notification.notify({
+      title: 'File upload',
+      loading: true,
+      description: `${files.length} files`,
+      severity: Severity.INFO,
+    });
+
+    await axios
+      .postForm(
+        `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
+        formData,
+      )
+      .then(res => {
+        notification.updateNotification(uploadId, {
+          timeout: 2000,
+          status: 'Upload complete',
+          severity: Severity.SUCCESS,
         });
-    } catch (error) {
-      notification.notify({
-        id: new Date().toISOString(),
-        severity: Severity.ERROR,
-        title: 'Upload error',
-        description: 'Check console for more information',
+        return res.data;
+      })
+      .catch(() => {
+        notification.updateNotification(uploadId, {
+          status: 'Upload failed',
+          severity: Severity.ERROR,
+        });
       });
-    }
   };
 
   return (

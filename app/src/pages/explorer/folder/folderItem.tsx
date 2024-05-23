@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { DeleteAction } from '../components/delete.tsx';
 import { MoveAction } from '../components/move/move.tsx';
 import { useMemo } from 'react';
-import cx from 'classnames';
+import tw from '../../../lib/classMerge.ts';
 
 export function FolderItem({
   folder,
@@ -18,7 +18,7 @@ export function FolderItem({
 
   return (
     <li
-      className={cx(
+      className={tw(
         'flex items-center justify-between',
         isSelected && 'bg-indigo-100',
       )}>

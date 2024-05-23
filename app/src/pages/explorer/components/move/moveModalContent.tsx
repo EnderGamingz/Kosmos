@@ -11,6 +11,10 @@ import { OperationType } from '../../../../../models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '../../../../vars.ts';
+import {
+  Severity,
+  useNotifications,
+} from '../../../../stores/notificationStore.ts';
 
 export function MoveModalContent({
   moveData,
@@ -22,6 +26,7 @@ export function MoveModalContent({
   onClose: () => void;
 }) {
   const [selectedFolder, setSelectedFolder] = useState(parent);
+  const notify = useNotifications(s => s.actions.notify);
   const { data } = useFolders(selectedFolder);
 
   const handleChangeFolder = (id?: string) => () => {
@@ -37,6 +42,21 @@ export function MoveModalContent({
     onSuccess: async () => {
       onClose();
       await invalidateFiles();
+      notify({
+        title: `Move ${moveData.type}`,
+        status: 'Moved successfully',
+        severity: Severity.SUCCESS,
+        timeout: 1000,
+      });
+    },
+    onError: err => {
+      notify({
+        title: `Move ${moveData.type}`,
+        severity: Severity.ERROR,
+        // @ts-ignore
+        description: err.response?.data?.error || 'Error',
+        timeout: 2000,
+      });
     },
   });
 

@@ -4,9 +4,10 @@ import {
   useNotifications,
 } from '../../stores/notificationStore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { cn, Progress } from '@nextui-org/react';
+import { Progress } from '@nextui-org/react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { useEffect } from 'react';
+import tw from '../../lib/classMerge.ts';
 
 export default function NotificationIndicator() {
   const notifications = useNotifications(s =>
@@ -14,8 +15,14 @@ export default function NotificationIndicator() {
   );
 
   return (
-    <div className={'fixed bottom-10 left-10 w-full max-w-[20rem]'}>
-      <ul className={'flex max-h-64 flex-col-reverse gap-2 overflow-hidden'}>
+    <div
+      className={
+        'fixed left-10 z-[100] w-full max-w-[20rem] max-sm:left-5 max-sm:top-5 sm:bottom-10'
+      }>
+      <ul
+        className={
+          'flex max-h-64 flex-col-reverse gap-2 overflow-hidden max-sm:flex-col'
+        }>
         <AnimatePresence>
           {notifications.slice(0, 5).map(notification => (
             <NotificationItem key={notification.id} data={notification} />
@@ -66,7 +73,7 @@ function NotificationItem({ data }: { data: Notification }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 30 }}
       transition={{ duration: 0.2 }}
-      className={cn(
+      className={tw(
         'rounded-md border border-slate-500 bg-slate-100 shadow-sm transition-colors',
         data.severity === Severity.SUCCESS && 'border-green-500 bg-green-100',
         data.severity === Severity.ERROR && 'border-red-500 bg-red-100',

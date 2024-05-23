@@ -24,14 +24,14 @@ export function MultiDownload({
       if (!!files.length) description.push(`${files.length} Files`);
       if (!!folders.length) description.push(`${folders.length} Folders`);
 
-      notificationActions.notify({
-        id: fileId,
+      const fileId = notificationActions.notify({
         title: 'Multi Download',
         description: description.join(', '),
         status: 'Processing archive',
         loading: true,
         severity: Severity.INFO,
       });
+      setFileId(fileId);
 
       // noinspection JSUnusedGlobalSymbols
       const response = await fetch(BASE_URL + 'auth/download/multi', {
@@ -112,10 +112,7 @@ export function MultiDownload({
   return (
     <button
       className={'disabled:bg-gray-400'}
-      onClick={() => {
-        setFileId(new Date().toISOString());
-        downloadAction.mutate();
-      }}
+      onClick={() => downloadAction.mutate()}
       disabled={!files.length && !folders.length}>
       Multi Download
     </button>
