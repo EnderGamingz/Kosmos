@@ -28,7 +28,7 @@ export function NotificationItem({ data }: { data: Notification }) {
       layout
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 30 }}
+      exit={{ opacity: 0, y: -30 }}
       transition={{ duration: 0.2 }}
       className={tw(
         'rounded-md border border-slate-500 bg-slate-100 text-slate-950 shadow-sm transition-colors',

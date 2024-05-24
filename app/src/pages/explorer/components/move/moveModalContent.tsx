@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  invalidateFiles,
-  invalidateFolders,
-  useFolders,
-} from '../../../../lib/query.ts';
+import { invalidateData, useFolders } from '../../../../lib/query.ts';
 import {
   CircularProgress,
   ModalBody,
@@ -20,6 +16,8 @@ import {
   Severity,
   useNotifications,
 } from '../../../../stores/notificationStore.ts';
+import { ArrowRightIcon } from '@heroicons/react/24/solid';
+import { Collapse } from 'react-collapse';
 
 export function MoveModalContent({
   moveData,
@@ -47,8 +45,7 @@ export function MoveModalContent({
     onSuccess: async () => {
       onClose();
 
-      if (moveData.type == 'folder') await invalidateFolders();
-      else await invalidateFiles();
+      await invalidateData(moveData.type);
 
       notify({
         title: `Move ${moveData.type}`,
@@ -71,7 +68,7 @@ export function MoveModalContent({
   return (
     <>
       <ModalHeader className='grid gap-1'>
-        <h2 className={'flex gap-1'}>
+        <h2 className={'flex flex-wrap gap-1 overflow-hidden'}>
           Move {moveData.type}
           <Tooltip content={moveData.name}>
             <p
@@ -81,13 +78,15 @@ export function MoveModalContent({
               {moveData.name}
             </p>
           </Tooltip>
-          to:
         </h2>
         <div
           className={
             'flex justify-between gap-1 text-sm font-normal text-slate-600'
           }>
-          {data?.folder?.folder_name || 'Home'}{' '}
+          <div>
+            Moving to <ArrowRightIcon className={'inline h-3 w-3'} />{' '}
+            {data?.folder?.folder_name || 'Home'}{' '}
+          </div>
           {isLoading && (
             <CircularProgress
               aria-label={'Folder loading...'}
@@ -100,29 +99,31 @@ export function MoveModalContent({
         </div>
       </ModalHeader>
       <ModalBody className={'min-h-32'}>
-        <ul
-          className={
-            '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors'
-          }>
-          {data?.folder && (
-            <motion.li onClick={handleChangeFolder(data?.folder?.parent_id)}>
-              ..
-            </motion.li>
-          )}
-          {data?.folders
-            // Prevent folders from being able to be moved into themselves
-            .filter(x => x.id !== moveData.id)
-            .map(folder => (
-              <motion.li
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.2, bounce: 0.1 }}
-                key={folder.id}
-                onClick={handleChangeFolder(folder.id)}>
-                {folder.folder_name}
+        <Collapse isOpened>
+          <ul
+            className={
+              '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors'
+            }>
+            {data?.folder && (
+              <motion.li onClick={handleChangeFolder(data?.folder?.parent_id)}>
+                ..
               </motion.li>
-            ))}
-        </ul>
+            )}
+            {data?.folders
+              // Prevent folders from being able to be moved into themselves
+              .filter(x => x.id !== moveData.id)
+              .map(folder => (
+                <motion.li
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.2, bounce: 0.1 }}
+                  key={folder.id}
+                  onClick={handleChangeFolder(folder.id)}>
+                  {folder.folder_name}
+                </motion.li>
+              ))}
+          </ul>
+        </Collapse>
       </ModalBody>
       <ModalFooter className={'justify-between'}>
         <button

@@ -1,9 +1,10 @@
 import { FolderModel } from '../../../../models/folder.ts';
 import { Link } from 'react-router-dom';
 import { DeleteAction } from '../components/delete.tsx';
-import { MoveAction } from '../components/move/move.tsx';
+import { MoveAction } from '../components/move';
 import { useMemo } from 'react';
 import tw from '../../../lib/classMerge.ts';
+import { RenameAction } from '../components/rename';
 
 export function FolderItem({
   folder,
@@ -30,6 +31,11 @@ export function FolderItem({
       <Link to={`/home/${folder.id.toString()}`}>{folder.folder_name}</Link>
       <div>
         <DeleteAction type={'folder'} id={folder.id} />
+        <RenameAction
+          type={'folder'}
+          id={folder.id}
+          name={folder.folder_name}
+        />
         <MoveAction
           type={'folder'}
           name={folder.folder_name}

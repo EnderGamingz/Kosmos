@@ -1,10 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { BASE_URL } from '../../../vars.ts';
-import { ChangeEvent, FormEvent, useMemo, useState } from 'react';
-import { invalidateFiles } from '../../../lib/query.ts';
+import { useMemo } from 'react';
 import { DeleteAction } from '../components/delete.tsx';
-import { MoveAction } from '../components/move/move.tsx';
+import { MoveAction } from '../components/move';
 import {
   FileModel,
   FileType,
@@ -12,6 +9,7 @@ import {
 } from '../../../../models/file.ts';
 import { DownloadSingleAction } from '../components/download.tsx';
 import tw from '../../../lib/classMerge.ts';
+import { RenameAction } from '../components/rename';
 
 export function FileItem({
   file,
@@ -22,26 +20,7 @@ export function FileItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
-  const [fileName, setFileName] = useState(file.file_name);
-
   const isSelected = useMemo(() => selected.includes(file.id), [selected]);
-
-  const renameAction = useMutation({
-    mutationFn: () =>
-      axios.patch(`${BASE_URL}auth/file/${file.id}`, {
-        name: fileName,
-      }),
-    onSuccess: invalidateFiles,
-  });
-
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    setFileName(e.target.value);
-  }
-
-  function handleNameSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    renameAction.mutate();
-  }
 
   return (
     <li
@@ -63,14 +42,12 @@ export function FileItem({
           alt={file.file_name}
         />
       )}
-      <form onSubmit={handleNameSubmit}>
-        <input
-          disabled={renameAction.isPending}
-          className={'overflow-ellipsis bg-transparent'}
-          onChange={handleChange}
-          value={fileName}
-        />
-      </form>
+      <p
+        className={
+          'max-w-72 overflow-hidden overflow-ellipsis whitespace-nowrap'
+        }>
+        {file.file_name}
+      </p>
       <div>
         <DownloadSingleAction
           type={'file'}
@@ -78,6 +55,7 @@ export function FileItem({
           name={file.file_name}
         />
         <DeleteAction type={'file'} id={file.id} />
+        <RenameAction type={'file'} id={file.id} name={file.file_name} />
         <MoveAction
           type={'file'}
           name={file.file_name}
