@@ -5,6 +5,7 @@ import {
   useFolders,
 } from '../../../../lib/query.ts';
 import {
+  CircularProgress,
   ModalBody,
   ModalFooter,
   ModalHeader,
@@ -31,7 +32,7 @@ export function MoveModalContent({
 }) {
   const [selectedFolder, setSelectedFolder] = useState(parent);
   const notify = useNotifications(s => s.actions.notify);
-  const { data } = useFolders(selectedFolder);
+  const { data, isLoading } = useFolders(selectedFolder);
 
   const handleChangeFolder = (id?: string) => () => {
     if (!data) return;
@@ -82,9 +83,21 @@ export function MoveModalContent({
           </Tooltip>
           to:
         </h2>
-        <p className={'text-sm font-normal text-slate-600'}>
-          {data?.folder?.folder_name || 'Home'}
-        </p>
+        <div
+          className={
+            'flex justify-between gap-1 text-sm font-normal text-slate-600'
+          }>
+          {data?.folder?.folder_name || 'Home'}{' '}
+          {isLoading && (
+            <CircularProgress
+              aria-label={'Folder loading...'}
+              classNames={{
+                svg: 'w-4 h-4',
+              }}
+              isIndeterminate
+            />
+          )}
+        </div>
       </ModalHeader>
       <ModalBody className={'min-h-32'}>
         <ul
