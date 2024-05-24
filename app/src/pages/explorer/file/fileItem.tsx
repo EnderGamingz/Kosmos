@@ -1,15 +1,13 @@
-import { BASE_URL } from '../../../vars.ts';
 import { useMemo } from 'react';
 import { MoveAction } from '../components/move';
-import {
-  FileModel,
-  FileType,
-  getFileTypeById,
-} from '../../../../models/file.ts';
+import { FileModel } from '../../../../models/file.ts';
 import { DownloadSingleAction } from '../components/download.tsx';
 import tw from '../../../lib/classMerge.ts';
 import { RenameAction } from '../components/rename';
 import { DeleteAction } from '../components/delete';
+import { Checkbox } from '@nextui-org/react';
+import { formatDistanceToNow } from 'date-fns';
+import { formatBytes } from '../../../lib/fileSize.ts';
 
 export function FileItem({
   file,
@@ -23,16 +21,19 @@ export function FileItem({
   const isSelected = useMemo(() => selected.includes(file.id), [selected]);
 
   return (
-    <li
+    <tr
       className={tw(
-        'flex items-center justify-between',
+        'group [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
       )}>
-      <input
-        type={'checkbox'}
-        checked={isSelected}
-        onChange={() => onSelect(file.id)}
-      />
+      <th>
+        <Checkbox
+          isSelected={isSelected}
+          onValueChange={() => onSelect(file.id)}
+        />
+      </th>
+
+      {/*
       {[FileType.Image, FileType.RawImage].some(
         x => x === getFileTypeById(file.file_type),
       ) && (
@@ -42,13 +43,17 @@ export function FileItem({
           alt={file.file_name}
         />
       )}
-      <p
-        className={
-          'max-w-72 overflow-hidden overflow-ellipsis whitespace-nowrap'
-        }>
-        {file.file_name}
-      </p>
-      <div>
+*/}
+      <td>
+        <p className={'overflow-hidden overflow-ellipsis whitespace-nowrap'}>
+          {file.file_name}
+        </p>
+      </td>
+      <td align={'right'}>{formatBytes(file.file_size)}</td>
+      <td align={'right'}>
+        {formatDistanceToNow(file.updated_at, { addSuffix: true })}
+      </td>
+      <td align={'right'}>
         <DownloadSingleAction
           type={'file'}
           id={file.id}
@@ -62,7 +67,7 @@ export function FileItem({
           id={file.id}
           current_parent={file.parent_folder_id}
         />
-      </div>
-    </li>
+      </td>
+    </tr>
   );
 }

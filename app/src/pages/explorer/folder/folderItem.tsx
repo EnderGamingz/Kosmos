@@ -5,6 +5,8 @@ import { useMemo } from 'react';
 import tw from '../../../lib/classMerge.ts';
 import { RenameAction } from '../components/rename';
 import { DeleteAction } from '../components/delete';
+import { Checkbox } from '@nextui-org/react';
+import { formatDistanceToNow } from 'date-fns';
 
 export function FolderItem({
   folder,
@@ -18,18 +20,29 @@ export function FolderItem({
   const isSelected = useMemo(() => selected.includes(folder.id), [selected]);
 
   return (
-    <li
+    <tr
       className={tw(
-        'flex items-center justify-between',
+        'group transition-all [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
       )}>
-      <input
-        type={'checkbox'}
-        checked={isSelected}
-        onChange={() => onSelect(folder.id)}
-      />
-      <Link to={`/home/${folder.id.toString()}`}>{folder.folder_name}</Link>
-      <div>
+      <th>
+        <Checkbox
+          isSelected={isSelected}
+          onValueChange={() => onSelect(folder.id)}
+        />
+      </th>
+      <td className={'!p-0'}>
+        <Link
+          className={'flex w-full p-3 group-hover:bg-slate-200'}
+          to={`/home/${folder.id.toString()}`}>
+          {folder.folder_name}
+        </Link>
+      </td>
+      <td align={'right'}></td>
+      <td align={'right'}>
+        {formatDistanceToNow(folder.updated_at, { addSuffix: true })}
+      </td>
+      <td align={'right'}>
         <DeleteAction
           type={'folder'}
           id={folder.id}
@@ -46,7 +59,7 @@ export function FolderItem({
           id={folder.id}
           current_parent={folder.parent_id}
         />
-      </div>
-    </li>
+      </td>
+    </tr>
   );
 }
