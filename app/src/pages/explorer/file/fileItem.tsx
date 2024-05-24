@@ -1,6 +1,5 @@
 import { BASE_URL } from '../../../vars.ts';
 import { useMemo } from 'react';
-import { DeleteAction } from '../components/delete.tsx';
 import { MoveAction } from '../components/move';
 import {
   FileModel,
@@ -10,6 +9,7 @@ import {
 import { DownloadSingleAction } from '../components/download.tsx';
 import tw from '../../../lib/classMerge.ts';
 import { RenameAction } from '../components/rename';
+import { DeleteAction } from '../components/delete';
 
 export function FileItem({
   file,
@@ -54,7 +54,7 @@ export function FileItem({
           id={file.id}
           name={file.file_name}
         />
-        <DeleteAction type={'file'} id={file.id} />
+        <DeleteAction type={'file'} id={file.id} name={file.file_name} />
         <RenameAction type={'file'} id={file.id} name={file.file_name} />
         <MoveAction
           type={'file'}
