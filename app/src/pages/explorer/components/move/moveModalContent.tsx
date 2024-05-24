@@ -96,16 +96,19 @@ export function MoveModalContent({
               ..
             </motion.li>
           )}
-          {data?.folders.map(folder => (
-            <motion.li
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.2, bounce: 0.1 }}
-              key={folder.id}
-              onClick={handleChangeFolder(folder.id)}>
-              {folder.folder_name}
-            </motion.li>
-          ))}
+          {data?.folders
+            // Prevent folders from being able to be moved into themselves
+            .filter(x => x.id !== moveData.id)
+            .map(folder => (
+              <motion.li
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.2, bounce: 0.1 }}
+                key={folder.id}
+                onClick={handleChangeFolder(folder.id)}>
+                {folder.folder_name}
+              </motion.li>
+            ))}
         </ul>
       </ModalBody>
       <ModalFooter className={'justify-between'}>
