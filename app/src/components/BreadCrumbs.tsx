@@ -23,7 +23,7 @@ export function BreadCrumbItem({
 }) {
   return (
     <motion.div
-      className={'flex gap-2'}
+      className={'flex gap-2 text-stone-800'}
       initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 10, opacity: 0 }}>
@@ -31,14 +31,14 @@ export function BreadCrumbItem({
         key={`breadcrumb-${href}`}
         condition={!!href}
         wrapper={c => <Link to={href!}>{c}</Link>}>
-        <motion.div className={tw('text-stone-900')}>{name}</motion.div>
+        <div>{name}</div>
       </ConditionalWrapper>
       <span
         className={tw(
-          'transition-opacity',
+          'text-stone-500/70 transition-opacity',
           last ? 'opacity-0' : 'opacity-100',
         )}>
-        &gt;
+        /
       </span>
     </motion.div>
   );
