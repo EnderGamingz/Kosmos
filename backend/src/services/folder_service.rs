@@ -1,7 +1,7 @@
 use sonyflake::Sonyflake;
 
 use crate::db::KosmosPool;
-use crate::model::folder::{Directory, FolderModel, ParsedFolderModel};
+use crate::model::folder::{Directory, FolderModel, ParsedFolderModel, ParsedSimpleDirectory, SimpleDirectory};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 
@@ -220,6 +220,52 @@ impl FolderService {
                 AppError::InternalError
             })
             .map(|_| ())
+    }
+
+    pub async fn get_children_directories(
+        &self,
+        folder_id: i64,
+        user_id: UserId,
+    ) -> Result<Vec<SimpleDirectory>, AppError> {
+        let children_res = sqlx::query_as::<_, SimpleDirectory>(
+            "WITH RECURSIVE directories AS (
+                    SELECT f.id,
+                           f.folder_name,
+                           f.parent_id,
+                           ARRAY [f.id]::BIGINT[] AS path
+                    FROM folder f
+                    WHERE f.id = $1
+                      AND f.user_id = $2
+                    UNION ALL
+                    SELECT f.id,
+                           f.folder_name,
+                           f.parent_id,
+                           d.path || f.id
+                    FROM folder f
+                             JOIN directories d ON f.id = d.parent_id
+                    WHERE array_length(d.path, 1) < 100
+                )
+                SELECT id, folder_name
+                FROM directories
+                ORDER BY array_length(path, 1) DESC",
+        )
+        .bind(folder_id)
+        .bind(user_id)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting children directories: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(children_res)
+    }
+
+    pub fn parse_children_directory(children: SimpleDirectory) -> ParsedSimpleDirectory {
+        ParsedSimpleDirectory {
+            id: children.id.to_string(),
+            folder_name: children.folder_name,
+        }
     }
 
     pub async fn get_folder_structure(

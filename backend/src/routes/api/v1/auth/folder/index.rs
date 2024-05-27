@@ -40,9 +40,23 @@ pub async fn get_folders(
         None
     };
 
+    let structure = if let Some(folder) = folder_id_result {
+        Some(state
+            .folder_service
+            .get_children_directories(folder, user_id)
+            .await?
+            .into_iter()
+            .map(FolderService::parse_children_directory)
+            .collect::<Vec<_>>()
+        )
+    } else {
+        None
+    };
+
     Ok(Json(serde_json::json!({
         "folder": folder,
-        "folders": folders
+        "folders": folders,
+        "structure": structure
     })))
 }
 

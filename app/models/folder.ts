@@ -10,4 +10,10 @@ export interface FolderModel {
 export interface FolderResponse {
   folder?: FolderModel;
   folders: FolderModel[];
+  structure?: SimpleDirectory[];
+}
+
+export interface SimpleDirectory {
+  id: string;
+  folder_name: string;
 }

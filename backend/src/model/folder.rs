@@ -31,3 +31,15 @@ pub struct Directory {
     pub(crate) files: Vec<i64>,
     pub(crate) file_names: Vec<String>,
 }
+
+#[derive(Clone, FromRow)]
+pub struct SimpleDirectory {
+    pub(crate) id: i64,
+    pub(crate) folder_name: String,
+}
+
+#[derive(Serialize)]
+pub struct ParsedSimpleDirectory {
+    pub id: String,
+    pub folder_name: String,
+}

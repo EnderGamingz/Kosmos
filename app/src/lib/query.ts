@@ -27,6 +27,7 @@ export const useFolders = (parent_id?: string) => {
         .get(`${BASE_URL}auth/folder/all${parent_id ? `/${parent_id}` : ''}`)
         .then(res => res.data as FolderResponse),
     queryKey: ['folders', parent_id],
+    _optimisticResults: 'isRestoring',
   });
 };
 

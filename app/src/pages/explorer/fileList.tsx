@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
-import BreadCrumbs, { BreadCrumb } from '../../components/BreadCrumbs.tsx';
+import { useEffect, useState } from 'react';
+import BreadCrumbs, { BreadCrumbItem } from '../../components/BreadCrumbs.tsx';
 import { MultiDownload } from './components/multiDownload.tsx';
 import { useFiles, useFolders } from '../../lib/query.ts';
-import { FolderModel } from '../../../models/folder.ts';
+import { FolderModel, SimpleDirectory } from '../../../models/folder.ts';
 import { FolderItem } from './folder/folderItem.tsx';
 import { FileModel } from '../../../models/file.ts';
 import { FileItem } from './file/fileItem.tsx';
@@ -13,6 +13,7 @@ import { useFolderStore } from '../../stores/folderStore.ts';
 export function FileList() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
+  const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
   const selectFolder = useFolderStore(s => s.actions.selectFolder);
   const { folder } = useParams();
@@ -26,12 +27,14 @@ export function FileList() {
   const files = useFiles(folder);
   const folders = useFolders(folder);
 
-  const crumbs = useMemo(() => {
-    const arr = [{ name: 'Home', href: folder && '/home' }] as BreadCrumb[];
-    if (folder && folders.data)
-      arr.push({ name: folders.data.folder?.folder_name || 'Folder' });
-    return arr;
-  }, [folder, folders]);
+  useEffect(() => {
+    if (!folders.data) return;
+    if (!folders.data.structure) {
+      setBreadCrumbs([]);
+    } else if (folders.data.structure.length > 0) {
+      setBreadCrumbs(folders.data.structure);
+    }
+  }, [folders.data]);
 
   const handleFolderSelect = (id: string) => {
     if (!selectedFolders.includes(id)) {
@@ -58,7 +61,21 @@ export function FileList() {
 
   return (
     <>
-      <BreadCrumbs crumbs={crumbs} />
+      <BreadCrumbs>
+        <BreadCrumbItem
+          name={'Home'}
+          href={'/home'}
+          last={!breadCrumbs.length}
+        />
+        {breadCrumbs.map((item, i) => (
+          <BreadCrumbItem
+            last={i === breadCrumbs.length - 1}
+            key={`crumb-${item.id}`}
+            name={item.folder_name}
+            href={`/home/folder/${item.id}`}
+          />
+        ))}
+      </BreadCrumbs>
       <MultiDownload files={selectedFiles} folders={selectedFolders} />
       <table className={'w-full table-auto text-left'}>
         <thead>
