@@ -8,16 +8,20 @@ import { FolderItem } from './folder/folderItem.tsx';
 import { FileModel } from '../../../models/file.ts';
 import { FileItem } from './file/fileItem.tsx';
 import { Checkbox } from '@nextui-org/react';
+import { useFolderStore } from '../../stores/folderStore.ts';
 
 export function FileList() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
+
+  const selectFolder = useFolderStore(s => s.actions.selectFolder);
   const { folder } = useParams();
 
   useEffect(() => {
     setSelectedFolders([]);
     setSelectedFiles([]);
-  }, [folder]);
+    selectFolder(folder);
+  }, [folder, selectFolder]);
 
   const files = useFiles(folder);
   const folders = useFolders(folder);
@@ -50,6 +54,8 @@ export function FileList() {
     selectedFiles.length === files.data?.length;
 
   const isNoneSelected = !selectedFiles.length && !selectedFolders.length;
+  const hasData = !!folders.data?.folders.length && !!files?.data?.length;
+
   return (
     <>
       <BreadCrumbs crumbs={crumbs} />
@@ -59,7 +65,7 @@ export function FileList() {
           <tr className={'[&_th]:p-3'}>
             <th>
               <Checkbox
-                isSelected={isAllSelected}
+                isSelected={isAllSelected && hasData}
                 isIndeterminate={!isAllSelected && !isNoneSelected}
                 onValueChange={() => {
                   if ((!isNoneSelected && !isAllSelected) || isNoneSelected) {

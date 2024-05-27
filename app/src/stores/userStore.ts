@@ -7,6 +7,7 @@ export type UserState = {
   user?: UserModel;
   fetchUser: () => void;
   setUser: (user: UserModel) => void;
+  logout: () => void;
   initialized: boolean;
 };
 
@@ -15,7 +16,7 @@ export const useUserState = create<UserState>(set => ({
   initialized: false,
   fetchUser: async () => {
     const user = await axios
-      .get(BASE_URL + 'auth')
+      .get(`${BASE_URL}auth`)
       .then(({ data }) => data)
       .catch()
       .finally(() => {
@@ -26,5 +27,8 @@ export const useUserState = create<UserState>(set => ({
   },
   setUser: (data: UserModel) => {
     set({ user: data, initialized: true });
+  },
+  logout: () => {
+    set({ user: undefined });
   },
 }));

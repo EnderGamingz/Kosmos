@@ -6,30 +6,35 @@ import { Register } from './pages/register.tsx';
 import { FileList } from './pages/explorer/fileList.tsx';
 import Dashboard from './pages/explorer/dashboard.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
+import NotificationIndicator from './components/notifications';
+import Header from './components/header';
 
 export function Router() {
+  const fetchUser = useUserState(s => s.fetchUser);
   const user = useUserState();
 
   useEffect(() => {
-    user.fetchUser();
-  }, []);
+    fetchUser();
+  }, [fetchUser]);
 
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path={'auth/register'} element={<Register />} />
+        <Route path={'auth/login'} element={<Login />} />
         <Route
           path={'home'}
           element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
           {user.user && (
             <>
+              <Route path={'folder/:folder'} element={<FileList />} />
               <Route index element={<FileList />} />
-              <Route path={':folder'} element={<FileList />} />
             </>
           )}
         </Route>
-        <Route path={''} element={<Login />} />
       </Routes>
+      <NotificationIndicator />
     </BrowserRouter>
   );
 }

@@ -14,10 +14,8 @@ export function Login() {
   const user = useUserState(s => s.user);
 
   useEffect(() => {
-    if (user) {
-      navigate('/home');
-    }
-  }, [user]);
+    if (user) navigate('/home');
+  }, [navigate, user]);
 
   const loginFn = () =>
     axios.post(BASE_URL + 'auth/login', {

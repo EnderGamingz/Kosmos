@@ -17,7 +17,10 @@ export function FolderItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
-  const isSelected = useMemo(() => selected.includes(folder.id), [selected]);
+  const isSelected = useMemo(
+    () => selected.includes(folder.id),
+    [folder.id, selected],
+  );
 
   return (
     <tr
@@ -34,7 +37,7 @@ export function FolderItem({
       <td className={'!p-0'}>
         <Link
           className={'flex w-full p-3 group-hover:bg-slate-200'}
-          to={`/home/${folder.id.toString()}`}>
+          to={`/home/folder/${folder.id.toString()}`}>
           {folder.folder_name}
         </Link>
       </td>

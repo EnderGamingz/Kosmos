@@ -1,13 +1,25 @@
-import { FormEvent, useState } from 'react';
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { FormEvent, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '../../../vars.ts';
-import { useParams } from 'react-router-dom';
-import { queryClient } from '../../../lib/query.ts';
+import { invalidateFolders } from '../../../lib/query.ts';
+import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
+import tw from '../../../lib/classMerge.ts';
+import {
+  Severity,
+  useNotifications,
+} from '../../../stores/notificationStore.ts';
 
-export default function CreateFolder() {
-  const { folder } = useParams();
+export default function CreateFolder({
+  folder,
+  onClose,
+}: {
+  folder?: string;
+  onClose: () => void;
+}) {
+  const notify = useNotifications(s => s.actions.notify);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [active, setActive] = useState(false);
   const [name, setName] = useState('');
 
   const { mutate } = useMutation({
@@ -16,9 +28,22 @@ export default function CreateFolder() {
         name,
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        exact: false,
-        queryKey: ['folders'],
+      await invalidateFolders();
+      onClose();
+      notify({
+        title: 'Create folder',
+        severity: Severity.SUCCESS,
+        status: 'Created successfully',
+        timeout: 1000,
+      });
+    },
+    onError: err => {
+      notify({
+        title: `Create folder`,
+        severity: Severity.ERROR,
+        // @ts-expect-error response will include data
+        description: err.response?.data?.error || 'Error',
+        timeout: 2000,
       });
     },
   });
@@ -28,23 +53,37 @@ export default function CreateFolder() {
     mutate();
   };
 
+  const handleActivate = () => {
+    setActive(true);
+    inputRef.current?.focus();
+  };
+
   return (
-    <div>
-      <form className={'flex max-w-sm flex-col gap-3'} onSubmit={handleSubmit}>
-        <input
-          type={'text'}
-          placeholder={'Name'}
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
-        <button
-          type={'button'}
-          className={
-            'flex items-center gap-1 rounded-md bg-blue-400 px-4 py-2'
-          }>
-          <PlusIcon className={'h-5 w-5'} /> Create
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div className={'btn-black relative py-2'} onClick={handleActivate}>
+        <FolderIcon />
+        <div className={'flex'}>
+          <input
+            ref={inputRef}
+            type={'text'}
+            placeholder={'Folder name'}
+            value={active ? name : 'Create Folder'}
+            onChange={e => setName(e.target.value)}
+            className={tw(
+              'border-nones rounded-lg bg-transparent py-0.5 outline-none transition-all',
+              !active && 'pointer-events-none',
+            )}
+          />
+          <button
+            disabled={!active}
+            className={tw(
+              'transition-opacity',
+              active ? 'opacity-100' : 'opacity-0',
+            )}>
+            <CheckIcon className={'h-4 w-4'} />
+          </button>
+        </div>
+      </div>
+    </form>
   );
 }
