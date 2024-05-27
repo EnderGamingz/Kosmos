@@ -38,8 +38,6 @@ pub async fn login(
         }
     };
 
-    println!("user: {:?}", user);
-
     let is_password_valid = bcrypt::verify(payload.password, &*user.password_hash)
         .map_err(|_| AppError::InternalError)?;
 

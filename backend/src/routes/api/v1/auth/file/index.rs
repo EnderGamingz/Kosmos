@@ -6,10 +6,12 @@ use axum::{BoxError, Json};
 use futures::{Stream, TryStreamExt};
 use serde::Deserialize;
 use std::io;
+use axum_valid::Valid;
 use tokio::fs::File;
 use tokio::io::BufWriter;
 use tokio_util::io::StreamReader;
 use tower_sessions::Session;
+use validator::Validate;
 
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -36,12 +38,12 @@ pub struct Sort {
 pub async fn get_files(
     State(state): KosmosState,
     session: Session,
-    Query(sort_params): Query<SortParams>,
+    //Query(sort_params): Query<SortParams>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
-    let sort = Sort {
+/*    let sort = Sort {
         sort_order: sort_params.sort_order.unwrap_or(SortOrder::Desc),
-    };
+    };*/
 
     //TODO: Add sorting
 
@@ -214,8 +216,9 @@ pub async fn upload_file(
     Ok(AppSuccess::OK { data: None })
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct RenameParams {
+    #[validate(length(min = 1, message = "Name cannot be empty"))]
     pub name: String,
 }
 
@@ -223,7 +226,7 @@ pub async fn rename_file(
     State(state): KosmosState,
     session: Session,
     Path(file_id): Path<i64>,
-    Json(params): Json<RenameParams>,
+    Valid(Json(params)): Valid<Json<RenameParams>>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 

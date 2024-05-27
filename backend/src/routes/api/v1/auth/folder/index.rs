@@ -1,8 +1,10 @@
-use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
+use axum::extract::rejection::PathRejection;
 use axum::Json;
+use axum_valid::Valid;
 use serde::Deserialize;
 use tower_sessions::Session;
+use validator::Validate;
 
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -44,8 +46,9 @@ pub async fn get_folders(
     })))
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct FolderRequest {
+    #[validate(length(min = 1, message = "Name cannot be empty"))]
     name: String,
 }
 
@@ -53,7 +56,7 @@ pub async fn create_folder(
     State(state): KosmosState,
     session: Session,
     folder_id: Result<Path<i64>, PathRejection>,
-    Json(payload): Json<FolderRequest>,
+    Valid(Json(payload)): Valid<Json<FolderRequest>>,
 ) -> Result<Json<serde_json::Value>, AppError> {
     let folder_id = match folder_id {
         Ok(Path(id)) => Some(id),
@@ -172,7 +175,7 @@ pub async fn rename_folder(
     State(state): KosmosState,
     session: Session,
     Path(folder_id): Path<i64>,
-    Json(payload): Json<RenameParams>,
+    Valid(Json(payload)): Valid<Json<RenameParams>>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
