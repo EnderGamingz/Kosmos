@@ -2,7 +2,7 @@ import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../../vars.ts';
-import { queryClient } from '../../../lib/query.ts';
+import { invalidateFiles, invalidateUsage } from '../../../lib/query.ts';
 import {
   Severity,
   useNotifications,
@@ -51,6 +51,8 @@ function FileUploadContent({
       severity: Severity.INFO,
     });
 
+    onClose();
+
     await axios
       .postForm(
         `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
@@ -62,7 +64,6 @@ function FileUploadContent({
           status: 'Upload complete',
           severity: Severity.SUCCESS,
         });
-        onClose();
         return res.data;
       })
       .catch(() => {
@@ -77,10 +78,8 @@ function FileUploadContent({
     handleUpload().then(async () => {
       setFiles(null);
       formRef.current?.reset();
-      await queryClient.invalidateQueries({
-        exact: false,
-        queryKey: ['files'],
-      });
+      invalidateFiles().then();
+      invalidateUsage().then();
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

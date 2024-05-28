@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sonyflake::Sonyflake;
+use sqlx::types::BigDecimal;
 use tower_sessions::Session;
 
 use crate::db::KosmosDbResult;
@@ -65,7 +66,6 @@ impl UserService {
             tracing::info!("User created successfully with username: {}", payload.username);
             ()
         })
-
     }
 
     pub fn parse_user(user: UserModel) -> ParsedUserModel {
@@ -152,6 +152,7 @@ impl UserService {
             })
     }
 
+
     pub async fn delete_user(&self, user_id: i32) -> Result<KosmosDbResult, AppError> {
         sqlx::query("DELETE FROM users WHERE id = $1")
             .bind(user_id)
@@ -189,5 +190,16 @@ impl UserService {
                 tracing::error!("Error fetching all users: {}", e);
                 AppError::InternalError
             })
+    }
+
+    pub async fn get_user_storage_usage(&self, user_id: UserId) -> Result<BigDecimal, AppError> {
+        sqlx::query!("SELECT SUM (files.file_size) FROM files WHERE user_id = $1", user_id)
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error fetching user storage usage: {}", e);
+                AppError::InternalError
+            })
+            .map(|row| row.sum.unwrap_or(BigDecimal::from(0)))
     }
 }

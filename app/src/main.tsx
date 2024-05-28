@@ -10,7 +10,7 @@ axios.defaults.withCredentials = true;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
-    <NextUIProvider>
+    <NextUIProvider className={'flex flex-grow flex-col'}>
       <Router />
     </NextUIProvider>
   </QueryClientProvider>,

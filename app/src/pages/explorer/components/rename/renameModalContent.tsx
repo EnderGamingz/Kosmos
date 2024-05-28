@@ -54,7 +54,7 @@ export function RenameModalContent({
       notify({
         title: `Rename ${renameData.type}`,
         severity: Severity.ERROR,
-        // @ts-ignore
+        // @ts-expect-error response is expected
         description: err.response?.data?.error || 'Error',
         timeout: 2000,
       });
@@ -67,7 +67,7 @@ export function RenameModalContent({
 
   const handleNameSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (renameAction.isPending) return;
+    if (!renameAction.isIdle) return;
     renameAction.mutate();
   };
 
@@ -78,6 +78,7 @@ export function RenameModalContent({
 
   useEffect(() => {
     handleFocus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -123,7 +124,6 @@ export function RenameModalContent({
           <button
             type={'submit'}
             disabled={inputName === renameData.name || renameAction.isPending}
-            onClick={() => renameAction.mutate()}
             className={
               'rounded-md bg-indigo-300 px-3 py-1 transition-all disabled:opacity-70 disabled:grayscale'
             }>

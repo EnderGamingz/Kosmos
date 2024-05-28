@@ -1,4 +1,4 @@
-import { invalidateData } from '../../../../lib/query.ts';
+import { invalidateData, invalidateUsage } from '../../../../lib/query.ts';
 import {
   ModalBody,
   ModalFooter,
@@ -41,12 +41,12 @@ export function DeleteModalContent({
             timeout: 1000,
           });
 
-          await invalidateData(deleteData.type);
+          invalidateData(deleteData.type).then();
+          invalidateUsage().then();
         })
         .catch(err => {
           notification.updateNotification(deleteId, {
             severity: Severity.ERROR,
-            // @ts-ignore
             description: err.response?.data?.error || 'Error',
             timeout: 2000,
           });

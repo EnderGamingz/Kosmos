@@ -10,3 +10,4 @@ mod auth;
 pub mod file;
 pub mod folder;
 pub mod download;
+pub mod user;

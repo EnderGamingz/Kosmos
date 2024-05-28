@@ -73,11 +73,22 @@ fn get_file_router() -> KosmosRouter {
 }
 
 fn get_download_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/file/:file_id",
+            get(crate::routes::api::v1::auth::download::download_raw_file),
+        )
+        .route(
+            "/multi",
+            post(crate::routes::api::v1::auth::download::multi_download),
+        )
+}
+
+fn get_user_router() -> KosmosRouter {
     Router::new().route(
-        "/file/:file_id",
-        get(crate::routes::api::v1::auth::download::download_raw_file),
+        "/usage",
+        get(crate::routes::api::v1::auth::user::get_disk_usage),
     )
-        .route("/multi", post(crate::routes::api::v1::auth::download::multi_download))
 }
 
 fn get_auth_router() -> KosmosRouter {
@@ -89,6 +100,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/file", get_file_router())
         .nest("/folder", get_folder_router())
         .nest("/download", get_download_router())
+        .nest("/user", get_user_router())
 }
 
 pub fn init(cors: CorsLayer, session_layer: KosmosSession, state: AppState) -> Router {

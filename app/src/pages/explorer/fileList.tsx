@@ -60,7 +60,7 @@ export function FileList() {
   const hasData = !!folders.data?.folders.length && !!files?.data?.length;
 
   return (
-    <>
+    <div className={' max-h-[calc(100vh-90px)] overflow-y-auto'}>
       <BreadCrumbs>
         <BreadCrumbItem
           name={'Home'}
@@ -122,6 +122,6 @@ export function FileList() {
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }

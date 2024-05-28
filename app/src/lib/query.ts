@@ -45,3 +45,9 @@ export async function invalidateData(type: OperationType) {
   if (type == 'folder') await invalidateFolders();
   else await invalidateFiles();
 }
+
+export async function invalidateUsage() {
+  return queryClient.invalidateQueries({
+    queryKey: ['usage'],
+  });
+}
