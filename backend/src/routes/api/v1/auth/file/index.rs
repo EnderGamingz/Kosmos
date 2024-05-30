@@ -3,10 +3,10 @@ use axum::body::Bytes;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Multipart, Path, Query, State};
 use axum::{BoxError, Json};
+use axum_valid::Valid;
 use futures::{Stream, TryStreamExt};
 use serde::Deserialize;
 use std::io;
-use axum_valid::Valid;
 use tokio::fs::File;
 use tokio::io::BufWriter;
 use tokio_util::io::StreamReader;
@@ -41,12 +41,11 @@ pub async fn get_files(
     //Query(sort_params): Query<SortParams>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
-/*    let sort = Sort {
+    /*    let sort = Sort {
         sort_order: sort_params.sort_order.unwrap_or(SortOrder::Desc),
     };*/
 
     //TODO: Add sorting
-
 
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),
@@ -57,7 +56,7 @@ pub async fn get_files(
 
     let files = state
         .file_service
-        .get_files(user_id, folder)
+        .get_files(user_id, folder, false)
         .await?
         .into_iter()
         .map(FileService::parse_file)
@@ -66,7 +65,7 @@ pub async fn get_files(
     Ok(Json(serde_json::json!(files)))
 }
 
-pub async fn delete_file(
+pub async fn mark_file_for_deletion(
     State(state): KosmosState,
     session: Session,
     Path(file_id): Path<i64>,
@@ -81,11 +80,84 @@ pub async fn delete_file(
             error: "File not found".to_string(),
         })?;
 
+    if file.deleted_at.is_some() {
+        return Err(AppError::DataConflict {
+            error: "File already in bin".to_string(),
+        });
+    };
+
+    state.file_service.mark_file_for_deletion(file_id).await?;
+
+    Ok(AppSuccess::UPDATED)
+}
+
+pub async fn restore_file(
+    State(state): KosmosState,
+    session: Session,
+    Path(file_id): Path<i64>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let file = state
+        .file_service
+        .check_file_exists_by_id(file_id, user_id)
+        .await?
+        .ok_or(AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
+
+    if file.deleted_at.is_none() {
+        return Err(AppError::DataConflict {
+            error: "File is not in bin".to_string(),
+        });
+    };
+
+    state.file_service.restore_file(file_id).await?;
+
+    Ok(AppSuccess::UPDATED)
+}
+
+pub async fn get_deleted_files(
+    State(state): KosmosState,
+    session: Session,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let files = state.file_service.get_marked_deleted_files(user_id).await?;
+    let parsed_files = files
+        .into_iter()
+        .map(FileService::parse_file)
+        .collect::<Vec<_>>();
+
+    Ok(Json(serde_json::json!(parsed_files)))
+}
+
+pub async fn permanently_delete_file(
+    State(state): KosmosState,
+    session: Session,
+    Path(file_id): Path<i64>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let file = state
+        .file_service
+        .check_file_exists_by_id(file_id, user_id)
+        .await?
+        .ok_or(AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
+
+    if file.deleted_at.is_none() {
+        return Err(AppError::BadRequest {
+            error: Some("File is not marked as deleted".to_string()),
+        });
+    }
+
     state
         .image_service
         .delete_formats_from_file_id(file_id)
         .await?;
-    state.file_service.delete_file(file.id).await?;
+
+    state.file_service.permanently_delete_file(file.id).await?;
 
     Ok(AppSuccess::DELETED)
 }
@@ -114,7 +186,7 @@ pub async fn move_file(
         None => {
             return Err(AppError::NotFound {
                 error: "File not found".to_string(),
-            })
+            });
         }
         Some(file) => file,
     };
@@ -190,7 +262,7 @@ pub async fn upload_file(
                 .image_service
                 .delete_formats_from_file_id(file)
                 .await?;
-            state.file_service.delete_file(file).await?;
+            state.file_service.permanently_delete_file(file).await?;
 
             tracing::info!("File {} deleted for replacement {}", file, id);
         }

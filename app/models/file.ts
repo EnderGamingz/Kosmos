@@ -19,6 +19,7 @@ export interface FileModel {
   parent_folder_id?: string;
   created_at: string;
   updated_at: string;
+  deleted_at?: string;
 }
 
 export type OperationType = 'file' | 'folder';
@@ -30,6 +31,27 @@ export type OperationType = 'file' | 'folder';
  *
  * @return {FileType} - The corresponding file type.
  */
-export function getFileTypeById(id: number): FileType {
+export function normalizeFileTypeById(id: number): FileType {
   return id in FileType ? id : FileType.Generic;
+}
+
+export function getFileType(id: number): string {
+  switch (id) {
+    case FileType.Generic:
+      return 'Generic';
+    case FileType.Image:
+      return 'Image';
+    case FileType.Video:
+      return 'Video';
+    case FileType.Audio:
+      return 'Audio';
+    case FileType.Document:
+      return 'Document';
+    case FileType.RawImage:
+      return 'Raw Image';
+    case FileType.LargeImage:
+      return 'Large Image';
+    default:
+      return 'Unknown';
+  }
 }

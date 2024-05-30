@@ -40,9 +40,9 @@ export function DownloadSingleAction({
       setFileId(fileId);
 
       if (!window.WritableStream) {
-        // @ts-ignore
+        // @ts-expect-error Override
         streamSaver.WritableStream = WritableStream;
-        // @ts-ignore
+        // @ts-expect-error Override window
         window.WritableStream = WritableStream;
       }
 

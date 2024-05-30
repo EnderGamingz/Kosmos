@@ -41,6 +41,30 @@ export const useFiles = (parent_id?: string) => {
   });
 };
 
+export const useDeletedFiles = () => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/file/all/deleted`)
+        .then(res => res.data as FileModel[]),
+    queryKey: ['files', 'deleted'],
+  });
+};
+
+export const useUsage = () => {
+  return useQuery({
+    queryFn: () =>
+      axios.get(`${BASE_URL}auth/user/usage`).then(res => {
+        return {
+          active: res.data.active,
+          bin: res.data.bin,
+        };
+      }),
+    queryKey: ['usage'],
+    refetchOnMount: false,
+  });
+};
+
 export async function invalidateData(type: OperationType) {
   if (type == 'folder') await invalidateFolders();
   else await invalidateFiles();
@@ -49,5 +73,11 @@ export async function invalidateData(type: OperationType) {
 export async function invalidateUsage() {
   return queryClient.invalidateQueries({
     queryKey: ['usage'],
+  });
+}
+
+export async function invalidateBin() {
+  return queryClient.invalidateQueries({
+    queryKey: ['files', 'deleted'],
   });
 }

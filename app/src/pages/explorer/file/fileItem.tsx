@@ -4,7 +4,7 @@ import { FileModel } from '../../../../models/file.ts';
 import { DownloadSingleAction } from '../components/download.tsx';
 import tw from '../../../lib/classMerge.ts';
 import { RenameAction } from '../components/rename';
-import { DeleteAction } from '../components/delete';
+import { MoveToTrash } from '../components/delete';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { formatBytes } from '../../../lib/fileSize.ts';
@@ -59,7 +59,12 @@ export function FileItem({
           id={file.id}
           name={file.file_name}
         />
-        <DeleteAction type={'file'} id={file.id} name={file.file_name} />
+        {/*        <PermanentDeleteAction
+          type={'file'}
+          id={file.id}
+          name={file.file_name}
+        />*/}
+        <MoveToTrash id={file.id} />
         <RenameAction type={'file'} id={file.id} name={file.file_name} />
         <MoveAction
           type={'file'}

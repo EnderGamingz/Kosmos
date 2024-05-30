@@ -12,7 +12,11 @@ pub async fn get_disk_usage(
 ) -> Result<Json<serde_json::Value>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let storage = state.user_service.get_user_storage_usage(user_id).await?;
+    let active_usage = state.user_service.get_user_storage_usage(user_id, false).await?;
+    let bin_storage = state.user_service.get_user_storage_usage(user_id, true).await?;
 
-    Ok(Json(serde_json::json!(storage.to_string())))
+    Ok(Json(serde_json::json!({
+        "active": active_usage.to_string(),
+        "bin": bin_storage.to_string(),
+    })))
 }

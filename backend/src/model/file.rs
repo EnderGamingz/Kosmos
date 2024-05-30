@@ -41,6 +41,7 @@ pub struct FileModel {
     pub parent_folder_id: Option<i64>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize)]
@@ -55,4 +56,5 @@ pub struct ParsedFileModel {
     pub parent_folder_id: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
 }

@@ -19,20 +19,55 @@ impl FileService {
         &self,
         user_id: UserId,
         parent_folder_id: Option<i64>,
+        with_deleted: bool,
+    ) -> Result<Vec<FileModel>, AppError> {
+        let files = if with_deleted {
+            sqlx::query_as!(
+                FileModel,
+                "SELECT * FROM files WHERE user_id = $1
+              AND parent_folder_id IS NOT DISTINCT FROM $2",
+                user_id,
+                parent_folder_id,
+            )
+            .fetch_all(&self.db_pool)
+            .await
+        } else {
+            sqlx::query_as!(
+                FileModel,
+                "SELECT * FROM files WHERE user_id = $1
+              AND parent_folder_id IS NOT DISTINCT FROM $2
+              AND deleted_at IS NULL",
+                user_id,
+                parent_folder_id,
+            )
+            .fetch_all(&self.db_pool)
+            .await
+        };
+
+        files
+            .map_err(|e| {
+                tracing::error!("Error getting files for user {}: {}", user_id, e);
+                AppError::InternalError
+            })
+            .map(|rows| rows.into_iter().map(FileModel::from).collect())
+    }
+
+    pub async fn get_marked_deleted_files(
+        &self,
+        user_id: UserId
     ) -> Result<Vec<FileModel>, AppError> {
         sqlx::query_as!(
             FileModel,
-            "SELECT * FROM files WHERE user_id = $1 AND parent_folder_id IS NOT DISTINCT FROM $2",
-            user_id,
-            parent_folder_id
+            "SELECT * FROM files WHERE user_id = $1
+              AND deleted_at IS NOT NULL",
+            user_id
         )
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting files for user {}: {}", user_id, e);
-            AppError::InternalError
-        })
-        .map(|rows| rows.into_iter().map(FileModel::from).collect())
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error fetching deleted files: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn create_file(
@@ -147,6 +182,7 @@ impl FileService {
             parent_folder_id: file.parent_folder_id.map(|x| x.to_string()),
             created_at: file.created_at,
             updated_at: file.updated_at,
+            deleted_at: file.deleted_at,
         }
     }
 
@@ -192,7 +228,29 @@ impl FileService {
         Ok(result)
     }
 
-    pub async fn delete_file(&self, file_id: i64) -> Result<(), AppError> {
+    pub async fn mark_file_for_deletion(&self, file_id: i64) -> Result<(), AppError> {
+        sqlx::query!("UPDATE files SET deleted_at = now() WHERE id = $1", file_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error marking file {} for deletion: {}", file_id, e);
+                AppError::InternalError
+            })?;
+        Ok(())
+    }
+
+    pub async fn restore_file(&self, file_id: i64) -> Result<(), AppError> {
+        sqlx::query!("UPDATE files SET deleted_at = null WHERE id = $1", file_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error restoring file {} from deletion: {}", file_id, e);
+                AppError::InternalError
+            })?;
+        Ok(())
+    }
+
+    pub async fn permanently_delete_file(&self, file_id: i64) -> Result<(), AppError> {
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
         let upload_path = Path::new(&upload_location);
 

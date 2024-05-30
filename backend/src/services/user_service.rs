@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use sonyflake::Sonyflake;
 use sqlx::types::BigDecimal;
+use sqlx::FromRow;
 use tower_sessions::Session;
 
 use crate::db::KosmosDbResult;
@@ -34,6 +35,11 @@ pub struct UpdateUserRequest {
     pub email: Option<String>,
 }
 
+#[derive(Debug, FromRow)]
+pub struct FileSizeSum {
+    sum: Option<BigDecimal>,
+}
+
 #[derive(Clone)]
 pub struct UserService {
     db_pool: KosmosPool,
@@ -62,8 +68,11 @@ impl UserService {
             tracing::error!("Error creating user: {}", e);
             return AppError::InternalError;
         })
-        .map(|_|{
-            tracing::info!("User created successfully with username: {}", payload.username);
+        .map(|_| {
+            tracing::info!(
+                "User created successfully with username: {}",
+                payload.username
+            );
             ()
         })
     }
@@ -152,7 +161,6 @@ impl UserService {
             })
     }
 
-
     pub async fn delete_user(&self, user_id: i32) -> Result<KosmosDbResult, AppError> {
         sqlx::query("DELETE FROM users WHERE id = $1")
             .bind(user_id)
@@ -192,10 +200,28 @@ impl UserService {
             })
     }
 
-    pub async fn get_user_storage_usage(&self, user_id: UserId) -> Result<BigDecimal, AppError> {
-        sqlx::query!("SELECT SUM (files.file_size) FROM files WHERE user_id = $1", user_id)
+    pub async fn get_user_storage_usage(
+        &self,
+        user_id: UserId,
+        marked_deleted: bool,
+    ) -> Result<BigDecimal, AppError> {
+        let result = if marked_deleted {
+            sqlx::query_as::<_, FileSizeSum>(
+                "SELECT SUM (file_size) FROM files WHERE user_id = $1 AND deleted_at IS NOT NULL",
+            )
+            .bind(user_id)
             .fetch_one(&self.db_pool)
             .await
+        } else {
+            sqlx::query_as::<_, FileSizeSum>(
+                "SELECT SUM (file_size) FROM files WHERE user_id = $1 AND deleted_at IS NULL",
+            )
+            .bind(user_id)
+            .fetch_one(&self.db_pool)
+            .await
+        };
+
+        result
             .map_err(|e| {
                 tracing::error!("Error fetching user storage usage: {}", e);
                 AppError::InternalError

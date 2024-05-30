@@ -1,4 +1,5 @@
 import { nextui } from '@nextui-org/react';
+import colors from 'tailwindcss/colors';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -10,5 +11,18 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        light: {
+          colors: {
+            secondary: {
+              DEFAULT: colors.stone['500'],
+              foreground: '#fff',
+            },
+          },
+        },
+      },
+    }),
+  ],
 };

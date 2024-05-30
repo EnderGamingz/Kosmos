@@ -56,12 +56,24 @@ fn get_file_router() -> KosmosRouter {
         )
         .route(
             "/:file_id",
-            delete(crate::routes::api::v1::auth::file::delete_file)
+            delete(crate::routes::api::v1::auth::file::permanently_delete_file)
                 .patch(crate::routes::api::v1::auth::file::rename_file),
+        )
+        .route(
+            "/:file_id/bin",
+            post(crate::routes::api::v1::auth::file::mark_file_for_deletion),
+        )
+        .route(
+            "/:file_id/restore",
+            post(crate::routes::api::v1::auth::file::restore_file),
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(
-            "/all/:file_id",
+            "/all/deleted",
+            get(crate::routes::api::v1::auth::file::get_deleted_files),
+        )
+        .route(
+            "/all/:folder_id",
             get(crate::routes::api::v1::auth::file::get_files),
         )
         .route(

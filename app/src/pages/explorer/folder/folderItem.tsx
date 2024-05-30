@@ -4,7 +4,7 @@ import { MoveAction } from '../components/move';
 import { useMemo } from 'react';
 import tw from '../../../lib/classMerge.ts';
 import { RenameAction } from '../components/rename';
-import { DeleteAction } from '../components/delete';
+import { PermanentDeleteAction } from '../components/delete';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -46,7 +46,7 @@ export function FolderItem({
         {formatDistanceToNow(folder.updated_at, { addSuffix: true })}
       </td>
       <td align={'right'}>
-        <DeleteAction
+        <PermanentDeleteAction
           type={'folder'}
           id={folder.id}
           name={folder.folder_name}

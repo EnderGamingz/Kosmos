@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",
-    "@nextui-org/react": "^2.3.6",
-    "@tanstack/react-query": "^5.35.5",
-    "axios": "^1.6.8",
+    "@nextui-org/react": "^2.4.0",
+    "@tanstack/react-query": "^5.40.0",
+    "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.2.6",
     "react": "^18.3.1",
@@ -28,22 +28,22 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@types/react": "^18.3.2",
+    "@types/react": "^18.3.3",
     "@types/react-collapse": "^5.0.4",
-    "@types/react-dom": "^18.2.22",
+    "@types/react-dom": "^18.3.0",
     "@types/streamsaver": "^2.0.4",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@vitejs/plugin-react-swc": "^3.7.0",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12"
   }
 }

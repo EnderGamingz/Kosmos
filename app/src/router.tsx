@@ -8,6 +8,7 @@ import Dashboard from './pages/explorer/dashboard.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 import NotificationIndicator from './components/notifications';
 import Header from './components/header';
+import BinPage from './pages/explorer/bin.tsx';
 
 export function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -28,6 +29,7 @@ export function Router() {
           element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
           {user.user && (
             <>
+              <Route path={'bin'} element={<BinPage />} />
               <Route path={'folder/:folder'} element={<FileList />} />
               <Route index element={<FileList />} />
             </>

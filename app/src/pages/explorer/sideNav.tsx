@@ -5,24 +5,18 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
 import { Progress } from '@nextui-org/react';
 import { formatBytes } from '../../lib/fileSize.ts';
+import { useUsage } from '../../lib/query.ts';
+import { Collapse } from 'react-collapse';
 
 // 100 GiB
 const WARN_LIMIT = 100 * 1024 * 1024 * 1024;
 
 export function SideNav() {
-  const usage = useQuery({
-    queryFn: () =>
-      axios.get(BASE_URL + 'auth/user/usage').then(res => Number(res.data)),
-    queryKey: ['usage'],
-    refetchOnMount: false,
-  });
+  const usage = useUsage();
 
-  const percentageUsage = ((usage.data || 0) / WARN_LIMIT) * 100;
+  const percentageUsage = ((usage.data?.active || 0) / WARN_LIMIT) * 100;
 
   const links = [
     {
@@ -37,7 +31,8 @@ export function SideNav() {
     },
     {
       name: 'Bin',
-      href: '/home/trash',
+      href: '/home/bin',
+      description: usage.data?.bin,
       icon: TrashIcon,
     },
   ];
@@ -50,10 +45,17 @@ export function SideNav() {
             key={`side-nav-${link.name}`}
             to={link.href}
             className={
-              'flex gap-3 rounded-lg px-5 py-2 text-lg transition-colors hover:bg-stone-300'
+              'flex items-center gap-3 rounded-lg px-5 py-2 text-lg transition-colors hover:bg-stone-300'
             }>
             <link.icon className={'h-6 w-6'} />
-            {link.name}
+            <div className={'grid'}>
+              <p>{link.name}</p>
+              <Collapse isOpened={!!link.description}>
+                <p className={'text-xs text-stone-600'}>
+                  {formatBytes(link.description)}
+                </p>
+              </Collapse>
+            </div>
           </Link>
         ))}
       </div>
@@ -76,7 +78,7 @@ export function SideNav() {
           value={percentageUsage}
         />
         <div className={'text-stone-800'}>
-          {formatBytes(usage.data || 0)}{' '}
+          {formatBytes(usage.data?.active || 0)}{' '}
           <span className={'text-stone-400'}>
             of {formatBytes(WARN_LIMIT, false, 0)}
           </span>

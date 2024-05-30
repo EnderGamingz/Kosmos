@@ -1,8 +1,12 @@
 import { OperationType } from '../../../../../models/file.ts';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { DeleteModalContent } from './deleteModalContent.tsx';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { BASE_URL } from '../../../../vars.ts';
+import { invalidateFiles, invalidateUsage } from '../../../../lib/query.ts';
 
-export function DeleteAction({
+export function PermanentDeleteAction({
   type,
   id,
   name,
@@ -31,4 +35,15 @@ export function DeleteAction({
       <button onClick={onOpen}>Delete</button>
     </>
   );
+}
+
+export function MoveToTrash({ id }: { id: string }) {
+  const trashAction = useMutation({
+    mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/bin`),
+    onSuccess: () => {
+      invalidateFiles().then();
+      invalidateUsage().then();
+    },
+  });
+  return <button onClick={() => trashAction.mutate()}>Trash</button>;
 }
