@@ -15,8 +15,10 @@ import {
   ModalHeader,
 } from '@nextui-org/react';
 import { useFolderStore } from '../../../stores/folderStore.ts';
-import { useDropzone } from 'react-dropzone';
+import { FileWithPath, useDropzone } from 'react-dropzone';
 import tw from '../../../lib/classMerge.ts';
+import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
+import { Collapse } from 'react-collapse';
 
 function FileUploadContent({
   folder,
@@ -29,10 +31,15 @@ function FileUploadContent({
   const notification = useNotifications(s => s.actions);
 
   const [files, setFiles] = useState<File[] | null>(null);
+  const [isTryingInvalidFolderUpload, setIsTryingInvalidFolderUpload] =
+    useState(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFiles([...e.target.files]);
+      setIsTryingInvalidFolderUpload(false);
+      //setFiles([...e.target.files]);
+      const files = Array.from(e.target.files);
+      setFiles(files);
     }
   };
 
@@ -85,23 +92,51 @@ function FileUploadContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+    setIsTryingInvalidFolderUpload(false);
+    const isPossibleFolderUpload = acceptedFiles
+      .map(file => file.path?.split('/').length)
+      .some(x => (x || 0) > 1);
+    if (isPossibleFolderUpload) {
+      setIsTryingInvalidFolderUpload(true);
+      return;
+    }
+
     setFiles(acceptedFiles);
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
 
   return (
     <>
       <ModalBody>
+        <Collapse isOpened={isTryingInvalidFolderUpload}>
+          <div className={'rounded-lg border border-warning-500 bg-warning-50'}>
+            <div className={'p-2'}>
+              <b>Possible invalid upload</b>
+              <p>
+                It seems like you are trying to upload a folder through the drop
+                zone. <br />
+                Please only use the button below to upload folders.
+              </p>
+            </div>
+          </div>
+        </Collapse>
         <form ref={formRef}>
           <input
+            hidden
             type={'file'}
-            name={'file'}
-            id={'file'}
-            multiple
+            name={'folders'}
+            id={'folders'}
             className={'hidden'}
             onChange={handleFileChange}
+            multiple
+            // @ts-expect-error Directory is expected
+            directory={''}
+            webkitdirectory={''}
+            mozdirectory={''}
           />
         </form>
         <div
@@ -111,11 +146,11 @@ function FileUploadContent({
             'items-center justify-center text-center text-2xl font-bold text-stone-500',
             isDragActive && 'border-blue-400/50 bg-blue-100',
           )}>
-          <input {...getInputProps()} />
+          <input {...getInputProps({ id: 'files' })} />
           {isDragActive ? (
-            <p>Drop the files here</p>
+            <p>Release the files here</p>
           ) : (
-            <p>Drop some files here, or click to select files</p>
+            <p>Drop some files here</p>
           )}
         </div>
       </ModalBody>
@@ -127,9 +162,16 @@ function FileUploadContent({
           }>
           Cancel
         </button>
-        <label htmlFor={'file'} className={'btn-black'}>
-          Select File(s)
-        </label>
+        <div className={'flex gap-1'}>
+          <label htmlFor={'folders'} className={'btn-black'}>
+            <FolderIcon />
+            Select Folder
+          </label>
+          <label htmlFor={'files'} className={'btn-black'}>
+            <DocumentIcon />
+            Select Files(s)
+          </label>
+        </div>
       </ModalFooter>
     </>
   );

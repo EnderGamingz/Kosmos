@@ -1,12 +1,20 @@
 use crate::db::KosmosPool;
-use crate::model::file::FileType;
 use crate::model::image::{ImageFormat, ImageFormatModel, IMAGE_FORMATS};
 use crate::response::error_handling::AppError;
+use futures::future;
+use itertools::Itertools;
 use photon_rs::native::open_image_from_bytes;
 use photon_rs::transform::SamplingFilter;
 use photon_rs::PhotonImage;
 use sonyflake::Sonyflake;
 use std::path::Path;
+
+pub struct ImageFormatInsert {
+    format: i16,
+    file_id: i64,
+    width: i32,
+    height: i32,
+}
 
 #[derive(Clone)]
 pub struct ImageService {
@@ -68,9 +76,70 @@ impl ImageService {
         Ok(())
     }
 
-    pub async fn generate_image_sizes(&self, file_id: i64) -> Result<(), AppError> {
-        // Setting limit to ~50MB
-        const FILE_SIZE_LIMIT: i32 = 50 * 1024 * 1024;
+    pub async fn generate_all_formats(&self, file_ids: Vec<i64>) -> Result<(), AppError> {
+        let mut pending_inserts: Vec<ImageFormatInsert> = Vec::with_capacity(file_ids.len());
+
+        let mut pending_insert_handles = file_ids
+            .into_iter()
+            .map(|id| Self::generate_image_sizes(id))
+            .map(Box::pin)
+            .collect::<Vec<_>>();
+
+        println!("Created {} handles", pending_insert_handles.len());
+
+        while !pending_insert_handles.is_empty() {
+            match future::select_all(pending_insert_handles).await {
+                (Ok(val), _, remaining) => {
+                    println!("Done, {} left", remaining.len());
+                    pending_inserts.extend(val);
+                    pending_insert_handles = remaining;
+                }
+                (Err(_e), index, remaining) => {
+                    println!("Error with {index}");
+                    pending_insert_handles = remaining;
+                }
+            }
+        }
+
+        let (ids, formats, file_ids, widths, heights): (
+            Vec<i64>,
+            Vec<i16>,
+            Vec<i64>,
+            Vec<i32>,
+            Vec<i32>,
+        ) = pending_inserts
+            .into_iter()
+            .map(|row| {
+                (
+                    self.sf.next_id().unwrap() as i64,
+                    row.format,
+                    row.file_id,
+                    row.width,
+                    row.height,
+                )
+            })
+            .multiunzip();
+
+        sqlx::query!("INSERT INTO image_formats (id, format, file_id, width, height) SELECT * FROM UNNEST($1::BIGINT[], $2::SMALLINT[], $3::BIGINT[], $4::INT[], $5::INT[])",
+            &ids[..],
+            &formats[..],
+            &file_ids[..],
+            &widths[..],
+            &heights[..]
+        )
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error while creating image format: {}", e);
+                AppError::InternalError
+            })?;
+
+        println!("Done generating");
+
+        Ok(())
+    }
+
+    pub async fn generate_image_sizes(file_id: i64) -> Result<Vec<ImageFormatInsert>, AppError> {
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
 
         let original_image_path = Path::new(&upload_location).join(file_id.to_string());
@@ -78,44 +147,6 @@ impl ImageService {
 
         let image_formats_path = Path::new(&upload_location).join("formats");
         let image_formats_path_str = image_formats_path.to_str().unwrap();
-
-        let file = tokio::fs::File::open(original_image_path_str)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error while opening image file {}: {}", file_id, e);
-                AppError::NotFound {
-                    error: "Error while trying to open image file".to_string(),
-                }
-            })?;
-
-        let metadata = file.metadata().await.map_err(|e| {
-            tracing::error!("Error while getting metadata for {}: {}", file_id, e);
-            AppError::InternalError
-        })?;
-
-        let size = metadata.len() as i32;
-
-        // Skip generating image sizes if file is too large
-        if size > FILE_SIZE_LIMIT {
-            tracing::warn!(
-                "File {} is too large, skipping generating image sizes: {}",
-                file_id,
-                size
-            );
-            sqlx::query!(
-                "UPDATE files SET file_type = $1 WHERE id = $2",
-                FileType::LargeImage as i16,
-                file_id
-            )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error updating file {} type: {}", file_id, e);
-                AppError::InternalError
-            })?;
-
-            return Ok(());
-        };
 
         let image_bytes = tokio::fs::read(original_image_path_str)
             .await
@@ -128,21 +159,23 @@ impl ImageService {
 
         let image = open_image_from_bytes(&*image_bytes).unwrap();
 
+        let mut format_inserts: Vec<ImageFormatInsert> = vec![];
+
         for format in IMAGE_FORMATS {
-            self.generate_image_size(file_id, format, &image_formats_path_str, &image)
-                .await?;
+            let res =
+                Self::generate_image_size(file_id, format, &image_formats_path_str, &image).await?;
+            format_inserts.push(res)
         }
 
-        Ok(())
+        Ok(format_inserts)
     }
 
     async fn generate_image_size(
-        &self,
         file_id: i64,
         format: ImageFormat,
         formats_folder_path: &str,
         image: &PhotonImage,
-    ) -> Result<(), AppError> {
+    ) -> Result<ImageFormatInsert, AppError> {
         let format_width = ImageFormat::get_width_by_format(format);
 
         let format = format as i16;
@@ -158,20 +191,6 @@ impl ImageService {
         )
         .get_bytes_jpeg(100);
 
-        sqlx::query!("INSERT INTO image_formats (id, format, file_id, width, height) VALUES ($1, $2, $3, $4, $5)",
-            self.sf.next_id().map_err(|_| AppError::InternalError)? as i64,
-            format,
-            file_id,
-            format_width as i32,
-            format_height
-        )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error while creating image format: {}", e);
-                AppError::InternalError
-            })?;
-
         let image_format_path =
             Path::new(formats_folder_path).join(Self::make_image_format_name(file_id, format));
 
@@ -184,6 +203,11 @@ impl ImageService {
                 AppError::InternalError
             })?;
 
-        Ok(())
+        Ok(ImageFormatInsert {
+            width: format_width as i32,
+            height: format_height,
+            file_id,
+            format,
+        })
     }
 }
