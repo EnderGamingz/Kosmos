@@ -172,7 +172,7 @@ impl FolderService {
 
     pub async fn check_folder_contains_elements(&self, folder_id: i64) -> Result<bool, AppError> {
         let result = sqlx::query!(
-            "SELECT COUNT(*) FROM files WHERE parent_folder_id = $1",
+            "SELECT COUNT(*) FROM files WHERE parent_folder_id = $1 AND deleted_at IS NULL",
             folder_id
         )
         .fetch_one(&self.db_pool)

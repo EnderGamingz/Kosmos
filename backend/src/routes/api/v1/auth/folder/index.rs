@@ -1,5 +1,5 @@
-use axum::extract::{Path, Query, State};
 use axum::extract::rejection::PathRejection;
+use axum::extract::{Path, Query, State};
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
@@ -41,13 +41,14 @@ pub async fn get_folders(
     };
 
     let structure = if let Some(folder) = folder_id_result {
-        Some(state
-            .folder_service
-            .get_children_directories(folder, user_id)
-            .await?
-            .into_iter()
-            .map(FolderService::parse_children_directory)
-            .collect::<Vec<_>>()
+        Some(
+            state
+                .folder_service
+                .get_children_directories(folder, user_id)
+                .await?
+                .into_iter()
+                .map(FolderService::parse_children_directory)
+                .collect::<Vec<_>>(),
         )
     } else {
         None
@@ -103,23 +104,22 @@ pub async fn delete_folder(
     Path(folder_id): Path<i64>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let user_is_allowed_to_delete_folder = state
+
+    if state
         .folder_service
         .check_folder_exists_by_id(folder_id, user_id)
-        .await?;
-
-    if user_is_allowed_to_delete_folder.is_none() {
+        .await?
+        .is_none()
+    {
         return Err(AppError::NotFound {
             error: "Folder not found".to_string(),
         });
     }
 
-    let is_empty = state
+    if state
         .folder_service
         .check_folder_contains_elements(folder_id)
-        .await?;
-
-    if is_empty {
+        .await? {
         return Err(AppError::DataConflict {
             error: "Folder is not empty".to_string(),
         });
