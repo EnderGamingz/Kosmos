@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
 import { MoveAction } from '../components/move';
-import { FileModel, getFileType } from '../../../../models/file.ts';
+import { FileModel, normalizeFileType } from '../../../../models/file.ts';
 import { DownloadSingleAction } from '../components/download.tsx';
 import tw from '../../../lib/classMerge.ts';
 import { RenameAction } from '../components/rename';
@@ -8,26 +7,31 @@ import { MoveToTrash } from '../components/delete';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { formatBytes } from '../../../lib/fileSize.ts';
-import { BASE_URL } from '../../../vars.ts';
+import ItemIcon from '../components/ItemIcon.tsx';
 
 export function FileItem({
   file,
   selected,
   onSelect,
+  onContext,
 }: {
   file: FileModel;
   selected: string[];
   onSelect: (id: string) => void;
+  onContext: (file: FileModel, pos: { x: number; y: number }) => void;
 }) {
-  const isSelected = useMemo(
-    () => selected.includes(file.id),
-    [file.id, selected],
-  );
-
+  const isSelected = selected.includes(file.id);
   return (
     <tr
+      onContextMenu={e => {
+        e.preventDefault();
+        onContext(file, {
+          x: e.clientX,
+          y: e.clientY,
+        });
+      }}
       className={tw(
-        'group [&_td]:p-3 [&_th]:p-3',
+        'group [&_td]:p-2 [&_th]:p-2',
         isSelected && 'bg-indigo-100',
       )}>
       <th>
@@ -36,44 +40,46 @@ export function FileItem({
           onValueChange={() => onSelect(file.id)}
         />
       </th>
-      <td>
-        {['Image', 'Raw Image'].some(
-          x => x === getFileType(file.file_type),
-        ) && (
-          <img
-            loading={'lazy'}
-            className={'aspect-square h-20 object-cover'}
-            src={`${BASE_URL}auth/file/image/${file.id}/0`}
-            alt={file.file_name}
+      <td className={'!p-0'}>
+        <div className={'flex'}>
+          <ItemIcon
+            name={file.file_name}
+            type={normalizeFileType(file.file_type)}
+            id={file.id}
           />
-        )}
-        <p className={'overflow-hidden overflow-ellipsis whitespace-nowrap'}>
-          {file.file_name}
-        </p>
+          <p
+            className={
+              'w-64 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
+            }>
+            {file.file_name}
+          </p>
+        </div>
       </td>
       <td align={'right'}>{formatBytes(file.file_size)}</td>
       <td align={'right'}>
         {formatDistanceToNow(file.updated_at, { addSuffix: true })}
       </td>
       <td align={'right'}>
-        <DownloadSingleAction
-          type={'file'}
-          id={file.id}
-          name={file.file_name}
-        />
-        {/*        <PermanentDeleteAction
+        <div className={'grid [&>*]:text-left'}>
+          <DownloadSingleAction
+            type={'file'}
+            id={file.id}
+            name={file.file_name}
+          />
+          {/*        <PermanentDeleteAction
           type={'file'}
           id={file.id}
           name={file.file_name}
         />*/}
-        <MoveToTrash id={file.id} />
-        <RenameAction type={'file'} id={file.id} name={file.file_name} />
-        <MoveAction
-          type={'file'}
-          name={file.file_name}
-          id={file.id}
-          current_parent={file.parent_folder_id}
-        />
+          <MoveToTrash id={file.id} />
+          <RenameAction type={'file'} id={file.id} name={file.file_name} />
+          <MoveAction
+            type={'file'}
+            name={file.file_name}
+            id={file.id}
+            current_parent={file.parent_folder_id}
+          />
+        </div>
       </td>
     </tr>
   );

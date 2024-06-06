@@ -9,6 +9,10 @@ import { FileModel } from '../../../models/file.ts';
 import { FileItem } from './file/fileItem.tsx';
 import { Checkbox } from '@nextui-org/react';
 import { useFolderStore } from '../../stores/folderStore.ts';
+import useContextMenu from '../../lib/hooks/useContextMenu.ts';
+import { AnimatePresence } from 'framer-motion';
+import { Portal } from 'react-portal';
+import ContextMenu from '../../components/contextMenu.tsx';
 
 export function FileList() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
@@ -59,8 +63,11 @@ export function FileList() {
   const isNoneSelected = !selectedFiles.length && !selectedFolders.length;
   const hasData = !!folders.data?.folders.length && !!files?.data?.length;
 
+  const context = useContextMenu();
+
   return (
-    <div className={' max-h-[calc(100vh-90px)] overflow-y-auto'}>
+    <div
+      className={'file-list relative max-h-[calc(100vh-90px)] overflow-y-auto'}>
       <BreadCrumbs>
         <BreadCrumbItem
           name={'Home'}
@@ -118,10 +125,27 @@ export function FileList() {
               onSelect={handleFileSelect}
               key={file.id}
               file={file}
+              onContext={(file, pos) => {
+                context.setPos(pos);
+                context.setClicked(true);
+                context.setType('file');
+                console.log(file);
+              }}
             />
           ))}
         </tbody>
       </table>
+      <Portal>
+        <AnimatePresence>
+          {context.clicked && (
+            <ContextMenu
+              onClose={() => context.setClicked(false)}
+              pos={context.pos}>
+              test
+            </ContextMenu>
+          )}
+        </AnimatePresence>
+      </Portal>
     </div>
   );
 }

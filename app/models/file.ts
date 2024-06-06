@@ -31,11 +31,11 @@ export type OperationType = 'file' | 'folder';
  *
  * @return {FileType} - The corresponding file type.
  */
-export function normalizeFileTypeById(id: number): FileType {
+export function normalizeFileType(id: number): FileType {
   return id in FileType ? id : FileType.Generic;
 }
 
-export function getFileType(id: number): string {
+export function getFileTypeString(id: number): string {
   switch (id) {
     case FileType.Generic:
       return 'Generic';

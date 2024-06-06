@@ -1,4 +1,4 @@
-import { FileModel, getFileType } from '../../../../models/file.ts';
+import { FileModel, getFileTypeString } from '../../../../models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '../../../vars.ts';
@@ -45,7 +45,7 @@ export function BinItem({ file }: { file: FileModel }) {
         </h2>
       </Tooltip>
       <div className={'flex flex-wrap gap-1'}>
-        <Chip>{getFileType(file.file_type)}</Chip>
+        <Chip>{getFileTypeString(file.file_type)}</Chip>
         <Chip variant={'bordered'} color={'secondary'}>
           {formatBytes(file.file_size)}
         </Chip>
