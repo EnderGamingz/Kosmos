@@ -8,7 +8,7 @@ import Dashboard from './pages/explorer/dashboard.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 import NotificationIndicator from './components/notifications';
 import Header from './components/header';
-import BinPage from './pages/explorer/bin.tsx';
+import BinPage from './pages/explorer/bin/index.tsx';
 
 export function Router() {
   const fetchUser = useUserState(s => s.fetchUser);

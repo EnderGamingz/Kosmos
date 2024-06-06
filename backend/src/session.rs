@@ -7,7 +7,7 @@ pub fn init() -> KosmosSession {
     let store = MemoryStore::default();
 
     let session_layer = SessionManagerLayer::new(store)
-        .with_name("kosmos-session")
+        .with_name("comet-trail")
         .with_secure(false)
         .with_expiry(Expiry::OnInactivity(Duration::days(30)));
 

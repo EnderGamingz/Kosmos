@@ -1,59 +1,16 @@
-import {
-  invalidateBin,
-  invalidateUsage,
-  useDeletedFiles,
-  useUsage,
-} from '../../lib/query.ts';
-import { formatBytes } from '../../lib/fileSize.ts';
-import { Chip, Progress, Tooltip } from '@nextui-org/react';
-import { FileModel, getFileType } from '../../../models/file.ts';
+import { FileModel, getFileType } from '../../../../models/file.ts';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { BASE_URL } from '../../../vars.ts';
+import { invalidateBin, invalidateUsage } from '../../../lib/query.ts';
+import { motion } from 'framer-motion';
+import { Chip, Tooltip } from '@nextui-org/react';
+import { formatBytes } from '../../../lib/fileSize.ts';
 import { formatDistanceToNow } from 'date-fns';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { ArrowPathRoundedSquareIcon } from '@heroicons/react/24/solid';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
-import { AnimatePresence, motion } from 'framer-motion';
 
-export default function BinPage() {
-  const { data: usageData } = useUsage();
-  const deletedFiles = useDeletedFiles();
-
-  return (
-    <>
-      <Progress
-        aria-label={'Bin loading...'}
-        isIndeterminate={!usageData?.bin || deletedFiles.isLoading}
-        value={100}
-        className={'h-1 opacity-50'}
-        color={'default'}
-      />
-      <div className={'p-5'}>
-        <h1 className={'text-3xl font-semibold text-stone-800'}>Trash bin</h1>
-        <p>{usageData?.bin ? formatBytes(usageData?.bin) : 'Loading...'}</p>
-        <div className={'mt-5 grid grid-cols-3 gap-2 overflow-hidden'}>
-          <AnimatePresence>
-            {deletedFiles.data?.length ? (
-              deletedFiles.data.map(file => (
-                <TrashItem key={file.id} file={file} />
-              ))
-            ) : (
-              <motion.span
-                layout
-                initial={{ y: -10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className={'col-span-12 text-center text-stone-600'}>
-                No files in trash
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function TrashItem({ file }: { file: FileModel }) {
+export function BinItem({ file }: { file: FileModel }) {
   const deleteAction = useMutation({
     mutationFn: () => axios.delete(`${BASE_URL}auth/file/${file.id}`),
     onSuccess: () => {
@@ -94,7 +51,7 @@ function TrashItem({ file }: { file: FileModel }) {
         </Chip>
       </div>
       <p className={'mt-1 text-xs'}>
-        Deleted {formatDistanceToNow(file.deleted_at || 0)}
+        Deleted {formatDistanceToNow(file.deleted_at || 0)} ago
       </p>
       <div
         className={

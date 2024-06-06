@@ -67,6 +67,7 @@ fn get_file_router() -> KosmosRouter {
             "/:file_id/restore",
             post(crate::routes::api::v1::auth::file::restore_file),
         )
+        .route("/bin/clear", post(crate::routes::api::v1::auth::file::clear_bin))
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(
             "/all/deleted",

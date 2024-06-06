@@ -157,13 +157,21 @@ pub async fn permanently_delete_file(
     }
 
     state
-        .image_service
-        .delete_formats_from_file_id(file_id)
+        .file_service
+        .permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type)))
         .await?;
 
-    state.file_service.permanently_delete_file(file.id).await?;
-
     Ok(AppSuccess::DELETED)
+}
+
+pub async fn clear_bin(
+    State(state): KosmosState,
+    session: Session,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    state.file_service.clear_bin(user_id).await?;
+    Ok(AppSuccess::OK {data: None})
 }
 
 #[derive(Deserialize)]
@@ -331,11 +339,12 @@ pub async fn upload_file(
             .await?;
 
         if let Some(file) = exists {
+            state.file_service.delete_formats_from_file_id(file).await?;
+
             state
-                .image_service
-                .delete_formats_from_file_id(file)
+                .file_service
+                .permanently_delete_file(file, None)
                 .await?;
-            state.file_service.permanently_delete_file(file).await?;
 
             tracing::info!("File {} deleted for replacement {}", file, id);
         }

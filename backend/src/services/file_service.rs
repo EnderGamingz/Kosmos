@@ -2,7 +2,9 @@ use std::path::Path;
 
 use crate::db::KosmosPool;
 use crate::model::file::{FileModel, FileType, ParsedFileModel};
+use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
+use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
 
 #[derive(Clone)]
@@ -250,9 +252,14 @@ impl FileService {
         Ok(())
     }
 
-    pub async fn permanently_delete_file(&self, file_id: i64) -> Result<(), AppError> {
+    pub async fn permanently_delete_file(&self, file_id: i64, file_type: Option<FileType>) -> Result<(), AppError> {
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
         let upload_path = Path::new(&upload_location);
+
+        if let Some(FileType::Image) = file_type {
+            self.delete_formats_from_file_id(file_id).await?;
+        }
+
 
         tokio::fs::remove_file(upload_path.join(file_id.to_string()))
             .await
@@ -269,6 +276,67 @@ impl FileService {
                 AppError::InternalError
             })?;
 
+        Ok(())
+    }
+
+    pub async fn delete_formats_from_file_id(&self, file_id: i64) -> Result<(), AppError> {
+        let formats = sqlx::query_as!(
+            ImageFormatModel,
+            "SELECT * FROM image_formats WHERE file_id = $1",
+            file_id
+        )
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error while deleting {} image formats: {}", file_id, e);
+                AppError::InternalError
+            })?
+            .into_iter()
+            .map(ImageFormatModel::from)
+            .collect::<Vec<_>>();
+
+        if formats.is_empty() {
+            return Ok(());
+        }
+
+        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
+        let upload_path = Path::new(&upload_location);
+        let formats_folder_path = upload_path.join("formats");
+
+        for format in formats {
+            let format_path =
+                formats_folder_path.join(ImageService::make_image_format_name(file_id, format.format));
+
+            // Delete image format from disk
+            let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
+                tracing::error!("Error while deleting image format: {}", e);
+            });
+
+            // Delete image format from database
+            let _ = sqlx::query!("DELETE FROM image_formats WHERE id = $1", format.id)
+                .execute(&self.db_pool)
+                .await
+                .map_err(|e| {
+                    tracing::error!("Error while deleting image format: {}", e);
+                });
+        }
+
+        Ok(())
+    }
+
+
+    pub async fn clear_bin(&self, user_id: UserId) -> Result<(), AppError> {
+        let files = sqlx::query!("SELECT id, file_type FROM files WHERE user_id = $1 AND deleted_at IS NOT NULL", user_id)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error fetching deleted files: {}", e);
+                AppError::InternalError
+            })?;
+
+        for file in files {
+            self.permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type))).await?;
+        }
         Ok(())
     }
 

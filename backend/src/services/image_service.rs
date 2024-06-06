@@ -1,5 +1,5 @@
 use crate::db::KosmosPool;
-use crate::model::image::{ImageFormat, ImageFormatModel, IMAGE_FORMATS};
+use crate::model::image::{ImageFormat, IMAGE_FORMATS};
 use crate::response::error_handling::AppError;
 use futures::future;
 use itertools::Itertools;
@@ -29,51 +29,6 @@ impl ImageService {
 
     pub fn make_image_format_name(id: i64, format: i16) -> String {
         format!("{}_{}", id, format).as_str().to_string()
-    }
-
-    pub async fn delete_formats_from_file_id(&self, file_id: i64) -> Result<(), AppError> {
-        let formats = sqlx::query_as!(
-            ImageFormatModel,
-            "SELECT * FROM image_formats WHERE file_id = $1",
-            file_id
-        )
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error while deleting {} image formats: {}", file_id, e);
-            AppError::InternalError
-        })?
-        .into_iter()
-        .map(ImageFormatModel::from)
-        .collect::<Vec<_>>();
-
-        if formats.is_empty() {
-            return Ok(());
-        }
-
-        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
-        let upload_path = Path::new(&upload_location);
-        let formats_folder_path = upload_path.join("formats");
-
-        for format in formats {
-            let format_path =
-                formats_folder_path.join(Self::make_image_format_name(file_id, format.format));
-
-            // Delete image format from disk
-            let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
-                tracing::error!("Error while deleting image format: {}", e);
-            });
-
-            // Delete image format from database
-            let _ = sqlx::query!("DELETE FROM image_formats WHERE id = $1", format.id)
-                .execute(&self.db_pool)
-                .await
-                .map_err(|e| {
-                    tracing::error!("Error while deleting image format: {}", e);
-                });
-        }
-
-        Ok(())
     }
 
     pub async fn generate_all_formats(&self, file_ids: Vec<i64>) -> Result<(), AppError> {
