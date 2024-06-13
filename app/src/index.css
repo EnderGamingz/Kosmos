@@ -75,3 +75,8 @@ a {
 ::-webkit-scrollbar-track {
     background-color: transparent;
 }
+
+.file-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

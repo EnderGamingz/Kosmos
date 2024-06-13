@@ -150,11 +150,13 @@ pub async fn permanently_delete_file(
             error: "File not found".to_string(),
         })?;
 
+    /* Disabled so permanent delete action is possible
     if file.deleted_at.is_none() {
         return Err(AppError::BadRequest {
             error: Some("File is not marked as deleted".to_string()),
         });
     }
+    */
 
     state
         .file_service

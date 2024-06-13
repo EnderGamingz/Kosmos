@@ -5,15 +5,18 @@ import { WritableStream } from 'web-streams-polyfill';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
 import { OperationType } from '@models/file.ts';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 export function DownloadSingleAction({
   type,
   id,
   name,
+  onClose,
 }: {
   type: OperationType;
   id: string;
   name: string;
+  onClose: () => void;
 }) {
   const [fileId, setFileId] = useState('');
   const notification = useNotifications(s => s.actions);
@@ -89,9 +92,13 @@ export function DownloadSingleAction({
 
   return (
     <button
-      onClick={() => downloadAction.mutate()}
+      onClick={() => {
+        downloadAction.mutate();
+        onClose();
+      }}
       disabled={downloadAction.isPending}>
-      Download Single
+      <ArrowDownTrayIcon />
+      Download
     </button>
   );
 }

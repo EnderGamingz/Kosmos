@@ -1,21 +1,14 @@
-import { useEffect, useState } from 'react';
-import { OperationType } from '@models/file.ts';
+import { useState } from 'react';
+import { FileModel, OperationType } from '@models/file.ts';
+import { FolderModel } from '@models/folder.ts';
 
 const useContextMenu = () => {
   const [clicked, setClicked] = useState(false);
-  const [pos, setPos] = useState({
-    x: 0,
-    y: 0,
-  });
+  const [pos, setPos] = useState({ x: 0, y: 0 });
   const [type, setType] = useState<OperationType>('file');
-
-  useEffect(() => {
-    const handleClick = () => setClicked(false);
-    document.addEventListener('click', handleClick);
-    return () => {
-      document.removeEventListener('click', handleClick);
-    };
-  }, []);
+  const [data, setData] = useState<FileModel | FolderModel | undefined>(
+    undefined,
+  );
 
   return {
     clicked,
@@ -24,6 +17,8 @@ const useContextMenu = () => {
     setPos,
     type,
     setType,
+    data,
+    setData,
   };
 };
 export default useContextMenu;

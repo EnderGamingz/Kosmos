@@ -1,19 +1,27 @@
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { MoveModalContent } from './moveModalContent.tsx';
 import { OperationType } from '@models/file.ts';
+import { FolderOpenIcon } from '@heroicons/react/24/outline';
 
 export function MoveAction({
   type,
   id,
   name,
   current_parent,
+  onClose,
 }: {
   type: OperationType;
   id: string;
   name: string;
   current_parent?: string;
+  onClose: () => void;
 }) {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const {
+    isOpen,
+    onOpen,
+    onOpenChange,
+    onClose: disclosureOnClose,
+  } = useDisclosure();
 
   return (
     <>
@@ -27,11 +35,17 @@ export function MoveAction({
           <MoveModalContent
             moveData={{ type, id, name }}
             parent={current_parent}
-            onClose={onClose}
+            onClose={() => {
+              disclosureOnClose();
+              onClose();
+            }}
           />
         </ModalContent>
       </Modal>
-      <button onClick={onOpen}>Move</button>
+      <button onClick={onOpen}>
+        <FolderOpenIcon />
+        Move
+      </button>
     </>
   );
 }

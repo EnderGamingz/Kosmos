@@ -4,10 +4,6 @@ import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { formatBytes } from '@lib/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
-import { MoveToTrash } from '@pages/explorer/components/delete';
-import { RenameAction } from '@pages/explorer/components/rename';
-import { MoveAction } from '@pages/explorer/components/move';
 
 export function FileItem({
   file,
@@ -60,26 +56,7 @@ export function FileItem({
         {formatDistanceToNow(file.updated_at, { addSuffix: true })}
       </td>
       <td align={'right'}>
-        <div className={'grid [&>*]:text-left'}>
-          <DownloadSingleAction
-            type={'file'}
-            id={file.id}
-            name={file.file_name}
-          />
-          {/*        <PermanentDeleteAction
-          type={'file'}
-          id={file.id}
-          name={file.file_name}
-        />*/}
-          <MoveToTrash id={file.id} />
-          <RenameAction type={'file'} id={file.id} name={file.file_name} />
-          <MoveAction
-            type={'file'}
-            name={file.file_name}
-            id={file.id}
-            current_parent={file.parent_folder_id}
-          />
-        </div>
+        <div className={'grid [&>*]:text-left'}></div>
       </td>
     </tr>
   );

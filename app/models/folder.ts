@@ -1,3 +1,5 @@
+import { FileModel } from '@models/file.ts';
+
 export interface FolderModel {
   id: string;
   user_id: string;
@@ -16,4 +18,10 @@ export interface FolderResponse {
 export interface SimpleDirectory {
   id: string;
   folder_name: string;
+}
+
+export function isFolderModel(
+  data: FileModel | FolderModel | undefined,
+): data is FolderModel {
+  return (data as FolderModel).folder_name !== undefined;
 }

@@ -4,9 +4,9 @@ import { useMemo } from 'react';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import tw from '@lib/classMerge.ts';
-import { PermanentDeleteAction } from '@pages/explorer/components/delete';
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
+import { PermanentDeleteAction } from '@pages/explorer/components/delete/permanentDeleteAction';
 
 export function FolderItem({
   folder,
@@ -47,9 +47,11 @@ export function FolderItem({
       </td>
       <td align={'right'}>
         <PermanentDeleteAction
-          type={'folder'}
-          id={folder.id}
-          name={folder.folder_name}
+          deleteData={{
+            type: 'folder',
+            id: folder.id,
+            name: folder.folder_name,
+          }}
         />
         <RenameAction
           type={'folder'}

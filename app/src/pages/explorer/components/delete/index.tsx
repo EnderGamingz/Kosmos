@@ -1,43 +1,21 @@
-import { OperationType } from '@models/file.ts';
-import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
-import { DeleteModalContent } from './deleteModalContent.tsx';
+import { PermanentDeleteAction } from './permanentDeleteAction.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 import { invalidateFiles, invalidateUsage } from '@lib/query.ts';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { useKeyStore } from '@stores/keyStore.ts';
 
-export function PermanentDeleteAction({
-  type,
+export function MoveToTrash({
   id,
   name,
+  onClose,
 }: {
-  type: OperationType;
   id: string;
   name: string;
+  onClose: () => void;
 }) {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-  return (
-    <>
-      <Modal
-        size={'md'}
-        backdrop={'blur'}
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement={'auto'}>
-        <ModalContent>
-          <DeleteModalContent
-            deleteData={{ type, id, name }}
-            onClose={onClose}
-          />
-        </ModalContent>
-      </Modal>
-      <button onClick={onOpen}>Delete</button>
-    </>
-  );
-}
-
-export function MoveToTrash({ id }: { id: string }) {
+  const permanent = useKeyStore(s => s.shift);
   const trashAction = useMutation({
     mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/bin`),
     onSuccess: () => {
@@ -45,5 +23,20 @@ export function MoveToTrash({ id }: { id: string }) {
       invalidateUsage().then();
     },
   });
-  return <button onClick={() => trashAction.mutate()}>Trash</button>;
+
+  if (permanent)
+    return <PermanentDeleteAction deleteData={{ type: 'file', id, name }} />;
+
+  return (
+    <button
+      disabled={trashAction.isPending}
+      onClick={() => {
+        onClose();
+        trashAction.mutate();
+      }}
+      className={'text-red-500 hover:!text-red-800'}>
+      <TrashIcon />
+      Move to Trash
+    </button>
+  );
 }

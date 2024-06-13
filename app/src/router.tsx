@@ -9,14 +9,41 @@ import Dashboard from '@pages/explorer/dashboard.tsx';
 import BinPage from '@pages/explorer/bin';
 import NotificationIndicator from '@components/notifications';
 import { FileList } from '@pages/explorer/fileList.tsx';
+import { useKeyStore } from '@stores/keyStore.ts';
 
 export function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
+  const updateShiftKey = useKeyStore(s => s.actions.toggleShift);
   const user = useUserState();
 
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') updateShiftKey(true);
+    };
+
+    const handleKeyUpAndFocus = (e: KeyboardEvent | FocusEvent) => {
+      // As browsers don't send KeyboardEvents when a tab is inactive, always assume
+      // that the Shift key is unpressed when the window regains focus, to prevent
+      // the shift key status from becoming "stuck" on true.
+      if (e instanceof KeyboardEvent && e.key !== 'Shift') return;
+
+      updateShiftKey(false);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUpAndFocus);
+    window.addEventListener('focus', handleKeyUpAndFocus);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUpAndFocus);
+      window.removeEventListener('focus', handleKeyUpAndFocus);
+    };
+  }, [updateShiftKey]);
 
   return (
     <BrowserRouter>

@@ -4,7 +4,7 @@ import useContextMenu from '@hooks/useContextMenu.ts';
 import { Checkbox } from '@nextui-org/react';
 import { Portal } from 'react-portal';
 import { AnimatePresence } from 'framer-motion';
-import ContextMenu from '@components/contextMenu.tsx';
+import ContextMenu, { ContextMenuContent } from '@components/contextMenu.tsx';
 import { FolderItem } from '@pages/explorer/folder/folderItem.tsx';
 import { FileItem } from '@pages/explorer/file/fileItem.tsx';
 
@@ -79,23 +79,26 @@ export function FileTable({
                 context.setPos(pos);
                 context.setClicked(true);
                 context.setType('file');
-                console.log(file);
+                context.setData(file);
               }}
             />
           ))}
         </tbody>
       </table>
-      <Portal>
-        <AnimatePresence>
-          {context.clicked && (
+      <AnimatePresence>
+        {context.clicked && (
+          <Portal>
             <ContextMenu
-              onClose={() => context.setClicked(false)}
-              pos={context.pos}>
-              test
+              pos={context.pos}
+              onClose={() => context.setClicked(false)}>
+              <ContextMenuContent
+                data={context.data}
+                onClose={() => context.setClicked(false)}
+              />
             </ContextMenu>
-          )}
-        </AnimatePresence>
-      </Portal>
+          </Portal>
+        )}
+      </AnimatePresence>
     </>
   );
 }

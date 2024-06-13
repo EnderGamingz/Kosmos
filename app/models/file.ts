@@ -1,3 +1,5 @@
+import { FolderModel } from '@models/folder.ts';
+
 export enum FileType {
   Generic = 0,
   Image = 1,
@@ -54,4 +56,10 @@ export function getFileTypeString(id: number): string {
     default:
       return 'Unknown';
   }
+}
+
+export function isFileModel(
+  data: FileModel | FolderModel | undefined,
+): data is FileModel {
+  return (data as FileModel).file_name !== undefined;
 }
