@@ -1,10 +1,10 @@
-import { OperationType } from '../../../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { DeleteModalContent } from './deleteModalContent.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../../../vars.ts';
-import { invalidateFiles, invalidateUsage } from '../../../../lib/query.ts';
+import { BASE_URL } from '@lib/vars.ts';
+import { invalidateFiles, invalidateUsage } from '@lib/query.ts';
 
 export function PermanentDeleteAction({
   type,

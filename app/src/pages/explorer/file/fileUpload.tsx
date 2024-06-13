@@ -1,12 +1,9 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { BASE_URL } from '../../../vars.ts';
-import { invalidateFiles, invalidateUsage } from '../../../lib/query.ts';
-import {
-  Severity,
-  useNotifications,
-} from '../../../stores/notificationStore.ts';
+import { BASE_URL } from '@lib/vars.ts';
+import { invalidateFiles, invalidateUsage } from '@lib/query.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import {
   Modal,
   ModalBody,
@@ -14,9 +11,9 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { useFolderStore } from '../../../stores/folderStore.ts';
+import { useFolderStore } from '@stores/folderStore.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-import tw from '../../../lib/classMerge.ts';
+import tw from '@lib/classMerge.ts';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
 

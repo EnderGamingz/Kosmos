@@ -1,4 +1,3 @@
-import { useFolderStore } from '../../stores/folderStore.ts';
 import {
   Popover,
   PopoverContent,
@@ -6,12 +5,10 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
-import CreateFolder from '../../pages/explorer/folder/createFolder.tsx';
-import {
-  FileUpload,
-  FileUploadModal,
-} from '../../pages/explorer/file/fileUpload.tsx';
 import { useState } from 'react';
+import { FileUpload, FileUploadModal } from '@pages/explorer/file/fileUpload';
+import { CreateFolder } from '@pages/explorer/folder/createFolder';
+import { useFolderStore } from '@stores/folderStore';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);

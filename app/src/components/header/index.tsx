@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useUserState } from '../../stores/userStore.ts';
+import { useUserState } from '@stores/userStore';
 import {
   ArrowRightEndOnRectangleIcon,
   GlobeAsiaAustraliaIcon,

@@ -1,12 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '../../../vars.ts';
+import { BASE_URL } from '@lib/vars.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { useState } from 'react';
-import {
-  Severity,
-  useNotifications,
-} from '../../../stores/notificationStore.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
 export function MultiDownload({
   files,
@@ -21,8 +18,8 @@ export function MultiDownload({
   const downloadAction = useMutation({
     mutationFn: async () => {
       const description = [];
-      if (!!files.length) description.push(`${files.length} Files`);
-      if (!!folders.length) description.push(`${folders.length} Folders`);
+      if (files.length) description.push(`${files.length} Files`);
+      if (folders.length) description.push(`${folders.length} Folders`);
 
       const fileId = notificationActions.notify({
         title: 'Multi Download',
@@ -59,9 +56,9 @@ export function MultiDownload({
       }
 
       if (!window.WritableStream) {
-        // @ts-ignore
+        // @ts-expect-error Override
         streamSaver.WritableStream = WritableStream;
-        // @ts-ignore
+        // @ts-expect-error Override
         window.WritableStream = WritableStream;
       }
 

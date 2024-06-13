@@ -1,8 +1,8 @@
-import { useUserState } from '../../stores/userStore.ts';
+import { useUserState } from '@stores/userStore';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../vars.ts';
+import { BASE_URL } from '@lib/vars.ts';
 import {
   Avatar,
   Dropdown,

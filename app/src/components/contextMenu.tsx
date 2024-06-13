@@ -27,6 +27,7 @@ export default function ContextMenu({
         className={'absolute z-50'}
         style={{ left: pos.x, top: pos.y }}
         onContextMenu={e => e.preventDefault()}>
+        <div onClick={onClose}>close</div>
         {children}
       </div>
     </>

@@ -1,4 +1,4 @@
-import { Notification, Severity } from '../../stores/notificationStore.ts';
+import { Notification, Severity } from '@stores/notificationStore.ts';
 import { Progress } from '@nextui-org/react';
 
 export function NotificationStatus({ data }: { data: Notification }) {

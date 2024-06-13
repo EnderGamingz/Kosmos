@@ -1,8 +1,8 @@
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../vars.ts';
-import { FolderResponse } from '../../models/folder.ts';
-import { FileModel, OperationType } from '../../models/file.ts';
+import { BASE_URL } from './vars.ts';
+import { FolderResponse } from '@models/folder.ts';
+import { FileModel, OperationType } from '@models/file.ts';
 
 export const queryClient = new QueryClient();
 

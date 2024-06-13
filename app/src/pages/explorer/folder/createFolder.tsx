@@ -1,16 +1,13 @@
 import { FormEvent, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../../vars.ts';
-import { invalidateFolders } from '../../../lib/query.ts';
+import { BASE_URL } from '@lib/vars.ts';
+import { invalidateFolders } from '@lib/query.ts';
 import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
-import tw from '../../../lib/classMerge.ts';
-import {
-  Severity,
-  useNotifications,
-} from '../../../stores/notificationStore.ts';
+import tw from '@lib/classMerge.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
-export default function CreateFolder({
+export function CreateFolder({
   folder,
   onClose,
 }: {

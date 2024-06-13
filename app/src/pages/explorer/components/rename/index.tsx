@@ -1,4 +1,4 @@
-import { OperationType } from '../../../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { RenameModalContent } from './renameModalContent.tsx';
 

@@ -1,13 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '../../../vars.ts';
+import { BASE_URL } from '@lib/vars.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
-import {
-  Severity,
-  useNotifications,
-} from '../../../stores/notificationStore.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
-import { OperationType } from '../../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 
 export function DownloadSingleAction({
   type,

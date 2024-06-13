@@ -2,10 +2,10 @@ import {
   Notification,
   Severity,
   useNotifications,
-} from '../../stores/notificationStore.ts';
+} from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import tw from '../../lib/classMerge.ts';
+import tw from '@lib/classMerge.ts';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { NotificationStatus } from './notificationStatus.tsx';
 
@@ -21,7 +21,7 @@ export function NotificationItem({ data }: { data: Notification }) {
     return () => {
       if (timeout) clearTimeout(timeout);
     };
-  }, [data.timeout]);
+  }, [data.id, data.timeout, update]);
 
   return (
     <motion.div

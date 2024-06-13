@@ -3,14 +3,14 @@ import {
   invalidateUsage,
   useDeletedFiles,
   useUsage,
-} from '../../../lib/query.ts';
-import { formatBytes } from '../../../lib/fileSize.ts';
+} from '@lib/query.ts';
+import { formatBytes } from '@lib/fileSize.ts';
 import { Progress } from '@nextui-org/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BinItem } from './binItem.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../../vars.ts';
+import { BASE_URL } from '@lib/vars.ts';
 
 export default function BinPage() {
   const { data: usageData } = useUsage();

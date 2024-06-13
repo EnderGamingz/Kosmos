@@ -2,7 +2,7 @@ import ConditionalWrapper from './ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import tw from '../lib/classMerge.ts';
+import tw from '@lib/classMerge.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (

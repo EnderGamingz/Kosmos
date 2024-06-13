@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useUserState } from './stores/userStore.ts';
+import { useUserState } from '@stores/userStore';
 
 export function AccessWrapper({ el, page }: { el: ReactNode; page: string }) {
   const user = useUserState();

@@ -1,6 +1,6 @@
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { MoveModalContent } from './moveModalContent.tsx';
-import { OperationType } from '../../../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 
 export function MoveAction({
   type,

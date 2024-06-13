@@ -6,8 +6,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { Progress } from '@nextui-org/react';
-import { formatBytes } from '../../lib/fileSize.ts';
-import { useUsage } from '../../lib/query.ts';
+import { formatBytes } from '@lib/fileSize.ts';
+import { useUsage } from '@lib/query.ts';
 import { Collapse } from 'react-collapse';
 
 // 100 GiB

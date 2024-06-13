@@ -1,6 +1,6 @@
-import { useNotifications } from '../../stores/notificationStore';
 import { AnimatePresence } from 'framer-motion';
-import { NotificationItem } from './notificationItem.tsx';
+import { NotificationItem } from './notificationItem';
+import { useNotifications } from '@stores/notificationStore';
 
 export default function NotificationIndicator() {
   const notifications = useNotifications(s =>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { invalidateData, useFolders } from '../../../../lib/query.ts';
+import { invalidateData, useFolders } from '@lib/query.ts';
 import {
   CircularProgress,
   ModalBody,
@@ -8,14 +8,11 @@ import {
   Tooltip,
 } from '@nextui-org/react';
 import { motion } from 'framer-motion';
-import { OperationType } from '../../../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../../../vars.ts';
-import {
-  Severity,
-  useNotifications,
-} from '../../../../stores/notificationStore.ts';
+import { BASE_URL } from '@lib/vars.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { Collapse } from 'react-collapse';
 
@@ -58,7 +55,7 @@ export function MoveModalContent({
       notify({
         title: `Move ${moveData.type}`,
         severity: Severity.ERROR,
-        // @ts-ignore
+        // @ts-expect-error an Error message is expected
         description: err.response?.data?.error || 'Error',
         timeout: 2000,
       });

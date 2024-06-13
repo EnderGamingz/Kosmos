@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { OperationType } from '../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 
 const useContextMenu = () => {
   const [clicked, setClicked] = useState(false);

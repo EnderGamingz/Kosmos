@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from '../vars.ts';
+import { BASE_URL } from '@lib/vars.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

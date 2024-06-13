@@ -1,12 +1,12 @@
-import { FolderModel } from '../../../../models/folder.ts';
+import { FolderModel } from '@models/folder.ts';
 import { Link } from 'react-router-dom';
-import { MoveAction } from '../components/move';
 import { useMemo } from 'react';
-import tw from '../../../lib/classMerge.ts';
-import { RenameAction } from '../components/rename';
-import { PermanentDeleteAction } from '../components/delete';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
+import tw from '@lib/classMerge.ts';
+import { PermanentDeleteAction } from '@pages/explorer/components/delete';
+import { RenameAction } from '@pages/explorer/components/rename';
+import { MoveAction } from '@pages/explorer/components/move';
 
 export function FolderItem({
   folder,

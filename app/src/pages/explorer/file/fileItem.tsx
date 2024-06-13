@@ -1,13 +1,13 @@
-import { MoveAction } from '../components/move';
-import { FileModel, normalizeFileType } from '../../../../models/file.ts';
-import { DownloadSingleAction } from '../components/download.tsx';
-import tw from '../../../lib/classMerge.ts';
-import { RenameAction } from '../components/rename';
-import { MoveToTrash } from '../components/delete';
+import { FileModel, normalizeFileType } from '@models/file.ts';
+import tw from '@lib/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
-import { formatBytes } from '../../../lib/fileSize.ts';
-import ItemIcon from '../components/ItemIcon.tsx';
+import { formatBytes } from '@lib/fileSize.ts';
+import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
+import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
+import { MoveToTrash } from '@pages/explorer/components/delete';
+import { RenameAction } from '@pages/explorer/components/rename';
+import { MoveAction } from '@pages/explorer/components/move';
 
 export function FileItem({
   file,

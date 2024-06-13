@@ -1,11 +1,11 @@
-import { FileModel, getFileTypeString } from '../../../../models/file.ts';
+import { FileModel, getFileTypeString } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../../vars.ts';
-import { invalidateBin, invalidateUsage } from '../../../lib/query.ts';
+import { BASE_URL } from '@lib/vars.ts';
+import { invalidateBin, invalidateUsage } from '@lib/query.ts';
 import { motion } from 'framer-motion';
 import { Chip, Tooltip } from '@nextui-org/react';
-import { formatBytes } from '../../../lib/fileSize.ts';
+import { formatBytes } from '@lib/fileSize.ts';
 import { formatDistanceToNow } from 'date-fns';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { ArrowPathRoundedSquareIcon } from '@heroicons/react/24/solid';

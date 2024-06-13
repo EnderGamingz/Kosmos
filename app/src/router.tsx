@@ -1,14 +1,14 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Login } from './pages/login.tsx';
+import { useUserState } from '@stores/userStore.ts';
 import { useEffect } from 'react';
-import { useUserState } from './stores/userStore.ts';
-import { Register } from './pages/register.tsx';
-import { FileList } from './pages/explorer/fileList.tsx';
-import Dashboard from './pages/explorer/dashboard.tsx';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Header from '@components/header';
+import { Register } from '@pages/register.tsx';
+import { Login } from '@pages/login.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
-import NotificationIndicator from './components/notifications';
-import Header from './components/header';
-import BinPage from './pages/explorer/bin/index.tsx';
+import Dashboard from '@pages/explorer/dashboard.tsx';
+import BinPage from '@pages/explorer/bin';
+import NotificationIndicator from '@components/notifications';
+import { FileList } from '@pages/explorer/fileList.tsx';
 
 export function Router() {
   const fetchUser = useUserState(s => s.fetchUser);

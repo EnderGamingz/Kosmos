@@ -1,5 +1,5 @@
-import { FileType } from '../../../../models/file.ts';
-import { BASE_URL } from '../../../vars.ts';
+import { FileType } from '@models/file.ts';
+import { BASE_URL } from '@lib/vars.ts';
 import {
   DocumentIcon,
   DocumentTextIcon,

@@ -6,21 +6,18 @@ import {
   useRef,
   useState,
 } from 'react';
-import { invalidateData } from '../../../../lib/query.ts';
+import { invalidateData } from '@lib/query.ts';
 import {
   ModalBody,
   ModalFooter,
   ModalHeader,
   Tooltip,
 } from '@nextui-org/react';
-import { OperationType } from '../../../../../models/file.ts';
+import { OperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '../../../../vars.ts';
-import {
-  Severity,
-  useNotifications,
-} from '../../../../stores/notificationStore.ts';
+import { BASE_URL } from '@lib/vars.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
 export function RenameModalContent({
   renameData,
