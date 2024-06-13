@@ -63,7 +63,9 @@ export function FolderItem({
         </div>
       </td>
       <td align={'right'}></td>
-      <td align={'right'} className={'text-sm font-light lg:text-base'}>
+      <td
+        align={'right'}
+        className={'whitespace-nowrap text-sm font-light lg:text-base'}>
         {formatDistanceToNow(folder.updated_at)}
       </td>
     </tr>

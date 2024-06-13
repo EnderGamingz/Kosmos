@@ -1,7 +1,10 @@
 use sonyflake::Sonyflake;
 
 use crate::db::KosmosPool;
-use crate::model::folder::{Directory, FolderModel, ParsedFolderModel, ParsedSimpleDirectory, SimpleDirectory};
+use crate::model::folder::{
+    DeletionDirectory, Directory, FolderModel, ParsedFolderModel, ParsedSimpleDirectory,
+    SimpleDirectory,
+};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 
@@ -209,6 +212,43 @@ impl FolderService {
         })?
         .map(FolderModel::from);
         Ok(result)
+    }
+
+    pub async fn get_deletion_directories(
+        &self,
+        folder_id: i64,
+        user_id: UserId,
+    ) -> Result<Vec<DeletionDirectory>, AppError> {
+        let structure = sqlx::query_as::<_, DeletionDirectory>(
+            "WITH RECURSIVE directories AS (SELECT f.id,
+                                      ARRAY []::BIGINT[] AS id_path
+                               FROM folder f
+                               WHERE f.id = $1
+                                 AND f.user_id = $2
+                               UNION ALL
+                               SELECT f.id,
+                                      d.id_path || d.id
+                               FROM folder f
+                                        JOIN directories d ON f.parent_id = d.id)
+                    SELECT d.*,
+                           COALESCE(ARRAY_AGG(f.id) FILTER (WHERE f.id IS NOT NULL), ARRAY []::BIGINT[])                 AS file_ids,
+                           COALESCE(ARRAY_AGG(f.file_type) FILTER (WHERE f.file_type IS NOT NULL), ARRAY []::SMALLINT[]) AS file_types
+                    FROM directories d
+                             LEFT JOIN files f ON f.parent_folder_id = d.id
+                    GROUP BY d.id_path, d.id
+                    ORDER BY CASE
+                 WHEN ARRAY_LENGTH(d.id_path, 1) IS NULL THEN 1
+                 ELSE 0 END, ARRAY_LENGTH(d.id_path, 1) DESC",
+        ).bind(folder_id)
+            .bind(user_id)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting folder structure: {}", e);
+                AppError::InternalError
+            })?;
+
+        Ok(structure)
     }
 
     pub async fn delete_folder(&self, folder_id: i64) -> Result<(), AppError> {

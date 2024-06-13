@@ -8,7 +8,10 @@ import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
-import { PermanentDeleteAction } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
+import {
+  PermanentDeleteAction,
+  PermanentDeleteFolder,
+} from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
 import {
   DocumentIcon,
@@ -178,6 +181,7 @@ export function ContextMenuContent({
           deleteData={{ type: 'folder', id: data.id, name: data.folder_name }}
           onClose={onClose}
         />
+        <PermanentDeleteFolder deleteData={{ id: data.id }} onClose={onClose} />
       </>
     );
   } else if (isMultiple(data)) {

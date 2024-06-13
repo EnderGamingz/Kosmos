@@ -64,7 +64,7 @@ export function RenameModalContent({
 
   const handleNameSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!renameAction.isIdle) return;
+    if (renameAction.isPending) return;
     renameAction.mutate();
   };
 

@@ -29,7 +29,8 @@ fn get_folder_router() -> KosmosRouter {
         )
         .route(
             "/all/:folder_id",
-            get(crate::routes::api::v1::auth::folder::get_folders),
+            get(crate::routes::api::v1::auth::folder::get_folders)
+                .delete(crate::routes::api::v1::auth::folder::delete_folders),
         )
         .route(
             "/move/:folder_id",
@@ -67,7 +68,10 @@ fn get_file_router() -> KosmosRouter {
             "/:file_id/restore",
             post(crate::routes::api::v1::auth::file::restore_file),
         )
-        .route("/bin/clear", post(crate::routes::api::v1::auth::file::clear_bin))
+        .route(
+            "/bin/clear",
+            post(crate::routes::api::v1::auth::file::clear_bin),
+        )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(
             "/all/deleted",

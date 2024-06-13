@@ -1,8 +1,19 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
-import { invalidateFiles, invalidateUsage } from '@lib/query.ts';
+import {
+  invalidateFiles,
+  invalidateFolders,
+  invalidateUsage,
+} from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import {
   Modal,
@@ -17,12 +28,16 @@ import tw from '@lib/classMerge.ts';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
 
-function FileUploadContent({
+export function FileUploadContent({
   folder,
   onClose,
+  isInFileList,
+  children,
 }: {
   folder?: string;
   onClose: () => void;
+  isInFileList?: boolean;
+  children?: ReactNode;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const notification = useNotifications(s => s.actions);
@@ -83,28 +98,56 @@ function FileUploadContent({
       setFiles(null);
       formRef.current?.reset();
       invalidateFiles().then();
+      invalidateFolders().then();
       invalidateUsage().then();
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    setIsTryingInvalidFolderUpload(false);
-    const isPossibleFolderUpload = acceptedFiles
-      .map(file => file.path?.split('/').length)
-      .some(x => (x || 0) > 1);
-    if (isPossibleFolderUpload) {
-      setIsTryingInvalidFolderUpload(true);
-      return;
-    }
+  const onDrop = useCallback(
+    (acceptedFiles: FileWithPath[]) => {
+      setIsTryingInvalidFolderUpload(false);
+      const isPossibleFolderUpload = acceptedFiles
+        .map(file => file.path?.split('/').length)
+        .some(x => (x || 0) > 1);
+      if (isPossibleFolderUpload) {
+        if (isInFileList) {
+          notification.notify({
+            title: 'Folder Upload',
+            description:
+              'Folder upload detected, please use the dedicated button in the upload modal instead',
+            severity: Severity.WARN,
+          });
+        }
+        setIsTryingInvalidFolderUpload(true);
+        return;
+      }
 
-    setFiles(acceptedFiles);
-  }, []);
+      setFiles(acceptedFiles);
+    },
+    [isInFileList, notification],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    noClick: isInFileList,
+    noKeyboard: isInFileList,
   });
+
+  if (isInFileList && children) {
+    return (
+      <div
+        {...getRootProps()}
+        className={tw(
+          'h-full rounded-lg outline-dashed outline-2 outline-transparent transition-all',
+          isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
+        )}>
+        <input {...getInputProps()} />
+        {children}
+      </div>
+    );
+  }
 
   return (
     <>

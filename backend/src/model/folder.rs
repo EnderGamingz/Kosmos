@@ -32,7 +32,7 @@ pub struct Directory {
     pub(crate) file_names: Vec<String>,
 }
 
-#[derive(Clone, FromRow)]
+#[derive(Clone, FromRow, Debug)]
 pub struct SimpleDirectory {
     pub(crate) id: i64,
     pub(crate) folder_name: String,
@@ -42,4 +42,12 @@ pub struct SimpleDirectory {
 pub struct ParsedSimpleDirectory {
     pub id: String,
     pub folder_name: String,
+}
+
+#[derive(Clone, FromRow, Debug, Serialize)]
+pub struct DeletionDirectory {
+    pub(crate) id: i64,
+    pub(crate) id_path: Vec<i64>,
+    pub(crate) file_ids: Vec<i64>,
+    pub(crate) file_types: Vec<i16>,
 }

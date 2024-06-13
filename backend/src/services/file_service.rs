@@ -252,6 +252,13 @@ impl FileService {
         Ok(())
     }
 
+    pub async fn mark_files_for_deletion(&self, file_ids: Vec<i64>) -> Result<(), AppError> {
+        for file_id in file_ids {
+            self.mark_file_for_deletion(file_id).await?;
+        }
+        Ok(())
+    }
+
     pub async fn permanently_delete_file(&self, file_id: i64, file_type: Option<FileType>) -> Result<(), AppError> {
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
         let upload_path = Path::new(&upload_location);

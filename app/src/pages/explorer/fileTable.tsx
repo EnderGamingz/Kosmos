@@ -51,7 +51,7 @@ export function FileTable({
   return (
     <>
       <AnimatePresence>
-        {(isSomeSelected || isAllSelected) && (
+        {(isSomeSelected || (isAllSelected && hasData)) && (
           <motion.button
             onClick={e => {
               context.setPos({ x: e.clientX, y: e.clientY });

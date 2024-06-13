@@ -7,6 +7,7 @@ import { useFolderStore } from '@stores/folderStore.ts';
 import { FileTable } from './fileTable.tsx';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
+import { FileUploadContent } from '@pages/explorer/file/fileUpload.tsx';
 
 export function FileList() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
@@ -52,7 +53,9 @@ export function FileList() {
 
   return (
     <div
-      className={'file-list relative max-h-[calc(100vh-90px)] overflow-y-auto'}>
+      className={
+        'file-list relative flex h-full max-h-[calc(100vh-90px)] flex-col overflow-y-auto'
+      }>
       <div className={'flex items-center pl-3 md:pl-0'}>
         <SideNavToggle />
         <BreadCrumbs>
@@ -71,24 +74,26 @@ export function FileList() {
           ))}
         </BreadCrumbs>
       </div>
-      <FileTable
-        files={files.data || []}
-        folders={folders.data?.folders || []}
-        onFileSelect={handleFileSelect}
-        onFolderSelect={handleFolderSelect}
-        selectedFiles={selectedFiles}
-        selectedFolders={selectedFolders}
-        selectAll={() => {
-          setSelectedFolders(
-            folders.data?.folders.map(folder => folder.id) || [],
-          );
-          setSelectedFiles(files.data?.map(file => file.id) || []);
-        }}
-        selectNone={() => {
-          setSelectedFolders([]);
-          setSelectedFiles([]);
-        }}
-      />
+      <FileUploadContent onClose={() => {}} folder={folder} isInFileList={true}>
+        <FileTable
+          files={files.data || []}
+          folders={folders.data?.folders || []}
+          onFileSelect={handleFileSelect}
+          onFolderSelect={handleFolderSelect}
+          selectedFiles={selectedFiles}
+          selectedFolders={selectedFolders}
+          selectAll={() => {
+            setSelectedFolders(
+              folders.data?.folders.map(folder => folder.id) || [],
+            );
+            setSelectedFiles(files.data?.map(file => file.id) || []);
+          }}
+          selectNone={() => {
+            setSelectedFolders([]);
+            setSelectedFiles([]);
+          }}
+        />
+      </FileUploadContent>
     </div>
   );
 }

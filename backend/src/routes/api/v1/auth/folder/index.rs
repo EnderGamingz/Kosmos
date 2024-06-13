@@ -1,3 +1,4 @@
+use crate::model::file::FileType;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
 use axum::Json;
@@ -98,6 +99,54 @@ pub async fn create_folder(
     Ok(Json(serde_json::json!(folder)))
 }
 
+pub async fn delete_folders(
+    State(state): KosmosState,
+    session: Session,
+    Path(folder_id): Path<i64>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    if state
+        .folder_service
+        .check_folder_exists_by_id(folder_id, user_id)
+        .await?
+        .is_none()
+    {
+        return Err(AppError::NotFound {
+            error: "Folder not found".to_string(),
+        });
+    }
+
+    let structure = state
+        .folder_service
+        .get_deletion_directories(folder_id, user_id)
+        .await?;
+
+    for folder in structure {
+        for i in 0..folder.file_ids.len() {
+            state
+                .file_service
+                .permanently_delete_file(
+                    folder.file_ids[i],
+                    Some(FileType::get_type_by_id(folder.file_types[i])),
+                )
+                .await?;
+        }
+
+        state
+            .folder_service
+            .delete_folder(folder.id)
+            .await?;
+    }
+
+    state
+        .folder_service
+        .delete_folder(folder_id)
+        .await?;
+
+    Ok(AppSuccess::DELETED)
+}
+
 pub async fn delete_folder(
     State(state): KosmosState,
     session: Session,
@@ -119,7 +168,8 @@ pub async fn delete_folder(
     if state
         .folder_service
         .check_folder_contains_elements(folder_id)
-        .await? {
+        .await?
+    {
         return Err(AppError::DataConflict {
             error: "Folder is not empty".to_string(),
         });

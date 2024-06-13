@@ -34,9 +34,11 @@ impl ImageService {
     pub async fn generate_all_formats(&self, file_ids: Vec<i64>) -> Result<(), AppError> {
         let mut pending_inserts: Vec<ImageFormatInsert> = Vec::with_capacity(file_ids.len());
 
+        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
+
         let mut pending_insert_handles = file_ids
             .into_iter()
-            .map(|id| Self::generate_image_sizes(id))
+            .map(|id| Self::generate_image_sizes(id, &upload_location))
             .map(Box::pin)
             .collect::<Vec<_>>();
 
@@ -94,9 +96,11 @@ impl ImageService {
         Ok(())
     }
 
-    pub async fn generate_image_sizes(file_id: i64) -> Result<Vec<ImageFormatInsert>, AppError> {
-        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
-
+    pub async fn generate_image_sizes(
+        file_id: i64,
+        upload_location: &String,
+    ) -> Result<Vec<ImageFormatInsert>, AppError> {
+        println!("Starting with {}", file_id);
         let original_image_path = Path::new(&upload_location).join(file_id.to_string());
         let original_image_path_str = original_image_path.to_str().unwrap();
 
@@ -112,7 +116,13 @@ impl ImageService {
                 }
             })?;
 
-        let image = open_image_from_bytes(&*image_bytes).unwrap();
+        let image = open_image_from_bytes(&*image_bytes).map_err(|e| {
+            tracing::error!("Error while opening image file {}: {}", file_id, e);
+            AppError::NotFound {
+                error: "Error while trying to open image file".to_string(),
+            }
+        })?;
+        println!("Loaded image {}", file_id);
 
         let mut format_inserts: Vec<ImageFormatInsert> = vec![];
 
@@ -121,6 +131,8 @@ impl ImageService {
                 Self::generate_image_size(file_id, format, &image_formats_path_str, &image).await?;
             format_inserts.push(res)
         }
+
+        println!("Done with {}", file_id);
 
         Ok(format_inserts)
     }
