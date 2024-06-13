@@ -26,7 +26,7 @@ export function NewMenu() {
         showArrow={true}>
         <PopoverTrigger>
           <button className={'btn-black px-5'}>
-            <PlusIcon className={'mr-1'} />
+            <PlusIcon className={'mr-2'} />
             New
           </button>
         </PopoverTrigger>

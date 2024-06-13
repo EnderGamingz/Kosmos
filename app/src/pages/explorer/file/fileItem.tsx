@@ -4,7 +4,8 @@ import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { formatBytes } from '@lib/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import { useKeyStore } from '@stores/keyStore.ts';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 
 export function FileItem({
   file,
@@ -17,9 +18,14 @@ export function FileItem({
   onSelect: (id: string) => void;
   onContext: (file: FileModel, pos: { x: number; y: number }) => void;
 }) {
+  const isControl = useKeyStore(s => s.ctrl);
   const isSelected = selected.includes(file.id);
+
   return (
     <tr
+      onClick={() => {
+        if (isControl) onSelect(file.id);
+      }}
       onContextMenu={e => {
         e.preventDefault();
         onContext(file, {
@@ -28,7 +34,7 @@ export function FileItem({
         });
       }}
       className={tw(
-        'group [&_td]:p-2 [&_th]:p-2',
+        'group transition-colors [&_td]:p-2 [&_th]:p-2',
         isSelected && 'bg-indigo-100',
       )}>
       <th>
@@ -46,27 +52,27 @@ export function FileItem({
           />
           <p
             className={
-              'w-64 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
+              'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
             }>
             {file.file_name}
           </p>
+          <button
+            onClick={e => {
+              onContext(file, {
+                x: e.clientX,
+                y: e.clientY,
+              });
+            }}
+            className={'cursor-pointer p-2'}>
+            <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+          </button>
         </div>
       </td>
       <td align={'right'}>{formatBytes(file.file_size)}</td>
-      <td align={'right'}>
+      <td
+        align={'right'}
+        className={'whitespace-nowrap text-sm font-light lg:text-base'}>
         {formatDistanceToNow(file.updated_at, { addSuffix: true })}
-      </td>
-      <td align={'right'} className={'!p-0'}>
-        <button
-          onClick={e => {
-            onContext(file, {
-              x: e.clientX,
-              y: e.clientY,
-            });
-          }}
-          className={'cursor-pointer p-2'}>
-          <Bars3Icon className={'h-6 w-6'} />
-        </button>
       </td>
     </tr>
   );

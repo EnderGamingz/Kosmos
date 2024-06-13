@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { FileModel, isFileModel, OperationType } from '@models/file.ts';
-import { FolderModel, isFolderModel } from '@models/folder.ts';
+import { isFileModel, isMultiple, OperationType } from '@models/file.ts';
+import { isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import { MoveToTrash } from '@pages/explorer/components/delete';
 import { RenameAction } from '@pages/explorer/components/rename';
@@ -10,7 +10,12 @@ import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import { PermanentDeleteAction } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
-import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
+import {
+  DocumentIcon,
+  FolderIcon,
+  Square2StackIcon,
+} from '@heroicons/react/24/outline';
+import { ContextData } from '@hooks/useContextMenu.ts';
 
 const menuWidth = 250;
 
@@ -84,7 +89,7 @@ function ContextMenuTitle({
   type,
 }: {
   title: string;
-  type: OperationType;
+  type: OperationType | 'multi';
 }) {
   return (
     <div
@@ -97,7 +102,13 @@ function ContextMenuTitle({
             'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
             '[&_>svg]:h-4 [&_>svg]:min-w-4',
           )}>
-          {type === 'folder' ? <FolderIcon /> : <DocumentIcon />}
+          {type === 'folder' ? (
+            <FolderIcon />
+          ) : type === 'multi' ? (
+            <Square2StackIcon />
+          ) : (
+            <DocumentIcon />
+          )}
           {title}
         </span>
       </Tooltip>
@@ -109,7 +120,7 @@ export function ContextMenuContent({
   data,
   onClose,
 }: {
-  data?: FileModel | FolderModel;
+  data: ContextData;
   onClose: () => void;
 }) {
   if (!data) return null;
@@ -165,6 +176,20 @@ export function ContextMenuContent({
         />
         <PermanentDeleteAction
           deleteData={{ type: 'folder', id: data.id, name: data.folder_name }}
+          onClose={onClose}
+        />
+      </>
+    );
+  } else if (isMultiple(data)) {
+    const title = `${data.files.length} file${data.files.length === 1 ? '' : 's'}, 
+    ${data.folders.length} folder${data.folders.length === 1 ? '' : 's'}`;
+    return (
+      <>
+        <ContextMenuTitle type={'multi'} title={title} />
+        <MultiDownload
+          files={data.files}
+          folders={data.folders}
+          isContextAction
           onClose={onClose}
         />
       </>

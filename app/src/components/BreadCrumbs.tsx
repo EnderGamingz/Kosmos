@@ -17,13 +17,15 @@ export function BreadCrumbItem({
   href,
   last,
 }: {
-  name: string;
+  name: ReactNode;
   href?: string;
   last?: boolean;
 }) {
   return (
     <motion.div
-      className={'flex gap-2 text-stone-800'}
+      className={
+        'flex items-center gap-2 text-stone-800 [&_svg]:h-5 [&_svg]:w-5'
+      }
       initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 10, opacity: 0 }}>
@@ -31,7 +33,7 @@ export function BreadCrumbItem({
         key={`breadcrumb-${href}`}
         condition={!!href}
         wrapper={c => <Link to={href!}>{c}</Link>}>
-        <div>{name}</div>
+        {name}
       </ConditionalWrapper>
       <span
         className={tw(

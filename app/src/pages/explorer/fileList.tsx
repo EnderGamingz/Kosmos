@@ -1,11 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
-import { MultiDownload } from './components/multiDownload.tsx';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useFolderStore } from '@stores/folderStore.ts';
 import { FileTable } from './fileTable.tsx';
+import { HomeIcon } from '@heroicons/react/24/outline';
+import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 
 export function FileList() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
@@ -52,22 +53,24 @@ export function FileList() {
   return (
     <div
       className={'file-list relative max-h-[calc(100vh-90px)] overflow-y-auto'}>
-      <BreadCrumbs>
-        <BreadCrumbItem
-          name={'Home'}
-          href={'/home'}
-          last={!breadCrumbs.length}
-        />
-        {breadCrumbs.map((item, i) => (
+      <div className={'flex items-center pl-3 md:pl-0'}>
+        <SideNavToggle />
+        <BreadCrumbs>
           <BreadCrumbItem
-            last={i === breadCrumbs.length - 1}
-            key={`crumb-${item.id}`}
-            name={item.folder_name}
-            href={`/home/folder/${item.id}`}
+            name={<HomeIcon />}
+            href={'/home'}
+            last={!breadCrumbs.length}
           />
-        ))}
-      </BreadCrumbs>
-      <MultiDownload files={selectedFiles} folders={selectedFolders} />
+          {breadCrumbs.map((item, i) => (
+            <BreadCrumbItem
+              last={i === breadCrumbs.length - 1}
+              key={`crumb-${item.id}`}
+              name={item.folder_name}
+              href={`/home/folder/${item.id}`}
+            />
+          ))}
+        </BreadCrumbs>
+      </div>
       <FileTable
         files={files.data || []}
         folders={folders.data?.folders || []}

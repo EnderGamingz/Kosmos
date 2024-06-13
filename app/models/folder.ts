@@ -1,27 +1,25 @@
-import { FileModel } from '@models/file.ts';
+import { ContextData } from '@hooks/useContextMenu.ts';
 
-export interface FolderModel {
+export type FolderModel = {
   id: string;
   user_id: string;
   folder_name: string;
   parent_id?: string;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface FolderResponse {
+export type FolderResponse = {
   folder?: FolderModel;
   folders: FolderModel[];
   structure?: SimpleDirectory[];
-}
+};
 
-export interface SimpleDirectory {
+export type SimpleDirectory = {
   id: string;
   folder_name: string;
-}
+};
 
-export function isFolderModel(
-  data: FileModel | FolderModel | undefined,
-): data is FolderModel {
+export function isFolderModel(data: ContextData): data is FolderModel {
   return (data as FolderModel).folder_name !== undefined;
 }

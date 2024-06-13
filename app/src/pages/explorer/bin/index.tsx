@@ -11,6 +11,7 @@ import { BinItem } from './binItem.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
+import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 
 export default function BinPage() {
   const { data: usageData } = useUsage();
@@ -35,12 +36,15 @@ export default function BinPage() {
       />
       <div className={'p-5'}>
         <div className={'flex items-center justify-between'}>
-          <motion.h1
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className={'text-3xl font-semibold text-stone-800'}>
-            Trash bin
-          </motion.h1>
+          <div className={'flex items-center gap-2'}>
+            <SideNavToggle />
+            <motion.h1
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className={'text-3xl font-semibold text-stone-800'}>
+              Trash bin
+            </motion.h1>
+          </div>
           {!!deletedFiles.data?.length && (
             <motion.button
               initial={{ x: -20, opacity: 0 }}

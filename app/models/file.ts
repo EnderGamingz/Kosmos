@@ -1,4 +1,5 @@
-import { FolderModel } from '@models/folder.ts';
+import { ContextData } from '@hooks/useContextMenu.ts';
+import { Selected } from '@pages/explorer/fileTable.tsx';
 
 export enum FileType {
   Generic = 0,
@@ -10,19 +11,19 @@ export enum FileType {
   LargeImage = 6,
 }
 
-export interface FileModel {
+export type FileModel = {
   id: string;
   user_id: string;
   file_name: string;
   file_size: number;
   file_type: number;
   mime_type: string;
-  metadata?: any;
+  metadata?: never;
   parent_folder_id?: string;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
-}
+};
 
 export type OperationType = 'file' | 'folder';
 
@@ -58,8 +59,13 @@ export function getFileTypeString(id: number): string {
   }
 }
 
-export function isFileModel(
-  data: FileModel | FolderModel | undefined,
-): data is FileModel {
+export function isFileModel(data: ContextData): data is FileModel {
   return (data as FileModel).file_name !== undefined;
+}
+
+export function isMultiple(data: ContextData): data is Selected {
+  return (
+    (data as Selected).files !== undefined &&
+    (data as Selected).folders !== undefined
+  );
 }
