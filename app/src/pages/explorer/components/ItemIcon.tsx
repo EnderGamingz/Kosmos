@@ -8,19 +8,14 @@ import {
   MusicalNoteIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline';
-import { Image } from '@nextui-org/react';
+import { PreviewImage } from '@components/Image.tsx';
 
 function getFileIcon(type: FileType, id: undefined | string, name: string) {
   switch (type) {
     case FileType.Image:
     case FileType.RawImage:
       return (
-        <Image
-          loading={'lazy'}
-          className={'img aspect-square h-10 w-10 rounded-lg object-cover'}
-          src={`${BASE_URL}auth/file/image/${id}/0`}
-          alt={name}
-        />
+        <PreviewImage src={`${BASE_URL}auth/file/image/${id}/0`} alt={name} />
       );
     case FileType.Video:
       return <FilmIcon />;
