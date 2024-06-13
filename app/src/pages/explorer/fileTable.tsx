@@ -67,6 +67,12 @@ export function FileTable({
               onSelect={onFolderSelect}
               key={folder.id}
               folder={folder}
+              onContext={(folder, pos) => {
+                context.setPos(pos);
+                context.setClicked(true);
+                context.setType('folder');
+                context.setData(folder);
+              }}
             />
           ))}
           {files.map((file: FileModel) => (

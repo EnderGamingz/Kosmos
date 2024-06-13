@@ -4,6 +4,7 @@ import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { formatBytes } from '@lib/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 
 export function FileItem({
   file,
@@ -55,8 +56,17 @@ export function FileItem({
       <td align={'right'}>
         {formatDistanceToNow(file.updated_at, { addSuffix: true })}
       </td>
-      <td align={'right'}>
-        <div className={'grid [&>*]:text-left'}></div>
+      <td align={'right'} className={'!p-0'}>
+        <button
+          onClick={e => {
+            onContext(file, {
+              x: e.clientX,
+              y: e.clientY,
+            });
+          }}
+          className={'cursor-pointer p-2'}>
+          <Bars3Icon className={'h-6 w-6'} />
+        </button>
       </td>
     </tr>
   );

@@ -4,18 +4,18 @@ import { useMemo } from 'react';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import tw from '@lib/classMerge.ts';
-import { RenameAction } from '@pages/explorer/components/rename';
-import { MoveAction } from '@pages/explorer/components/move';
-import { PermanentDeleteAction } from '@pages/explorer/components/delete/permanentDeleteAction';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 
 export function FolderItem({
   folder,
   selected,
   onSelect,
+  onContext,
 }: {
   folder: FolderModel;
   selected: string[];
   onSelect: (id: string) => void;
+  onContext: (folder: FolderModel, pos: { x: number; y: number }) => void;
 }) {
   const isSelected = useMemo(
     () => selected.includes(folder.id),
@@ -24,6 +24,10 @@ export function FolderItem({
 
   return (
     <tr
+      onContextMenu={e => {
+        e.preventDefault();
+        onContext(folder, { x: e.clientX, y: e.clientY });
+      }}
       className={tw(
         'group transition-all [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
@@ -45,25 +49,14 @@ export function FolderItem({
       <td align={'right'}>
         {formatDistanceToNow(folder.updated_at, { addSuffix: true })}
       </td>
-      <td align={'right'}>
-        <PermanentDeleteAction
-          deleteData={{
-            type: 'folder',
-            id: folder.id,
-            name: folder.folder_name,
+      <td align={'right'} className={'!p-0'}>
+        <button
+          onClick={e => {
+            onContext(folder, { x: e.clientX, y: e.clientY });
           }}
-        />
-        <RenameAction
-          type={'folder'}
-          id={folder.id}
-          name={folder.folder_name}
-        />
-        <MoveAction
-          type={'folder'}
-          name={folder.folder_name}
-          id={folder.id}
-          current_parent={folder.parent_id}
-        />
+          className={'cursor-pointer p-2'}>
+          <Bars3Icon className={'h-6 w-6'} />
+        </button>
       </td>
     </tr>
   );

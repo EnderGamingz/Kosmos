@@ -4,13 +4,18 @@ import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
 
 export function MultiDownload({
   files,
   folders,
+  isContextAction,
+  onClose,
 }: {
   files: string[];
   folders: string[];
+  isContextAction?: boolean;
+  onClose?: () => void;
 }) {
   const [fileId, setFileId] = useState('');
   const notificationActions = useNotifications(s => s.actions);
@@ -18,8 +23,12 @@ export function MultiDownload({
   const downloadAction = useMutation({
     mutationFn: async () => {
       const description = [];
-      if (files.length) description.push(`${files.length} Files`);
-      if (folders.length) description.push(`${folders.length} Folders`);
+      if (files.length)
+        description.push(`${files.length} File${files.length > 1 ? 's' : ''}`);
+      if (folders.length)
+        description.push(
+          `${folders.length} Folder${folders.length > 1 ? 's' : ''}`,
+        );
 
       const fileId = notificationActions.notify({
         title: 'Multi Download',
@@ -105,6 +114,20 @@ export function MultiDownload({
       });
     },
   });
+
+  if (isContextAction) {
+    return (
+      <button
+        onClick={() => {
+          downloadAction.mutate();
+          onClose && onClose();
+        }}
+        disabled={downloadAction.isPending}>
+        <FolderArrowDownIcon />
+        Download
+      </button>
+    );
+  }
 
   return (
     <button

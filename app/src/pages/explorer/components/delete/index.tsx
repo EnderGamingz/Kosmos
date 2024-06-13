@@ -25,7 +25,12 @@ export function MoveToTrash({
   });
 
   if (permanent)
-    return <PermanentDeleteAction deleteData={{ type: 'file', id, name }} />;
+    return (
+      <PermanentDeleteAction
+        deleteData={{ type: 'file', id, name }}
+        onClose={onClose}
+      />
+    );
 
   return (
     <button

@@ -8,8 +8,10 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 
 export function PermanentDeleteAction({
   deleteData,
+  onClose,
 }: {
   deleteData: { id: string; type: OperationType; name: string };
+  onClose: () => void;
 }) {
   const notification = useNotifications(s => s.actions);
 
@@ -45,7 +47,10 @@ export function PermanentDeleteAction({
 
   return (
     <button
-      onClick={() => deleteAction.mutate()}
+      onClick={() => {
+        onClose();
+        deleteAction.mutate();
+      }}
       type={'button'}
       className={'text-red-500 hover:!text-red-800'}>
       <TrashIcon />

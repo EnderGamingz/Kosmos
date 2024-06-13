@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { FileModel, isFileModel } from '@models/file.ts';
+import { FileModel, isFileModel, OperationType } from '@models/file.ts';
 import { FolderModel, isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import { MoveToTrash } from '@pages/explorer/components/delete';
@@ -8,6 +8,9 @@ import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
+import { PermanentDeleteAction } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
+import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
+import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 
 const menuWidth = 250;
 
@@ -20,7 +23,8 @@ export default function ContextMenu({
   pos: { x: number; y: number };
   onClose: () => void;
 }) {
-  const isOverflowing = pos.x + menuWidth > window.innerWidth;
+  const isOverflowingX = pos.x + menuWidth > window.innerWidth;
+  const isOverflowingY = pos.y + menuWidth > window.innerHeight;
 
   return (
     <>
@@ -40,7 +44,10 @@ export default function ContextMenu({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        onContextMenu={e => e.preventDefault()}
+        onContextMenu={e => {
+          e.preventDefault();
+          onClose();
+        }}
         onClick={onClose}
         className={
           'fixed inset-0 z-50 h-screen w-screen bg-overlay/30 backdrop-blur-sm backdrop-saturate-150'
@@ -58,9 +65,10 @@ export default function ContextMenu({
         exit={{ opacity: 0, scale: 1.05 }}
         transition={{ duration: 0.2 }}
         style={{
-          top: pos.y,
-          left: !isOverflowing ? pos.x : undefined,
-          right: isOverflowing ? '0' : undefined,
+          top: !isOverflowingY ? pos.y : undefined,
+          bottom: isOverflowingY ? '10px' : undefined,
+          left: !isOverflowingX ? pos.x : undefined,
+          right: isOverflowingX ? '10px' : undefined,
           minWidth: menuWidth,
           maxWidth: menuWidth,
         }}
@@ -71,14 +79,25 @@ export default function ContextMenu({
   );
 }
 
-function ContextMenuTitle({ title }: { title: string }) {
+function ContextMenuTitle({
+  title,
+  type,
+}: {
+  title: string;
+  type: OperationType;
+}) {
   return (
     <div
       className={
         'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
       }>
       <Tooltip content={title}>
-        <span className={'whitespace-nowrap text-sm font-light text-stone-800'}>
+        <span
+          className={tw(
+            'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
+            '[&_>svg]:h-4 [&_>svg]:min-w-4',
+          )}>
+          {type === 'folder' ? <FolderIcon /> : <DocumentIcon />}
           {title}
         </span>
       </Tooltip>
@@ -98,7 +117,7 @@ export function ContextMenuContent({
   if (isFileModel(data)) {
     return (
       <>
-        <ContextMenuTitle title={data.file_name} />
+        <ContextMenuTitle type={'file'} title={data.file_name} />
         <DownloadSingleAction
           type={'file'}
           id={data.id}
@@ -124,7 +143,30 @@ export function ContextMenuContent({
   } else if (isFolderModel(data)) {
     return (
       <>
-        <ContextMenuTitle title={data.folder_name} />
+        <ContextMenuTitle type={'folder'} title={data.folder_name} />
+        <MultiDownload
+          files={[]}
+          folders={[data.id]}
+          isContextAction
+          onClose={onClose}
+        />
+        <RenameAction
+          type={'folder'}
+          id={data.id}
+          name={data.folder_name}
+          onClose={onClose}
+        />
+        <MoveAction
+          type={'folder'}
+          name={data.folder_name}
+          id={data.id}
+          current_parent={data.parent_id}
+          onClose={onClose}
+        />
+        <PermanentDeleteAction
+          deleteData={{ type: 'folder', id: data.id, name: data.folder_name }}
+          onClose={onClose}
+        />
       </>
     );
   }
