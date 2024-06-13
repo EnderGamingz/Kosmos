@@ -112,11 +112,12 @@ function FileUploadContent({
         <Collapse isOpened={isTryingInvalidFolderUpload}>
           <div className={'rounded-lg border border-warning-500 bg-warning-50'}>
             <div className={'p-2'}>
-              <b>Possible invalid upload</b>
+              <b>Possible Folder Upload Detected</b>
               <p>
-                It seems like you are trying to upload a folder through the drop
-                zone. <br />
-                Please only use the button below to upload folders.
+                It appears you might be attempting to upload a folder using the
+                drop zone. <br />
+                To make your upload successful, kindly use the button below
+                specifically designed for folder uploads.
               </p>
             </div>
           </div>
