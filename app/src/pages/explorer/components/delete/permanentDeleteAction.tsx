@@ -13,6 +13,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useState } from 'react';
 import tw from '@lib/classMerge.ts';
+import { useExplorerStore } from '@stores/folderStore.ts';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -76,6 +77,7 @@ export function MultiPermanentDelete({
 }) {
   const shift = useKeyStore(s => s.shift);
   const notification = useNotifications(s => s.actions);
+  const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
   const deleteType = deleteData.folders.length ? 'Recursively' : 'Permanently';
   const [confirmed, setConfirmed] = useState(false);
 
@@ -101,13 +103,11 @@ export function MultiPermanentDelete({
             timeout: 1000,
           });
 
-          if (deleteData.files.length) {
-            invalidateFiles().then();
-          }
-          if (deleteData.folders.length) {
-            invalidateFolders().then();
-          }
+          if (deleteData.files.length) invalidateFiles().then();
+          if (deleteData.folders.length) invalidateFolders().then();
           invalidateUsage().then();
+
+          setSelectedNone();
         })
         .catch(err => {
           notification.updateNotification(deleteId, {

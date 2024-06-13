@@ -22,7 +22,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@nextui-org/react';
-import { useFolderStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/folderStore.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import tw from '@lib/classMerge.ts';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
@@ -225,7 +225,7 @@ export function FileUploadModal({
   open: boolean;
   onOpenChange: (x: boolean) => void;
 }) {
-  const currentFolder = useFolderStore(s => s.selectedFolder);
+  const currentFolder = useExplorerStore(s => s.current.folder);
 
   return (
     <Modal

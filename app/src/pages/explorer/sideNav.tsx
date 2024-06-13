@@ -9,7 +9,7 @@ import { Progress } from '@nextui-org/react';
 import { formatBytes } from '@lib/fileSize.ts';
 import { useUsage } from '@lib/query.ts';
 import tw from '@lib/classMerge.ts';
-import { useFolderStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/folderStore.ts';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion } from 'framer-motion';
 
@@ -17,7 +17,7 @@ import { motion } from 'framer-motion';
 const WARN_LIMIT = 100 * 1024 * 1024 * 1024;
 
 export function SideNav() {
-  const navControls = useFolderStore(s => s.sidenav);
+  const navControls = useExplorerStore(s => s.sidenav);
   const usage = useUsage();
 
   const percentageUsage = ((usage.data?.active || 0) / WARN_LIMIT) * 100;

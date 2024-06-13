@@ -6,23 +6,32 @@ import { formatBytes } from '@lib/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+
+import {
+  fileItemTransitionVariant,
+  transitionStop,
+} from '@pages/explorer/components/transition.ts';
 
 export function FileItem({
   file,
   selected,
   onSelect,
   onContext,
+  i,
 }: {
   file: FileModel;
   selected: string[];
   onSelect: (id: string) => void;
   onContext: (file: FileModel, pos: { x: number; y: number }) => void;
+  i: number;
 }) {
   const isControl = useKeyStore(s => s.ctrl);
   const isSelected = selected.includes(file.id);
 
   return (
-    <tr
+    <motion.tr
+      variants={i < transitionStop ? fileItemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(file.id);
       }}
@@ -74,6 +83,6 @@ export function FileItem({
         className={'whitespace-nowrap text-sm font-light lg:text-base'}>
         {formatDistanceToNow(file.updated_at)}
       </td>
-    </tr>
+    </motion.tr>
   );
 }

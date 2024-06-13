@@ -6,23 +6,32 @@ import tw from '@lib/classMerge.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
+import { motion } from 'framer-motion';
+
+import {
+  fileItemTransitionVariant,
+  transitionStop,
+} from '@pages/explorer/components/transition.ts';
 
 export function FolderItem({
   folder,
   selected,
   onSelect,
   onContext,
+  i,
 }: {
   folder: FolderModel;
   selected: string[];
   onSelect: (id: string) => void;
   onContext: (folder: FolderModel, pos: { x: number; y: number }) => void;
+  i: number;
 }) {
   const isControl = useKeyStore(s => s.ctrl);
   const isSelected = selected.includes(folder.id);
 
   return (
-    <tr
+    <motion.tr
+      variants={i < transitionStop ? fileItemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(folder.id);
       }}
@@ -68,6 +77,6 @@ export function FolderItem({
         className={'whitespace-nowrap text-sm font-light lg:text-base'}>
         {formatDistanceToNow(folder.updated_at)}
       </td>
-    </tr>
+    </motion.tr>
   );
 }

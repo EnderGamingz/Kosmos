@@ -1,8 +1,8 @@
-import { useFolderStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/folderStore.ts';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 export function SideNavToggle({ text }: { text?: string }) {
-  const controls = useFolderStore(s => s.sidenav);
+  const controls = useExplorerStore(s => s.sidenav);
   return (
     <div
       className={'z-20 flex items-center gap-2 md:hidden'}

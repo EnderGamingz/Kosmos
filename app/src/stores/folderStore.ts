@@ -1,9 +1,16 @@
 import { create } from 'zustand';
 
-export type FolderState = {
-  selectedFolder?: string;
-  actions: {
-    selectFolder: (current?: string) => void;
+export type ExplorerState = {
+  current: {
+    folder?: string;
+    selectCurrentFolder: (current?: string) => void;
+  };
+  selectedResources: {
+    selectedFolders: string[];
+    selectedFiles: string[];
+    selectFolder: (id: string) => void;
+    selectFile: (id: string) => void;
+    selectNone: () => void;
   };
   sidenav: {
     open: boolean;
@@ -11,11 +18,49 @@ export type FolderState = {
   };
 };
 
-export const useFolderStore = create<FolderState>(set => ({
-  selectedFolder: undefined,
-  actions: {
-    selectFolder: (current?: string) => {
-      set({ selectedFolder: current });
+export const useExplorerStore = create<ExplorerState>(set => ({
+  current: {
+    selectedFolder: undefined,
+    selectCurrentFolder: (current?: string) => {
+      set(prev => ({
+        current: {
+          ...prev.current,
+          folder: current,
+        },
+      }));
+    },
+  },
+  selectedResources: {
+    selectedFiles: [],
+    selectedFolders: [],
+    selectFolder: (id: string) => {
+      set(prev => ({
+        selectedResources: {
+          ...prev.selectedResources,
+          selectedFolders: prev.selectedResources.selectedFolders.includes(id)
+            ? prev.selectedResources.selectedFolders.filter(x => x !== id)
+            : [...prev.selectedResources.selectedFolders, id],
+        },
+      }));
+    },
+    selectFile: (id: string) => {
+      set(prev => ({
+        selectedResources: {
+          ...prev.selectedResources,
+          selectedFiles: prev.selectedResources.selectedFiles.includes(id)
+            ? prev.selectedResources.selectedFiles.filter(x => x !== id)
+            : [...prev.selectedResources.selectedFiles, id],
+        },
+      }));
+    },
+    selectNone: () => {
+      set(prev => ({
+        selectedResources: {
+          ...prev.selectedResources,
+          selectedFiles: [],
+          selectedFolders: [],
+        },
+      }));
     },
   },
   sidenav: {

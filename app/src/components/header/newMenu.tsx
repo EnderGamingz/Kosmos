@@ -8,11 +8,11 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import { FileUpload, FileUploadModal } from '@pages/explorer/file/fileUpload';
 import { CreateFolder } from '@pages/explorer/folder/createFolder';
-import { useFolderStore } from '@stores/folderStore';
+import { useExplorerStore } from '@stores/folderStore';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);
-  const currentFolder = useFolderStore(s => s.selectedFolder);
+  const currentFolder = useExplorerStore(s => s.current.folder);
   const handleClose = () => setOpen(false);
 
   const uploadDisclosure = useDisclosure();

@@ -1,7 +1,7 @@
 import { FileModel } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
 import useContextMenu from '@hooks/useContextMenu.ts';
-import { Checkbox } from '@nextui-org/react';
+import { Checkbox, Skeleton } from '@nextui-org/react';
 import { Portal } from 'react-portal';
 import { AnimatePresence, motion } from 'framer-motion';
 import ContextMenu, { ContextMenuContent } from '@components/contextMenu.tsx';
@@ -9,29 +9,30 @@ import { FolderItem } from '@pages/explorer/folder/folderItem.tsx';
 import { FileItem } from '@pages/explorer/file/fileItem.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
 import tw from '@lib/classMerge.ts';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { useExplorerStore } from '@stores/folderStore.ts';
+import { MultipleActionButton } from '@pages/explorer/components/multipleActionButton.tsx';
+import {
+  containerVariant,
+  fileItemTransitionVariant,
+} from '@pages/explorer/components/transition.ts';
 
 export type Selected = { files: string[]; folders: string[] };
 
 export function FileTable({
   files,
   folders,
-  selectedFiles,
-  selectedFolders,
-  onFileSelect,
-  onFolderSelect,
-  selectAll,
-  selectNone,
 }: {
   files: FileModel[];
   folders: FolderModel[];
-  selectedFiles: string[];
-  selectedFolders: string[];
-  onFileSelect: (id: string) => void;
-  onFolderSelect: (id: string) => void;
-  selectAll: () => void;
-  selectNone: () => void;
 }) {
+  const {
+    selectedFolders,
+    selectedFiles,
+    selectNone,
+    selectFile,
+    selectFolder,
+  } = useExplorerStore(s => s.selectedResources);
+
   const isAllSelected =
     selectedFolders.length === folders.length &&
     selectedFiles.length === files?.length;
@@ -44,6 +45,7 @@ export function FileTable({
   const context = useContextMenu();
 
   const isControl = useKeyStore(s => s.ctrl);
+
   const selectedData: Selected = {
     folders: selectedFolders,
     files: selectedFiles,
@@ -51,27 +53,14 @@ export function FileTable({
 
   return (
     <>
-      <AnimatePresence>
-        {isSomeSelected && (
-          <motion.button
-            onClick={e => {
-              context.setPos({ x: e.clientX, y: e.clientY });
-              context.setClicked(true);
-              context.setData(selectedData);
-            }}
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            className={tw(
-              'absolute right-2 top-2 flex items-center gap-1 rounded-full bg-stone-400/50',
-              'transition-all hover:bg-stone-400/80 hover:text-stone-800 hover:shadow-sm',
-              'px-2 py-1 pr-4 backdrop-blur-lg',
-            )}>
-            <EllipsisVerticalIcon className={'h-5 w-5'} />
-            Actions
-          </motion.button>
-        )}
-      </AnimatePresence>
+      <MultipleActionButton
+        someSelected={isSomeSelected}
+        handleClick={pos => {
+          context.setPos({ x: pos.x, y: pos.y });
+          context.setClicked(true);
+          context.setData(selectedData);
+        }}
+      />
       <table className={'w-full table-auto text-left'}>
         <thead>
           <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
@@ -81,7 +70,8 @@ export function FileTable({
                 isIndeterminate={isPartialSelected}
                 onValueChange={() => {
                   if ((!isNoneSelected && !isAllSelected) || isNoneSelected) {
-                    selectAll();
+                    files.map(file => selectFile(file.id));
+                    folders.map(folder => selectFolder(folder.id));
                   } else if (isAllSelected) {
                     selectNone();
                   }
@@ -97,11 +87,17 @@ export function FileTable({
             </th>
           </tr>
         </thead>
-        <tbody className={tw('divide-y', isControl && '[&_tr]:cursor-copy')}>
-          {folders.map((folder: FolderModel) => (
+        <motion.tbody
+          variants={containerVariant}
+          initial={'hidden'}
+          animate={'show'}
+          key={folders.length + files.length}
+          className={tw('divide-y', isControl && '[&_tr]:cursor-copy')}>
+          {folders.map((folder: FolderModel, i: number) => (
             <FolderItem
+              i={i}
               selected={selectedFolders}
-              onSelect={onFolderSelect}
+              onSelect={selectFolder}
               key={folder.id}
               folder={folder}
               onContext={(folder, pos) => {
@@ -113,10 +109,11 @@ export function FileTable({
               }}
             />
           ))}
-          {files.map((file: FileModel) => (
+          {files.map((file: FileModel, i: number) => (
             <FileItem
+              i={folders.length + i}
               selected={selectedFiles}
-              onSelect={onFileSelect}
+              onSelect={selectFile}
               key={file.id}
               file={file}
               onContext={(file, pos) => {
@@ -128,7 +125,7 @@ export function FileTable({
               }}
             />
           ))}
-        </tbody>
+        </motion.tbody>
       </table>
       <AnimatePresence>
         {context.clicked && (
@@ -144,6 +141,65 @@ export function FileTable({
           </Portal>
         )}
       </AnimatePresence>
+    </>
+  );
+}
+
+export function FileTableLoading() {
+  return (
+    <>
+      <style>
+        {`
+        .file-list {
+        overflow-y:hidden;
+        }
+        `}
+      </style>
+      <table className={'w-full table-auto text-left opacity-60'}>
+        <thead>
+          <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
+            <th>
+              <div className={'w-7'}>
+                <Skeleton className={'h-5 w-5 rounded-md'} />
+              </div>
+            </th>
+            <th className={'w-full'}>Name</th>
+            <th align={'right'} className={'min-w-[100px]'}>
+              Size
+            </th>
+            <th align={'right'} className={'min-w-[155px]'}>
+              Modified
+            </th>
+          </tr>
+        </thead>
+        <motion.tbody
+          variants={containerVariant}
+          initial='hidden'
+          animate='show'
+          className={'divide-y divide-stone-300/50 overflow-hidden'}>
+          {Array.from({ length: 30 }).map((_, i) => (
+            <motion.tr
+              variants={fileItemTransitionVariant}
+              key={i}
+              className={'[&_td]:p-3  [&_td]:font-bold [&_td]:text-stone-700'}>
+              <td className={'p-3'}>
+                <div className={'w-7'}>
+                  <Skeleton className={'h-5 w-5 rounded-md'} />
+                </div>
+              </td>
+              <td className={'w-full'}>
+                <Skeleton className={'h-5 w-full'} />
+              </td>
+              <td align={'right'}>
+                <Skeleton className={'h-5 w-full'} />
+              </td>
+              <td align={'right'}>
+                <Skeleton className={'h-5 w-full'} />
+              </td>
+            </motion.tr>
+          ))}
+        </motion.tbody>
+      </table>
     </>
   );
 }

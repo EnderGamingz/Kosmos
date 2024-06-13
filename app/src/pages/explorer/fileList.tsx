@@ -1,27 +1,26 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
-import { useFolderStore } from '@stores/folderStore.ts';
-import { FileTable } from './fileTable.tsx';
+import { useExplorerStore } from '@stores/folderStore.ts';
+import { FileTable, FileTableLoading } from './fileTable.tsx';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { FileUploadContent } from '@pages/explorer/file/fileUpload.tsx';
+import { motion, useScroll, useSpring } from 'framer-motion';
 
 export function FileList() {
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
-  const selectFolder = useFolderStore(s => s.actions.selectFolder);
+  const setCurrentFolder = useExplorerStore(s => s.current.selectCurrentFolder);
+  const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
   const { folder } = useParams();
 
   useEffect(() => {
-    setSelectedFolders([]);
-    setSelectedFiles([]);
-    selectFolder(folder);
-  }, [folder, selectFolder]);
+    setSelectedNone();
+    setCurrentFolder(folder);
+  }, [folder, setCurrentFolder, setSelectedNone]);
 
   const files = useFiles(folder);
   const folders = useFolders(folder);
@@ -35,65 +34,62 @@ export function FileList() {
     }
   }, [folders.data]);
 
-  const handleFolderSelect = (id: string) => {
-    if (!selectedFolders.includes(id)) {
-      setSelectedFolders(prev => [...prev, id]);
-    } else {
-      setSelectedFolders(prev => prev.filter(x => x !== id));
-    }
-  };
+  const isLoading = files.isLoading || folders.isLoading;
 
-  const handleFileSelect = (id: string) => {
-    if (!selectedFiles.includes(id)) {
-      setSelectedFiles(prev => [...prev, id]);
-    } else {
-      setSelectedFiles(prev => prev.filter(x => x !== id));
-    }
-  };
+  const container = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({ container });
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   return (
-    <div
-      className={
-        'file-list relative flex h-full max-h-[calc(100vh-90px)] flex-col overflow-y-auto'
-      }>
-      <div className={'flex items-center pl-3 md:pl-0'}>
-        <SideNavToggle />
-        <BreadCrumbs>
-          <BreadCrumbItem
-            name={<HomeIcon />}
-            href={'/home'}
-            last={!breadCrumbs.length}
-          />
-          {breadCrumbs.map((item, i) => (
-            <BreadCrumbItem
-              last={i === breadCrumbs.length - 1}
-              key={`crumb-${item.id}`}
-              name={item.folder_name}
-              href={`/home/folder/${item.id}`}
-            />
-          ))}
-        </BreadCrumbs>
-      </div>
-      <FileUploadContent onClose={() => {}} folder={folder} isInFileList={true}>
-        <FileTable
-          files={files.data || []}
-          folders={folders.data?.folders || []}
-          onFileSelect={handleFileSelect}
-          onFolderSelect={handleFolderSelect}
-          selectedFiles={selectedFiles}
-          selectedFolders={selectedFolders}
-          selectAll={() => {
-            setSelectedFolders(
-              folders.data?.folders.map(folder => folder.id) || [],
-            );
-            setSelectedFiles(files.data?.map(file => file.id) || []);
-          }}
-          selectNone={() => {
-            setSelectedFolders([]);
-            setSelectedFiles([]);
-          }}
+    <>
+      <div
+        ref={container}
+        className={
+          'file-list relative flex h-full max-h-[calc(100vh-90px)] flex-col overflow-y-auto'
+        }>
+        <motion.div
+          className={
+            'sticky top-0 z-20 min-h-0.5 w-full origin-[0%] bg-stone-500'
+          }
+          style={{ scaleX }}
         />
-      </FileUploadContent>
-    </div>
+
+        <div className={'flex items-center pl-3 md:pl-0'}>
+          <SideNavToggle />
+          <BreadCrumbs>
+            <BreadCrumbItem
+              name={<HomeIcon />}
+              href={'/home'}
+              last={!breadCrumbs.length}
+            />
+            {breadCrumbs.map((item, i) => (
+              <BreadCrumbItem
+                last={i === breadCrumbs.length - 1}
+                key={`crumb-${item.id}`}
+                name={item.folder_name}
+                href={`/home/folder/${item.id}`}
+              />
+            ))}
+          </BreadCrumbs>
+        </div>
+        <FileUploadContent
+          onClose={() => {}}
+          folder={folder}
+          isInFileList={true}>
+          {isLoading ? (
+            <FileTableLoading />
+          ) : (
+            <FileTable
+              files={files.data || []}
+              folders={folders.data?.folders || []}
+            />
+          )}
+        </FileUploadContent>
+      </div>
+    </>
   );
 }
