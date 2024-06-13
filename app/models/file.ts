@@ -9,6 +9,7 @@ export enum FileType {
   Document = 4,
   RawImage = 5,
   LargeImage = 6,
+  Archive,
 }
 
 export type FileModel = {
@@ -54,6 +55,8 @@ export function getFileTypeString(id: number): string {
       return 'Raw Image';
     case FileType.LargeImage:
       return 'Large Image';
+    case FileType.Archive:
+      return 'Archive';
     default:
       return 'Unknown';
   }

@@ -29,8 +29,7 @@ fn get_folder_router() -> KosmosRouter {
         )
         .route(
             "/all/:folder_id",
-            get(crate::routes::api::v1::auth::folder::get_folders)
-                .delete(crate::routes::api::v1::auth::folder::delete_folders),
+            get(crate::routes::api::v1::auth::folder::get_folders),
         )
         .route(
             "/move/:folder_id",
@@ -108,6 +107,13 @@ fn get_user_router() -> KosmosRouter {
     )
 }
 
+fn get_multi_router() -> KosmosRouter {
+    Router::new().route(
+        "/",
+        delete(crate::routes::api::v1::auth::folder::multi_delete),
+    )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -117,6 +123,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/file", get_file_router())
         .nest("/folder", get_folder_router())
         .nest("/download", get_download_router())
+        .nest("/multi", get_multi_router())
         .nest("/user", get_user_router())
 }
 

@@ -11,8 +11,8 @@ use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::{MoveParams, RenameParams};
 use crate::services::folder_service::FolderService;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
+use crate::services::session_service::{SessionService, UserId};
+use crate::state::{AppState, KosmosState};
 
 pub async fn get_folders(
     State(state): KosmosState,
@@ -99,13 +99,71 @@ pub async fn create_folder(
     Ok(Json(serde_json::json!(folder)))
 }
 
-pub async fn delete_folders(
+#[derive(Deserialize)]
+pub struct MultiDeleteRawBody {
+    folders: Vec<String>,
+    files: Vec<String>,
+}
+
+pub struct MultiDeleteBody {
+    folders: Vec<i64>,
+    files: Vec<i64>,
+}
+
+pub async fn multi_delete(
     State(state): KosmosState,
     session: Session,
-    Path(folder_id): Path<i64>,
+    Json(body): Json<MultiDeleteRawBody>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
+    let body = MultiDeleteBody {
+        folders: body
+            .folders
+            .iter()
+            .map(|id| id.parse::<i64>().map_err(|_| {
+                return AppError::BadRequest {
+                    error: Some("Error parsing folder id".to_string()),
+                };
+            }))
+            .collect::<Result<Vec<_>, _>>()?,
+        files:  body
+            .files
+            .iter()
+            .map(|id| id.parse::<i64>().map_err(|_| {
+                return AppError::BadRequest {
+                    error: Some("Error parsing file id".to_string()),
+                };
+            }))
+            .collect::<Result<Vec<_>, _>>()?
+    };
+
+    for folder_id in body.folders {
+        delete_folder_with_structure(&state, folder_id, user_id).await?;
+    }
+
+    for file_id in body.files {
+        let file = state
+            .file_service
+            .check_file_exists_by_id(file_id, user_id)
+            .await?
+            .ok_or(AppError::NotFound {
+                error: "File not found".to_string(),
+            })?;
+        state
+            .file_service
+            .permanently_delete_file(file_id, Some(FileType::get_type_by_id(file.file_type)))
+            .await?;
+    }
+
+    Ok(AppSuccess::DELETED)
+}
+
+async fn delete_folder_with_structure(
+    state: &AppState,
+    folder_id: i64,
+    user_id: UserId,
+) -> Result<(), AppError> {
     if state
         .folder_service
         .check_folder_exists_by_id(folder_id, user_id)
@@ -133,18 +191,12 @@ pub async fn delete_folders(
                 .await?;
         }
 
-        state
-            .folder_service
-            .delete_folder(folder.id)
-            .await?;
+        state.folder_service.delete_folder(folder.id).await?;
     }
 
-    state
-        .folder_service
-        .delete_folder(folder_id)
-        .await?;
+    state.folder_service.delete_folder(folder_id).await?;
 
-    Ok(AppSuccess::DELETED)
+    Ok(())
 }
 
 pub async fn delete_folder(

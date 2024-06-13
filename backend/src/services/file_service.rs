@@ -348,13 +348,14 @@ impl FileService {
     }
 
     pub fn get_file_type(mime_type: &str) -> FileType {
-        const TYPES: [(&'static str, FileType); 30] = [
+        const TYPES: [(&'static str, FileType); 39] = [
             ("image/gif", FileType::Image),
             ("image/jpeg", FileType::Image),
             ("image/png", FileType::Image),
-            ("image/svg+xml", FileType::RawImage),
-            ("image/webp", FileType::Image),
             ("image/x-icon", FileType::Image),
+            ("image/svg+xml", FileType::RawImage),
+            ("image/webp", FileType::RawImage),
+            ("application/postscript", FileType::LargeImage),
             ("video/mp4", FileType::Video),
             ("video/webm", FileType::Video),
             ("video/ogg", FileType::Video),
@@ -379,6 +380,14 @@ impl FileService {
             ("text/x-kotlin", FileType::Document),
             ("text/x-ruby", FileType::Document),
             ("text/x-swift", FileType::Document),
+            ("application/x-zip-compressed", FileType::Archive),
+            ("application/x-tar-compressed", FileType::Archive),
+            ("application/x-rar-compressed", FileType::Archive),
+            ("application/x-7z-compressed", FileType::Archive),
+            ("application/x-bzip", FileType::Archive),
+            ("application/x-bzip2", FileType::Archive),
+            ("application/x-gzip", FileType::Archive),
+            ("application/x-lzma", FileType::Archive),
         ];
 
         TYPES

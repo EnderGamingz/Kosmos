@@ -72,7 +72,7 @@ export function FileItem({
       <td
         align={'right'}
         className={'whitespace-nowrap text-sm font-light lg:text-base'}>
-        {formatDistanceToNow(file.updated_at, { addSuffix: true })}
+        {formatDistanceToNow(file.updated_at)}
       </td>
     </tr>
   );

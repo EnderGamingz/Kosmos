@@ -51,7 +51,7 @@ export function FolderItem({
               </Link>
             )}
             condition={!isControl}>
-            <span className={'p-3'}>{folder.folder_name}</span>
+            <span className={'w-full p-3'}>{folder.folder_name}</span>
           </ConditionalWrapper>
           <button
             onClick={e => {

@@ -1,5 +1,6 @@
 import {
   invalidateData,
+  invalidateFiles,
   invalidateFolders,
   invalidateUsage,
 } from '@lib/query.ts';
@@ -10,7 +11,8 @@ import { BASE_URL } from '@lib/vars.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { Kbd } from '@nextui-org/react';
+import { useState } from 'react';
+import tw from '@lib/classMerge.ts';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -65,26 +67,33 @@ export function PermanentDeleteAction({
   );
 }
 
-export function PermanentDeleteFolder({
+export function MultiPermanentDelete({
   deleteData,
   onClose,
 }: {
-  deleteData: { id: string };
+  deleteData: { folders: string[]; files: string[] };
   onClose: () => void;
 }) {
   const shift = useKeyStore(s => s.shift);
   const notification = useNotifications(s => s.actions);
+  const deleteType = deleteData.folders.length ? 'Recursively' : 'Permanently';
+  const [confirmed, setConfirmed] = useState(false);
 
   const deleteAction = useMutation({
     mutationFn: async () => {
       const deleteId = notification.notify({
-        title: `Recursively deleting folder`,
+        title: `${deleteType} deleting data`,
         loading: true,
         severity: Severity.INFO,
       });
 
       await axios
-        .delete(`${BASE_URL}auth/folder/all/${deleteData.id}`)
+        .delete(`${BASE_URL}auth/multi`, {
+          data: {
+            folders: deleteData.folders,
+            files: deleteData.files,
+          },
+        })
         .then(async () => {
           notification.updateNotification(deleteId, {
             severity: Severity.SUCCESS,
@@ -92,7 +101,12 @@ export function PermanentDeleteFolder({
             timeout: 1000,
           });
 
-          invalidateFolders().then();
+          if (deleteData.files.length) {
+            invalidateFiles().then();
+          }
+          if (deleteData.folders.length) {
+            invalidateFolders().then();
+          }
           invalidateUsage().then();
         })
         .catch(err => {
@@ -108,17 +122,22 @@ export function PermanentDeleteFolder({
   return (
     <button
       onClick={() => {
-        onClose();
-        deleteAction.mutate();
+        if (!confirmed) {
+          setConfirmed(true);
+        } else {
+          onClose();
+          deleteAction.mutate();
+        }
       }}
-      disabled={!shift || deleteAction.isPending}
+      disabled={deleteAction.isPending}
       type={'button'}
-      className={
-        'text-red-600 hover:!text-red-800 disabled:text-gray-400 disabled:hover:!text-gray-400'
-      }>
+      className={tw(
+        !confirmed && !shift
+          ? 'text-gray-400 hover:!text-gray-400'
+          : 'bg-red-400 !text-white hover:!bg-red-500',
+      )}>
       <TrashIcon />
-      Delete Recursively
-      <Kbd keys={['shift']} />
+      Delete {deleteType}
     </button>
   );
 }

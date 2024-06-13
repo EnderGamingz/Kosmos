@@ -10,7 +10,7 @@ import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import {
   PermanentDeleteAction,
-  PermanentDeleteFolder,
+  MultiPermanentDelete,
 } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
 import {
@@ -181,7 +181,10 @@ export function ContextMenuContent({
           deleteData={{ type: 'folder', id: data.id, name: data.folder_name }}
           onClose={onClose}
         />
-        <PermanentDeleteFolder deleteData={{ id: data.id }} onClose={onClose} />
+        <MultiPermanentDelete
+          deleteData={{ folders: [data.id], files: [] }}
+          onClose={onClose}
+        />
       </>
     );
   } else if (isMultiple(data)) {
@@ -194,6 +197,10 @@ export function ContextMenuContent({
           files={data.files}
           folders={data.folders}
           isContextAction
+          onClose={onClose}
+        />
+        <MultiPermanentDelete
+          deleteData={{ folders: data.folders, files: data.files }}
           onClose={onClose}
         />
       </>

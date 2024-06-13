@@ -37,8 +37,9 @@ export function FileTable({
     selectedFiles.length === files?.length;
 
   const isNoneSelected = !selectedFiles.length && !selectedFolders.length;
-  const isSomeSelected = !isAllSelected && !isNoneSelected;
-  const hasData = !!folders.length && !!files?.length;
+  const isPartialSelected = !isAllSelected && !isNoneSelected;
+  const hasData = !!folders.length || !!files.length;
+  const isSomeSelected = !isNoneSelected && hasData;
 
   const context = useContextMenu();
 
@@ -51,17 +52,16 @@ export function FileTable({
   return (
     <>
       <AnimatePresence>
-        {(isSomeSelected || (isAllSelected && hasData)) && (
+        {isSomeSelected && (
           <motion.button
             onClick={e => {
               context.setPos({ x: e.clientX, y: e.clientY });
               context.setClicked(true);
               context.setData(selectedData);
             }}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 10 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
             className={tw(
               'absolute right-2 top-2 flex items-center gap-1 rounded-full bg-stone-400/50',
               'transition-all hover:bg-stone-400/80 hover:text-stone-800 hover:shadow-sm',
@@ -78,7 +78,7 @@ export function FileTable({
             <th>
               <Checkbox
                 isSelected={isAllSelected && hasData}
-                isIndeterminate={isSomeSelected}
+                isIndeterminate={isPartialSelected}
                 onValueChange={() => {
                   if ((!isNoneSelected && !isAllSelected) || isNoneSelected) {
                     selectAll();
@@ -108,7 +108,7 @@ export function FileTable({
                 context.setPos(pos);
                 context.setClicked(true);
                 context.setData(
-                  isSomeSelected || isAllSelected ? selectedData : folder,
+                  isPartialSelected || isAllSelected ? selectedData : folder,
                 );
               }}
             />
@@ -123,7 +123,7 @@ export function FileTable({
                 context.setPos(pos);
                 context.setClicked(true);
                 context.setData(
-                  isSomeSelected || isAllSelected ? selectedData : file,
+                  isPartialSelected || isAllSelected ? selectedData : file,
                 );
               }}
             />

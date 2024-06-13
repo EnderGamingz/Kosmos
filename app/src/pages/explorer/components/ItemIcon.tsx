@@ -1,6 +1,7 @@
 import { FileType } from '@models/file.ts';
 import { BASE_URL } from '@lib/vars.ts';
 import {
+  ArchiveBoxIcon,
   DocumentIcon,
   DocumentTextIcon,
   FilmIcon,
@@ -29,6 +30,8 @@ function getFileIcon(type: FileType, id: undefined | string, name: string) {
       return <MusicalNoteIcon />;
     case FileType.LargeImage:
       return <PhotoIcon />;
+    case FileType.Archive:
+      return <ArchiveBoxIcon />;
     default:
       return <DocumentIcon />;
   }
