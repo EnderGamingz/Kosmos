@@ -4,7 +4,7 @@ import {
   invalidateFolders,
   invalidateUsage,
 } from '@lib/query.ts';
-import { OperationType } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
@@ -19,7 +19,7 @@ export function PermanentDeleteAction({
   deleteData,
   onClose,
 }: {
-  deleteData: { id: string; type: OperationType; name: string };
+  deleteData: { id: string; type: DataOperationType; name: string };
   onClose: () => void;
 }) {
   const notification = useNotifications(s => s.actions);

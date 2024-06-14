@@ -26,7 +26,7 @@ export type FileModel = {
   deleted_at?: string;
 };
 
-export type OperationType = 'file' | 'folder';
+export type DataOperationType = 'file' | 'folder';
 
 /**
  * Retrieves the file type based on the given ID.

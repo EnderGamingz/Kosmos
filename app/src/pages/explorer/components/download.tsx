@@ -4,7 +4,7 @@ import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
-import { OperationType } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 export function DownloadSingleAction({
@@ -13,7 +13,7 @@ export function DownloadSingleAction({
   name,
   onClose,
 }: {
-  type: OperationType;
+  type: DataOperationType;
   id: string;
   name: string;
   onClose: () => void;

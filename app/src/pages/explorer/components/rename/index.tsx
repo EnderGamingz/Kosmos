@@ -1,4 +1,4 @@
-import { OperationType } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { RenameModalContent } from './renameModalContent.tsx';
 import { PencilIcon } from '@heroicons/react/24/outline';
@@ -9,7 +9,7 @@ export function RenameAction({
   name,
   onClose,
 }: {
-  type: OperationType;
+  type: DataOperationType;
   id: string;
   name: string;
   onClose: () => void;

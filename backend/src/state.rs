@@ -5,6 +5,7 @@ use crate::db::KosmosPool;
 use crate::services::file_service::FileService;
 use crate::services::folder_service::FolderService;
 use crate::services::image_service::ImageService;
+use crate::services::operation_service::OperationService;
 use crate::services::user_service::UserService;
 
 pub type KosmosState = State<AppState>;
@@ -15,6 +16,7 @@ pub struct AppState {
     pub(crate) file_service: FileService,
     pub(crate) folder_service: FolderService,
     pub(crate) image_service: ImageService,
+    pub(crate) operation_service: OperationService,
     pub sf: Sonyflake,
 }
 
@@ -24,11 +26,14 @@ pub(crate) fn init(db: &KosmosPool) -> AppState {
     let file_service = FileService::new(db.clone());
     let folder_service = FolderService::new(db.clone(), sf.clone());
     let image_service = ImageService::new(db.clone(), sf.clone());
+    let operation_service = OperationService::new(db.clone(), sf.clone());
+
     AppState {
         user_service,
         file_service,
         folder_service,
         image_service,
+        operation_service,
         sf,
     }
 }

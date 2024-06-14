@@ -8,6 +8,7 @@ use futures::{Stream, TryStreamExt};
 use serde::Deserialize;
 use std::collections::{HashMap, VecDeque};
 use std::io;
+use std::sync::Arc;
 use tokio::fs::File;
 use tokio::io::BufWriter;
 use tokio_util::io::StreamReader;
@@ -166,14 +167,11 @@ pub async fn permanently_delete_file(
     Ok(AppSuccess::DELETED)
 }
 
-pub async fn clear_bin(
-    State(state): KosmosState,
-    session: Session,
-) -> ResponseResult {
+pub async fn clear_bin(State(state): KosmosState, session: Session) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     state.file_service.clear_bin(user_id).await?;
-    Ok(AppSuccess::OK {data: None})
+    Ok(AppSuccess::OK { data: None })
 }
 
 #[derive(Deserialize)]
@@ -388,9 +386,15 @@ pub async fn upload_file(
     if !pending_image_formats.is_empty() {
         let image_service_clone = state.image_service.clone();
         println!("Generating {} formats", pending_image_formats.len());
+
         IMAGE_PROCESSING_RUNTIME.spawn(async move {
             let _ = image_service_clone
-                .generate_all_formats(pending_image_formats)
+                .generate_all_formats(
+                    pending_image_formats,
+                    user_id.clone(),
+                    Arc::new(state.operation_service.clone()),
+                    None,
+                )
                 .await;
         });
     }

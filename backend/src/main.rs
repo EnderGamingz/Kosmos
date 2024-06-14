@@ -72,6 +72,8 @@ async fn main() {
 
     let state = state::init(&db);
 
+    state.operation_service.startup_prepare().await;
+
     let router = router::init(cors, session_layer, state);
 
     folders::init().await;

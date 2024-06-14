@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from '@nextui-org/react';
 import { motion } from 'framer-motion';
-import { OperationType } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
@@ -21,7 +21,7 @@ export function MoveModalContent({
   parent,
   onClose,
 }: {
-  moveData: { id: string; type: OperationType; name: string };
+  moveData: { id: string; type: DataOperationType; name: string };
   parent?: string;
   onClose: () => void;
 }) {

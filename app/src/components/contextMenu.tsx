@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { isFileModel, isMultiple, OperationType } from '@models/file.ts';
+import { isFileModel, isMultiple, DataOperationType } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import { MoveToTrash } from '@pages/explorer/components/delete';
@@ -92,7 +92,7 @@ function ContextMenuTitle({
   type,
 }: {
   title: string;
-  type: OperationType | 'multi';
+  type: DataOperationType | 'multi';
 }) {
   return (
     <div

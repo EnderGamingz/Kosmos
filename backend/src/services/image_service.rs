@@ -1,13 +1,17 @@
 use crate::db::KosmosPool;
 use crate::model::image::{ImageFormat, IMAGE_FORMATS};
+use crate::model::operation::{OperationStatus, OperationType};
 use crate::response::error_handling::AppError;
+use crate::services::operation_service::OperationService;
 use futures::future;
 use itertools::Itertools;
 use photon_rs::native::open_image_from_bytes;
 use photon_rs::transform::SamplingFilter;
 use photon_rs::PhotonImage;
 use sonyflake::Sonyflake;
+use sqlx::types::JsonValue;
 use std::path::Path;
+use std::sync::Arc;
 
 pub struct ImageFormatInsert {
     format: i16,
@@ -31,10 +35,26 @@ impl ImageService {
         format!("{}_{}", id, format).as_str().to_string()
     }
 
-    pub async fn generate_all_formats(&self, file_ids: Vec<i64>) -> Result<(), AppError> {
-        let mut pending_inserts: Vec<ImageFormatInsert> = Vec::with_capacity(file_ids.len());
+    pub async fn generate_all_formats(
+        &self,
+        file_ids: Vec<i64>,
+        user_id: i64,
+        operation_service: Arc<OperationService>,
+        started_by_operation: Option<i64>,
+    ) -> Result<(), AppError> {
+        let total_files = file_ids.len();
+        let mut pending_inserts: Vec<ImageFormatInsert> = Vec::with_capacity(total_files);
 
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
+
+        let operation = operation_service
+            .create_operation(
+                user_id,
+                OperationType::ImageProcessing,
+                OperationStatus::Pending,
+                Some(JsonValue::from(file_ids.clone())),
+            )
+            .await?;
 
         let mut pending_insert_handles = file_ids
             .into_iter()
@@ -44,6 +64,8 @@ impl ImageService {
 
         println!("Created {} handles", pending_insert_handles.len());
 
+        let mut failure = 0;
+
         while !pending_insert_handles.is_empty() {
             match future::select_all(pending_insert_handles).await {
                 (Ok(val), _, remaining) => {
@@ -51,9 +73,9 @@ impl ImageService {
                     pending_inserts.extend(val);
                     pending_insert_handles = remaining;
                 }
-                (Err(_e), index, remaining) => {
-                    println!("Error with {index}");
+                (Err(_), _, remaining) => {
                     pending_insert_handles = remaining;
+                    failure += 1;
                 }
             }
         }
@@ -90,6 +112,40 @@ impl ImageService {
                 tracing::error!("Error while creating image format: {}", e);
                 AppError::InternalError
             })?;
+
+        println!("Failure: {}, total: {}", failure, file_ids.len());
+
+        if failure == total_files {
+            operation_service
+                .update_operation(
+                    operation.id,
+                    OperationStatus::Unrecoverable,
+                    Some("Failed to generate all formats".to_string()),
+                )
+                .await?;
+        } else {
+            operation_service
+                .update_operation(operation.id, OperationStatus::Success, None)
+                .await?;
+        }
+
+        if started_by_operation.is_some() {
+            let status = if failure == total_files {
+                OperationStatus::Unrecoverable
+            } else {
+                OperationStatus::Recovered
+            };
+
+            let result = if failure == total_files {
+                Some("Failed to generate all formats".to_string())
+            } else {
+                Some("Format generation recovered".to_string())
+            };
+
+            operation_service
+                .update_operation(started_by_operation.unwrap(), status, result)
+                .await?;
+        }
 
         println!("Done generating");
 

@@ -38,10 +38,15 @@ fn get_folder_router() -> KosmosRouter {
 }
 
 fn get_image_router() -> KosmosRouter {
-    Router::new().route(
-        "/:file_id/:format",
-        get(crate::routes::api::v1::auth::file::image::get_image_by_format),
-    )
+    Router::new()
+        .route(
+            "/:file_id/:format",
+            get(crate::routes::api::v1::auth::file::image::get_image_by_format),
+        )
+        .route(
+            "/retry/operation/:operation_id",
+            post(crate::routes::api::v1::auth::file::image::reprocess_images_from_operation),
+        )
 }
 
 fn get_file_router() -> KosmosRouter {
@@ -114,6 +119,13 @@ fn get_multi_router() -> KosmosRouter {
     )
 }
 
+fn get_operation_router() -> Router<AppState> {
+    Router::new().route(
+        "/all",
+        get(crate::routes::api::v1::auth::operation::get_all_operations),
+    )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -124,6 +136,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/folder", get_folder_router())
         .nest("/download", get_download_router())
         .nest("/multi", get_multi_router())
+        .nest("/operation", get_operation_router())
         .nest("/user", get_user_router())
 }
 

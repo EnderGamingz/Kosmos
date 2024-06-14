@@ -2,7 +2,8 @@ import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from './vars.ts';
 import { FolderResponse } from '@models/folder.ts';
-import { FileModel, OperationType } from '@models/file.ts';
+import { FileModel, DataOperationType } from '@models/file.ts';
+import { OperationModel } from '@models/operation.ts';
 
 export const queryClient = new QueryClient();
 
@@ -65,7 +66,34 @@ export const useUsage = () => {
   });
 };
 
-export async function invalidateData(type: OperationType) {
+export const useOperations = () => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/operation/all`)
+        .then(res => res.data as OperationModel[]),
+    queryKey: ['operations'],
+    refetchOnMount: true,
+    // 20 seconds
+    refetchInterval: 20_000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+  });
+};
+
+export async function invalidateOperations() {
+  return queryClient.invalidateQueries({
+    queryKey: ['operations'],
+  });
+}
+
+export async function refetchOperations() {
+  return queryClient.refetchQueries({
+    queryKey: ['operations'],
+  });
+}
+
+export async function invalidateData(type: DataOperationType) {
   if (type == 'folder') await invalidateFolders();
   else await invalidateFiles();
 }

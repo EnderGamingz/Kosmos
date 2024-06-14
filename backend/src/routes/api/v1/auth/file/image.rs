@@ -1,11 +1,15 @@
 use crate::model::file::FileType;
 use crate::model::image::ImageFormat;
+use crate::model::operation::OperationStatus;
 use axum::extract::{Path, State};
 use axum::response::{IntoResponse, Response};
 use std::path::Path as StdPath;
+use std::sync::Arc;
 use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
+use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
 use crate::services::file_service::FileService;
 use crate::services::image_service::ImageService;
 use crate::services::session_service::SessionService;
@@ -51,8 +55,8 @@ pub async fn get_image_by_format(
         };
 
     if !format_path.exists() {
-        return Err(AppError::BadRequest {
-            error: Some("Format not found".to_string()),
+        return Err(AppError::NotFound {
+            error: "Format not found".to_string(),
         });
     }
 
@@ -68,4 +72,64 @@ pub async fn get_image_by_format(
     };
 
     Ok((headers, image).into_response())
+}
+
+pub async fn reprocess_images_from_operation(
+    State(state): KosmosState,
+    session: Session,
+    Path(operation_id): Path<i64>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let operation = state
+        .operation_service
+        .get_operation_for_user_by_id(operation_id, user_id)
+        .await?;
+
+    let operation_status = OperationStatus::get_status_by_id(operation.operation_status);
+
+    if operation_status == OperationStatus::Unrecoverable {
+        return Err(AppError::BadRequest {
+            error: Some("Operation is unrecoverable".to_string()),
+        })?;
+    }
+
+    if operation_status != OperationStatus::Interrupted
+        && operation_status != OperationStatus::Failed
+    {
+        return Err(AppError::BadRequest {
+            error: Some("Operation is not in an error state".to_string()),
+        })?;
+    };
+
+    let metadata = match operation.metadata {
+        None => Err(AppError::BadRequest {
+            error: Some("Operation has no metadata".to_string()),
+        })?,
+        Some(data) => {
+            let data: Vec<i64> = serde_json::from_value(data).map_err(|e| {
+                tracing::error!("Error parsing metadata: {}", e);
+                AppError::InternalError
+            })?;
+
+            data
+        }
+    };
+
+    if !metadata.is_empty() {
+        let image_service_clone = state.image_service.clone();
+
+        IMAGE_PROCESSING_RUNTIME.spawn(async move {
+            let _ = image_service_clone
+                .generate_all_formats(
+                    metadata,
+                    user_id.clone(),
+                    Arc::new(state.operation_service.clone()),
+                    Some(operation.id),
+                )
+                .await;
+        });
+    }
+
+    Ok(AppSuccess::OK { data: None })
 }

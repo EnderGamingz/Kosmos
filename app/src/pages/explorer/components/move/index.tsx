@@ -1,6 +1,6 @@
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { MoveModalContent } from './moveModalContent.tsx';
-import { OperationType } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { FolderOpenIcon } from '@heroicons/react/24/outline';
 
 export function MoveAction({
@@ -10,7 +10,7 @@ export function MoveAction({
   current_parent,
   onClose,
 }: {
-  type: OperationType;
+  type: DataOperationType;
   id: string;
   name: string;
   current_parent?: string;

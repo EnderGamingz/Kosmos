@@ -13,7 +13,7 @@ import {
   ModalHeader,
   Tooltip,
 } from '@nextui-org/react';
-import { OperationType } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
@@ -23,7 +23,7 @@ export function RenameModalContent({
   renameData,
   onClose,
 }: {
-  renameData: { id: string; type: OperationType; name: string };
+  renameData: { id: string; type: DataOperationType; name: string };
   onClose: () => void;
 }) {
   const [inputName, setInputName] = useState(renameData.name);
