@@ -5,12 +5,17 @@ import {
   DocumentIcon,
   DocumentTextIcon,
   FilmIcon,
+  FolderIcon,
   MusicalNoteIcon,
   PhotoIcon,
 } from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
 
-function getFileIcon(type: FileType, id: undefined | string, name: string) {
+function getFileIcon(
+  type: FileType | 'folder',
+  id: undefined | string,
+  name: string,
+) {
   switch (type) {
     case FileType.Image:
     case FileType.RawImage:
@@ -27,6 +32,8 @@ function getFileIcon(type: FileType, id: undefined | string, name: string) {
       return <PhotoIcon />;
     case FileType.Archive:
       return <ArchiveBoxIcon />;
+    case 'folder':
+      return <FolderIcon />;
     default:
       return <DocumentIcon />;
   }
@@ -37,12 +44,12 @@ export default function ItemIcon({
   name,
   id,
 }: {
-  type: FileType;
+  type: FileType | 'folder';
   name: string;
   id?: string;
 }) {
   return (
-    <div className={'[&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'}>
+    <div className={'text-stone-700 [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'}>
       {getFileIcon(type, id, name)}
     </div>
   );

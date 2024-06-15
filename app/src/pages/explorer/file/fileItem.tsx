@@ -44,7 +44,7 @@ export function FileItem({
         });
       }}
       className={tw(
-        'group transition-colors [&_td]:p-2 [&_th]:p-2',
+        'group transition-colors [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
       )}>
       <th>

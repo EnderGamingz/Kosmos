@@ -12,6 +12,7 @@ import {
   itemTransitionVariant,
   transitionStop,
 } from '@components/transition.ts';
+import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 
 export function FolderItem({
   folder,
@@ -52,17 +53,18 @@ export function FolderItem({
         />
       </th>
       <td className={'!p-0'}>
-        <div className={'flex w-full '}>
+        <div className={'flex w-full items-center gap-2'}>
           <ConditionalWrapper
             wrapper={c => (
               <Link
-                className={'w-full py-3'}
+                className={'flex w-full items-center gap-2'}
                 to={`/home/folder/${folder.id.toString()}`}>
                 {c}
               </Link>
             )}
             condition={!isControl}>
-            <span className={'w-full p-3'}>{folder.folder_name}</span>
+            <ItemIcon name={folder.folder_name} type={'folder'} />
+            <span className={'w-full'}>{folder.folder_name}</span>
           </ConditionalWrapper>
           <button
             onClick={e => {
