@@ -119,16 +119,18 @@ export function MultiPermanentDelete({
     },
   });
 
+  const handleDelete = () => {
+    if (!confirmed && !shift) {
+      setConfirmed(true);
+    } else {
+      onClose();
+      deleteAction.mutate();
+    }
+  };
+
   return (
     <button
-      onClick={() => {
-        if (!confirmed) {
-          setConfirmed(true);
-        } else {
-          onClose();
-          deleteAction.mutate();
-        }
-      }}
+      onClick={handleDelete}
       disabled={deleteAction.isPending}
       type={'button'}
       className={tw(

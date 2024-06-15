@@ -5,9 +5,9 @@ export const containerVariant = {
     },
   },
 };
-export const fileItemTransitionVariant = {
-  hidden: { opacity: 0, y: -5 },
-  show: { opacity: 1, y: 0 },
+export const itemTransitionVariant = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
 };
 
 export const transitionStop = 40;

@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 import {
+  Badge,
   CircularProgress,
   Popover,
   PopoverContent,
@@ -19,15 +20,48 @@ import {
 } from '@models/operation.ts';
 import { UpdatingTimeIndicator } from '@components/updatingTimeIndicator.tsx';
 import tw from '@lib/classMerge.ts';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  containerVariant,
+  itemTransitionVariant,
+} from '@components/transition.ts';
 
 export function OperationsMenu() {
+  const [seen, setSeen] = useState(true);
+  const [initial, setInitial] = useState(true);
   const operations = useOperations();
 
+  useEffect(() => {
+    if (operations.data?.length) {
+      if (initial) {
+        setInitial(false);
+      } else {
+        setSeen(false);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [operations.data]);
+
   return (
-    <Popover placement={'bottom'} showArrow={true}>
+    <Popover
+      placement={'bottom'}
+      showArrow={true}
+      onOpenChange={b => {
+        if (b) setSeen(true);
+      }}>
       <PopoverTrigger>
         <button>
-          <BellIcon className={'h-6 w-6'} />
+          <Badge
+            content={''}
+            color={'danger'}
+            isDot
+            showOutline={false}
+            className={'h-2 min-h-2 w-2 min-w-2'}
+            isInvisible={seen}
+            placement={'top-right'}>
+            <BellIcon className={'h-6 w-6'} />
+          </Badge>
         </button>
       </PopoverTrigger>
       <PopoverContent>
@@ -36,6 +70,10 @@ export function OperationsMenu() {
             Background operations
           </h2>
           <ScrollShadow
+            as={motion.div}
+            variants={containerVariant}
+            initial={'hidden'}
+            animate={'show'}
             className={
               'grid max-h-[300px] w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 py-3 scrollbar-hide'
             }>
@@ -66,7 +104,7 @@ function OperationItem({ data }: { data: OperationModel }) {
     data.operation_status === OperationStatus.Interrupted;
 
   return (
-    <div className={''}>
+    <motion.div variants={itemTransitionVariant}>
       <div className={'flex items-center justify-between gap-4'}>
         <p className={'text-base font-medium text-stone-800'}>
           {getOperationTypeString(data.operation_type)}
@@ -95,7 +133,7 @@ function OperationItem({ data }: { data: OperationModel }) {
           </button>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

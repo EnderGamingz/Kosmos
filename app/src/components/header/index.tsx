@@ -22,7 +22,7 @@ export default function Header() {
           'flex items-center gap-2 rounded-lg p-2 text-stone-700 transition-all hover:bg-stone-700/5 '
         }>
         <GlobeAsiaAustraliaIcon className={'h-8 w-8'} />
-        <span className={'text-2xl font-medium'}>Kosmos</span>
+        <span className={'text-2xl font-semibold'}>Kosmos</span>
       </Link>
       <div className={'ml-auto flex items-center gap-4'}>
         {user ? (

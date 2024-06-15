@@ -9,9 +9,9 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
 import {
-  fileItemTransitionVariant,
+  itemTransitionVariant,
   transitionStop,
-} from '@pages/explorer/components/transition.ts';
+} from '@components/transition.ts';
 
 export function FileItem({
   file,
@@ -31,7 +31,7 @@ export function FileItem({
 
   return (
     <motion.tr
-      variants={i < transitionStop ? fileItemTransitionVariant : undefined}
+      variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(file.id);
       }}

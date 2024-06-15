@@ -9,9 +9,9 @@ import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { motion } from 'framer-motion';
 
 import {
-  fileItemTransitionVariant,
+  itemTransitionVariant,
   transitionStop,
-} from '@pages/explorer/components/transition.ts';
+} from '@components/transition.ts';
 
 export function FolderItem({
   folder,
@@ -31,7 +31,7 @@ export function FolderItem({
 
   return (
     <motion.tr
-      variants={i < transitionStop ? fileItemTransitionVariant : undefined}
+      variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(folder.id);
       }}
@@ -41,7 +41,8 @@ export function FolderItem({
       }}
       className={tw(
         'group transition-all [&_td]:p-3 [&_th]:p-3',
-        isSelected && 'bg-indigo-100',
+        'hover:bg-stone-500/10 hover:shadow-sm',
+        isSelected && 'bg-stone-500/10 shadow-sm',
       )}>
       <th>
         <Checkbox
@@ -50,7 +51,7 @@ export function FolderItem({
         />
       </th>
       <td className={'!p-0'}>
-        <div className={'flex w-full group-hover:bg-slate-200'}>
+        <div className={'flex w-full '}>
           <ConditionalWrapper
             wrapper={c => (
               <Link

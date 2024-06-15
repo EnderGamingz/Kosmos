@@ -13,8 +13,8 @@ import { useExplorerStore } from '@stores/folderStore.ts';
 import { MultipleActionButton } from '@pages/explorer/components/multipleActionButton.tsx';
 import {
   containerVariant,
-  fileItemTransitionVariant,
-} from '@pages/explorer/components/transition.ts';
+  itemTransitionVariant,
+} from '@components/transition.ts';
 
 export type Selected = { files: string[]; folders: string[] };
 
@@ -179,22 +179,22 @@ export function FileTableLoading() {
           className={'divide-y divide-stone-300/50 overflow-hidden'}>
           {Array.from({ length: 30 }).map((_, i) => (
             <motion.tr
-              variants={fileItemTransitionVariant}
+              variants={itemTransitionVariant}
               key={i}
               className={'[&_td]:p-3  [&_td]:font-bold [&_td]:text-stone-700'}>
               <td className={'p-3'}>
                 <div className={'w-7'}>
-                  <Skeleton className={'h-5 w-5 rounded-md'} />
+                  <Skeleton className={'h-5 w-5 rounded-md opacity-50'} />
                 </div>
               </td>
               <td className={'w-full'}>
-                <Skeleton className={'h-5 w-full'} />
+                <Skeleton className={'h-5 w-full opacity-50'} />
               </td>
               <td align={'right'}>
-                <Skeleton className={'h-5 w-full'} />
+                <Skeleton className={'h-5 w-full opacity-50'} />
               </td>
               <td align={'right'}>
-                <Skeleton className={'h-5 w-full'} />
+                <Skeleton className={'h-5 w-full opacity-50'} />
               </td>
             </motion.tr>
           ))}
