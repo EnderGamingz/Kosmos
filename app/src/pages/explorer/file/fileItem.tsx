@@ -31,6 +31,7 @@ export function FileItem({
 
   return (
     <motion.tr
+      layout
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(file.id);

@@ -31,6 +31,7 @@ export function FolderItem({
 
   return (
     <motion.tr
+      layout
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(folder.id);

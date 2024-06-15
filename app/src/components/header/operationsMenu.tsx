@@ -51,7 +51,7 @@ export function OperationsMenu() {
         if (b) setSeen(true);
       }}>
       <PopoverTrigger>
-        <button>
+        <button className={'flex'}>
           <Badge
             content={''}
             color={'danger'}

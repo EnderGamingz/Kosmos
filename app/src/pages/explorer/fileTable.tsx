@@ -15,6 +15,7 @@ import {
   containerVariant,
   itemTransitionVariant,
 } from '@components/transition.ts';
+import { formatBytes } from '@lib/fileSize.ts';
 
 export type Selected = { files: string[]; folders: string[] };
 
@@ -32,6 +33,7 @@ export function FileTable({
     selectFile,
     selectFolder,
   } = useExplorerStore(s => s.selectedResources);
+  const currentFolder = useExplorerStore(s => s.current.folder);
 
   const isAllSelected =
     selectedFolders.length === folders.length &&
@@ -91,7 +93,7 @@ export function FileTable({
           variants={containerVariant}
           initial={'hidden'}
           animate={'show'}
-          key={folders.length + files.length}
+          key={currentFolder}
           className={tw('divide-y', isControl && '[&_tr]:cursor-copy')}>
           {folders.map((folder: FolderModel, i: number) => (
             <FolderItem
@@ -125,6 +127,21 @@ export function FileTable({
               }}
             />
           ))}
+          <motion.tr
+            variants={itemTransitionVariant}
+            className={
+              'cursor-default select-none border-none text-sm text-stone-500/50 [&>td]:py-5 [&>td]:pb-32'
+            }>
+            <td />
+            <td>
+              {folders.length} Folders <br />
+              {files.length} Files
+            </td>
+            <td align={'right'}>
+              {formatBytes(files.reduce((a, b) => a + b.file_size, 0))}
+            </td>
+            <td />
+          </motion.tr>
         </motion.tbody>
       </table>
       <AnimatePresence>
