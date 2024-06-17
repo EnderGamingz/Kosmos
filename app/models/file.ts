@@ -2,14 +2,21 @@ import { ContextData } from '@hooks/useContextMenu.ts';
 import { Selected } from '@pages/explorer/fileTable.tsx';
 
 export enum FileType {
-  Generic = 0,
-  Image = 1,
-  Video = 2,
-  Audio = 3,
-  Document = 4,
-  RawImage = 5,
-  LargeImage = 6,
+  Generic,
+  Image,
+  Video,
+  Audio,
+  Document,
+  RawImage,
+  LargeImage,
   Archive,
+}
+
+export enum FilePreviewStatus {
+  Unavailable,
+  Ready,
+  Failed,
+  Processing,
 }
 
 export type FileModel = {
@@ -17,10 +24,11 @@ export type FileModel = {
   user_id: string;
   file_name: string;
   file_size: number;
-  file_type: number;
+  file_type: FileType;
   mime_type: string;
   metadata?: never;
   parent_folder_id?: string;
+  preview_status?: FilePreviewStatus;
   created_at: string;
   updated_at: string;
   deleted_at?: string;

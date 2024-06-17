@@ -1,4 +1,8 @@
-import { refetchOperations, useOperations } from '@lib/query.ts';
+import {
+  invalidateFiles,
+  refetchOperations,
+  useOperations,
+} from '@lib/query.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
@@ -17,28 +21,69 @@ import {
   getOperationTypeString,
   OperationModel,
   OperationStatus,
+  OperationType,
 } from '@models/operation.ts';
 import { UpdatingTimeIndicator } from '@components/updatingTimeIndicator.tsx';
 import tw from '@lib/classMerge.ts';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariant,
 } from '@components/transition.ts';
+import objectHash from 'object-hash';
 
 export function OperationsMenu() {
   const [seen, setSeen] = useState(true);
   const [initial, setInitial] = useState(true);
   const operations = useOperations();
+  const operationsHash = useRef<string>();
+  const [initialSucceeded, setInitialSucceeded] = useState<string[]>([]);
 
   useEffect(() => {
-    if (operations.data?.length) {
-      if (initial) {
-        setInitial(false);
-      } else {
-        setSeen(false);
+    if (!operations.data?.length) return;
+
+    // Generate a hash based on the operations-data,
+    // this is used for checking if the data has changed
+    const newHash = objectHash(operations.data);
+
+    if (initial) {
+      // Save the initial state upon the first run
+      operationsHash.current = newHash;
+      setInitialSucceeded(
+        operations.data
+          .filter(o => o.operation_status === OperationStatus.Success)
+          .map(o => o.id),
+      );
+      setInitial(false);
+      return;
+    }
+
+    // Check if the operations-data hash has changed
+    if (operationsHash.current !== newHash) {
+      setSeen(false);
+      operationsHash.current = newHash;
+
+      // New set of successful operations
+      const newSucceeded = operations.data.filter(
+        o => o.operation_status === OperationStatus.Success,
+      );
+
+      const ids = newSucceeded.map(o => o.id);
+
+      // If the set of succeeded operations has changed
+      if (objectHash(ids) !== objectHash(initialSucceeded)) {
+        const types = newSucceeded
+          .filter(o => initialSucceeded.includes(o.id))
+          .map(o => o.operation_type);
+
+        // Invalidate files if any new operation is of type ImageProcessing
+        if (types.includes(OperationType.ImageProcessing)) {
+          invalidateFiles().then();
+        }
       }
+
+      setInitialSucceeded(ids);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operations.data]);

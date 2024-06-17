@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use crate::db::KosmosPool;
-use crate::model::file::{FileModel, FileType, ParsedFileModel};
+use crate::model::file::{FileModel, FileType, ParsedFileModel, PreviewStatus};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
 use crate::services::image_service::ImageService;
@@ -70,6 +70,24 @@ impl FileService {
                 tracing::error!("Error fetching deleted files: {}", e);
                 AppError::InternalError
             })
+    }
+
+    pub async fn update_preview_status_for_file_ids(&self,
+        file_ids: &Vec<i64>,
+        preview_status: PreviewStatus) -> Result<(), AppError> {
+        sqlx::query!(
+            "UPDATE files SET preview_status = $1 WHERE id = ANY($2)",
+            preview_status as i16,
+            file_ids
+        )
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error updating preview status: {}", e);
+                AppError::InternalError
+            })?;
+
+        Ok(())
     }
 
     pub async fn create_file(
@@ -182,6 +200,7 @@ impl FileService {
             mime_type: file.mime_type,
             metadata: file.metadata,
             parent_folder_id: file.parent_folder_id.map(|x| x.to_string()),
+            preview_status: file.preview_status,
             created_at: file.created_at,
             updated_at: file.updated_at,
             deleted_at: file.deleted_at,
@@ -395,5 +414,20 @@ impl FileService {
             .find(|(mime, _)| mime == &mime_type)
             .map(|(_, file_type)| *file_type)
             .unwrap_or(FileType::Generic)
+    }
+
+    pub async fn startup_prepare(&self) {
+        let _ = sqlx::query!(
+            "UPDATE files SET preview_status = $1 WHERE preview_status = $2",
+            PreviewStatus::Unavailable as i16,
+            PreviewStatus::Processing as i16
+        )
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error preparing files for startup: {}", e);
+                AppError::InternalError
+            });
+        tracing::info!("Prepared files for startup");
     }
 }

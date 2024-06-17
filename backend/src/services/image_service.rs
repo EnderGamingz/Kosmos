@@ -1,8 +1,9 @@
 use crate::db::KosmosPool;
+use crate::model::file::PreviewStatus;
 use crate::model::image::{ImageFormat, IMAGE_FORMATS};
 use crate::model::operation::{OperationStatus, OperationType};
 use crate::response::error_handling::AppError;
-use crate::services::operation_service::OperationService;
+use crate::state::AppState;
 use futures::future;
 use itertools::Itertools;
 use photon_rs::native::open_image_from_bytes;
@@ -13,6 +14,7 @@ use sqlx::types::JsonValue;
 use std::path::Path;
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct ImageFormatInsert {
     format: i16,
     file_id: i64,
@@ -39,7 +41,7 @@ impl ImageService {
         &self,
         file_ids: Vec<i64>,
         user_id: i64,
-        operation_service: Arc<OperationService>,
+        state: Arc<AppState>,
         started_by_operation: Option<i64>,
     ) -> Result<(), AppError> {
         let total_files = file_ids.len();
@@ -47,7 +49,8 @@ impl ImageService {
 
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
 
-        let operation = operation_service
+        let operation = state
+            .operation_service
             .create_operation(
                 user_id,
                 OperationType::ImageProcessing,
@@ -64,18 +67,26 @@ impl ImageService {
 
         println!("Created {} handles", pending_insert_handles.len());
 
-        let mut failure = 0;
+        let mut failures = vec![];
+        let mut successes = vec![];
 
         while !pending_insert_handles.is_empty() {
             match future::select_all(pending_insert_handles).await {
                 (Ok(val), _, remaining) => {
                     println!("Done, {} left", remaining.len());
-                    pending_inserts.extend(val);
+                    pending_inserts.extend(val.clone());
                     pending_insert_handles = remaining;
+
+                    match val.get(0) {
+                        Some(row) => {
+                            successes.push(row.file_id);
+                        }
+                        None => {}
+                    }
                 }
-                (Err(_), _, remaining) => {
+                (Err(id), _, remaining) => {
                     pending_insert_handles = remaining;
-                    failure += 1;
+                    failures.push(id);
                 }
             }
         }
@@ -113,10 +124,11 @@ impl ImageService {
                 AppError::InternalError
             })?;
 
-        println!("Failure: {}, total: {}", failure, file_ids.len());
+        println!("Failure: {}, total: {}", failures.len(), file_ids.len());
 
-        if failure == total_files {
-            operation_service
+        if failures.len() == total_files {
+            state
+                .operation_service
                 .update_operation(
                     operation.id,
                     OperationStatus::Unrecoverable,
@@ -124,30 +136,42 @@ impl ImageService {
                 )
                 .await?;
         } else {
-            operation_service
+            state
+                .operation_service
                 .update_operation(operation.id, OperationStatus::Success, None)
                 .await?;
         }
 
         if started_by_operation.is_some() {
-            let status = if failure == total_files {
+            let status = if failures.len() == total_files {
                 OperationStatus::Unrecoverable
             } else {
                 OperationStatus::Recovered
             };
 
-            let result = if failure == total_files {
+            let result = if failures.len() == total_files {
                 Some("Failed to generate all formats".to_string())
             } else {
                 Some("Format generation recovered".to_string())
             };
 
-            operation_service
+            state
+                .operation_service
                 .update_operation(started_by_operation.unwrap(), status, result)
                 .await?;
         }
 
         println!("Done generating");
+
+        state
+            .file_service
+            .update_preview_status_for_file_ids(&failures, PreviewStatus::Failed)
+            .await?;
+
+        state
+            .file_service
+            .update_preview_status_for_file_ids(&successes, PreviewStatus::Ready)
+            .await?;
 
         Ok(())
     }
@@ -155,7 +179,7 @@ impl ImageService {
     pub async fn generate_image_sizes(
         file_id: i64,
         upload_location: &String,
-    ) -> Result<Vec<ImageFormatInsert>, AppError> {
+    ) -> Result<Vec<ImageFormatInsert>, i64> {
         println!("Starting with {}", file_id);
         let original_image_path = Path::new(&upload_location).join(file_id.to_string());
         let original_image_path_str = original_image_path.to_str().unwrap();
@@ -167,16 +191,12 @@ impl ImageService {
             .await
             .map_err(|e| {
                 tracing::error!("Error while reading image file {}: {}", file_id, e);
-                AppError::NotFound {
-                    error: "Error while trying to read image file".to_string(),
-                }
+                file_id
             })?;
 
         let image = open_image_from_bytes(&*image_bytes).map_err(|e| {
             tracing::error!("Error while opening image file {}: {}", file_id, e);
-            AppError::NotFound {
-                error: "Error while trying to open image file".to_string(),
-            }
+            file_id
         })?;
         println!("Loaded image {}", file_id);
 
@@ -198,7 +218,7 @@ impl ImageService {
         format: ImageFormat,
         formats_folder_path: &str,
         image: &PhotonImage,
-    ) -> Result<ImageFormatInsert, AppError> {
+    ) -> Result<ImageFormatInsert, i64> {
         let format_width = ImageFormat::get_width_by_format(format);
 
         let format = format as i16;
@@ -223,7 +243,7 @@ impl ImageService {
             .await
             .map_err(|e| {
                 tracing::error!("Error while saving image: {}", e);
-                AppError::InternalError
+                file_id
             })?;
 
         Ok(ImageFormatInsert {

@@ -59,6 +59,7 @@ export function FileItem({
             name={file.file_name}
             type={normalizeFileType(file.file_type)}
             id={file.id}
+            status={file.preview_status}
           />
           <p
             className={

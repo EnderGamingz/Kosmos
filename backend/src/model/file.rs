@@ -31,6 +31,26 @@ impl FileType {
     }
 }
 
+#[repr(i16)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum PreviewStatus {
+    Unavailable = 0,
+    Ready = 1,
+    Failed = 2,
+    Processing = 3,
+}
+
+impl PreviewStatus {
+    pub fn get_status_by_id(num: i16) -> PreviewStatus {
+        match num {
+            1 => PreviewStatus::Ready,
+            2 => PreviewStatus::Failed,
+            3 => PreviewStatus::Processing,
+            _ => PreviewStatus::Unavailable,
+        }
+    }
+}
+
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct FileModel {
     pub id: i64,
@@ -41,6 +61,7 @@ pub struct FileModel {
     pub mime_type: String,
     pub metadata: Option<JsonValue>,
     pub parent_folder_id: Option<i64>,
+    pub preview_status: Option<i16>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
@@ -56,6 +77,7 @@ pub struct ParsedFileModel {
     pub mime_type: String,
     pub metadata: Option<JsonValue>,
     pub parent_folder_id: Option<String>,
+    pub preview_status: Option<i16>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,

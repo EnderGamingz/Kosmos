@@ -1,4 +1,4 @@
-use crate::model::file::FileType;
+use crate::model::file::{FileType, PreviewStatus};
 use axum::body::Bytes;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Multipart, Path, Query, State};
@@ -339,8 +339,6 @@ pub async fn upload_file(
             .await?;
 
         if let Some(file) = exists {
-            state.file_service.delete_formats_from_file_id(file).await?;
-
             state
                 .file_service
                 .permanently_delete_file(file, None)
@@ -387,12 +385,17 @@ pub async fn upload_file(
         let image_service_clone = state.image_service.clone();
         println!("Generating {} formats", pending_image_formats.len());
 
+        state
+            .file_service
+            .update_preview_status_for_file_ids(&pending_image_formats, PreviewStatus::Processing)
+            .await?;
+
         IMAGE_PROCESSING_RUNTIME.spawn(async move {
             let _ = image_service_clone
                 .generate_all_formats(
                     pending_image_formats,
                     user_id.clone(),
-                    Arc::new(state.operation_service.clone()),
+                    Arc::new(state.clone()),
                     None,
                 )
                 .await;

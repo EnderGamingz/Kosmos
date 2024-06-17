@@ -1,4 +1,4 @@
-import { FileType } from '@models/file.ts';
+import { FilePreviewStatus, FileType } from '@models/file.ts';
 import { BASE_URL } from '@lib/vars.ts';
 import {
   ArchiveBoxIcon,
@@ -15,12 +15,17 @@ function getFileIcon(
   type: FileType | 'folder',
   id: undefined | string,
   name: string,
+  status: undefined | FilePreviewStatus,
 ) {
   switch (type) {
     case FileType.Image:
     case FileType.RawImage:
       return (
-        <PreviewImage src={`${BASE_URL}auth/file/image/${id}/0`} alt={name} />
+        <PreviewImage
+          status={status}
+          src={`${BASE_URL}auth/file/image/${id}/0`}
+          alt={name}
+        />
       );
     case FileType.Video:
       return <FilmIcon />;
@@ -40,17 +45,19 @@ function getFileIcon(
 }
 
 export default function ItemIcon({
+  id,
   type,
   name,
-  id,
+  status,
 }: {
+  id?: string;
   type: FileType | 'folder';
   name: string;
-  id?: string;
+  status?: FilePreviewStatus;
 }) {
   return (
     <div className={'text-stone-700 [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'}>
-      {getFileIcon(type, id, name)}
+      {getFileIcon(type, id, name, status)}
     </div>
   );
 }

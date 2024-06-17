@@ -1,4 +1,4 @@
-use crate::model::file::FileType;
+use crate::model::file::{FileType, PreviewStatus};
 use crate::model::image::ImageFormat;
 use crate::model::operation::OperationStatus;
 use axum::extract::{Path, State};
@@ -119,12 +119,17 @@ pub async fn reprocess_images_from_operation(
     if !metadata.is_empty() {
         let image_service_clone = state.image_service.clone();
 
+        state
+            .file_service
+            .update_preview_status_for_file_ids(&metadata, PreviewStatus::Processing)
+            .await?;
+
         IMAGE_PROCESSING_RUNTIME.spawn(async move {
             let _ = image_service_clone
                 .generate_all_formats(
                     metadata,
                     user_id.clone(),
-                    Arc::new(state.operation_service.clone()),
+                    Arc::new(state.clone()),
                     Some(operation.id),
                 )
                 .await;
