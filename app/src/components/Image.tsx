@@ -6,13 +6,16 @@ import {
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 
 export function PreviewImage({
+  id,
   src,
   alt,
   status,
   type,
 }: {
+  id: string;
   src: string;
   alt: string;
   status?: FilePreviewStatus;
@@ -21,12 +24,13 @@ export function PreviewImage({
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div
+    <motion.div
+      layoutId={`image-${id}`}
       className={
         'grid h-[40px] w-[40px] place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]'
       }>
       {(status === FilePreviewStatus.Ready || type === FileType.RawImage) && (
-        <img
+        <motion.img
           loading={'lazy'}
           onLoad={() => setLoaded(true)}
           onError={() => setLoaded(true)}
@@ -52,6 +56,6 @@ export function PreviewImage({
       {status === FilePreviewStatus.Unavailable && (
         <ExclamationTriangleIcon className={'h-8 w-8 text-gray-500/20'} />
       )}
-    </div>
+    </motion.div>
   );
 }

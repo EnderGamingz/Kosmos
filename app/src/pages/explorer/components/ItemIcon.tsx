@@ -10,10 +10,11 @@ import {
   PhotoIcon,
 } from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
+import { motion } from 'framer-motion';
 
 function getFileIcon(
   type: FileType | 'folder',
-  id: undefined | string,
+  id: string,
   name: string,
   status: undefined | FilePreviewStatus,
 ) {
@@ -22,6 +23,7 @@ function getFileIcon(
     case FileType.RawImage:
       return (
         <PreviewImage
+          id={id}
           status={status}
           src={`${BASE_URL}auth/file/image/${id}/0`}
           alt={name}
@@ -51,14 +53,16 @@ export default function ItemIcon({
   name,
   status,
 }: {
-  id?: string;
+  id: string;
   type: FileType | 'folder';
   name: string;
   status?: FilePreviewStatus;
 }) {
   return (
-    <div className={'text-stone-700 [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'}>
+    <motion.div
+      layoutId={`type-${id}`}
+      className={'text-stone-700 [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'}>
       {getFileIcon(type, id, name, status)}
-    </div>
+    </motion.div>
   );
 }

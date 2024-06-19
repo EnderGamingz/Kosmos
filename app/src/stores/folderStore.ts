@@ -1,8 +1,11 @@
 import { create } from 'zustand';
+import { FileModel } from '@models/file.ts';
 
 export type ExplorerState = {
   current: {
     folder?: string;
+    selectedFile?: FileModel;
+    selectCurrentFile: (current?: FileModel) => void;
     selectCurrentFolder: (current?: string) => void;
   };
   selectedResources: {
@@ -20,7 +23,14 @@ export type ExplorerState = {
 
 export const useExplorerStore = create<ExplorerState>(set => ({
   current: {
-    selectedFolder: undefined,
+    selectCurrentFile: (current?: FileModel) => {
+      set(prev => ({
+        current: {
+          ...prev.current,
+          selectedFile: current,
+        },
+      }));
+    },
     selectCurrentFolder: (current?: string) => {
       set(prev => ({
         current: {

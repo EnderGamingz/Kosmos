@@ -63,7 +63,11 @@ export function FolderItem({
               </Link>
             )}
             condition={!isControl}>
-            <ItemIcon name={folder.folder_name} type={'folder'} />
+            <ItemIcon
+              id={folder.id}
+              name={folder.folder_name}
+              type={'folder'}
+            />
             <span className={'w-full'}>{folder.folder_name}</span>
           </ConditionalWrapper>
           <button

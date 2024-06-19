@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { isFileModel, isMultiple, DataOperationType } from '@models/file.ts';
+import { DataOperationType, isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import { MoveToTrash } from '@pages/explorer/components/delete';
@@ -9,8 +9,8 @@ import { MoveAction } from '@pages/explorer/components/move';
 import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import {
-  PermanentDeleteAction,
   MultiPermanentDelete,
+  PermanentDeleteAction,
 } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
 import {
@@ -19,6 +19,7 @@ import {
   Square2StackIcon,
 } from '@heroicons/react/24/outline';
 import { ContextData } from '@hooks/useContextMenu.ts';
+import { Backdrop } from '@components/backdrop.tsx';
 
 const menuWidth = 250;
 
@@ -39,28 +40,11 @@ export default function ContextMenu({
       <style>
         {`
             .file-list {
-              user-select: none;
-              -webkit-user-select: none;
-              -moz-user-select: none;
-              -ms-user-select: none;
               overflow: hidden !important;
             }
-          `}
+        `}
       </style>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        onContextMenu={e => {
-          e.preventDefault();
-          onClose();
-        }}
-        onClick={onClose}
-        className={
-          'fixed inset-0 z-50 h-screen w-screen bg-overlay/30 backdrop-blur-sm backdrop-saturate-150'
-        }
-      />
+      <Backdrop onClose={onClose} />
       <motion.div
         className={tw(
           'absolute z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',

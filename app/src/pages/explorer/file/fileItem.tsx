@@ -12,6 +12,7 @@ import {
   itemTransitionVariant,
   transitionStop,
 } from '@components/transition.ts';
+import { useExplorerStore } from '@stores/folderStore.ts';
 
 export function FileItem({
   file,
@@ -29,8 +30,11 @@ export function FileItem({
   const isControl = useKeyStore(s => s.ctrl);
   const isSelected = selected.includes(file.id);
 
+  const selectFile = useExplorerStore(s => s.current.selectCurrentFile);
+
   return (
     <motion.tr
+      layoutId={`file-${file.id}`}
       layout
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
@@ -44,37 +48,41 @@ export function FileItem({
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
       )}>
-      <th>
+      <motion.th layoutId={`check-${file.id}`}>
         <Checkbox
           isSelected={isSelected}
           onValueChange={() => onSelect(file.id)}
         />
-      </th>
-      <td className={'!p-0'}>
-        <div className={'flex'}>
+      </motion.th>
+      <td className={'flex !p-0'}>
+        <div
+          className={'flex flex-grow items-center'}
+          onClick={() => selectFile(file)}>
           <ItemIcon
+            id={file.id}
             name={file.file_name}
             type={normalizeFileType(file.file_type)}
-            id={file.id}
             status={file.preview_status}
           />
-          <p
+          <motion.p
+            exit={{ opacity: 0 }}
+            layoutId={`title-${file.id}`}
             className={
               'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
             }>
             {file.file_name}
-          </p>
-          <button
-            onClick={e => {
-              onContext(file, {
-                x: e.clientX,
-                y: e.clientY,
-              });
-            }}
-            className={'cursor-pointer p-2'}>
-            <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
-          </button>
+          </motion.p>
         </div>
+        <button
+          onClick={e => {
+            onContext(file, {
+              x: e.clientX,
+              y: e.clientY,
+            });
+          }}
+          className={'cursor-pointer p-2'}>
+          <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+        </button>
       </td>
       <td align={'right'}>{formatBytes(file.file_size)}</td>
       <td
