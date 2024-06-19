@@ -4,11 +4,13 @@ import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
-import { FileTable, FileTableLoading } from './fileTable.tsx';
+import { FileTable } from './fileTable/fileTable.tsx';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { FileUploadContent } from '@pages/explorer/file/fileUpload.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
+import { FileTableLoading } from '@pages/explorer/fileTable/fileTableLoading.tsx';
+import { useSearchState } from '@stores/searchStore.ts';
 
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
@@ -22,8 +24,10 @@ export function FileList() {
     setCurrentFolder(folder);
   }, [folder, setCurrentFolder, setSelectedNone]);
 
-  const files = useFiles(folder);
-  const folders = useFolders(folder);
+  const sort = useSearchState(s => s.sort);
+
+  const files = useFiles(folder, sort);
+  const folders = useFolders(folder, sort);
 
   useEffect(() => {
     if (!folders.data) return;
@@ -57,7 +61,6 @@ export function FileList() {
           }
           style={{ scaleX }}
         />
-
         <div className={'flex items-center pl-3 md:pl-0'}>
           <SideNavToggle />
           <BreadCrumbs>
@@ -76,10 +79,7 @@ export function FileList() {
             ))}
           </BreadCrumbs>
         </div>
-        <FileUploadContent
-          onClose={() => {}}
-          folder={folder}
-          isInFileList={true}>
+        <FileUploadContent folder={folder} isInFileList={true}>
           {isLoading ? (
             <FileTableLoading />
           ) : (

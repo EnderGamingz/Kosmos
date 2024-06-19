@@ -24,44 +24,60 @@ use crate::state::KosmosState;
 
 static FILE_SIZE_LIMIT: u64 = 50 * 1024 * 1024;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub enum SortOrder {
     Asc,
     Desc,
 }
 
+#[derive(Deserialize, Debug, PartialEq)]
+pub enum SortByFiles {
+    Name,
+    FileSize,
+    CreatedAt,
+    UpdatedAt,
+}
+
 #[derive(Deserialize)]
-pub struct SortParams {
+pub struct SortParams<SortBy> {
     pub sort_order: Option<SortOrder>,
+    pub sort_by: Option<SortBy>,
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
 }
 
 #[derive(Debug)]
-pub struct Sort {
+pub struct ParsedSortParams<Sort> {
     pub sort_order: SortOrder,
+    pub sort_by: Sort,
+    pub limit: i64,
+    pub offset: i64,
 }
 
 pub async fn get_files(
     State(state): KosmosState,
     session: Session,
-    //Query(sort_params): Query<SortParams>,
+    Query(sort_params): Query<SortParams<SortByFiles>>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
-    /*    let sort = Sort {
-        sort_order: sort_params.sort_order.unwrap_or(SortOrder::Desc),
-    };*/
+    let user_id = SessionService::check_logged_in(&session).await?;
 
-    //TODO: Add sorting
+    let parsed_params = ParsedSortParams {
+        sort_order: sort_params.sort_order.unwrap_or(SortOrder::Asc),
+        sort_by: sort_params.sort_by.unwrap_or(SortByFiles::Name),
+        limit: sort_params.limit.unwrap_or(200),
+        offset: sort_params.offset.unwrap_or(0),
+    };
 
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
     };
 
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let files = state
         .file_service
-        .get_files(user_id, folder, false)
+        .get_files(user_id, folder, false, parsed_params)
         .await?
         .into_iter()
         .map(FileService::parse_file)

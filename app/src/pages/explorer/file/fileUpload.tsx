@@ -35,7 +35,7 @@ export function FileUploadContent({
   children,
 }: {
   folder?: string;
-  onClose: () => void;
+  onClose?: () => void;
   isInFileList?: boolean;
   children?: ReactNode;
 }) {
@@ -70,7 +70,7 @@ export function FileUploadContent({
       severity: Severity.INFO,
     });
 
-    onClose();
+    if (onClose) onClose();
 
     await axios
       .postForm(

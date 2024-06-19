@@ -38,10 +38,7 @@ export function FileItem({
       }}
       onContextMenu={e => {
         e.preventDefault();
-        onContext(file, {
-          x: e.clientX,
-          y: e.clientY,
-        });
+        onContext(file, { x: e.clientX, y: e.clientY });
       }}
       className={tw(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',

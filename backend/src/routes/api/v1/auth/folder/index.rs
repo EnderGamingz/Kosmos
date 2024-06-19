@@ -1,39 +1,55 @@
-use crate::model::file::FileType;
-use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
+use axum::extract::rejection::PathRejection;
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
 
+use crate::model::file::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::routes::api::v1::auth::file::{MoveParams, RenameParams};
+use crate::routes::api::v1::auth::file::{MoveParams, ParsedSortParams, RenameParams, SortOrder, SortParams};
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
 
+#[derive(Deserialize, Debug, PartialEq)]
+pub enum SortByFolders {
+    Name,
+    CreatedAt,
+    UpdatedAt,
+}
+
 pub async fn get_folders(
     State(state): KosmosState,
     session: Session,
+    Query(sort_params): Query<SortParams<SortByFolders>>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
-    let folder_id_result = match folder_id {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let parent = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
     };
 
-    let user_id = SessionService::check_logged_in(&session).await?;
+    let parsed_params = ParsedSortParams {
+        sort_order: sort_params.sort_order.unwrap_or(SortOrder::Asc),
+        sort_by: sort_params.sort_by.unwrap_or(SortByFolders::Name),
+        limit: sort_params.limit.unwrap_or(200),
+        offset: sort_params.offset.unwrap_or(0),
+    };
+
     let folders = state
         .folder_service
-        .get_folders(user_id, folder_id_result)
+        .get_folders(user_id, parent, parsed_params)
         .await?
         .into_iter()
         .map(FolderService::parse_folder)
         .collect::<Vec<_>>();
 
-    let folder = if let Some(folder) = folder_id_result {
+    let folder = if let Some(folder) = parent {
         Some(FolderService::parse_folder(
             state.folder_service.get_folder(folder).await?,
         ))
@@ -41,7 +57,7 @@ pub async fn get_folders(
         None
     };
 
-    let structure = if let Some(folder) = folder_id_result {
+    let structure = if let Some(folder) = parent {
         Some(
             state
                 .folder_service
@@ -121,21 +137,25 @@ pub async fn multi_delete(
         folders: body
             .folders
             .iter()
-            .map(|id| id.parse::<i64>().map_err(|_| {
-                return AppError::BadRequest {
-                    error: Some("Error parsing folder id".to_string()),
-                };
-            }))
+            .map(|id| {
+                id.parse::<i64>().map_err(|_| {
+                    return AppError::BadRequest {
+                        error: Some("Error parsing folder id".to_string()),
+                    };
+                })
+            })
             .collect::<Result<Vec<_>, _>>()?,
-        files:  body
+        files: body
             .files
             .iter()
-            .map(|id| id.parse::<i64>().map_err(|_| {
-                return AppError::BadRequest {
-                    error: Some("Error parsing file id".to_string()),
-                };
-            }))
-            .collect::<Result<Vec<_>, _>>()?
+            .map(|id| {
+                id.parse::<i64>().map_err(|_| {
+                    return AppError::BadRequest {
+                        error: Some("Error parsing file id".to_string()),
+                    };
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?,
     };
 
     for folder_id in body.folders {

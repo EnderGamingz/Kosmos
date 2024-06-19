@@ -42,7 +42,7 @@ export function FolderItem({
         onContext(folder, { x: e.clientX, y: e.clientY });
       }}
       className={tw(
-        'group transition-all [&_td]:p-3 [&_th]:p-3',
+        'group transition-colors [&_td]:p-3 [&_th]:p-3',
         'hover:bg-stone-500/10 hover:shadow-sm',
         isSelected && 'bg-stone-500/10 shadow-sm',
       )}>

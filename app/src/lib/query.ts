@@ -2,8 +2,15 @@ import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL, IS_DEVELOPMENT } from './vars.ts';
 import { FolderResponse } from '@models/folder.ts';
-import { FileModel, DataOperationType } from '@models/file.ts';
+import { DataOperationType, FileModel } from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
+import {
+  canFolderBeSorted,
+  getSortOrderString,
+  getSortString,
+  SortParams,
+  SortParamsForQuery,
+} from '@models/sort.ts';
 
 export const queryClient = new QueryClient();
 
@@ -21,24 +28,45 @@ export async function invalidateFolders() {
   });
 }
 
-export const useFolders = (parent_id?: string) => {
+export const useFolders = (parent_id?: string, sort?: SortParams) => {
   return useQuery({
-    queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/folder/all${parent_id ? `/${parent_id}` : ''}`)
-        .then(res => res.data as FolderResponse),
-    queryKey: ['folders', parent_id],
-    _optimisticResults: 'isRestoring',
+    queryFn: async () => {
+      const params: SortParamsForQuery = {
+        limit: sort?.limit,
+        offset: sort?.offset,
+      };
+
+      if (canFolderBeSorted(sort?.sort_by)) {
+        params.sort_by = getSortString(sort?.sort_by);
+        params.sort_order = getSortOrderString(sort?.sort_order);
+      }
+
+      const res = await axios.get(
+        `${BASE_URL}auth/folder/all${parent_id ? `/${parent_id}` : ''}`,
+        {
+          params: params,
+        },
+      );
+      return res.data as FolderResponse;
+    },
+    queryKey: ['folders', parent_id, sort],
   });
 };
 
-export const useFiles = (parent_id?: string) => {
+export const useFiles = (parent_id?: string, sort?: SortParams) => {
   return useQuery({
     queryFn: () =>
       axios
-        .get(`${BASE_URL}auth/file/all${parent_id ? `/${parent_id}` : ''}`)
+        .get(`${BASE_URL}auth/file/all${parent_id ? `/${parent_id}` : ''}`, {
+          params: {
+            sort_by: getSortString(sort?.sort_by),
+            sort_order: getSortOrderString(sort?.sort_order),
+            limit: sort?.limit,
+            offset: sort?.offset,
+          },
+        })
         .then(res => res.data as FileModel[]),
-    queryKey: ['files', parent_id],
+    queryKey: ['files', parent_id, sort],
   });
 };
 

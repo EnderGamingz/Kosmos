@@ -1,7 +1,7 @@
 import tw from '@lib/classMerge.ts';
 import { useState } from 'react';
 import { Skeleton } from '@nextui-org/react';
-import { FilePreviewStatus } from '@models/file.ts';
+import { FilePreviewStatus, FileType } from '@models/file.ts';
 import {
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
@@ -11,10 +11,12 @@ export function PreviewImage({
   src,
   alt,
   status,
+  type,
 }: {
   src: string;
   alt: string;
   status?: FilePreviewStatus;
+  type?: FileType;
 }) {
   const [loaded, setLoaded] = useState(false);
 
@@ -23,7 +25,7 @@ export function PreviewImage({
       className={
         'grid h-[40px] w-[40px] place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]'
       }>
-      {status === FilePreviewStatus.Ready && (
+      {(status === FilePreviewStatus.Ready || type === FileType.RawImage) && (
         <img
           loading={'lazy'}
           onLoad={() => setLoaded(true)}

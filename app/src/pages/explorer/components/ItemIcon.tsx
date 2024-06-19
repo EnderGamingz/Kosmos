@@ -25,6 +25,7 @@ function getFileIcon(
           status={status}
           src={`${BASE_URL}auth/file/image/${id}/0`}
           alt={name}
+          type={type}
         />
       );
     case FileType.Video:

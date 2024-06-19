@@ -1,11 +1,14 @@
 use sonyflake::Sonyflake;
+use sqlx::QueryBuilder;
 
-use crate::db::KosmosPool;
+use crate::db::{KosmosDb, KosmosPool};
 use crate::model::folder::{
     DeletionDirectory, Directory, FolderModel, ParsedFolderModel, ParsedSimpleDirectory,
     SimpleDirectory,
 };
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::file::{ParsedSortParams, SortOrder};
+use crate::routes::api::v1::auth::folder::SortByFolders;
 use crate::services::session_service::UserId;
 
 #[derive(Clone)]
@@ -19,24 +22,53 @@ impl FolderService {
         FolderService { db_pool, sf }
     }
 
+    fn folder_search_query(
+        user_id: UserId,
+        parent_id: Option<i64>,
+        search: &ParsedSortParams<SortByFolders>,
+    ) -> String {
+        let mut query: QueryBuilder<KosmosDb> =
+            QueryBuilder::new("SELECT * FROM folder WHERE user_id = ");
+        query.push_bind(user_id);
+
+        query.push(" AND parent_id IS NOT DISTINCT FROM ");
+        query.push_bind(parent_id);
+
+        if search.sort_by == SortByFolders::Name {
+            query.push(" ORDER BY LOWER(folder_name)");
+        } else if search.sort_by == SortByFolders::CreatedAt {
+            query.push(" ORDER BY created_at");
+        } else if search.sort_by == SortByFolders::UpdatedAt {
+            query.push(" ORDER BY updated_at");
+        }
+
+        if search.sort_order == SortOrder::Asc {
+            query.push(" ASC");
+        } else {
+            query.push(" DESC");
+        }
+
+        query.sql().into()
+    }
+
     pub async fn get_folders(
         &self,
         user_id: UserId,
         parent_id: Option<i64>,
+        search: ParsedSortParams<SortByFolders>,
     ) -> Result<Vec<FolderModel>, AppError> {
-        sqlx::query_as!(
-            FolderModel,
-            "SELECT * FROM folder WHERE user_id = $1 AND parent_id IS NOT DISTINCT FROM $2",
-            user_id,
-            parent_id
-        )
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting folders for user {}: {}", user_id, e);
-            AppError::InternalError
-        })
-        .map(|rows| rows.into_iter().map(FolderModel::from).collect())
+        sqlx::query_as::<_, FolderModel>(&*Self::folder_search_query(user_id, parent_id, &search))
+            .bind(user_id)
+            .bind(parent_id)
+            .bind(search.limit)
+            .bind(search.offset)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting folders for user {}: {}", user_id, e);
+                AppError::InternalError
+            })
+            .map(|rows| rows.into_iter().map(FolderModel::from).collect())
     }
 
     pub async fn get_folder(&self, folder_id: i64) -> Result<FolderModel, AppError> {

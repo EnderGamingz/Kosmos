@@ -1,9 +1,11 @@
+use sqlx::{Execute, QueryBuilder};
 use std::path::Path;
 
-use crate::db::KosmosPool;
+use crate::db::{KosmosDb, KosmosPool};
 use crate::model::file::{FileModel, FileType, ParsedFileModel, PreviewStatus};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::file::{ParsedSortParams, SortByFiles, SortOrder};
 use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
 
@@ -17,36 +19,72 @@ impl FileService {
         FileService { db_pool }
     }
 
+    fn files_search_query(
+        user_id: UserId,
+        parent_folder_id: Option<i64>,
+        with_deleted: bool,
+        search: &ParsedSortParams<SortByFiles>,
+    ) -> String {
+        let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
+            "SELECT * FROM files WHERE user_id = ",
+        );
+        query.push_bind(user_id);
+
+        if with_deleted {
+            query.push(" AND deleted_at IS NOT NULL");
+        } else {
+            query.push(" AND deleted_at IS NULL");
+        }
+
+        query.push(" AND parent_folder_id IS NOT DISTINCT FROM ");
+        query.push_bind(parent_folder_id);
+
+        if search.sort_by == SortByFiles::Name {
+            query.push(" ORDER BY LOWER(file_name)");
+        } else if search.sort_by == SortByFiles::FileSize {
+            query.push(" ORDER BY file_size");
+        } else if search.sort_by == SortByFiles::CreatedAt {
+            query.push(" ORDER BY created_at");
+        } else if search.sort_by == SortByFiles::UpdatedAt {
+            query.push(" ORDER BY updated_at");
+        }
+
+        if search.sort_order == SortOrder::Asc {
+            query.push(" ASC");
+        } else {
+            query.push(" DESC");
+        }
+
+        query.push(" LIMIT ");
+        query.push_bind(search.limit);
+
+        query.push(" OFFSET ");
+        query.push_bind(search.offset);
+
+        query.build().sql().into()
+    }
+
     pub async fn get_files(
         &self,
         user_id: UserId,
         parent_folder_id: Option<i64>,
         with_deleted: bool,
+        search: ParsedSortParams<SortByFiles>,
     ) -> Result<Vec<FileModel>, AppError> {
-        let files = if with_deleted {
-            sqlx::query_as!(
-                FileModel,
-                "SELECT * FROM files WHERE user_id = $1
-              AND parent_folder_id IS NOT DISTINCT FROM $2",
+        sqlx::query_as::<_, FileModel>(
+            &*Self::files_search_query(
                 user_id,
                 parent_folder_id,
+                with_deleted,
+                &search
             )
-            .fetch_all(&self.db_pool)
-            .await
-        } else {
-            sqlx::query_as!(
-                FileModel,
-                "SELECT * FROM files WHERE user_id = $1
-              AND parent_folder_id IS NOT DISTINCT FROM $2
-              AND deleted_at IS NULL",
-                user_id,
-                parent_folder_id,
-            )
-            .fetch_all(&self.db_pool)
-            .await
-        };
-
-        files
+        )
+        .bind(user_id)
+        .bind(parent_folder_id)
+        .bind(search.limit)
+        .bind(search.offset)
+        .fetch_all(&self.db_pool)
+        .await
             .map_err(|e| {
                 tracing::error!("Error getting files for user {}: {}", user_id, e);
                 AppError::InternalError
@@ -56,36 +94,38 @@ impl FileService {
 
     pub async fn get_marked_deleted_files(
         &self,
-        user_id: UserId
+        user_id: UserId,
     ) -> Result<Vec<FileModel>, AppError> {
         sqlx::query_as!(
             FileModel,
             "SELECT * FROM files WHERE user_id = $1
-              AND deleted_at IS NOT NULL",
+             AND deleted_at IS NOT NULL",
             user_id
         )
-            .fetch_all(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error fetching deleted files: {}", e);
-                AppError::InternalError
-            })
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching deleted files: {}", e);
+            AppError::InternalError
+        })
     }
 
-    pub async fn update_preview_status_for_file_ids(&self,
+    pub async fn update_preview_status_for_file_ids(
+        &self,
         file_ids: &Vec<i64>,
-        preview_status: PreviewStatus) -> Result<(), AppError> {
+        preview_status: PreviewStatus,
+    ) -> Result<(), AppError> {
         sqlx::query!(
             "UPDATE files SET preview_status = $1 WHERE id = ANY($2)",
             preview_status as i16,
             file_ids
         )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error updating preview status: {}", e);
-                AppError::InternalError
-            })?;
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating preview status: {}", e);
+            AppError::InternalError
+        })?;
 
         Ok(())
     }
@@ -214,18 +254,21 @@ impl FileService {
         parent_folder_id: Option<i64>,
     ) -> Result<Option<i64>, AppError> {
         let result = sqlx::query!(
-            "SELECT id FROM files WHERE file_name = $1 AND user_id = $2 AND parent_folder_id IS NOT DISTINCT FROM $3 LIMIT 1",
+            "SELECT id FROM files WHERE file_name = $1
+             AND user_id = $2
+             AND parent_folder_id IS NOT DISTINCT FROM $3
+             LIMIT 1",
             file_name,
             user_id,
             parent_folder_id
         )
-            .fetch_optional(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error checking if file {} exists: {}", file_name, e);
-                AppError::InternalError
-            })?
-            .map(|row| row.id);
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error checking if file {} exists: {}", file_name, e);
+            AppError::InternalError
+        })?
+        .map(|row| row.id);
         Ok(result)
     }
 
@@ -236,7 +279,8 @@ impl FileService {
     ) -> Result<Option<FileModel>, AppError> {
         let result = sqlx::query_as!(
             FileModel,
-            "SELECT * from files WHERE id = $1 AND user_id = $2",
+            "SELECT * from files WHERE id = $1
+             AND user_id = $2",
             file_id,
             user_id
         )
@@ -278,14 +322,17 @@ impl FileService {
         Ok(())
     }
 
-    pub async fn permanently_delete_file(&self, file_id: i64, file_type: Option<FileType>) -> Result<(), AppError> {
+    pub async fn permanently_delete_file(
+        &self,
+        file_id: i64,
+        file_type: Option<FileType>,
+    ) -> Result<(), AppError> {
         let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
         let upload_path = Path::new(&upload_location);
 
         if let Some(FileType::Image) = file_type {
             self.delete_formats_from_file_id(file_id).await?;
         }
-
 
         tokio::fs::remove_file(upload_path.join(file_id.to_string()))
             .await
@@ -311,15 +358,15 @@ impl FileService {
             "SELECT * FROM image_formats WHERE file_id = $1",
             file_id
         )
-            .fetch_all(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error while deleting {} image formats: {}", file_id, e);
-                AppError::InternalError
-            })?
-            .into_iter()
-            .map(ImageFormatModel::from)
-            .collect::<Vec<_>>();
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error while deleting {} image formats: {}", file_id, e);
+            AppError::InternalError
+        })?
+        .into_iter()
+        .map(ImageFormatModel::from)
+        .collect::<Vec<_>>();
 
         if formats.is_empty() {
             return Ok(());
@@ -330,8 +377,8 @@ impl FileService {
         let formats_folder_path = upload_path.join("formats");
 
         for format in formats {
-            let format_path =
-                formats_folder_path.join(ImageService::make_image_format_name(file_id, format.format));
+            let format_path = formats_folder_path
+                .join(ImageService::make_image_format_name(file_id, format.format));
 
             // Delete image format from disk
             let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
@@ -350,18 +397,21 @@ impl FileService {
         Ok(())
     }
 
-
     pub async fn clear_bin(&self, user_id: UserId) -> Result<(), AppError> {
-        let files = sqlx::query!("SELECT id, file_type FROM files WHERE user_id = $1 AND deleted_at IS NOT NULL", user_id)
-            .fetch_all(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error fetching deleted files: {}", e);
-                AppError::InternalError
-            })?;
+        let files = sqlx::query!(
+            "SELECT id, file_type FROM files WHERE user_id = $1 AND deleted_at IS NOT NULL",
+            user_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching deleted files: {}", e);
+            AppError::InternalError
+        })?;
 
         for file in files {
-            self.permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type))).await?;
+            self.permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type)))
+                .await?;
         }
         Ok(())
     }
@@ -422,12 +472,12 @@ impl FileService {
             PreviewStatus::Unavailable as i16,
             PreviewStatus::Processing as i16
         )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error preparing files for startup: {}", e);
-                AppError::InternalError
-            });
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error preparing files for startup: {}", e);
+            AppError::InternalError
+        });
         tracing::info!("Prepared files for startup");
     }
 }

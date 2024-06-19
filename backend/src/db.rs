@@ -1,7 +1,8 @@
 use sqlx::postgres::PgQueryResult;
 use sqlx::{PgPool, Pool, Postgres};
 
-pub type KosmosPool = Pool<Postgres>;
+pub type KosmosDb = Postgres;
+pub type KosmosPool = Pool<KosmosDb>;
 pub type KosmosDbResult = PgQueryResult;
 
 pub async fn init() -> KosmosPool {
