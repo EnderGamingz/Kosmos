@@ -16,7 +16,7 @@ import {
 } from '@components/transition.ts';
 import { formatBytes } from '@lib/fileSize.ts';
 import { TableHeader } from '@pages/explorer/fileTable/tableHeader.tsx';
-import FileDisplay from '@pages/explorer/file/fileDisplay.tsx';
+import FileDisplay from '@pages/explorer/file/display/fileDisplay.tsx';
 
 export type Selected = { files: string[]; folders: string[] };
 

@@ -25,7 +25,7 @@ export function TableHeader({
           ? SortOrder.Desc
           : SortOrder.Asc;
     } else {
-      sortOrder = SortOrder.Asc;
+      sortOrder = SortOrder.Desc;
     }
 
     updateSort({
@@ -47,9 +47,9 @@ export function TableHeader({
         <th className={'w-full'} onClick={handleSort(SortBy.Name)}>
           Name
           <SortIcon
-            asc={
+            desc={
               currentSort.sort_by === SortBy.Name &&
-              currentSort.sort_order === SortOrder.Asc
+              currentSort.sort_order === SortOrder.Desc
             }
           />
         </th>
@@ -59,9 +59,9 @@ export function TableHeader({
           onClick={handleSort(SortBy.FileSize)}>
           Size
           <SortIcon
-            asc={
+            desc={
               currentSort.sort_by === SortBy.FileSize &&
-              currentSort.sort_order === SortOrder.Asc
+              currentSort.sort_order === SortOrder.Desc
             }
           />
         </th>
@@ -71,9 +71,9 @@ export function TableHeader({
           onClick={handleSort(SortBy.UpdatedAt)}>
           Modified
           <SortIcon
-            asc={
+            desc={
               currentSort.sort_by === SortBy.UpdatedAt &&
-              currentSort.sort_order === SortOrder.Asc
+              currentSort.sort_order === SortOrder.Desc
             }
           />
         </th>
@@ -82,12 +82,12 @@ export function TableHeader({
   );
 }
 
-function SortIcon({ asc }: { asc: boolean }) {
+function SortIcon({ desc }: { desc: boolean }) {
   return (
     <span
       className={tw(
         'ml-2 inline-block transition-transform',
-        asc ? 'rotate-0' : 'rotate-180',
+        desc ? 'rotate-0' : 'rotate-180',
       )}>
       <ChevronUpIcon className={'h-3 w-3'} />
     </span>

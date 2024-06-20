@@ -85,11 +85,12 @@ export function FileItem({
         </button>
       </td>
       <td align={'right'}>{formatBytes(file.file_size)}</td>
-      <td
+      <motion.td
+        layoutId={`updated-${file.id}`}
         align={'right'}
         className={'whitespace-nowrap text-sm font-light lg:text-base'}>
         {formatDistanceToNow(file.updated_at)}
-      </td>
+      </motion.td>
     </motion.tr>
   );
 }
