@@ -18,9 +18,11 @@ import { useExplorerStore } from '@stores/folderStore.ts';
 export function PermanentDeleteAction({
   deleteData,
   onClose,
+  short,
 }: {
   deleteData: { id: string; type: DataOperationType; name: string };
-  onClose: () => void;
+  onClose?: () => void;
+  short?: boolean;
 }) {
   const notification = useNotifications(s => s.actions);
 
@@ -57,13 +59,13 @@ export function PermanentDeleteAction({
   return (
     <button
       onClick={() => {
-        onClose();
+        onClose?.();
         deleteAction.mutate();
       }}
       type={'button'}
       className={'text-red-500 hover:!text-red-800'}>
       <TrashIcon />
-      Delete Permanently
+      {short ? 'Delete' : 'Delete Permanently'}
     </button>
   );
 }

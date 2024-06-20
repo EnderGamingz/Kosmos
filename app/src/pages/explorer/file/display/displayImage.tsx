@@ -30,10 +30,11 @@ export function DisplayImage({
     if (isTooLarge) return;
     onFullScreen(!fullScreen);
   };
+
   return (
     <>
       <AnimatePresence>
-        {fullScreen && (
+        {fullScreen && !isTooLarge && (
           <Portal>
             <motion.div
               initial={{ opacity: 0 }}
@@ -42,17 +43,11 @@ export function DisplayImage({
               className={'fixed inset-0 z-[100] bg-white p-10'}>
               <motion.img
                 onDoubleClick={toggleFullScreen}
-                className={tw(
-                  'h-full w-full rounded-xl bg-center bg-no-repeat',
-                  'bg-contain object-contain drop-shadow-lg',
-                )}
+                className={
+                  'h-full w-full rounded-xl object-contain drop-shadow-lg'
+                }
                 layoutId={`image-${file.id}`}
-                src={isTooLarge ? lowRes : highRes}
-                style={{
-                  // Image background will serve as a low-quality placeholder
-                  // until the high-resolution image is downloaded
-                  backgroundImage: `url(${lowRes})`,
-                }}
+                src={highRes}
                 alt={file.file_name}
               />
               <motion.div
@@ -87,6 +82,7 @@ export function DisplayImage({
           </motion.div>
         )}
         <motion.img
+          exit={{ opacity: 0, scale: 0 }}
           onDoubleClick={toggleFullScreen}
           className={tw(
             'h-full w-full rounded-xl bg-center bg-no-repeat transition-colors',

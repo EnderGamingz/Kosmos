@@ -12,7 +12,7 @@ export function RenameAction({
   type: DataOperationType;
   id: string;
   name: string;
-  onClose: () => void;
+  onClose?: () => void;
 }) {
   const {
     isOpen,
@@ -27,14 +27,17 @@ export function RenameAction({
         size={'md'}
         backdrop={'blur'}
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement={'auto'}>
+        onOpenChange={onOpenChange}>
         <ModalContent>
           <RenameModalContent
             renameData={{ type, id, name }}
             onClose={() => {
               disclosureOnClose();
-              onClose();
+              // Next UI Causes the file display modal to not close properly
+              // this is a workaround
+              setTimeout(() => {
+                onClose?.();
+              }, 400);
             }}
           />
         </ModalContent>

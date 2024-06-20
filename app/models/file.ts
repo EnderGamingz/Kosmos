@@ -62,7 +62,7 @@ export function getFileTypeString(id: number): string {
     case FileType.RawImage:
       return 'Raw Image';
     case FileType.LargeImage:
-      return 'Large Image';
+      return 'Large or Unsupported Image';
     case FileType.Archive:
       return 'Archive';
     default:

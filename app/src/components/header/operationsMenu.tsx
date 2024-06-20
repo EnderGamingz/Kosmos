@@ -116,7 +116,7 @@ export function OperationsMenu() {
           </h2>
           <ScrollShadow
             as={motion.div}
-            variants={containerVariant}
+            variants={containerVariant()}
             initial={'hidden'}
             animate={'show'}
             className={

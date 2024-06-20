@@ -3,17 +3,19 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 import { invalidateFiles, invalidateUsage } from '@lib/query.ts';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { ArchiveBoxXMarkIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 
 export function MoveToTrash({
   id,
   name,
   onClose,
+  short,
 }: {
   id: string;
   name: string;
-  onClose: () => void;
+  onClose?: () => void;
+  short?: boolean;
 }) {
   const permanent = useKeyStore(s => s.shift);
   const trashAction = useMutation({
@@ -27,6 +29,7 @@ export function MoveToTrash({
   if (permanent)
     return (
       <PermanentDeleteAction
+        short={short}
         deleteData={{ type: 'file', id, name }}
         onClose={onClose}
       />
@@ -36,12 +39,12 @@ export function MoveToTrash({
     <button
       disabled={trashAction.isPending}
       onClick={() => {
-        onClose();
+        onClose?.();
         trashAction.mutate();
       }}
       className={'text-red-500 hover:!text-red-800'}>
-      <TrashIcon />
-      Move to Trash
+      <ArchiveBoxXMarkIcon />
+      {short ? 'Trash' : 'Move to Trash'}
     </button>
   );
 }

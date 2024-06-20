@@ -80,7 +80,7 @@ export function FileTable({
             }}
           />
           <motion.tbody
-            variants={containerVariant}
+            variants={containerVariant()}
             initial={'hidden'}
             animate={'show'}
             key={currentFolder}

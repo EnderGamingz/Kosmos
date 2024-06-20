@@ -16,7 +16,7 @@ export function DownloadSingleAction({
   type: DataOperationType;
   id: string;
   name: string;
-  onClose: () => void;
+  onClose?: () => void;
 }) {
   const [fileId, setFileId] = useState('');
   const notification = useNotifications(s => s.actions);
@@ -94,7 +94,7 @@ export function DownloadSingleAction({
     <button
       onClick={() => {
         downloadAction.mutate();
-        onClose();
+        onClose?.();
       }}
       disabled={downloadAction.isPending}>
       <ArrowDownTrayIcon />

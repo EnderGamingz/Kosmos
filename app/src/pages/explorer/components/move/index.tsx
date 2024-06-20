@@ -14,7 +14,7 @@ export function MoveAction({
   id: string;
   name: string;
   current_parent?: string;
-  onClose: () => void;
+  onClose?: () => void;
 }) {
   const {
     isOpen,
@@ -37,7 +37,9 @@ export function MoveAction({
             parent={current_parent}
             onClose={() => {
               disclosureOnClose();
-              onClose();
+              setTimeout(() => {
+                onClose?.();
+              }, 400);
             }}
           />
         </ModalContent>

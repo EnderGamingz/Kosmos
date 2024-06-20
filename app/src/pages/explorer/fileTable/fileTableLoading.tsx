@@ -33,7 +33,7 @@ export function FileTableLoading() {
           </tr>
         </thead>
         <motion.tbody
-          variants={containerVariant}
+          variants={containerVariant()}
           initial='hidden'
           animate='show'
           className={'divide-y divide-stone-300/50 overflow-hidden'}>
