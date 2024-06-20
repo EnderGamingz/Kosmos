@@ -3,6 +3,7 @@ import { DisplayImage } from '@pages/explorer/file/display/displayImage.tsx';
 import { motion } from 'framer-motion';
 import tw from '@lib/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
+import { BASE_URL } from '@lib/vars.ts';
 
 export function FileDisplayHandler({
   file,
@@ -24,15 +25,18 @@ export function FileDisplayHandler({
       />
     );
 
-  /*  if (file.file_type === FileType.Document) {
+  if (file.file_type === FileType.Document) {
     return (
-      <object
+      <motion.object
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.5 }}
+        transition={{ duration: 0.3 }}
         className={'h-full w-full rounded-xl shadow-lg'}
-        data={`${BASE_URL}auth/file/raw/${file.id}`}
-        type='application/pdf'
+        data={`${BASE_URL}auth/file/${file.id}/action/Serve`}
       />
     );
-  }*/
+  }
 
   return (
     <motion.div

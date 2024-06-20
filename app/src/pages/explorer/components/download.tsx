@@ -23,13 +23,16 @@ export function DownloadSingleAction({
 
   const downloadAction = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`${BASE_URL}auth/download/${type}/${id}`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${BASE_URL}auth/${type}/${id}/action/Download`,
+        {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
 
       const fileId = notification.notify({
         title: 'File Download',

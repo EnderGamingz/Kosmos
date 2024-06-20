@@ -17,8 +17,13 @@ export const itemTransitionVariant = {
 };
 
 export const itemTransitionVariantFadeInFromLeft = {
-  hidden: { opacity: 0, x: -60 },
+  hidden: { opacity: 0, x: -40 },
   show: { opacity: 1, x: 0 },
+};
+
+export const itemTransitionVariantFadeInFromTop = {
+  hidden: { opacity: 0, y: -40 },
+  show: { opacity: 1, y: 0 },
 };
 
 export const transitionStop = 40;

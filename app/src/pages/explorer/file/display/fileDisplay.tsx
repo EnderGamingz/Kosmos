@@ -8,6 +8,7 @@ import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
 import { FileDisplayHandler } from '@pages/explorer/file/display/fileDisplayHandler.tsx';
 import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
+import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 
 export default function FileDisplay({
   file,
@@ -53,7 +54,7 @@ function FileDisplayContent({
       <Backdrop onClose={onClose} />
       <div
         className={tw(
-          'pointer-events-none h-full max-h-[800px] w-full max-w-5xl',
+          'pointer-events-none h-full max-h-[600px] w-full max-w-5xl',
           'fixed left-1/2 top-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2',
         )}>
         <div
@@ -88,8 +89,9 @@ function FileDisplayContent({
               selected={isSelected}
               onSelect={onSelect}
             />
+            <FileDisplayStats file={file} />
             <FileDisplayAction file={file} onClose={onClose} />
-            <FileDisplayFooter file={file} />
+            <FileDisplayFooter file={file} onClose={onClose} />
           </motion.div>
         </div>
       </div>

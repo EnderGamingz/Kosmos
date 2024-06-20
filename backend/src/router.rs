@@ -52,17 +52,13 @@ fn get_image_router() -> KosmosRouter {
 fn get_file_router() -> KosmosRouter {
     Router::new()
         .route(
-            "/upload",
-            post(crate::routes::api::v1::auth::file::upload_file),
-        )
-        .route(
-            "/upload/:folder_id",
-            post(crate::routes::api::v1::auth::file::upload_file),
-        )
-        .route(
             "/:file_id",
             delete(crate::routes::api::v1::auth::file::permanently_delete_file)
                 .patch(crate::routes::api::v1::auth::file::rename_file),
+        )
+        .route(
+            "/:file_id/action/:operation_type",
+            get(crate::routes::api::v1::auth::download::handle_raw_file),
         )
         .route(
             "/:file_id/bin",
@@ -71,6 +67,14 @@ fn get_file_router() -> KosmosRouter {
         .route(
             "/:file_id/restore",
             post(crate::routes::api::v1::auth::file::restore_file),
+        )
+        .route(
+            "/upload",
+            post(crate::routes::api::v1::auth::file::upload_file),
+        )
+        .route(
+            "/upload/:folder_id",
+            post(crate::routes::api::v1::auth::file::upload_file),
         )
         .route(
             "/bin/clear",
@@ -94,15 +98,10 @@ fn get_file_router() -> KosmosRouter {
 }
 
 fn get_download_router() -> KosmosRouter {
-    Router::new()
-        .route(
-            "/file/:file_id",
-            get(crate::routes::api::v1::auth::download::download_raw_file),
-        )
-        .route(
-            "/multi",
-            post(crate::routes::api::v1::auth::download::multi_download),
-        )
+    Router::new().route(
+        "/file/:file_id",
+        get(crate::routes::api::v1::auth::download::handle_raw_file),
+    )
 }
 
 fn get_user_router() -> KosmosRouter {
@@ -115,7 +114,8 @@ fn get_user_router() -> KosmosRouter {
 fn get_multi_router() -> KosmosRouter {
     Router::new().route(
         "/",
-        delete(crate::routes::api::v1::auth::folder::multi_delete),
+        post(crate::routes::api::v1::auth::download::multi_download)
+            .delete(crate::routes::api::v1::auth::folder::multi_delete),
     )
 }
 

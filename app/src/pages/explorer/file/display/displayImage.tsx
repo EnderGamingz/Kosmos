@@ -24,7 +24,7 @@ export function DisplayImage({
   const isTooLarge = file.file_size > IMAGE_SIZE_THRESHOLD;
 
   const lowRes = `${BASE_URL}auth/file/image/${file.id}/0`;
-  const highRes = `${BASE_URL}auth/download/file/${file.id}`;
+  const highRes = `${BASE_URL}auth/file/${file.id}/action/Serve`;
 
   const toggleFullScreen = () => {
     if (isTooLarge) return;
@@ -81,6 +81,16 @@ export function DisplayImage({
             {fullScreen ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
           </motion.div>
         )}
+        {/* Background for transparent files */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.3 } }}
+          exit={{ opacity: 0, transition: { duration: 0 } }}
+          className={tw(
+            'absolute inset-0 -z-10 rounded-xl bg-stone-800/20 text-stone-700 shadow-xl',
+            'outline outline-1 -outline-offset-1 outline-stone-500',
+          )}
+        />
         <motion.img
           exit={{ opacity: 0, scale: 0 }}
           onDoubleClick={toggleFullScreen}

@@ -84,7 +84,9 @@ export function FileItem({
           <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
         </button>
       </td>
-      <td align={'right'}>{formatBytes(file.file_size)}</td>
+      <motion.td layoutId={`size-${file.id}`} align={'right'}>
+        {formatBytes(file.file_size)}
+      </motion.td>
       <motion.td
         layoutId={`updated-${file.id}`}
         align={'right'}

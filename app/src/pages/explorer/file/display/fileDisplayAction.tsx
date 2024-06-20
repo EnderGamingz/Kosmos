@@ -36,17 +36,17 @@ export function FileDisplayAction({
   ];
   return (
     <motion.div
-      variants={containerVariant(0.08, 0.1)}
+      variants={containerVariant(0.08, 0.2)}
       initial={'hidden'}
       animate={'show'}
       exit={'hidden'}
       className={tw(
-        'flex flex-wrap justify-center gap-2',
-        '[&_button>svg]:h-10 [&_button>svg]:w-10 [&_button]:rounded-xl [&_button]:p-2',
+        'flex flex-wrap justify-center gap-4',
+        '[&_button>svg]:h-8 [&_button>svg]:w-8 [&_button]:rounded-xl [&_button]:p-2',
         '[&_button]:grid [&_button]:place-items-center',
         '[&_button]:bg-stone-200/20 [&_button]:outline [&_button]:outline-1 [&_button]:outline-stone-400/10',
-        '[&_button]:h-24 [&_button]:w-24  [&_button]:shadow-md [&_button]:transition-all',
-        '[&_button:hover]:bg-stone-400/20 [&_button:hover]:shadow-xl',
+        '[&_button]:h-20 [&_button]:w-20 [&_button]:text-sm [&_button]:shadow-sm [&_button]:transition-all',
+        '[&_button:hover]:bg-stone-400/20 [&_button:hover]:shadow-md',
       )}>
       {actions.map((item, i) => (
         <motion.div

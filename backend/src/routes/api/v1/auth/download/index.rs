@@ -1,13 +1,11 @@
-use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
+use std::io::{BufWriter, Write};
+
 use axum::body::Body;
 use axum::extract::{Path, State};
 use axum::http::header;
-use axum::response::{IntoResponse, Response};
 use axum::Json;
+use axum::response::{IntoResponse, Response};
 use serde::Deserialize;
-use std::io::{BufWriter, Write};
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 use tokio_util::io::ReaderStream;
@@ -15,10 +13,20 @@ use tower_sessions::Session;
 use zip::write::{FileOptions, SimpleFileOptions};
 use zip::ZipWriter;
 
-pub async fn download_raw_file(
+use crate::response::error_handling::AppError;
+use crate::services::session_service::SessionService;
+use crate::state::KosmosState;
+
+#[derive(Deserialize)]
+pub enum RawFileAction {
+    Download,
+    Serve,
+}
+
+pub async fn handle_raw_file(
     State(state): KosmosState,
     session: Session,
-    Path(file_id): Path<i64>,
+    Path((file_id, operation_type)): Path<(i64, RawFileAction)>,
 ) -> Result<Response, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
@@ -49,16 +57,18 @@ pub async fn download_raw_file(
 
     let body = Body::from_stream(stream);
 
+    let disposition = match operation_type {
+        RawFileAction::Download => format!("attachment; filename=\"{}\"", file.file_name),
+        RawFileAction::Serve => String::from("inline"),
+    };
+
     let headers = [
         (header::CONTENT_LENGTH, metadata.len().to_string()),
         (
             header::CONTENT_TYPE,
             format!("{}; charset=utf-8", file.mime_type),
         ),
-        (
-            header::CONTENT_DISPOSITION,
-            format!("attachment; filename=\"{}\"", file.file_name),
-        ),
+        (header::CONTENT_DISPOSITION, disposition),
         (header::ETAG, format!("\"{}\"", file.id)),
         (header::CACHE_CONTROL, "no-cache".to_string()),
         (header::PRAGMA, "no-cache".to_string()),
@@ -162,7 +172,6 @@ pub async fn multi_download(
             let path_to_file = upload_path.join(file_id.to_string());
 
             if let Ok(mut file) = File::open(&path_to_file).await {
-
                 // Ignore error as this can fail when a folder with the name already exists
                 let _ = zip.add_directory(&path_in_zip, options);
 

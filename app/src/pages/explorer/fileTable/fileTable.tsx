@@ -72,6 +72,7 @@ export function FileTable({
             isIndeterminate={isPartialSelected}
             onValueChange={() => {
               if ((!isNoneSelected && !isAllSelected) || isNoneSelected) {
+                selectNone();
                 files.map(file => selectFile(file.id));
                 folders.map(folder => selectFolder(folder.id));
               } else if (isAllSelected) {

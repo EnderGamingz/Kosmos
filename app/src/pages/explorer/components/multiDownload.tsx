@@ -40,7 +40,7 @@ export function MultiDownload({
       setFileId(fileId);
 
       // noinspection JSUnusedGlobalSymbols
-      const response = await fetch(BASE_URL + 'auth/download/multi', {
+      const response = await fetch(`${BASE_URL}auth/multi`, {
         method: 'POST',
         credentials: 'include',
         headers: {
