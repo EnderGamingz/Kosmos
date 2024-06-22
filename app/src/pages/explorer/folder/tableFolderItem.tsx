@@ -17,7 +17,7 @@ import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 
-export function FolderItem({
+export function TableFolderItem({
   i,
   folder,
   selected,

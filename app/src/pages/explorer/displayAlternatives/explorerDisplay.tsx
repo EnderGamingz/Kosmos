@@ -1,10 +1,40 @@
 import { FolderModel } from '@models/folder.ts';
-import { FileModel } from '@models/file.ts';
+import { FileModel, FileType } from '@models/file.ts';
 import { FileTableLoading } from '@pages/explorer/displayAlternatives/fileTable/fileTableLoading.tsx';
 import { FileTable } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 import { ExplorerDisplayWrapper } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper.tsx';
+import {
+  ExplorerDisplay,
+  ExplorerLoading,
+  usePreferenceStore,
+} from '@stores/preferenceStore.ts';
+import { FileGridLoading } from '@pages/explorer/displayAlternatives/fileGrid/fileGridLoading.tsx';
+import { useMemo } from 'react';
+import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx';
 
-export default function ExplorerDisplay({
+function getLoadingComponent(id: ExplorerLoading) {
+  switch (id) {
+    case ExplorerLoading.Grid:
+      return <FileGridLoading />;
+    case ExplorerLoading.Table:
+    default:
+      return <FileTableLoading />;
+  }
+}
+
+function getDisplayComponent(id: ExplorerDisplay) {
+  switch (id) {
+    case ExplorerDisplay.DynamicGrid:
+      return <FileGrid dynamic />;
+    case ExplorerDisplay.StaticGrid:
+      return <FileGrid />;
+    case ExplorerDisplay.Table:
+    default:
+      return <FileTable />;
+  }
+}
+
+export default function ExplorerDataDisplay({
   isLoading,
   files,
   folders,
@@ -13,11 +43,25 @@ export default function ExplorerDisplay({
   files: FileModel[];
   folders: FolderModel[];
 }) {
-  if (isLoading) return <FileTableLoading />;
+  const preferences = usePreferenceStore();
+
+  const displayType = useMemo(() => {
+    const isOnlyImages =
+      files.length > 0 &&
+      files.filter(file => file.file_type === FileType.Image).length ===
+        files.length;
+
+    if (isOnlyImages) return preferences.explorerDisplay.imageOnly;
+
+    return preferences.explorerDisplay.mixed;
+  }, [files, preferences.explorerDisplay]);
+
+  if (isLoading)
+    return getLoadingComponent(preferences.explorerDisplay.loading);
 
   return (
     <ExplorerDisplayWrapper files={files} folders={folders}>
-      <FileTable />
+      {getDisplayComponent(displayType.type)}
     </ExplorerDisplayWrapper>
   );
 }

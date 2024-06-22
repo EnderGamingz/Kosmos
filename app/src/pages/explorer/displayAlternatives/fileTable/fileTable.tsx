@@ -1,8 +1,8 @@
 import { FileModel } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
 import { motion } from 'framer-motion';
-import { FolderItem } from '@pages/explorer/folder/folderItem.tsx';
-import { FileItem } from '@pages/explorer/file/fileItem.tsx';
+import { TableFolderItem } from '@pages/explorer/folder/tableFolderItem.tsx';
+import { TableFileItem } from '@pages/explorer/file/tableFileItem.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
 import tw from '@lib/classMerge.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
@@ -34,7 +34,7 @@ export function FileTable() {
           key={currentFolder}
           className={tw(isControl && '[&_tr]:cursor-copy')}>
           {folders.map((folder: FolderModel, i: number) => (
-            <FolderItem
+            <TableFolderItem
               i={i}
               selected={selectedFolders}
               onSelect={selectFolder}
@@ -43,7 +43,7 @@ export function FileTable() {
             />
           ))}
           {files.map((file: FileModel, i: number) => (
-            <FileItem
+            <TableFileItem
               i={folders.length + i}
               selected={selectedFiles}
               onSelect={selectFile}

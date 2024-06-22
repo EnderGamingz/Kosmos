@@ -81,3 +81,7 @@ export function isMultiple(data: ContextData): data is Selected {
     (data as Selected).folders !== undefined
   );
 }
+
+export function fileHasPreview(data: FileModel) {
+  return [FileType.Image, FileType.RawImage].includes(data.file_type);
+}

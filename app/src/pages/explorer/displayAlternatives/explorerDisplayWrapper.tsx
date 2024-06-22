@@ -26,6 +26,7 @@ export function ExplorerDisplayWrapper({
   const { selectedFile: selectedDisplayFile } = useExplorerStore(
     s => s.current,
   );
+
   const {
     selectedFolders,
     selectedFiles,

@@ -9,7 +9,7 @@ import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { FileUploadContent } from '@pages/explorer/file/fileUpload.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
-import ExplorerDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
@@ -79,7 +79,7 @@ export function FileList() {
           </BreadCrumbs>
         </div>
         <FileUploadContent folder={folder} isInFileList={true}>
-          <ExplorerDisplay
+          <ExplorerDataDisplay
             isLoading={isLoading}
             files={files.data || []}
             folders={folders.data?.folders || []}

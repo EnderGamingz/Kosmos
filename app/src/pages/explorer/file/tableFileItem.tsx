@@ -17,7 +17,7 @@ import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 
-export function FileItem({
+export function TableFileItem({
   i,
   file,
   selected,
@@ -42,7 +42,6 @@ export function FileItem({
 
   return (
     <motion.tr
-      layoutId={`file-${file.id}`}
       layout
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {

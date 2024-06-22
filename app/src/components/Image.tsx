@@ -14,21 +14,25 @@ export function PreviewImage({
   alt,
   status,
   type,
+  dynamic,
 }: {
   id: string;
   src: string;
   alt: string;
   status?: FilePreviewStatus;
   type?: FileType;
+  dynamic?: boolean;
 }) {
   const [loaded, setLoaded] = useState(false);
 
   return (
     <motion.div
       layoutId={`image-${id}`}
-      className={
-        'grid h-[40px] w-[40px] place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]'
-      }>
+      className={tw(
+        'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
+        'shadow-inherit',
+        !dynamic && 'h-[40px] w-[40px]',
+      )}>
       {(status === FilePreviewStatus.Ready || type === FileType.RawImage) && (
         <motion.img
           loading={'lazy'}
@@ -38,8 +42,10 @@ export function PreviewImage({
           width={40}
           height={40}
           className={tw(
-            'img img relative z-10 aspect-square h-10 w-10 rounded-lg object-cover text-[0] opacity-0',
-            '!duration-300 transition-transform-opacity data-[loaded=true]:opacity-100 motion-reduce:transition-none',
+            'img img relative z-10 aspect-square rounded-lg object-cover text-[0] opacity-0',
+            'rounded-lg shadow-xl !duration-300 transition-transform-opacity',
+            'data-[loaded=true]:opacity-100 motion-reduce:transition-none',
+            !dynamic && 'h-10 w-10',
           )}
           src={src}
           alt={alt}
@@ -47,7 +53,10 @@ export function PreviewImage({
       )}
       {(!loaded || status === FilePreviewStatus.Processing) && (
         <Skeleton
-          className={'h-10 w-10 rounded-lg !bg-transparent shadow-inner'}
+          className={tw(
+            'h-full w-full',
+            'rounded-lg !bg-transparent shadow-inner',
+          )}
         />
       )}
       {status === FilePreviewStatus.Failed && (

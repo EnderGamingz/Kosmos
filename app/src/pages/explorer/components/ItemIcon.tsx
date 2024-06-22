@@ -17,6 +17,7 @@ function getFileIcon(
   id: string,
   name: string,
   status: undefined | FilePreviewStatus,
+  dynamic?: boolean,
 ) {
   switch (type) {
     case FileType.Image:
@@ -28,6 +29,7 @@ function getFileIcon(
           src={`${BASE_URL}auth/file/image/${id}/0`}
           alt={name}
           type={type}
+          dynamic={dynamic}
         />
       );
     case FileType.Video:
@@ -52,17 +54,21 @@ export default function ItemIcon({
   type,
   name,
   status,
+  dynamic,
 }: {
   id: string;
   type: FileType | 'folder';
   name: string;
   status?: FilePreviewStatus;
+  dynamic?: boolean;
 }) {
   return (
     <motion.div
       layoutId={`type-${id}`}
-      className={'text-stone-700 [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'}>
-      {getFileIcon(type, id, name, status)}
+      className={
+        'icon-container text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'
+      }>
+      {getFileIcon(type, id, name, status, dynamic)}
     </motion.div>
   );
 }
