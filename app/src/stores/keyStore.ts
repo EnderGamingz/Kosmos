@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 
 export type KeyState = {
-  shift: boolean;
-  ctrl: boolean;
+  keys: {
+    shift: boolean;
+    ctrl: boolean;
+  };
   actions: {
     toggleShift: (newValue: boolean) => void;
     toggleCtrl: (newValue: boolean) => void;
@@ -10,14 +12,32 @@ export type KeyState = {
 };
 
 export const useKeyStore = create<KeyState>(set => ({
-  shift: false,
-  ctrl: false,
+  keys: {
+    shift: false,
+    ctrl: false,
+  },
   actions: {
     toggleShift: (newValue: boolean) => {
-      set({ shift: newValue });
+      set(state => {
+        return {
+          ...state,
+          keys: {
+            ...state.keys,
+            shift: newValue,
+          },
+        };
+      });
     },
     toggleCtrl: (newValue: boolean) => {
-      set({ ctrl: newValue });
+      set(state => {
+        return {
+          ...state,
+          keys: {
+            ...state.keys,
+            ctrl: newValue,
+          },
+        };
+      });
     },
   },
 }));

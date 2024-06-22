@@ -17,7 +17,7 @@ export function MoveToTrash({
   onClose?: () => void;
   short?: boolean;
 }) {
-  const permanent = useKeyStore(s => s.shift);
+  const permanent = useKeyStore(s => s.keys.shift);
   const trashAction = useMutation({
     mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/bin`),
     onSuccess: () => {

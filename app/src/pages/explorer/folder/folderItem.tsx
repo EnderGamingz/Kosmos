@@ -27,7 +27,7 @@ export function FolderItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
-  const isControl = useKeyStore(s => s.ctrl);
+  const isControl = useKeyStore(s => s.keys.ctrl);
   const isSelected = selected.includes(folder.id);
   const contextMenu = useContext(DisplayContext);
 

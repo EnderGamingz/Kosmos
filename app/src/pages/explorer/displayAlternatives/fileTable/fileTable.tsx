@@ -21,7 +21,7 @@ export function FileTable() {
   const { folder: currentFolder } = useExplorerStore(s => s.current);
   const { selectedFolders, selectedFiles, selectFile, selectFolder } =
     useExplorerStore(s => s.selectedResources);
-  const isControl = useKeyStore(s => s.ctrl);
+  const isControl = useKeyStore(s => s.keys.ctrl);
   const { files, folders } = useContext(DisplayContext);
 
   return (

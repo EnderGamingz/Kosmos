@@ -77,7 +77,7 @@ export function MultiPermanentDelete({
   deleteData: { folders: string[]; files: string[] };
   onClose: () => void;
 }) {
-  const shift = useKeyStore(s => s.shift);
+  const shift = useKeyStore(s => s.keys.shift);
   const notification = useNotifications(s => s.actions);
   const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
   const deleteType = deleteData.folders.length ? 'Recursively' : 'Permanently';

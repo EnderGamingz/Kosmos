@@ -27,7 +27,7 @@ export function FileItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
-  const isControl = useKeyStore(s => s.ctrl);
+  const isControl = useKeyStore(s => s.keys.ctrl);
   const isSelected = selected.includes(file.id);
 
   const selectFile = useExplorerStore(s => s.current.selectCurrentFile);
