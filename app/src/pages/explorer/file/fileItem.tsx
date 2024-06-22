@@ -13,24 +13,25 @@ import {
   transitionStop,
 } from '@components/transition.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function FileItem({
+  i,
   file,
   selected,
   onSelect,
-  onContext,
-  i,
 }: {
+  i: number;
   file: FileModel;
   selected: string[];
   onSelect: (id: string) => void;
-  onContext: (file: FileModel, pos: { x: number; y: number }) => void;
-  i: number;
 }) {
   const isControl = useKeyStore(s => s.ctrl);
   const isSelected = selected.includes(file.id);
 
   const selectFile = useExplorerStore(s => s.current.selectCurrentFile);
+  const contextMenu = useContext(DisplayContext);
 
   return (
     <motion.tr
@@ -42,7 +43,7 @@ export function FileItem({
       }}
       onContextMenu={e => {
         e.preventDefault();
-        onContext(file, { x: e.clientX, y: e.clientY });
+        contextMenu.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={tw(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
@@ -75,10 +76,7 @@ export function FileItem({
         </div>
         <button
           onClick={e => {
-            onContext(file, {
-              x: e.clientX,
-              y: e.clientY,
-            });
+            contextMenu.handleContext({ x: e.clientX, y: e.clientY }, file);
           }}
           className={'cursor-pointer p-2'}>
           <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />

@@ -13,22 +13,23 @@ import {
   transitionStop,
 } from '@components/transition.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function FolderItem({
+  i,
   folder,
   selected,
   onSelect,
-  onContext,
-  i,
 }: {
+  i: number;
   folder: FolderModel;
   selected: string[];
   onSelect: (id: string) => void;
-  onContext: (folder: FolderModel, pos: { x: number; y: number }) => void;
-  i: number;
 }) {
   const isControl = useKeyStore(s => s.ctrl);
   const isSelected = selected.includes(folder.id);
+  const contextMenu = useContext(DisplayContext);
 
   return (
     <motion.tr
@@ -39,7 +40,7 @@ export function FolderItem({
       }}
       onContextMenu={e => {
         e.preventDefault();
-        onContext(folder, { x: e.clientX, y: e.clientY });
+        contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={tw(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
@@ -72,7 +73,7 @@ export function FolderItem({
           </ConditionalWrapper>
           <button
             onClick={e => {
-              onContext(folder, { x: e.clientX, y: e.clientY });
+              contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
             }}
             className={'cursor-pointer p-2'}>
             <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />

@@ -1,17 +1,18 @@
-import { Checkbox } from '@nextui-org/react';
 import { useSearchState } from '@stores/searchStore.ts';
 import { SortBy, SortOrder } from '@models/sort.ts';
 import tw from '@lib/classMerge.ts';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 
+import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
+import { FolderModel } from '@models/folder.ts';
+import { FileModel } from '@models/file.ts';
+
 export function TableHeader({
-  isSelected,
-  isIndeterminate,
-  onValueChange,
+  files,
+  folders,
 }: {
-  isSelected: boolean;
-  isIndeterminate: boolean;
-  onValueChange: () => void;
+  files: FileModel[];
+  folders: FolderModel[];
 }) {
   const currentSort = useSearchState(s => s.sort);
   const updateSort = useSearchState(s => s.actions.sort);
@@ -38,11 +39,7 @@ export function TableHeader({
     <thead>
       <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
         <th>
-          <Checkbox
-            isSelected={isSelected}
-            isIndeterminate={isIndeterminate}
-            onChange={onValueChange}
-          />
+          <SelectAllCheckBox files={files} folders={folders} />
         </th>
         <th className={'w-full'} onClick={handleSort(SortBy.Name)}>
           Name

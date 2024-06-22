@@ -1,13 +1,24 @@
 import { useState } from 'react';
-import { FileModel, DataOperationType } from '@models/file.ts';
+import { DataOperationType, FileModel } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
-import { Selected } from '@pages/explorer/fileTable/fileTable.tsx';
+import { Selected } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 
 export type ContextOperationType = DataOperationType | 'multi';
 
 export type ContextData = FileModel | FolderModel | Selected | undefined;
 
-const useContextMenu = () => {
+export type ContextMenuType = {
+  setPos: (value: { x: number; y: number }) => void;
+  data: ContextData;
+  pos: { x: number; y: number };
+  setData: (value: ContextData) => void;
+  setClicked: (value: boolean) => void;
+  type: ContextOperationType;
+  setType: (value: ContextOperationType) => void;
+  clicked: boolean;
+};
+
+const useContextMenu: () => ContextMenuType = () => {
   const [clicked, setClicked] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [type, setType] = useState<ContextOperationType>('file');

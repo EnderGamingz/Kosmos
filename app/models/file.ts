@@ -1,5 +1,5 @@
 import { ContextData } from '@hooks/useContextMenu.ts';
-import { Selected } from '@pages/explorer/fileTable/fileTable.tsx';
+import { Selected } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 
 export enum FileType {
   Generic,

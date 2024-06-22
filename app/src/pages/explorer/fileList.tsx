@@ -4,13 +4,12 @@ import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
-import { FileTable } from './fileTable/fileTable.tsx';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { FileUploadContent } from '@pages/explorer/file/fileUpload.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { FileTableLoading } from '@pages/explorer/fileTable/fileTableLoading.tsx';
 import { useSearchState } from '@stores/searchStore.ts';
+import ExplorerDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
@@ -80,14 +79,11 @@ export function FileList() {
           </BreadCrumbs>
         </div>
         <FileUploadContent folder={folder} isInFileList={true}>
-          {isLoading ? (
-            <FileTableLoading />
-          ) : (
-            <FileTable
-              files={files.data || []}
-              folders={folders.data?.folders || []}
-            />
-          )}
+          <ExplorerDisplay
+            isLoading={isLoading}
+            files={files.data || []}
+            folders={folders.data?.folders || []}
+          />
         </FileUploadContent>
       </div>
     </>
