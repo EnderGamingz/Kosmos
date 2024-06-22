@@ -8,8 +8,15 @@ export const DisplayContext = createContext<{
   handleContext: (pos: Vec2, data?: ContextData) => void;
   files: FileModel[];
   folders: FolderModel[];
+  select: {
+    rangeStart?: number;
+    setRange: (index: number) => void;
+  };
 }>({
   handleContext: () => {},
   files: [],
   folders: [],
+  select: {
+    setRange: () => {},
+  },
 });

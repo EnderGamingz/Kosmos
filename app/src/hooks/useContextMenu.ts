@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { DataOperationType, FileModel } from '@models/file.ts';
+import { DataOperationType, FileModel, Selected } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
-import { Selected } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 
 export type ContextOperationType = DataOperationType | 'multi';
 

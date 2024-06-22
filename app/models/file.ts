@@ -1,5 +1,4 @@
 import { ContextData } from '@hooks/useContextMenu.ts';
-import { Selected } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 
 export enum FileType {
   Generic,
@@ -73,6 +72,8 @@ export function getFileTypeString(id: number): string {
 export function isFileModel(data: ContextData): data is FileModel {
   return (data as FileModel).file_name !== undefined;
 }
+
+export type Selected = { files: string[]; folders: string[] };
 
 export function isMultiple(data: ContextData): data is Selected {
   return (

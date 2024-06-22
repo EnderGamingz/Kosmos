@@ -15,6 +15,7 @@ import {
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import { useShallow } from 'zustand/react/shallow';
 
 export function FolderItem({
   i,
@@ -27,7 +28,12 @@ export function FolderItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
-  const isControl = useKeyStore(s => s.keys.ctrl);
+  const { isControl, isShift } = useKeyStore(
+    useShallow(s => ({
+      isControl: s.keys.ctrl,
+      isShift: s.keys.shift,
+    })),
+  );
   const isSelected = selected.includes(folder.id);
   const contextMenu = useContext(DisplayContext);
 
@@ -37,15 +43,18 @@ export function FolderItem({
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(folder.id);
+        if (isShift) contextMenu.select.setRange(i);
       }}
       onContextMenu={e => {
         e.preventDefault();
         contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={tw(
-        'group transition-colors [&_td]:p-3 [&_th]:p-3',
+        'group transition-all [&_td]:p-3 [&_th]:p-3',
         'hover:bg-stone-500/10 hover:shadow-sm',
-        isSelected && 'bg-stone-500/10 shadow-sm',
+        isSelected && 'bg-indigo-100',
+        isShift && 'cursor-pointer hover:scale-95',
+        contextMenu.select.rangeStart === i && 'scale-95 bg-indigo-50',
       )}>
       <th>
         <Checkbox
@@ -63,7 +72,7 @@ export function FolderItem({
                 {c}
               </Link>
             )}
-            condition={!isControl}>
+            condition={!isControl && !isShift}>
             <ItemIcon
               id={folder.id}
               name={folder.folder_name}

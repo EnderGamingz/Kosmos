@@ -15,12 +15,11 @@ import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/table
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 
-export type Selected = { files: string[]; folders: string[] };
-
 export function FileTable() {
   const { folder: currentFolder } = useExplorerStore(s => s.current);
   const { selectedFolders, selectedFiles, selectFile, selectFolder } =
     useExplorerStore(s => s.selectedResources);
+
   const isControl = useKeyStore(s => s.keys.ctrl);
   const { files, folders } = useContext(DisplayContext);
 

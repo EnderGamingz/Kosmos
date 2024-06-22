@@ -1,15 +1,15 @@
-import { FileModel } from '@models/file.ts';
+import { FileModel, Selected } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useExplorerStore } from '@stores/folderStore.ts';
 import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
-import { Selected } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 import { DisplayContext } from '@lib/contexts.ts';
 import { MultipleActionButton } from '@pages/explorer/components/multipleActionButton.tsx';
 import FileDisplay from '@pages/explorer/file/display/fileDisplay.tsx';
 import { AnimatePresence } from 'framer-motion';
 import { Portal } from 'react-portal';
 import ContextMenu, { ContextMenuContent } from '@components/contextMenu.tsx';
+import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
 
 export type Vec2 = { x: number; y: number };
 
@@ -22,12 +22,17 @@ export function ExplorerDisplayWrapper({
   folders: FolderModel[];
   children: ReactNode;
 }) {
+  const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const { selectedFile: selectedDisplayFile } = useExplorerStore(
     s => s.current,
   );
-  const { selectedFolders, selectedFiles, selectFile } = useExplorerStore(
-    s => s.selectedResources,
-  );
+  const {
+    selectedFolders,
+    selectedFiles,
+    selectFile,
+    selectFolder,
+    selectNone,
+  } = useExplorerStore(s => s.selectedResources);
 
   const isNoneSelected = !selectedFiles.length && !selectedFolders.length;
   const isAllSelected =
@@ -54,8 +59,41 @@ export function ExplorerDisplayWrapper({
     }
   };
 
+  const handleRangeSelect = (start?: number, end?: number) => {
+    if (end === undefined) setRangeStart(start);
+    if (start !== undefined && end !== undefined) {
+      selectNone();
+      const toSelect = prepareSelectRange(files, folders, start, end);
+      toSelect.folders.forEach(selectFolder);
+      toSelect.files.forEach(selectFile);
+      setRangeStart(undefined);
+    }
+  };
+
+  const handleRangeChange = (index: number) => {
+    if (rangeStart !== undefined) {
+      handleRangeSelect(rangeStart, index);
+    } else {
+      setRangeStart(index);
+    }
+  };
+
+  // Reset range on shift release
+  /*  const shiftPressed = useKeyStore(s => s.keys.shift);
+  useEffect(() => {
+    if (rangeStart !== undefined && !shiftPressed) {
+      setRangeStart(undefined);
+    }
+  }, [rangeStart, shiftPressed]);*/
+
   return (
-    <DisplayContext.Provider value={{ handleContext, files, folders }}>
+    <DisplayContext.Provider
+      value={{
+        handleContext,
+        files,
+        folders,
+        select: { setRange: handleRangeChange, rangeStart },
+      }}>
       <MultipleActionButton
         someSelected={isSomeSelected}
         handleClick={handleContext}
