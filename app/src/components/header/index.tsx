@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header
       className={
-        'flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5'
+        'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5'
       }>
       <Link
         to={user ? '/home' : '/'}

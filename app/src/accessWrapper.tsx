@@ -1,14 +1,15 @@
 import { ReactNode } from 'react';
 import { useUserState } from '@stores/userStore';
+import { NoAccess } from '@components/noAccess.tsx';
 
 export function AccessWrapper({ el, page }: { el: ReactNode; page: string }) {
   const user = useUserState();
 
   if (!user.initialized) {
-    return 'Loading';
+    return <NoAccess loading page={page} />;
   }
 
   if (user.user) return el;
 
-  return 'No access to ' + page;
+  return <NoAccess page={page} />;
 }

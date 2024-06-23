@@ -1,11 +1,11 @@
 import './index.css';
 import ReactDOM from 'react-dom/client';
-import { Router } from './router.tsx';
 import axios from 'axios';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@lib/query.ts';
 import { NextUIProvider } from '@nextui-org/react';
 import streamSaver from 'streamsaver';
+import LazyRouter from './lazyRouter.tsx';
 
 axios.defaults.withCredentials = true;
 
@@ -15,7 +15,7 @@ streamSaver.mitm = '/stream/mitm.html';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <NextUIProvider className={'flex flex-grow flex-col'}>
-      <Router />
+      <LazyRouter />
     </NextUIProvider>
   </QueryClientProvider>,
 );

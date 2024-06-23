@@ -98,3 +98,54 @@ a {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+.app-loading-logo {
+    animation: fade-in-top 0.5s ease-in-out forwards;
+    opacity: 0;
+}
+
+.app-loading-text {
+    animation: fade-in-top 0.5s ease-in-out 0.1s forwards;
+    opacity: 0;
+}
+
+
+.app-loading-indicator {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border-top: 3px solid;
+    border-right: 3px solid transparent;
+    animation: rotation 1.2s linear infinite, fade-in 0.5s ease-in-out 0.2s forwards;
+    opacity: 0;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in-top {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+        animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

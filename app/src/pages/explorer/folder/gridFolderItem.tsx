@@ -78,7 +78,7 @@ export default function GridFolderItem({
       <ConditionalWrapper
         wrapper={c => (
           <Link
-            className={'flex-grow'}
+            className={'flex h-full flex-grow items-center'}
             to={`/home/folder/${folder.id.toString()}`}>
             {c}
           </Link>

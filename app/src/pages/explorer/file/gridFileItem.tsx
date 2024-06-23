@@ -56,6 +56,8 @@ export default function GridFileItem({
     else selectFile(file);
   };
 
+  // The error checker will mark `isDynamic` as an error otherwise
+  // noinspection PointlessBooleanExpressionJS
   return (
     <motion.div
       layout

@@ -12,7 +12,7 @@ import { FileList } from '@pages/explorer/fileList.tsx';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import Settings from '@pages/settings/index.tsx';
 
-export function Router() {
+export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
   const user = useUserState();
 
@@ -25,26 +25,28 @@ export function Router() {
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        <Route path={'auth/register'} element={<Register />} />
-        <Route path={'auth/login'} element={<Login />} />
-        <Route
-          path={'home'}
-          element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
-          {user.user && (
-            <>
-              <Route path={'bin'} element={<BinPage />} />
-              <Route path={'folder/:folder'} element={<FileList />} />
-              <Route index element={<FileList />} />
-            </>
-          )}
-        </Route>
-        <Route
-          path={'settings/*'}
-          element={<AccessWrapper el={<Settings />} page={'Settings'} />}
-        />
-      </Routes>
-      <NotificationIndicator />
+      <main className={'relative flex flex-grow flex-col'}>
+        <Routes>
+          <Route path={'auth/register'} element={<Register />} />
+          <Route path={'auth/login'} element={<Login />} />
+          <Route
+            path={'home'}
+            element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
+            {user.user && (
+              <>
+                <Route path={'bin'} element={<BinPage />} />
+                <Route path={'folder/:folder'} element={<FileList />} />
+                <Route index element={<FileList />} />
+              </>
+            )}
+          </Route>
+          <Route
+            path={'settings/*'}
+            element={<AccessWrapper el={<Settings />} page={'Settings'} />}
+          />
+        </Routes>
+      </main>
+      <NotificationIndicator />;
     </BrowserRouter>
   );
 }
