@@ -8,15 +8,46 @@ export enum ExplorerDisplay {
   DynamicGrid,
 }
 
+export function getExplorerDisplay(type: ExplorerDisplay) {
+  switch (type) {
+    case ExplorerDisplay.Table:
+      return 'Table';
+    case ExplorerDisplay.StaticGrid:
+      return 'Static Grid';
+    case ExplorerDisplay.DynamicGrid:
+      return 'Dynamic Grid';
+  }
+}
+
 export enum ExplorerLoading {
   Table,
   Grid,
+}
+
+export function getExplorerLoading(type: ExplorerLoading) {
+  switch (type) {
+    case ExplorerLoading.Table:
+      return 'Table';
+    case ExplorerLoading.Grid:
+      return 'Grid';
+  }
 }
 
 export enum DetailType {
   Default,
   Compact,
   Hidden,
+}
+
+export function getDetailType(type: DetailType) {
+  switch (type) {
+    case DetailType.Default:
+      return 'Default';
+    case DetailType.Compact:
+      return 'Compact';
+    case DetailType.Hidden:
+      return 'Hidden';
+  }
 }
 
 type DisplayType = {
@@ -26,8 +57,13 @@ type DisplayType = {
   setDetails: (details: DetailType) => void;
 };
 
+type LoadingType = {
+  type: ExplorerLoading;
+  setType: (type: ExplorerLoading) => void;
+};
+
 export type PreferenceState = {
-  loading: ExplorerLoading;
+  loading: LoadingType;
   imageOnly: DisplayType;
   mixed: DisplayType;
 };
@@ -35,7 +71,13 @@ export type PreferenceState = {
 export const usePreferenceStore = create<PreferenceState>()(
   persist(
     (set, get) => ({
-      loading: ExplorerLoading.Table,
+      loading: {
+        type: ExplorerLoading.Table,
+        setType: (type: ExplorerLoading) =>
+          set({
+            loading: { ...get().loading, type },
+          }),
+      },
       imageOnly: {
         type: ExplorerDisplay.Table,
         details: DetailType.Default,

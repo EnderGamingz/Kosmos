@@ -9,7 +9,7 @@ export default function Dashboard() {
       }>
       <div
         className={
-          'absolute flex md:relative md:col-span-2 lg:col-span-2 xl:col-span-1'
+          'absolute flex w-4/5 sm:w-1/2 md:relative md:col-span-2 md:w-[unset] lg:col-span-2 xl:col-span-1'
         }>
         <SideNav />
       </div>

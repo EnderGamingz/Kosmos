@@ -57,7 +57,7 @@ export default function ExplorerDataDisplay({
     return preferences.mixed;
   }, [files, preferences]);
 
-  if (isLoading) return getLoadingComponent(preferences.loading);
+  if (isLoading) return getLoadingComponent(preferences.loading.type);
 
   return (
     <ExplorerDisplayWrapper files={files} folders={folders}>

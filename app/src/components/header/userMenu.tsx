@@ -10,7 +10,10 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from '@nextui-org/react';
-import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowRightStartOnRectangleIcon,
+  Cog6ToothIcon,
+} from '@heroicons/react/24/outline';
 
 export function UserMenu() {
   const user = useUserState();
@@ -40,6 +43,12 @@ export function UserMenu() {
         <DropdownItem key={'signIn'} textValue={user.user?.username}>
           <p className='font-semibold'>Signed in as</p>
           <p className='font-light'>{user.user?.username}</p>
+        </DropdownItem>
+        <DropdownItem
+          onClick={() => navigate('/settings')}
+          key={'settings'}
+          startContent={<Cog6ToothIcon className={'h-5 w-5'} />}>
+          Settings
         </DropdownItem>
         <DropdownItem
           textValue={'Logout'}
