@@ -4,6 +4,7 @@ import { FileTableLoading } from '@pages/explorer/displayAlternatives/fileTable/
 import { FileTable } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 import { ExplorerDisplayWrapper } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper.tsx';
 import {
+  DetailType,
   ExplorerDisplay,
   ExplorerLoading,
   usePreferenceStore,
@@ -22,12 +23,12 @@ function getLoadingComponent(id: ExplorerLoading) {
   }
 }
 
-function getDisplayComponent(id: ExplorerDisplay) {
+function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
   switch (id) {
     case ExplorerDisplay.DynamicGrid:
-      return <FileGrid dynamic />;
+      return <FileGrid dynamic details={details} />;
     case ExplorerDisplay.StaticGrid:
-      return <FileGrid />;
+      return <FileGrid details={details} />;
     case ExplorerDisplay.Table:
     default:
       return <FileTable />;
@@ -51,17 +52,16 @@ export default function ExplorerDataDisplay({
       files.filter(file => file.file_type === FileType.Image).length ===
         files.length;
 
-    if (isOnlyImages) return preferences.explorerDisplay.imageOnly;
+    if (isOnlyImages) return preferences.imageOnly;
 
-    return preferences.explorerDisplay.mixed;
-  }, [files, preferences.explorerDisplay]);
+    return preferences.mixed;
+  }, [files, preferences]);
 
-  if (isLoading)
-    return getLoadingComponent(preferences.explorerDisplay.loading);
+  if (isLoading) return getLoadingComponent(preferences.loading);
 
   return (
     <ExplorerDisplayWrapper files={files} folders={folders}>
-      {getDisplayComponent(displayType.type)}
+      {getDisplayComponent(displayType.type, displayType.details)}
     </ExplorerDisplayWrapper>
   );
 }

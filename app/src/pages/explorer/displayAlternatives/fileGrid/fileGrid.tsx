@@ -12,8 +12,17 @@ import tw from '@lib/classMerge.ts';
 import GridFileItem from '@pages/explorer/file/gridFileItem.tsx';
 import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';
 import { formatBytes } from '@lib/fileSize.ts';
+import { DetailType } from '@stores/preferenceStore.ts';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 
-export default function FileGrid({ dynamic }: { dynamic?: boolean }) {
+export default function FileGrid({
+  dynamic,
+  details,
+}: {
+  dynamic?: boolean;
+  details: DetailType;
+}) {
   const { folder: currentFolder } = useExplorerStore(s => s.current);
   const { selectedFolders, selectedFiles, selectFile, selectFolder } =
     useExplorerStore(s => s.selectedResources);
@@ -40,9 +49,9 @@ export default function FileGrid({ dynamic }: { dynamic?: boolean }) {
         animate={'show'}
         key={`folders-${currentFolder}`}
         className={tw(
-          'grid gap-3 overflow-hidden',
-          'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
-          '2xl:grid-cols-7',
+          'grid gap-3',
+          'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+          'xl:grid-cols-5 2xl:grid-cols-7',
           tw(isControl && '[&>div]:cursor-copy'),
         )}>
         {folders.map((folder, i) => (
@@ -61,27 +70,44 @@ export default function FileGrid({ dynamic }: { dynamic?: boolean }) {
         animate={'show'}
         key={`files-${currentFolder}`}
         className={tw(
-          'mt-6 grid gap-3 overflow-hidden',
-          'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
-          '2xl:grid-cols-7',
+          'mt-6 gap-3',
+          !dynamic &&
+            'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7',
           tw(isControl && '[&>div]:cursor-copy'),
         )}>
-        {files.map((file, i) => (
-          <GridFileItem
-            key={file.id}
-            file={file}
-            index={i}
-            onSelect={selectFile}
-            selected={selectedFiles}
-            dynamic={dynamic}
-          />
-        ))}
+        <ConditionalWrapper
+          wrapper={c => (
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{
+                320: 1,
+                440: 2,
+                768: 3,
+                1024: 4,
+                1280: 5,
+                1536: 7,
+              }}>
+              <Masonry gutter={'0.75rem'}>{c}</Masonry>
+            </ResponsiveMasonry>
+          )}
+          condition={dynamic}>
+          {files.map((file, i) => (
+            <GridFileItem
+              key={file.id}
+              file={file}
+              index={folders.length + i}
+              onSelect={selectFile}
+              selected={selectedFiles}
+              dynamic={dynamic}
+              details={details}
+            />
+          ))}
+        </ConditionalWrapper>
         <motion.div
           variants={itemTransitionVariant}
           className={tw(
-            'w-full cursor-default select-none border-none pb-28 pt-4 text-sm text-stone-500/50',
+            'w-full cursor-default select-none border-none text-sm text-stone-500/50',
             'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5',
-            'flex gap-5',
+            'flex gap-5 pb-28 pt-4',
           )}>
           <div>
             {folders.length} Folders <br />

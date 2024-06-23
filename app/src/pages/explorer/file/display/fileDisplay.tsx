@@ -66,6 +66,7 @@ function FileDisplayContent({
               '-mr-5 [&>*]:absolute [&>*]:inset-0',
               fullsScreenPreview ? 'z-20' : 'relative z-0',
             )}>
+            <motion.div layoutId={`compact-${file.id}`} className={'-z-10'} />
             <FileDisplayHandler
               file={file}
               fullScreen={fullsScreenPreview}
@@ -73,10 +74,13 @@ function FileDisplayContent({
             />
           </div>
           <motion.div
-            initial={{ opacity: 0, scale: 0.5, y: 100 }}
-            animate={{ opacity: [0, 1], scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 100 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            initial={{ opacity: 0, scale: 0.5, x: -200 }}
+            animate={{ opacity: 1, scale: [1.1, 1], x: 0 }}
+            exit={{ opacity: [0, 0], scale: 0.5, x: 200 }}
+            transition={{
+              duration: 0.3,
+              ease: 'easeInOut',
+            }}
             className={tw(
               'shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
               'z-10 flex w-full flex-col space-y-5 transition-all',
