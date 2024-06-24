@@ -54,16 +54,16 @@ function FileDisplayContent({
       <Backdrop onClose={onClose} />
       <div
         className={tw(
-          'pointer-events-none h-full max-h-[600px] w-full max-w-5xl',
+          'pointer-events-none h-full w-full max-w-5xl md:max-h-[600px]',
           'fixed left-1/2 top-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2',
         )}>
         <div
           className={
-            'pointer-events-auto isolate m-10 grid w-full grid-cols-2'
+            'pointer-events-auto isolate m-4 flex w-full flex-col sm:m-6 md:m-10 md:grid md:grid-cols-2'
           }>
           <div
             className={tw(
-              '-mr-5 [&>*]:absolute [&>*]:inset-0',
+              '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0',
               fullsScreenPreview ? 'z-20' : 'relative z-0',
             )}>
             <motion.div layoutId={`compact-${file.id}`} className={'-z-10'} />

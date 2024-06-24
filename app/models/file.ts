@@ -85,3 +85,7 @@ export function isMultiple(data: ContextData): data is Selected {
 export function fileHasPreview(data: FileModel) {
   return [FileType.Image, FileType.RawImage].includes(data.file_type);
 }
+
+export function fileCanOpenExternal(data: FileModel) {
+  return [FileType.Document, FileType.Video].includes(data.file_type);
+}

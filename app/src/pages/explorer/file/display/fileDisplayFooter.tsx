@@ -28,7 +28,7 @@ export function FileDisplayFooter({
       </motion.button>
       <div
         className={tw(
-          'flex flex-col items-center justify-between gap-2 md:flex-row',
+          'flex flex-col items-center justify-between gap-2 sm:flex-row',
           'text-xs text-stone-500',
         )}>
         <motion.p
