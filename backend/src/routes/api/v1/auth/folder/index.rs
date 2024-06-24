@@ -9,7 +9,7 @@ use validator::Validate;
 use crate::model::file::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::routes::api::v1::auth::file::{MoveParams, ParsedSortParams, RenameParams, SortOrder, SortParams};
+use crate::routes::api::v1::auth::file::{MoveParams, GetFilesParsedSortParams, RenameParams, SortOrder, GetFilesSortParams};
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
@@ -24,7 +24,7 @@ pub enum SortByFolders {
 pub async fn get_folders(
     State(state): KosmosState,
     session: Session,
-    Query(sort_params): Query<SortParams<SortByFolders>>,
+    Query(sort_params): Query<GetFilesSortParams<SortByFolders>>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
@@ -34,7 +34,7 @@ pub async fn get_folders(
         Err(_) => None,
     };
 
-    let parsed_params = ParsedSortParams {
+    let parsed_params = GetFilesParsedSortParams {
         sort_order: sort_params.sort_order.unwrap_or(SortOrder::Asc),
         sort_by: sort_params.sort_by.unwrap_or(SortByFolders::Name),
         limit: sort_params.limit.unwrap_or(200),

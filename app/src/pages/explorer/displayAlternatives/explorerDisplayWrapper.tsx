@@ -16,10 +16,12 @@ export type Vec2 = { x: number; y: number };
 export function ExplorerDisplayWrapper({
   files,
   folders,
+  recentView,
   children,
 }: {
   files: FileModel[];
   folders: FolderModel[];
+  recentView?: boolean;
   children: ReactNode;
 }) {
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
@@ -90,6 +92,7 @@ export function ExplorerDisplayWrapper({
   return (
     <DisplayContext.Provider
       value={{
+        recentView,
         handleContext,
         files,
         folders,

@@ -7,7 +7,7 @@ use crate::model::folder::{
     SimpleDirectory,
 };
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::auth::file::{ParsedSortParams, SortOrder};
+use crate::routes::api::v1::auth::file::{GetFilesParsedSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
 use crate::services::session_service::UserId;
 
@@ -25,7 +25,7 @@ impl FolderService {
     fn folder_search_query(
         user_id: UserId,
         parent_id: Option<i64>,
-        search: &ParsedSortParams<SortByFolders>,
+        search: &GetFilesParsedSortParams<SortByFolders>,
     ) -> String {
         let mut query: QueryBuilder<KosmosDb> =
             QueryBuilder::new("SELECT * FROM folder WHERE user_id = ");
@@ -55,7 +55,7 @@ impl FolderService {
         &self,
         user_id: UserId,
         parent_id: Option<i64>,
-        search: ParsedSortParams<SortByFolders>,
+        search: GetFilesParsedSortParams<SortByFolders>,
     ) -> Result<Vec<FolderModel>, AppError> {
         sqlx::query_as::<_, FolderModel>(&*Self::folder_search_query(user_id, parent_id, &search))
             .bind(user_id)

@@ -39,7 +39,7 @@ pub enum SortByFiles {
 }
 
 #[derive(Deserialize)]
-pub struct SortParams<SortBy> {
+pub struct GetFilesSortParams<SortBy> {
     pub sort_order: Option<SortOrder>,
     pub sort_by: Option<SortBy>,
     pub limit: Option<i64>,
@@ -47,7 +47,7 @@ pub struct SortParams<SortBy> {
 }
 
 #[derive(Debug)]
-pub struct ParsedSortParams<Sort> {
+pub struct GetFilesParsedSortParams<Sort> {
     pub sort_order: SortOrder,
     pub sort_by: Sort,
     pub limit: i64,
@@ -57,12 +57,12 @@ pub struct ParsedSortParams<Sort> {
 pub async fn get_files(
     State(state): KosmosState,
     session: Session,
-    Query(sort_params): Query<SortParams<SortByFiles>>,
+    Query(sort_params): Query<GetFilesSortParams<SortByFiles>>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<serde_json::Value>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let parsed_params = ParsedSortParams {
+    let parsed_params = GetFilesParsedSortParams {
         sort_order: sort_params.sort_order.unwrap_or(SortOrder::Asc),
         sort_by: sort_params.sort_by.unwrap_or(SortByFiles::Name),
         limit: sort_params.limit.unwrap_or(200),
@@ -74,7 +74,6 @@ pub async fn get_files(
         Err(_) => None,
     };
 
-
     let files = state
         .file_service
         .get_files(user_id, folder, false, parsed_params)
@@ -84,6 +83,42 @@ pub async fn get_files(
         .collect::<Vec<_>>();
 
     Ok(Json(serde_json::json!(files)))
+}
+
+#[derive(Deserialize)]
+pub struct GetRecentFilesParams {
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
+}
+
+#[derive(Debug)]
+pub struct GetRecentFilesParsedParams {
+    pub limit: i64,
+    pub offset: i64,
+}
+
+pub async fn get_recent_files(
+    State(state): KosmosState,
+    session: Session,
+    Query(params): Query<GetRecentFilesParams>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let parsed_params = GetRecentFilesParsedParams {
+        limit: params.limit.unwrap_or(50),
+        offset: params.offset.unwrap_or(0),
+    };
+
+    let files = state
+        .file_service
+        .get_recent_files(user_id, parsed_params)
+        .await?;
+    let parsed_files = files
+        .into_iter()
+        .map(FileService::parse_file)
+        .collect::<Vec<_>>();
+
+    Ok(Json(serde_json::json!(parsed_files)))
 }
 
 pub async fn mark_file_for_deletion(

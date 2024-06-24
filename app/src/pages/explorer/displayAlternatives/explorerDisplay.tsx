@@ -41,10 +41,12 @@ export default function ExplorerDataDisplay({
   isLoading,
   files,
   folders,
+  recentView,
 }: {
   isLoading: boolean;
   files: FileModel[];
   folders: FolderModel[];
+  recentView?: boolean;
 }) {
   const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
@@ -72,7 +74,10 @@ export default function ExplorerDataDisplay({
     return getLoadingComponent(preferences.loading.type);
 
   return (
-    <ExplorerDisplayWrapper files={files} folders={folders}>
+    <ExplorerDisplayWrapper
+      files={files}
+      folders={folders}
+      recentView={recentView}>
       {getDisplayComponent(displayType.type, displayType.details)}
     </ExplorerDisplayWrapper>
   );

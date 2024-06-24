@@ -8,13 +8,18 @@ export function ExplorerSort({
   sort,
   currentSortBy,
   currentOrder,
+  disable,
 }: {
   name: string;
   sort: SortBy;
   currentSortBy?: SortBy;
   currentOrder?: SortOrder;
+  disable?: boolean;
 }) {
   const updateSort = useSearchState(s => s.actions.sort);
+
+  // Return name if sorting is disabled
+  if (disable) return <div className={'w-full'}>{name}</div>;
 
   const handleSort = () => {
     let sortOrder: SortOrder;

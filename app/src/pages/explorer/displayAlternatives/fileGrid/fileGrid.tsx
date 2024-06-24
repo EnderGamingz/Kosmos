@@ -16,8 +16,6 @@ import { DetailType } from '@stores/preferenceStore.ts';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { FileGridSort } from '@pages/explorer/displayAlternatives/fileGrid/fileGridSort.tsx';
-import { useSearchState } from '@stores/searchStore.ts';
-import objectHash from 'object-hash';
 
 export default function FileGrid({
   dynamic,
@@ -31,8 +29,7 @@ export default function FileGrid({
     useExplorerStore(s => s.selectedResources);
 
   const isControl = useKeyStore(s => s.keys.ctrl);
-  const { files, folders } = useContext(DisplayContext);
-  const currentSort = useSearchState(s => objectHash(s.sort));
+  const { recentView, files, folders } = useContext(DisplayContext);
 
   return (
     <div className={'px-5 py-2'}>
@@ -46,13 +43,13 @@ export default function FileGrid({
           className={'text-sm text-stone-500'}>
           {folders.length} Folders &bull; {files.length} Files
         </motion.p>
-        <FileGridSort />
+        {!recentView && <FileGridSort />}
       </div>
       <motion.div
         variants={containerVariant()}
         initial={'hidden'}
         animate={'show'}
-        key={`folders-${currentFolder}-${currentSort}`}
+        key={`folders-${currentFolder}`}
         className={tw(
           'grid gap-3',
           'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
@@ -76,6 +73,7 @@ export default function FileGrid({
         key={`files-${currentFolder}`}
         className={tw(
           'mt-6 gap-3',
+          !!recentView && 'mt-3',
           !dynamic &&
             'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7',
           tw(isControl && '[&>div]:cursor-copy'),

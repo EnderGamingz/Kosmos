@@ -1,6 +1,6 @@
 use axum::extract::DefaultBodyLimit;
-use axum::routing::{delete, get, post, put};
 use axum::Router;
+use axum::routing::{delete, get, post, put};
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
@@ -81,6 +81,10 @@ fn get_file_router() -> KosmosRouter {
             post(crate::routes::api::v1::auth::file::clear_bin),
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
+        .route(
+            "/all/recent",
+            get(crate::routes::api::v1::auth::file::get_recent_files),
+        )
         .route(
             "/all/deleted",
             get(crate::routes::api::v1::auth::file::get_deleted_files),

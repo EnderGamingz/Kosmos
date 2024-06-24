@@ -1,8 +1,7 @@
 import { WindowIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import tw from '@lib/classMerge.ts';
-import Preferences from '@pages/settings/preferences';
 import { Tooltip } from '@nextui-org/react';
 
 const links = [
@@ -55,9 +54,7 @@ export default function Settings() {
         ))}
       </motion.aside>
       <div className={'mx-auto max-w-4xl flex-grow p-5'}>
-        <Routes>
-          <Route path={'preferences'} element={<Preferences />} />
-        </Routes>
+        <Outlet />
       </div>
     </div>
   );

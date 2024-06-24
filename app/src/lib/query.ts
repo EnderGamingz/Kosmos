@@ -70,6 +70,21 @@ export const useFiles = (parent_id?: string, sort?: SortParams) => {
   });
 };
 
+export const useRecentFiles = (limit?: number, offset?: number) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/file/all/recent`, {
+          params: {
+            limit: limit,
+            offset: offset,
+          },
+        })
+        .then(res => res.data as FileModel[]),
+    queryKey: ['files', 'recent'],
+  });
+};
+
 export const useDeletedFiles = () => {
   return useQuery({
     queryFn: () =>

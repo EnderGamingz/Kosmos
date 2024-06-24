@@ -6,15 +6,16 @@ import { Register } from '@pages/register.tsx';
 import { Login } from '@pages/login.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 import Dashboard from '@pages/explorer/dashboard.tsx';
-import BinPage from '@pages/explorer/bin';
 import NotificationIndicator from '@components/notifications';
 import { FileList } from '@pages/explorer/fileList.tsx';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import Settings from '@pages/settings/index.tsx';
+import BinPage from '@pages/explorer/pages/bin';
+import RecentFiles from '@pages/explorer/pages/recent.tsx';
+import Preferences from '@pages/settings/preferences';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
-  const user = useUserState();
 
   useInitializeKeys();
 
@@ -32,18 +33,16 @@ export default function Router() {
           <Route
             path={'home'}
             element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
-            {user.user && (
-              <>
-                <Route path={'bin'} element={<BinPage />} />
-                <Route path={'folder/:folder'} element={<FileList />} />
-                <Route index element={<FileList />} />
-              </>
-            )}
+            <Route path={'recent'} element={<RecentFiles />} />
+            <Route path={'bin'} element={<BinPage />} />
+            <Route path={'folder/:folder'} element={<FileList />} />
+            <Route index element={<FileList />} />
           </Route>
           <Route
-            path={'settings/*'}
-            element={<AccessWrapper el={<Settings />} page={'Settings'} />}
-          />
+            path={'settings'}
+            element={<AccessWrapper el={<Settings />} page={'Settings'} />}>
+            <Route path={'preferences'} element={<Preferences />} />
+          </Route>
         </Routes>
       </main>
       <NotificationIndicator />

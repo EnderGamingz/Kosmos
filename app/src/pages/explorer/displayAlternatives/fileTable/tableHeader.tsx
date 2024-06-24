@@ -9,9 +9,11 @@ import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
 export function TableHeader({
   files,
   folders,
+  noSort,
 }: {
   files: FileModel[];
   folders: FolderModel[];
+  noSort?: boolean;
 }) {
   const currentSort = useSearchState(s => s.sort);
 
@@ -25,6 +27,7 @@ export function TableHeader({
           <ExplorerSort
             name={'Name'}
             sort={SortBy.Name}
+            disable={noSort}
             currentSortBy={currentSort.sort_by}
             currentOrder={currentSort.sort_order}
           />
@@ -33,6 +36,7 @@ export function TableHeader({
           <ExplorerSort
             name={'Size'}
             sort={SortBy.FileSize}
+            disable={noSort}
             currentSortBy={currentSort.sort_by}
             currentOrder={currentSort.sort_order}
           />
@@ -41,6 +45,7 @@ export function TableHeader({
           <ExplorerSort
             name={'Modified'}
             sort={SortBy.UpdatedAt}
+            disable={noSort}
             currentSortBy={currentSort.sort_by}
             currentOrder={currentSort.sort_order}
           />

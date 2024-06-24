@@ -5,7 +5,9 @@ use crate::db::{KosmosDb, KosmosPool};
 use crate::model::file::{FileModel, FileType, ParsedFileModel, PreviewStatus};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::auth::file::{ParsedSortParams, SortByFiles, SortOrder};
+use crate::routes::api::v1::auth::file::{
+    GetFilesParsedSortParams, GetRecentFilesParsedParams, SortByFiles, SortOrder,
+};
 use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
 
@@ -23,11 +25,10 @@ impl FileService {
         user_id: UserId,
         parent_folder_id: Option<i64>,
         with_deleted: bool,
-        search: &ParsedSortParams<SortByFiles>,
+        search: &GetFilesParsedSortParams<SortByFiles>,
     ) -> String {
-        let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
-            "SELECT * FROM files WHERE user_id = ",
-        );
+        let mut query: QueryBuilder<KosmosDb> =
+            QueryBuilder::new("SELECT * FROM files WHERE user_id = ");
         query.push_bind(user_id);
 
         if with_deleted {
@@ -69,27 +70,49 @@ impl FileService {
         user_id: UserId,
         parent_folder_id: Option<i64>,
         with_deleted: bool,
-        search: ParsedSortParams<SortByFiles>,
+        search: GetFilesParsedSortParams<SortByFiles>,
     ) -> Result<Vec<FileModel>, AppError> {
-        sqlx::query_as::<_, FileModel>(
-            &*Self::files_search_query(
-                user_id,
-                parent_folder_id,
-                with_deleted,
-                &search
-            )
-        )
+        sqlx::query_as::<_, FileModel>(&*Self::files_search_query(
+            user_id,
+            parent_folder_id,
+            with_deleted,
+            &search,
+        ))
         .bind(user_id)
         .bind(parent_folder_id)
         .bind(search.limit)
         .bind(search.offset)
         .fetch_all(&self.db_pool)
         .await
-            .map_err(|e| {
-                tracing::error!("Error getting files for user {}: {}", user_id, e);
-                AppError::InternalError
-            })
-            .map(|rows| rows.into_iter().map(FileModel::from).collect())
+        .map_err(|e| {
+            tracing::error!("Error getting files for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
+        .map(|rows| rows.into_iter().map(FileModel::from).collect())
+    }
+
+    pub async fn get_recent_files(
+        &self,
+        user_id: UserId,
+        search: GetRecentFilesParsedParams,
+    ) -> Result<Vec<FileModel>, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT * FROM files WHERE user_id = $1
+             AND deleted_at IS NULL
+             ORDER BY updated_at DESC
+             LIMIT $2 OFFSET $3",
+            user_id,
+            search.limit,
+            search.offset
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting recent files for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
+        .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
     pub async fn get_marked_deleted_files(
