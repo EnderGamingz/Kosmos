@@ -6,8 +6,8 @@ import { DataOperationType, FileModel } from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
 import {
   canFolderBeSorted,
+  getQuerySortString,
   getSortOrderString,
-  getSortString,
   SortParams,
   SortParamsForQuery,
 } from '@models/sort.ts';
@@ -37,7 +37,7 @@ export const useFolders = (parent_id?: string, sort?: SortParams) => {
       };
 
       if (canFolderBeSorted(sort?.sort_by)) {
-        params.sort_by = getSortString(sort?.sort_by);
+        params.sort_by = getQuerySortString(sort?.sort_by);
         params.sort_order = getSortOrderString(sort?.sort_order);
       }
 
@@ -59,7 +59,7 @@ export const useFiles = (parent_id?: string, sort?: SortParams) => {
       axios
         .get(`${BASE_URL}auth/file/all${parent_id ? `/${parent_id}` : ''}`, {
           params: {
-            sort_by: getSortString(sort?.sort_by),
+            sort_by: getQuerySortString(sort?.sort_by),
             sort_order: getSortOrderString(sort?.sort_order),
             limit: sort?.limit,
             offset: sort?.offset,

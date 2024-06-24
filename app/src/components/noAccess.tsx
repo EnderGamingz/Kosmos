@@ -63,8 +63,8 @@ export function NoAccess({
           className={'flex w-full'}>
           <Link
             className={tw(
-              'w-full rounded-xl bg-stone-500/50 p-3 text-center text-lg font-medium',
-              'shadow transition-colors hover:bg-stone-500/60 hover:shadow-md',
+              'w-full rounded-xl bg-stone-500/50 p-2 text-center text-lg font-medium',
+              'mx-auto max-w-2xl shadow transition-colors hover:bg-stone-500/60 hover:shadow-md',
             )}
             to={'/auth/login'}>
             Login

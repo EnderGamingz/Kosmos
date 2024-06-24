@@ -46,7 +46,7 @@ export default function Router() {
           />
         </Routes>
       </main>
-      <NotificationIndicator />;
+      <NotificationIndicator />
     </BrowserRouter>
   );
 }

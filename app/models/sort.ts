@@ -51,6 +51,21 @@ export function getSortString(sortBy?: SortBy): string | undefined {
     case SortBy.Name:
       return 'Name';
     case SortBy.FileSize:
+      return 'Size';
+    case SortBy.CreatedAt:
+      return 'Created';
+    case SortBy.UpdatedAt:
+      return 'Modified';
+    default:
+      return undefined;
+  }
+}
+
+export function getQuerySortString(sortBy?: SortBy): string | undefined {
+  switch (sortBy) {
+    case SortBy.Name:
+      return 'Name';
+    case SortBy.FileSize:
       return 'FileSize';
     case SortBy.CreatedAt:
       return 'CreatedAt';

@@ -10,8 +10,10 @@ import {
   usePreferenceStore,
 } from '@stores/preferenceStore.ts';
 import { FileGridLoading } from '@pages/explorer/displayAlternatives/fileGrid/fileGridLoading.tsx';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx';
+import { useSearchState } from '@stores/searchStore.ts';
+import objectHash from 'object-hash';
 
 function getLoadingComponent(id: ExplorerLoading) {
   switch (id) {
@@ -44,7 +46,9 @@ export default function ExplorerDataDisplay({
   files: FileModel[];
   folders: FolderModel[];
 }) {
+  const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
+  const sort = useSearchState(s => objectHash(s.sort));
 
   const displayType = useMemo(() => {
     const isOnlyImages =
@@ -57,7 +61,15 @@ export default function ExplorerDataDisplay({
     return preferences.mixed;
   }, [files, preferences]);
 
-  if (isLoading) return getLoadingComponent(preferences.loading.type);
+  // Needed because when the query client returns a cached result, framer motion
+  // will try to reorder the items which causes issues when too many
+  useEffect(() => {
+    const t = setTimeout(() => setPrevSort(sort), 1);
+    return () => clearTimeout(t);
+  }, [sort]);
+
+  if (isLoading || prevSort !== sort)
+    return getLoadingComponent(preferences.loading.type);
 
   return (
     <ExplorerDisplayWrapper files={files} folders={folders}>
