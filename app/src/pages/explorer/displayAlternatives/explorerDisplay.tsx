@@ -68,7 +68,7 @@ export default function ExplorerDataDisplay({
   useEffect(() => {
     const t = setTimeout(() => setPrevSort(sort), 1);
     return () => clearTimeout(t);
-  }, [sort]);
+  }, [sort, displayType]);
 
   if (isLoading || prevSort !== sort)
     return getLoadingComponent(preferences.loading.type);

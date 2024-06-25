@@ -1,5 +1,6 @@
 import { Notification, Severity } from '@stores/notificationStore.ts';
 import { Progress } from '@nextui-org/react';
+import tw from '@lib/classMerge.ts';
 
 export function NotificationStatus({ data }: { data: Notification }) {
   const isSuccess = data.severity === Severity.SUCCESS;
@@ -10,10 +11,10 @@ export function NotificationStatus({ data }: { data: Notification }) {
       <Progress
         isIndeterminate={!isSuccess && !isError}
         value={100}
-        className={'h-0.5'}
-        classNames={{
-          indicator: isSuccess ? 'bg-green-600' : isError ? 'bg-red-600' : '',
-        }}
+        className={tw(
+          'absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden transition-height',
+          (isSuccess || isError) && 'h-0',
+        )}
         aria-label={'Loading...'}
       />
     );

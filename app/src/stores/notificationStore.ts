@@ -14,6 +14,7 @@ export type CreateNotificationPayload = {
   severity: Severity;
   loading?: boolean;
   timeout?: number;
+  canDismiss?: boolean;
 };
 
 export type UpdateNotificationPayload = {
@@ -29,6 +30,7 @@ export type UpdateNotificationPayload = {
 export type Notification = CreateNotificationPayload & {
   id: string;
   popup: boolean;
+  canDismiss?: boolean;
 };
 
 export type NotificationState = {
@@ -49,6 +51,7 @@ export const useNotifications = create<NotificationState>(set => ({
       set(state => ({
         notifications: [
           {
+            canDismiss: true,
             ...data,
             popup: true,
             id,
