@@ -17,7 +17,9 @@ export function SideNav() {
   const navControls = useExplorerStore(s => s.sidenav);
   const usage = useUsage();
 
-  const { limit, bin, total } = usage.data;
+  const limit = usage.data?.limit || 0;
+  const total = usage.data?.total || 0;
+  const bin = usage.data?.bin || 0;
 
   const percentageUsage = (total / limit) * 100;
 

@@ -247,8 +247,8 @@ export function FileUploadModal({
 }
 
 export function FileUpload({ onClick }: { onClick: () => void }) {
-  const usage = useUsage().data;
-  const full = usage.limit - usage.total <= 0;
+  const { data } = useUsage();
+  const full = (data?.limit || 0) - (data?.total || 0) <= 0;
   return (
     <button
       className={tw('w-full py-3', full ? 'btn-white' : 'btn-black')}
