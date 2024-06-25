@@ -36,6 +36,7 @@ export function MultiDownload({
         status: 'Processing',
         loading: true,
         severity: Severity.INFO,
+        canDismiss: false,
       });
       setFileId(fileId);
 
@@ -81,6 +82,7 @@ export function MultiDownload({
             status: 'Complete',
             severity: Severity.SUCCESS,
             timeout: 2500,
+            canDismiss: true,
           });
         });
       }
@@ -96,6 +98,7 @@ export function MultiDownload({
                 status: 'Complete',
                 severity: Severity.SUCCESS,
                 timeout: 2500,
+                canDismiss: true,
               });
             });
           } else {
@@ -111,6 +114,7 @@ export function MultiDownload({
         status: 'Failed',
         severity: Severity.ERROR,
         timeout: 2500,
+        canDismiss: true,
       });
     },
   });

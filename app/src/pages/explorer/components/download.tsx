@@ -39,6 +39,7 @@ export function DownloadSingleAction({
         status: 'Downloading',
         loading: true,
         severity: Severity.INFO,
+        canDismiss: false,
       });
       setFileId(fileId);
 
@@ -59,6 +60,7 @@ export function DownloadSingleAction({
             status: 'Complete',
             severity: Severity.SUCCESS,
             timeout: 1000,
+            canDismiss: true,
           });
         });
       }
@@ -74,6 +76,7 @@ export function DownloadSingleAction({
                 status: 'Complete',
                 severity: Severity.SUCCESS,
                 timeout: 1000,
+                canDismiss: true,
               });
             });
           } else {
@@ -89,6 +92,7 @@ export function DownloadSingleAction({
         severity: Severity.ERROR,
         status: 'Error',
         description: 'Check console',
+        canDismiss: true,
       });
     },
   });

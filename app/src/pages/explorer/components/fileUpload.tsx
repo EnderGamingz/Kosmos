@@ -69,6 +69,7 @@ export function FileUploadContent({
       loading: true,
       description: `${files.length} files`,
       severity: Severity.INFO,
+      canDismiss: false,
     });
 
     if (onClose) onClose();
@@ -83,6 +84,7 @@ export function FileUploadContent({
           timeout: 2000,
           status: 'Complete',
           severity: Severity.SUCCESS,
+          canDismiss: true,
         });
         return res.data;
       })
@@ -91,6 +93,7 @@ export function FileUploadContent({
           status: 'Failed',
           description: err.response?.data?.error || 'Error',
           severity: Severity.ERROR,
+          canDismiss: true,
         });
       });
   };

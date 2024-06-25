@@ -25,6 +25,7 @@ export type UpdateNotificationPayload = {
   status?: string;
   loading?: boolean;
   timeout?: number;
+  canDismiss?: boolean;
 };
 
 export type Notification = CreateNotificationPayload & {

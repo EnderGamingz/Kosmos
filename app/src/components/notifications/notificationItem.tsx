@@ -29,6 +29,8 @@ function getSeverityIcon(severity: Severity) {
   }
 }
 
+const ExpandedNotificationHeight = 56;
+
 export function NotificationItem({
   data,
   index,
@@ -40,8 +42,6 @@ export function NotificationItem({
   expanded: boolean;
   mobile: boolean;
 }) {
-  const ExpandedNotificationHeight = 56;
-
   const update = useNotifications(s => s.actions.updateNotification);
 
   useEffect(() => {
@@ -73,9 +73,10 @@ export function NotificationItem({
         zIndex: -index,
         scale: expanded ? 1 : index === 0 ? 1 : 1 - index * 0.02,
       }}
-      drag={data.canDismiss ? 'x' : undefined}
+      drag={'x'}
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={(_, { offset, velocity }) => {
+        if (!data.canDismiss) return;
         if (Math.abs(offset.x) / velocity.x < 0.5) {
           update(data.id, { popup: false });
         }
@@ -83,7 +84,7 @@ export function NotificationItem({
       exit={{ opacity: 0, y: exitDirection, zIndex: 1, skew: '-10deg' }}
       transition={{ duration: 0.2 }}
       className={tw(
-        'relative w-full cursor-grab shadow-sm transition-colors',
+        'relative w-full cursor-grab overflow-hidden shadow-sm transition-colors',
         'rounded-lg bg-stone-600/60 text-stone-50 shadow-[0_0_5px_-2px_#000000A0] backdrop-blur-2xl',
         index === 0 || expanded ? 'text-stone-50' : 'text-stone-50/20',
       )}>
