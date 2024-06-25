@@ -49,6 +49,8 @@ export function FileUploadContent({
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
+      if (!e.target.files.length) return;
+
       setIsTryingInvalidFolderUpload(false);
       //setFiles([...e.target.files]);
       const files = Array.from(e.target.files);
@@ -57,7 +59,7 @@ export function FileUploadContent({
   };
 
   const handleUpload = async () => {
-    if (!files) return;
+    if (!files || !files?.length) return;
 
     const formData = new FormData();
     for (const file of files) {
@@ -112,6 +114,8 @@ export function FileUploadContent({
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
+      if (!acceptedFiles.length) return;
+
       setIsTryingInvalidFolderUpload(false);
       const isPossibleFolderUpload = acceptedFiles
         .map(file => file.path?.split('/').length)

@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { UserMenu } from './userMenu.tsx';
 import { NewMenu } from './newMenu.tsx';
-import { OperationsMenu } from '@components/header/operationsMenu.tsx';
+import { NotificationsMenu } from '@components/header/notificationsMenu.tsx';
 
 export default function Header() {
   const user = useUserState(s => s.user);
@@ -27,7 +27,7 @@ export default function Header() {
       <div className={'ml-auto flex items-center gap-4'}>
         {user ? (
           <>
-            <OperationsMenu />
+            <NotificationsMenu />
             <NewMenu />
             <UserMenu />
           </>

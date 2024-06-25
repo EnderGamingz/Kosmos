@@ -1,33 +1,10 @@
-import {
-  Notification,
-  Severity,
-  useNotifications,
-} from '@stores/notificationStore.ts';
+import { Notification, useNotifications } from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import tw from '@lib/classMerge.ts';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { NotificationStatus } from './notificationStatus.tsx';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-} from '@heroicons/react/24/outline';
-
-function getSeverityIcon(severity: Severity) {
-  switch (severity) {
-    case Severity.SUCCESS:
-      return <CheckCircleIcon className={'text-green-400'} />;
-    case Severity.ERROR:
-      return <ExclamationCircleIcon className={'text-red-400'} />;
-    case Severity.WARN:
-      return <ExclamationTriangleIcon className={'text-amber-500'} />;
-    case Severity.INFO:
-    default:
-      return <InformationCircleIcon />;
-  }
-}
+import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
 
 const ExpandedNotificationHeight = 56;
 

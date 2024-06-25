@@ -25,15 +25,20 @@ export function PreviewImage({
 }) {
   const [loaded, setLoaded] = useState(false);
 
+  const isUnavailable = status === FilePreviewStatus.Unavailable;
+  const isReady = status === FilePreviewStatus.Ready;
+  const isProcessing = status === FilePreviewStatus.Processing;
+  const isFailed = status === FilePreviewStatus.Failed;
   return (
     <motion.div
       layoutId={`image-${id}`}
       className={tw(
         'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
         'shadow-inherit',
-        !dynamic && 'h-[40px] w-[40px]',
+        dynamic ? 'min-h-20' : 'h-[40px] w-[40px]',
+        isUnavailable && 'rounded-xl outline outline-1 outline-stone-400/50',
       )}>
-      {(status === FilePreviewStatus.Ready || type === FileType.RawImage) && (
+      {(isReady || type === FileType.RawImage) && (
         <motion.img
           loading={'lazy'}
           onLoad={() => setLoaded(true)}
@@ -51,7 +56,7 @@ export function PreviewImage({
           alt={alt}
         />
       )}
-      {(!loaded || status === FilePreviewStatus.Processing) && (
+      {!isUnavailable && (!loaded || isProcessing) && (
         <Skeleton
           className={tw(
             'h-full w-full',
@@ -59,10 +64,10 @@ export function PreviewImage({
           )}
         />
       )}
-      {status === FilePreviewStatus.Failed && (
+      {isFailed && (
         <ExclamationCircleIcon className={'h-8 w-8 text-red-500/20'} />
       )}
-      {status === FilePreviewStatus.Unavailable && (
+      {isUnavailable && (
         <ExclamationTriangleIcon className={'h-8 w-8 text-gray-500/20'} />
       )}
     </motion.div>

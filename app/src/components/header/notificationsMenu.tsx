@@ -33,14 +33,18 @@ import {
 } from '@components/transition.ts';
 import objectHash from 'object-hash';
 import { useUserState } from '@stores/userStore.ts';
+import { useNotifications } from '@stores/notificationStore.ts';
+import { StaticNotificationItem } from '@components/notifications/staticNotificationItem.tsx';
 
-export function OperationsMenu() {
+export function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
   const [initial, setInitial] = useState(true);
-  const operationsHash = useRef<string>();
   const [initialSucceeded, setInitialSucceeded] = useState<string[]>([]);
+  const operationsHash = useRef<string>();
   const logout = useUserState(s => s.logout);
+
   const operations = useOperations(logout);
+  const notifications = useNotifications(s => s.notifications);
 
   useEffect(() => {
     if (!operations.data?.length) return;
@@ -112,23 +116,63 @@ export function OperationsMenu() {
         </button>
       </PopoverTrigger>
       <PopoverContent>
-        <>
-          <h2 className={'mt-2 text-left text-base font-light text-stone-800'}>
-            Background operations
-          </h2>
-          <ScrollShadow
-            as={motion.div}
-            variants={containerVariant()}
-            initial={'hidden'}
-            animate={'show'}
-            className={
-              'grid max-h-[300px] w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 py-3 scrollbar-hide'
-            }>
-            {operations.data?.map(operation => (
-              <OperationItem key={operation.id} data={operation} />
-            ))}
-          </ScrollShadow>
-        </>
+        <div
+          className={tw(
+            'min-w-[200px]',
+            'flex flex-col gap-2',
+            'grid-cols-2 md:grid',
+          )}>
+          <div>
+            <h2
+              className={'mt-2 text-left text-base font-light text-stone-800'}>
+              Notifications
+            </h2>
+            <ScrollShadow
+              as={motion.div}
+              variants={containerVariant()}
+              initial={'hidden'}
+              animate={'show'}
+              className={tw(
+                'h-full max-h-[150px] md:max-h-[300px]',
+                'flex w-full flex-col gap-1 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
+              )}>
+              {notifications.length ? (
+                notifications.map(notification => (
+                  <StaticNotificationItem
+                    key={notification.id}
+                    data={notification}
+                  />
+                ))
+              ) : (
+                <p
+                  className={
+                    'self-center justify-self-center font-light text-stone-600'
+                  }>
+                  No notifications
+                </p>
+              )}
+            </ScrollShadow>
+          </div>
+          <div>
+            <h2
+              className={'mt-2 text-left text-base font-light text-stone-800'}>
+              Operations
+            </h2>
+            <ScrollShadow
+              as={motion.div}
+              variants={containerVariant()}
+              initial={'hidden'}
+              animate={'show'}
+              className={tw(
+                'max-h-[150px] md:max-h-[300px]',
+                'grid w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
+              )}>
+              {operations.data?.map(operation => (
+                <OperationItem key={operation.id} data={operation} />
+              ))}
+            </ScrollShadow>
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );
@@ -152,7 +196,7 @@ function OperationItem({ data }: { data: OperationModel }) {
 
   return (
     <motion.div variants={itemTransitionVariant}>
-      <div className={'flex items-center justify-between gap-4'}>
+      <div className={'flex items-center justify-between gap-5'}>
         <p className={'text-base font-medium text-stone-800'}>
           {getOperationTypeString(data.operation_type)}
         </p>
@@ -162,7 +206,7 @@ function OperationItem({ data }: { data: OperationModel }) {
           </span>
         </Tooltip>
       </div>
-      <div className={'flex justify-between'}>
+      <div className={'flex justify-between gap-3'}>
         <p className={'text-xs text-stone-500'}>
           {hasEnded ? 'Ended ' : 'Started '}
           <UpdatingTimeIndicator
