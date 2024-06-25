@@ -94,9 +94,7 @@ export function SideNav() {
         />
         <div className={'text-sm text-stone-800 md:text-base'}>
           {formatBytes(total)}{' '}
-          <span className={'text-stone-400'}>
-            of {formatBytes(limit, false, 0)}
-          </span>
+          <span className={'text-stone-400'}>of {formatBytes(limit, 0)}</span>
         </div>
       </div>
     </motion.aside>

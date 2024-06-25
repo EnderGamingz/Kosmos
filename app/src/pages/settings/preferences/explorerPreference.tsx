@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { usePreferenceStore } from '@stores/preferenceStore.ts';
 import {
-  ExplorerPreference,
-  ExplorerPreferenceOption,
+  ExplorerStylePreference,
+  PreferenceOption,
   selections,
 } from '@pages/settings/preferences/selections.tsx';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -34,7 +34,7 @@ export default function ExplorerPreferences() {
   );
 }
 
-export function Preference({ item }: { item: ExplorerPreference }) {
+export function Preference({ item }: { item: ExplorerStylePreference }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div
@@ -75,7 +75,7 @@ export function Preference({ item }: { item: ExplorerPreference }) {
             key={`options-${open}-type`}
             className={'flex flex-col gap-3 sm:flex-row'}>
             {item.type.options.map(option => (
-              <Selection
+              <PreferenceSelection
                 item={option}
                 selected={item.type.current === option.value}
                 onSelect={item.type.onChange}
@@ -99,7 +99,7 @@ export function Preference({ item }: { item: ExplorerPreference }) {
               key={`options-${open}-details`}
               className={'flex flex-col gap-3 sm:flex-row'}>
               {item.details.options.map(option => (
-                <Selection
+                <PreferenceSelection
                   item={option}
                   selected={item.details!.current === option.value}
                   onSelect={item.details!.onChange}
@@ -115,13 +115,13 @@ export function Preference({ item }: { item: ExplorerPreference }) {
   );
 }
 
-function Selection({
+export function PreferenceSelection({
   item,
   selected,
   onSelect,
   type,
 }: {
-  item: ExplorerPreferenceOption;
+  item: PreferenceOption;
   selected: boolean;
   onSelect: (value: number) => void;
   type: string;
@@ -137,7 +137,10 @@ function Selection({
         'transition-colors [&_svg]:h-6 [&_svg]:w-6',
       )}>
       {item.icon}
-      <p>{item.name}</p>
+      <div className={'text-start'}>
+        <p>{item.name}</p>
+        {item.description && <p className={'text-xs'}>{item.description}</p>}
+      </div>
       {selected && (
         <motion.div
           layoutId={`selection-${type}`}

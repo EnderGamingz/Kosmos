@@ -62,15 +62,33 @@ type LoadingType = {
   setType: (type: ExplorerLoading) => void;
 };
 
+export enum Unit {
+  SI,
+  IEC,
+}
+
+export type UnitType = {
+  type: Unit;
+  setType: (type: Unit) => void;
+};
+
 export type PreferenceState = {
   loading: LoadingType;
   imageOnly: DisplayType;
   mixed: DisplayType;
+  unit: UnitType;
 };
 
 export const usePreferenceStore = create<PreferenceState>()(
   persist(
     (set, get) => ({
+      unit: {
+        type: Unit.SI,
+        setType: (type: Unit) =>
+          set({
+            unit: { ...get().unit, type },
+          }),
+      },
       loading: {
         type: ExplorerLoading.Table,
         setType: (type: ExplorerLoading) =>

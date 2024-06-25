@@ -1,11 +1,17 @@
-export function formatBytes(bytes: number, useSIUnits = false, precision = 1) {
-  const unitSize = useSIUnits ? 1000 : 1024;
+import {
+  Unit,
+  usePreferenceStore as PreferenceStore,
+} from '@stores/preferenceStore.ts';
+
+export function formatBytes(bytes: number, precision = 1) {
+  const useSI = PreferenceStore(s => s.unit.type === Unit.SI);
+  const unitSize = useSI ? 1000 : 1024;
 
   if (Math.abs(bytes) < unitSize) {
     return bytes + ' B';
   }
 
-  const units = useSIUnits
+  const units = useSI
     ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
   let iteration = -1;

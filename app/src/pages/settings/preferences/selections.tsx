@@ -17,30 +17,33 @@ import {
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 
-export type ExplorerPreferenceOption = {
+export type PreferenceOption = {
   name: string;
   value: number;
   icon?: ReactNode;
+  description?: string;
 };
 
-export type ExplorerPreference = {
+export type ExplorerStylePreference = {
   name: string;
   icon: ReactNode;
   type: {
     current: number;
     onChange: (value: number) => void;
     getName: (type: number) => string;
-    options: ExplorerPreferenceOption[];
+    options: PreferenceOption[];
   };
   details?: {
     current: number;
     onChange: (value: number) => void;
     getName: (type: number) => string;
-    options: ExplorerPreferenceOption[];
+    options: PreferenceOption[];
   };
 };
 
-export const selections = (pref: PreferenceState): ExplorerPreference[] => [
+export const selections = (
+  pref: PreferenceState,
+): ExplorerStylePreference[] => [
   {
     name: 'Loading Style',
     icon: <ArrowPathIcon />,
