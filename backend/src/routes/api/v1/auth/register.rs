@@ -1,3 +1,4 @@
+use crate::constants::FALLBACK_STORAGE_LIMIT;
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::Json;
@@ -26,7 +27,16 @@ pub async fn register(
 
     match password_hash {
         Ok(hash) => {
-            state.user_service.create_user(payload, hash).await?;
+
+            let default_storage_limit = match std::env::var("DEFAULT_STORAGE_LIMIT") {
+                Ok(env) => env.parse::<i64>().unwrap_or(FALLBACK_STORAGE_LIMIT),
+                Err(_) => FALLBACK_STORAGE_LIMIT,
+            };
+
+            state
+                .user_service
+                .create_user(payload, hash, default_storage_limit)
+                .await?;
         }
         Err(e) => {
             tracing::error!("Error hashing password: {}", e);

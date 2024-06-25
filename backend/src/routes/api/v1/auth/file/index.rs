@@ -292,12 +292,31 @@ pub async fn upload_file(
     folder_id: Result<Path<i64>, PathRejection>,
     mut multipart: Multipart,
 ) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
     };
 
-    let user_id = SessionService::check_logged_in(&session).await?;
+    let user = state
+        .user_service
+        .get_user(user_id)
+        .await?
+        .ok_or(AppError::UserNotFound)?;
+
+    let storage_used = state
+        .user_service
+        .get_user_storage_usage(user_id, None)
+        .await?;
+
+    let mut storage_remaining = user.storage_limit - storage_used;
+
+    if storage_remaining < 0 {
+        return Err(AppError::BadRequest {
+            error: Some("Storage limit exceeded".to_string()),
+        });
+    }
+
     let location = std::env::var("UPLOAD_LOCATION").unwrap();
     let mut folder_cache: HashMap<String, i64> = HashMap::new();
     let mut pending_image_formats: Vec<i64> = vec![];
@@ -400,6 +419,14 @@ pub async fn upload_file(
 
         match stream_to_file(&location, &id.to_string(), field).await {
             Ok(len) => {
+                storage_remaining -= len as i64;
+
+                if storage_remaining < 0 {
+                    return Err(AppError::BadRequest {
+                        error: Some("Storage limit exceeded".to_string()),
+                    })?;
+                }
+
                 if file_type == FileType::Image {
                     if len > FILE_SIZE_LIMIT {
                         file_type = FileType::LargeImage;

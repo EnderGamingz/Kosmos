@@ -6,7 +6,7 @@ import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
-import { FileUploadContent } from '@pages/explorer/file/fileUpload.tsx';
+import { FileUploadContent } from '@pages/explorer/components/fileUpload.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';

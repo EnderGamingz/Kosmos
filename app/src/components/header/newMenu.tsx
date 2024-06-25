@@ -6,7 +6,10 @@ import {
 } from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import { FileUpload, FileUploadModal } from '@pages/explorer/file/fileUpload';
+import {
+  FileUpload,
+  FileUploadModal,
+} from '@pages/explorer/components/fileUpload.tsx';
 import { CreateFolder } from '@pages/explorer/folder/createFolder';
 import { useExplorerStore } from '@stores/folderStore';
 

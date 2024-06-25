@@ -32,13 +32,15 @@ import {
   itemTransitionVariant,
 } from '@components/transition.ts';
 import objectHash from 'object-hash';
+import { useUserState } from '@stores/userStore.ts';
 
 export function OperationsMenu() {
   const [seen, setSeen] = useState(true);
   const [initial, setInitial] = useState(true);
-  const operations = useOperations();
   const operationsHash = useRef<string>();
   const [initialSucceeded, setInitialSucceeded] = useState<string[]>([]);
+  const logout = useUserState(s => s.logout);
+  const operations = useOperations(logout);
 
   useEffect(() => {
     if (!operations.data?.length) return;

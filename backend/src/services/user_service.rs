@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 use sonyflake::Sonyflake;
 use sqlx::types::BigDecimal;
-use sqlx::FromRow;
+use sqlx::{Execute, FromRow, QueryBuilder};
 use tower_sessions::Session;
+use bigdecimal::ToPrimitive;
 
-use crate::db::KosmosDbResult;
+use crate::db::{KosmosDb, KosmosDbResult};
 use crate::model::user::{ParsedUserModel, UserModel};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
@@ -55,12 +56,14 @@ impl UserService {
         &self,
         payload: RegisterCredentials,
         hash: String,
+        storage_limit: i64,
     ) -> Result<(), AppError> {
         sqlx::query!(
-            "INSERT INTO users (id, username, password_hash) VALUES ($1, $2, $3)",
+            "INSERT INTO users (id, username, password_hash, storage_limit) VALUES ($1, $2, $3, $4)",
             self.sf.next_id().unwrap() as i64,
             &payload.username,
-            hash
+            hash,
+            storage_limit
         )
         .execute(&self.db_pool)
         .await
@@ -83,6 +86,7 @@ impl UserService {
             username: user.username,
             email: user.email,
             full_name: user.full_name,
+            storage_limit: user.storage_limit,
             created_at: user.created_at,
             updated_at: user.updated_at,
         }
@@ -200,32 +204,47 @@ impl UserService {
             })
     }
 
+    fn get_storage_query(user_id: UserId, marked_deleted: Option<bool>) -> String {
+        let mut query: QueryBuilder<KosmosDb> =
+            QueryBuilder::new("SELECT SUM (file_size) FROM files WHERE user_id = ");
+        query.push_bind(user_id);
+
+        if let Some(bool) = marked_deleted {
+            if bool {
+                query.push(" AND deleted_at IS NOT NULL");
+            } else {
+                query.push(" AND deleted_at IS NULL");
+            }
+        }
+
+        query.build().sql().into()
+    }
+
     pub async fn get_user_storage_usage(
         &self,
         user_id: UserId,
-        marked_deleted: bool,
-    ) -> Result<BigDecimal, AppError> {
-        let result = if marked_deleted {
-            sqlx::query_as::<_, FileSizeSum>(
-                "SELECT SUM (file_size) FROM files WHERE user_id = $1 AND deleted_at IS NOT NULL",
-            )
+        marked_deleted: Option<bool>,
+    ) -> Result<i64, AppError> {
+        sqlx::query_as::<_, FileSizeSum>(&*Self::get_storage_query(user_id, marked_deleted))
             .bind(user_id)
             .fetch_one(&self.db_pool)
             .await
-        } else {
-            sqlx::query_as::<_, FileSizeSum>(
-                "SELECT SUM (file_size) FROM files WHERE user_id = $1 AND deleted_at IS NULL",
-            )
-            .bind(user_id)
-            .fetch_one(&self.db_pool)
-            .await
-        };
-
-        result
             .map_err(|e| {
                 tracing::error!("Error fetching user storage usage: {}", e);
                 AppError::InternalError
             })
             .map(|row| row.sum.unwrap_or(BigDecimal::from(0)))
+            .map(|sum| sum.to_i64().unwrap_or(0))
+    }
+
+    pub async fn get_user_storage_limit(&self, user_id: UserId) -> Result<i64, AppError> {
+        sqlx::query!("SELECT storage_limit FROM users WHERE id = $1", user_id)
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error fetching user storage limit: {}", e);
+                AppError::InternalError
+            })
+            .map(|row| row.storage_limit)
     }
 }

@@ -1,6 +1,6 @@
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL, IS_DEVELOPMENT } from './vars.ts';
+import { BASE_URL, FALLBACK_STORAGE_LIMIT, IS_DEVELOPMENT } from './vars.ts';
 import { FolderResponse } from '@models/folder.ts';
 import { DataOperationType, FileModel } from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
@@ -11,6 +11,7 @@ import {
   SortParams,
   SortParamsForQuery,
 } from '@models/sort.ts';
+import { UsageResponse } from '@models/user.ts';
 
 export const queryClient = new QueryClient();
 
@@ -100,21 +101,34 @@ export const useUsage = () => {
     queryFn: () =>
       axios.get(`${BASE_URL}auth/user/usage`).then(res => {
         return {
-          active: res.data.active,
-          bin: res.data.bin,
-        };
+          active: parseInt(res.data.active) ?? 0,
+          bin: parseInt(res.data.bin) ?? 0,
+          total: parseInt(res.data.total) ?? 0,
+          limit: parseInt(res.data.limit) ?? FALLBACK_STORAGE_LIMIT,
+        } satisfies UsageResponse;
       }),
     queryKey: ['usage'],
+    placeholderData: {
+      active: 0,
+      bin: 0,
+      total: 0,
+      limit: FALLBACK_STORAGE_LIMIT,
+    },
     refetchOnMount: false,
   });
 };
 
-export const useOperations = () => {
+export const useOperations = (onUnauthorized?: () => void) => {
   return useQuery({
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/operation/all`)
-        .then(res => res.data as OperationModel[]),
+        .then(res => res.data as OperationModel[])
+        .catch(e => {
+          if (e.response?.status === 401) {
+            onUnauthorized?.();
+          }
+        }),
     queryKey: ['operations'],
     refetchOnMount: true,
     // 20 seconds
@@ -123,12 +137,6 @@ export const useOperations = () => {
     refetchOnWindowFocus: true,
   });
 };
-
-export async function invalidateOperations() {
-  return queryClient.invalidateQueries({
-    queryKey: ['operations'],
-  });
-}
 
 export async function refetchOperations() {
   return queryClient.refetchQueries({

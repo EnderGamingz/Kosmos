@@ -13,6 +13,7 @@ import {
   invalidateFiles,
   invalidateFolders,
   invalidateUsage,
+  useUsage,
 } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import {
@@ -85,9 +86,10 @@ export function FileUploadContent({
         });
         return res.data;
       })
-      .catch(() => {
+      .catch(err => {
         notification.updateNotification(uploadId, {
           status: 'Upload failed',
+          description: err.response?.data?.error || 'Error',
           severity: Severity.ERROR,
         });
       });
@@ -245,9 +247,21 @@ export function FileUploadModal({
 }
 
 export function FileUpload({ onClick }: { onClick: () => void }) {
+  const usage = useUsage().data;
+  const full = usage.limit - usage.total <= 0;
   return (
-    <button className={'btn-black w-full py-3'} onClick={onClick}>
-      <ArrowUpTrayIcon /> Upload Files
+    <button
+      className={tw('w-full py-3', full ? 'btn-white' : 'btn-black')}
+      onClick={onClick}>
+      <ArrowUpTrayIcon />
+      <div className={'flex flex-col text-start'}>
+        Upload Files
+        {full && (
+          <p className={'w-full text-xs font-medium text-red-400'}>
+            Storage limit reached
+          </p>
+        )}
+      </div>
     </button>
   );
 }

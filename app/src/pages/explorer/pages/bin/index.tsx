@@ -29,7 +29,7 @@ export default function BinPage() {
     <>
       <Progress
         aria-label={'Bin loading...'}
-        isIndeterminate={!usageData?.bin || deletedFiles.isLoading}
+        isIndeterminate={usageData?.bin === undefined || deletedFiles.isLoading}
         value={100}
         className={'h-1 opacity-50'}
         color={'default'}
@@ -62,7 +62,9 @@ export default function BinPage() {
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}>
-          {usageData?.bin ? formatBytes(usageData?.bin) : 'Loading...'}
+          {usageData?.bin !== undefined
+            ? formatBytes(usageData?.bin)
+            : 'Loading...'}
         </motion.p>
         <motion.div
           initial={{ y: -10, opacity: 0 }}

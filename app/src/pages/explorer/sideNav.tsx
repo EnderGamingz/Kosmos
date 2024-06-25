@@ -13,14 +13,13 @@ import { useExplorerStore } from '@stores/folderStore.ts';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion } from 'framer-motion';
 
-// 100 GiB
-const WARN_LIMIT = 100 * 1024 * 1024 * 1024;
-
 export function SideNav() {
   const navControls = useExplorerStore(s => s.sidenav);
   const usage = useUsage();
 
-  const percentageUsage = ((usage.data?.active || 0) / WARN_LIMIT) * 100;
+  const { limit, bin, total } = usage.data;
+
+  const percentageUsage = (total / limit) * 100;
 
   const links = [
     {
@@ -37,7 +36,7 @@ export function SideNav() {
       name: 'Bin',
       elId: 'bin-icon',
       href: '/home/bin',
-      description: usage.data?.bin,
+      description: formatBytes(bin),
       icon: TrashIcon,
     },
   ];
@@ -67,9 +66,7 @@ export function SideNav() {
             <div className={'flex w-full items-center justify-between'}>
               <p>{link.name}</p>
               {link.description && (
-                <p className={'text-xs text-stone-600'}>
-                  {formatBytes(link.description)}
-                </p>
+                <p className={'text-xs text-stone-600'}>{link.description}</p>
               )}
             </div>
           </Link>
@@ -94,9 +91,9 @@ export function SideNav() {
           value={percentageUsage}
         />
         <div className={'text-sm text-stone-800 md:text-base'}>
-          {formatBytes(usage.data?.active || 0)}{' '}
+          {formatBytes(total)}{' '}
           <span className={'text-stone-400'}>
-            of {formatBytes(WARN_LIMIT, false, 0)}
+            of {formatBytes(limit, false, 0)}
           </span>
         </div>
       </div>

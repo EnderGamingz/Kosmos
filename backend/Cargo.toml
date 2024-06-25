@@ -28,3 +28,4 @@ validator = { version = "0.18.1", features = ["derive"] }
 axum-valid = "0.18.0"
 lazy_static = "1.4.0"
 itertools = "0.13.0"
+bigdecimal = "0.4.5"

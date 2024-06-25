@@ -9,6 +9,10 @@ export function AccessWrapper({ el, page }: { el: ReactNode; page: string }) {
     return <NoAccess loading page={page} />;
   }
 
+  if (user.error) {
+    return <NoAccess error={user.error} page={page} />;
+  }
+
   if (user.user) return el;
 
   return <NoAccess page={page} />;

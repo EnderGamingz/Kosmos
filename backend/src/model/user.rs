@@ -9,6 +9,7 @@ pub struct UserModel {
     pub password_hash: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
+    pub storage_limit: i64,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -19,6 +20,7 @@ pub struct ParsedUserModel {
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
+    pub storage_limit: i64,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
