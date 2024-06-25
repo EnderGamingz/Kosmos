@@ -26,7 +26,7 @@ export function MoveModalContent({
   onClose: () => void;
 }) {
   const [selectedFolder, setSelectedFolder] = useState(parent);
-  const notify = useNotifications(s => s.actions.notify);
+  const notifications = useNotifications(s => s.actions);
   const { data, isLoading } = useFolders(selectedFolder);
 
   const handleChangeFolder = (id?: string) => () => {
@@ -35,30 +35,34 @@ export function MoveModalContent({
   };
 
   const moveAction = useMutation({
-    mutationFn: () =>
-      axios.put(
-        `${BASE_URL}auth/${moveData.type}/move/${moveData.id}?folder_id=${selectedFolder}`,
-      ),
-    onSuccess: async () => {
-      onClose();
-
-      await invalidateData(moveData.type);
-
-      notify({
+    mutationFn: async () => {
+      const moveId = notifications.notify({
         title: `Move ${moveData.type}`,
-        status: 'Moved successfully',
-        severity: Severity.SUCCESS,
-        timeout: 1000,
+        severity: Severity.INFO,
+        loading: true,
       });
-    },
-    onError: err => {
-      notify({
-        title: `Move ${moveData.type}`,
-        severity: Severity.ERROR,
-        // @ts-expect-error an Error message is expected
-        description: err.response?.data?.error || 'Error',
-        timeout: 2000,
-      });
+      await axios
+        .put(
+          `${BASE_URL}auth/${moveData.type}/move/${moveData.id}?folder_id=${selectedFolder}`,
+        )
+        .then(() => {
+          notifications.updateNotification(moveId, {
+            severity: Severity.SUCCESS,
+            status: 'Moved',
+            timeout: 1000,
+          });
+
+          invalidateData(moveData.type).then();
+          onClose();
+        })
+        .catch(e => {
+          notifications.updateNotification(moveId, {
+            severity: Severity.ERROR,
+            status: 'Error',
+            description: e.response?.data?.error || 'Error',
+            timeout: 2000,
+          });
+        });
     },
   });
 

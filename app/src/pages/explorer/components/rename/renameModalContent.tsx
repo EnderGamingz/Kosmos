@@ -30,31 +30,37 @@ export function RenameModalContent({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const nameLength = useMemo(() => inputName.lastIndexOf('.'), [inputName]);
 
-  const notify = useNotifications(s => s.actions.notify);
+  const notifications = useNotifications(s => s.actions);
 
   const renameAction = useMutation({
-    mutationFn: () =>
-      axios.patch(`${BASE_URL}auth/${renameData.type}/${renameData.id}`, {
-        name: inputName,
-      }),
-    onSuccess: async () => {
-      onClose();
-      await invalidateData(renameData.type);
-      notify({
+    mutationFn: async () => {
+      const renameId = notifications.notify({
         title: `Rename ${renameData.type}`,
-        status: 'Renaming successfully',
-        severity: Severity.SUCCESS,
-        timeout: 1000,
+        severity: Severity.INFO,
+        loading: true,
       });
-    },
-    onError: err => {
-      notify({
-        title: `Rename ${renameData.type}`,
-        severity: Severity.ERROR,
-        // @ts-expect-error response is expected
-        description: err.response?.data?.error || 'Error',
-        timeout: 2000,
-      });
+      await axios
+        .patch(`${BASE_URL}auth/${renameData.type}/${renameData.id}`, {
+          name: inputName,
+        })
+        .then(() => {
+          notifications.updateNotification(renameId, {
+            severity: Severity.SUCCESS,
+            status: 'Renamed',
+            timeout: 1000,
+          });
+
+          invalidateData(renameData.type).then();
+          onClose();
+        })
+        .catch(e => {
+          notifications.updateNotification(renameId, {
+            severity: Severity.ERROR,
+            status: 'Error',
+            description: e.response?.data?.error || 'Error',
+            timeout: 2000,
+          });
+        });
     },
   });
 

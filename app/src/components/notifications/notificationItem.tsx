@@ -18,11 +18,11 @@ import {
 function getSeverityIcon(severity: Severity) {
   switch (severity) {
     case Severity.SUCCESS:
-      return <CheckCircleIcon />;
+      return <CheckCircleIcon className={'text-green-400'} />;
     case Severity.ERROR:
-      return <ExclamationCircleIcon />;
+      return <ExclamationCircleIcon className={'text-red-400'} />;
     case Severity.WARN:
-      return <ExclamationTriangleIcon />;
+      return <ExclamationTriangleIcon className={'text-amber-500'} />;
     case Severity.INFO:
     default:
       return <InformationCircleIcon />;
@@ -88,7 +88,9 @@ export function NotificationItem({
         index === 0 || expanded ? 'text-stone-50' : 'text-stone-50/20',
       )}>
       <div className={'flex items-center gap-1 px-2 py-2'}>
-        <div className={'mr-1 h-7 w-7'}>{getSeverityIcon(data.severity)}</div>
+        <div className={'mr-1 flex h-7 w-7'}>
+          {getSeverityIcon(data.severity)}
+        </div>
         <div>
           <div className={'flex items-center'}>
             <p className={'text-lg font-medium'}>{data.title}</p>

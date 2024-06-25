@@ -14,34 +14,40 @@ export function CreateFolder({
   folder?: string;
   onClose: () => void;
 }) {
-  const notify = useNotifications(s => s.actions.notify);
+  const notifications = useNotifications(s => s.actions);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [active, setActive] = useState(false);
   const [name, setName] = useState('');
 
   const { mutate } = useMutation({
-    mutationFn: () =>
-      axios.post(`${BASE_URL}auth/folder${folder ? `/${folder}` : ''}`, {
-        name,
-      }),
-    onSuccess: async () => {
-      await invalidateFolders();
-      onClose();
-      notify({
+    mutationFn: async () => {
+      const createId = notifications.notify({
         title: 'Create folder',
-        severity: Severity.SUCCESS,
-        status: 'Created successfully',
-        timeout: 1000,
+        severity: Severity.INFO,
+        loading: true,
       });
-    },
-    onError: err => {
-      notify({
-        title: `Create folder`,
-        severity: Severity.ERROR,
-        // @ts-expect-error response will include data
-        description: err.response?.data?.error || 'Error',
-        timeout: 2000,
-      });
+      await axios
+        .post(`${BASE_URL}auth/folder${folder ? `/${folder}` : ''}`, {
+          name,
+        })
+        .then(() => {
+          notifications.updateNotification(createId, {
+            severity: Severity.SUCCESS,
+            status: 'Created',
+            timeout: 1000,
+          });
+
+          invalidateFolders().then();
+          onClose();
+        })
+        .catch(e => {
+          notifications.updateNotification(createId, {
+            severity: Severity.ERROR,
+            status: 'Error',
+            description: e.response?.data?.error || 'Error',
+            timeout: 2000,
+          });
+        });
     },
   });
 

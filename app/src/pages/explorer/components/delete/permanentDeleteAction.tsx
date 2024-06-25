@@ -39,7 +39,7 @@ export function PermanentDeleteAction({
         .then(async () => {
           notification.updateNotification(deleteId, {
             severity: Severity.SUCCESS,
-            status: 'Deleted successfully',
+            status: 'Deleted',
             timeout: 1000,
           });
 
@@ -49,6 +49,7 @@ export function PermanentDeleteAction({
         .catch(err => {
           notification.updateNotification(deleteId, {
             severity: Severity.ERROR,
+            status: 'Error',
             description: err.response?.data?.error || 'Error',
             timeout: 2000,
           });
@@ -86,7 +87,7 @@ export function MultiPermanentDelete({
   const deleteAction = useMutation({
     mutationFn: async () => {
       const deleteId = notification.notify({
-        title: `${deleteType} deleting data`,
+        title: `Deleting data`,
         loading: true,
         severity: Severity.INFO,
       });
@@ -101,14 +102,14 @@ export function MultiPermanentDelete({
         .then(async () => {
           notification.updateNotification(deleteId, {
             severity: Severity.SUCCESS,
-            status: 'Deleted successfully',
+            status: 'Deleted',
             timeout: 1000,
           });
 
           if (deleteData.files.length) invalidateFiles().then();
           if (deleteData.folders.length) invalidateFolders().then();
-          invalidateUsage().then();
 
+          invalidateUsage().then();
           setSelectedNone();
         })
         .catch(err => {

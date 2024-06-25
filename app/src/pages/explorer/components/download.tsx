@@ -36,7 +36,7 @@ export function DownloadSingleAction({
 
       const fileId = notification.notify({
         title: 'File Download',
-        status: 'Downloading...',
+        status: 'Downloading',
         loading: true,
         severity: Severity.INFO,
       });
@@ -56,7 +56,7 @@ export function DownloadSingleAction({
       if (readableStream?.pipeTo) {
         return readableStream.pipeTo(fileStream).then(() => {
           notification.updateNotification(fileId, {
-            status: 'Download complete',
+            status: 'Complete',
             severity: Severity.SUCCESS,
             timeout: 1000,
           });
@@ -71,7 +71,7 @@ export function DownloadSingleAction({
           if (res.done) {
             return writer.close().then(() => {
               notification.updateNotification(fileId, {
-                status: 'Download complete',
+                status: 'Complete',
                 severity: Severity.SUCCESS,
                 timeout: 1000,
               });
@@ -87,7 +87,7 @@ export function DownloadSingleAction({
     onError: () => {
       notification.updateNotification(fileId, {
         severity: Severity.ERROR,
-        status: 'Download error',
+        status: 'Error',
         description: 'Check console',
       });
     },

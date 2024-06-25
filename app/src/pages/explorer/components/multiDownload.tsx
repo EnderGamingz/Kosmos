@@ -33,7 +33,7 @@ export function MultiDownload({
       const fileId = notificationActions.notify({
         title: 'Multi Download',
         description: description.join(', '),
-        status: 'Processing archive',
+        status: 'Processing',
         loading: true,
         severity: Severity.INFO,
       });
@@ -78,7 +78,7 @@ export function MultiDownload({
       if (readableStream?.pipeTo) {
         return readableStream.pipeTo(fileStream).then(() => {
           notificationActions.updateNotification(fileId, {
-            status: 'Download complete',
+            status: 'Complete',
             severity: Severity.SUCCESS,
             timeout: 2500,
           });
@@ -93,7 +93,7 @@ export function MultiDownload({
           if (res.done) {
             return writer.close().then(() => {
               notificationActions.updateNotification(fileId, {
-                status: 'Download complete',
+                status: 'Complete',
                 severity: Severity.SUCCESS,
                 timeout: 2500,
               });
@@ -108,7 +108,7 @@ export function MultiDownload({
     },
     onError: () => {
       notificationActions.updateNotification(fileId, {
-        title: 'Download failed',
+        status: 'Failed',
         severity: Severity.ERROR,
         timeout: 2500,
       });

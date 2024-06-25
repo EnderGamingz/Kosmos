@@ -81,14 +81,14 @@ export function FileUploadContent({
       .then(res => {
         notification.updateNotification(uploadId, {
           timeout: 2000,
-          status: 'Upload complete',
+          status: 'Complete',
           severity: Severity.SUCCESS,
         });
         return res.data;
       })
       .catch(err => {
         notification.updateNotification(uploadId, {
-          status: 'Upload failed',
+          status: 'Failed',
           description: err.response?.data?.error || 'Error',
           severity: Severity.ERROR,
         });
@@ -117,6 +117,7 @@ export function FileUploadContent({
         if (isInFileList) {
           notification.notify({
             title: 'Folder Upload',
+            status: 'Prevented',
             description:
               'Folder upload detected, please use the dedicated button in the upload modal instead',
             severity: Severity.WARN,
