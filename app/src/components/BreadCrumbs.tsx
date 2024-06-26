@@ -16,13 +16,19 @@ export function BreadCrumbItem({
   name,
   href,
   last,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   name: ReactNode;
   href?: string;
   last?: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }) {
   return (
     <motion.div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className={
         'flex items-center gap-2 text-stone-800 [&_svg]:h-5 [&_svg]:w-5'
       }

@@ -13,9 +13,11 @@ import {
   transitionStop,
 } from '@components/transition.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
+import { useMove } from '@pages/explorer/components/move/useMove.tsx';
+import { isTouchDevice } from '@lib/touch.ts';
 
 export function TableFileItem({
   i,
@@ -28,6 +30,7 @@ export function TableFileItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
+  const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
     useShallow(s => ({
       isControl: s.keys.ctrl,
@@ -35,10 +38,26 @@ export function TableFileItem({
     })),
   );
 
+  const { selectFile, dragDestination, setDestination } = useExplorerStore(
+    useShallow(s => ({
+      selectFile: s.current.selectCurrentFile,
+      dragDestination: s.dragMove.destination,
+      setDestination: s.dragMove.setDestination,
+    })),
+  );
+
   const isSelected = selected.includes(file.id);
 
-  const selectFile = useExplorerStore(s => s.current.selectCurrentFile);
-  const contextMenu = useContext(DisplayContext);
+  const context = useContext(DisplayContext);
+
+  const moveAction = useMove(
+    {
+      type: 'file',
+      id: context.dragMove.id as string,
+      name: file.file_name,
+    },
+    dragDestination,
+  );
 
   return (
     <motion.tr
@@ -46,17 +65,17 @@ export function TableFileItem({
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(file.id);
-        if (isShift) contextMenu.select.setRange(i);
+        if (isShift) context.select.setRange(i);
       }}
       onContextMenu={e => {
         e.preventDefault();
-        contextMenu.handleContext({ x: e.clientX, y: e.clientY }, file);
+        context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={tw(
         'group transition-all [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
         isShift && 'cursor-pointer hover:scale-95',
-        contextMenu.select.rangeStart === i && 'scale-95 bg-indigo-50',
+        context.select.rangeStart === i && 'scale-95 bg-indigo-50',
       )}>
       <motion.th layoutId={`check-${file.id}`}>
         <Checkbox
@@ -65,12 +84,28 @@ export function TableFileItem({
         />
       </motion.th>
       <td className={'flex !p-0'}>
-        <div
+        <motion.div
+          drag={!context.recentView && !isTouchDevice()}
+          dragSnapToOrigin
+          whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
+          onDragStart={() => {
+            setDestination();
+            context.dragMove.setDrag('file', file.id);
+            setDisabled(true);
+          }}
+          onDragEnd={() => {
+            if (dragDestination) {
+              moveAction.mutate();
+            }
+          }}
+          onDragTransitionEnd={() => {
+            context.dragMove.resetDrag();
+            setDestination();
+            setDisabled(false);
+          }}
           className={'flex flex-grow items-center'}
           onClick={() => {
-            if (isControl || isShift) {
-              return;
-            }
+            if (isControl || isShift || disabled) return;
             selectFile(file);
           }}>
           <ItemIcon
@@ -87,10 +122,10 @@ export function TableFileItem({
             }>
             {file.file_name}
           </motion.p>
-        </div>
+        </motion.div>
         <button
           onClick={e => {
-            contextMenu.handleContext({ x: e.clientX, y: e.clientY }, file);
+            context.handleContext({ x: e.clientX, y: e.clientY }, file);
           }}
           className={'cursor-pointer p-2'}>
           <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />

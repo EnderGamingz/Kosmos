@@ -1,11 +1,10 @@
 import { FolderModel } from '@models/folder.ts';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import tw from '@lib/classMerge.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
-import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { motion } from 'framer-motion';
 
 import {
@@ -13,9 +12,12 @@ import {
   transitionStop,
 } from '@components/transition.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
+import { useExplorerStore } from '@stores/folderStore.ts';
+import { useMove } from '@pages/explorer/components/move/useMove.tsx';
+import { isTouchDevice } from '@lib/touch.ts';
 
 export function TableFolderItem({
   i,
@@ -28,14 +30,34 @@ export function TableFolderItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
+  const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
+    useShallow(s => ({ isControl: s.keys.ctrl, isShift: s.keys.shift })),
+  );
+  const { setDragDestination, dragDestination } = useExplorerStore(
     useShallow(s => ({
-      isControl: s.keys.ctrl,
-      isShift: s.keys.shift,
+      setDragDestination: s.dragMove.setDestination,
+      dragDestination: s.dragMove.destination,
     })),
   );
   const isSelected = selected.includes(folder.id);
-  const contextMenu = useContext(DisplayContext);
+  const context = useContext(DisplayContext);
+
+  const moveAction = useMove(
+    {
+      type: 'folder',
+      id: context.dragMove.id as string,
+      name: folder.folder_name,
+    },
+    dragDestination,
+  );
+
+  const navigate = useNavigate();
+
+  const handleFolderClick = () => {
+    if (isControl || isShift) return;
+    navigate(`/home/folder/${folder.id.toString()}`);
+  };
 
   return (
     <motion.tr
@@ -43,18 +65,18 @@ export function TableFolderItem({
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(folder.id);
-        if (isShift) contextMenu.select.setRange(i);
+        if (isShift) context.select.setRange(i);
       }}
       onContextMenu={e => {
         e.preventDefault();
-        contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
+        context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={tw(
         'group transition-all [&_td]:p-3 [&_th]:p-3',
         'hover:bg-stone-500/10 hover:shadow-sm',
         isSelected && 'bg-indigo-100',
         isShift && 'cursor-pointer hover:scale-95',
-        contextMenu.select.rangeStart === i && 'scale-95 bg-indigo-50',
+        context.select.rangeStart === i && 'scale-95 bg-indigo-50',
       )}>
       <th>
         <Checkbox
@@ -64,25 +86,43 @@ export function TableFolderItem({
       </th>
       <td className={'!p-0'}>
         <div className={'flex w-full items-center gap-2'}>
-          <ConditionalWrapper
-            wrapper={c => (
-              <Link
-                className={'flex w-full items-center gap-2'}
-                to={`/home/folder/${folder.id.toString()}`}>
-                {c}
-              </Link>
-            )}
-            condition={!isControl && !isShift}>
+          <motion.div
+            onClick={handleFolderClick}
+            drag={!context.recentView && !isTouchDevice()}
+            dragSnapToOrigin
+            whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
+            onDragStart={() => {
+              setDragDestination();
+              context.dragMove.setDrag('folder', folder.id);
+              setDisabled(true);
+            }}
+            onDragEnd={() => {
+              if (dragDestination) {
+                moveAction.mutate();
+              }
+            }}
+            onDragTransitionEnd={() => {
+              context.dragMove.resetDrag();
+              setDragDestination();
+              setDisabled(false);
+            }}
+            onMouseEnter={() => {
+              if (!disabled) setDragDestination(folder.id);
+            }}
+            onMouseLeave={() => {
+              if (!disabled) setDragDestination();
+            }}
+            className={'flex w-full cursor-pointer items-center gap-2'}>
             <ItemIcon
               id={folder.id}
               name={folder.folder_name}
               type={'folder'}
             />
             <span className={'w-full'}>{folder.folder_name}</span>
-          </ConditionalWrapper>
+          </motion.div>
           <button
             onClick={e => {
-              contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
+              context.handleContext({ x: e.clientX, y: e.clientY }, folder);
             }}
             className={'cursor-pointer p-2'}>
             <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />

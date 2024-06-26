@@ -34,14 +34,16 @@ export type Notification = CreateNotificationPayload & {
   canDismiss?: boolean;
 };
 
+export type NotificationActions = {
+  clearNotifications: () => void;
+  notify: (data: CreateNotificationPayload) => string;
+  updateNotification: (id: string, data: UpdateNotificationPayload) => void;
+  removeNotification: (id: string) => void;
+};
+
 export type NotificationState = {
   notifications: Notification[];
-  actions: {
-    clearNotifications: () => void;
-    notify: (data: CreateNotificationPayload) => string;
-    updateNotification: (id: string, data: UpdateNotificationPayload) => void;
-    removeNotification: (id: string) => void;
-  };
+  actions: NotificationActions;
 };
 
 export const useNotifications = create<NotificationState>(set => ({

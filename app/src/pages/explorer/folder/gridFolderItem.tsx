@@ -1,7 +1,7 @@
 import { FolderModel } from '@models/folder.ts';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import {
   itemTransitionVariant,
@@ -9,11 +9,13 @@ import {
 } from '@components/transition.ts';
 import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import tw from '@lib/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
+import { useExplorerStore } from '@stores/folderStore.ts';
+import { useMove } from '@pages/explorer/components/move/useMove.tsx';
+import { isTouchDevice } from '@lib/touch.ts';
 
 export default function GridFolderItem({
   index,
@@ -26,6 +28,7 @@ export default function GridFolderItem({
   selected: string[];
   onSelect: (id: string) => void;
 }) {
+  const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
     useShallow(s => ({
       isControl: s.keys.ctrl,
@@ -33,58 +36,101 @@ export default function GridFolderItem({
     })),
   );
   const isSelected = selected.includes(folder.id);
-  const contextMenu = useContext(DisplayContext);
+  const { setDragDestination, dragDestination } = useExplorerStore(
+    useShallow(s => ({
+      setDragDestination: s.dragMove.setDestination,
+      dragDestination: s.dragMove.destination,
+    })),
+  );
+  const context = useContext(DisplayContext);
+  const navigate = useNavigate();
+
+  const moveAction = useMove(
+    {
+      type: 'folder',
+      id: context.dragMove.id as string,
+      name: folder.folder_name,
+    },
+    dragDestination,
+  );
+
+  const handleFolderClick = () => {
+    if (isControl || isShift || disabled) return;
+    navigate(`/home/folder/${folder.id.toString()}`);
+  };
 
   return (
     <motion.div
       layout
       variants={index < transitionStop ? itemTransitionVariant : undefined}
-      onClick={() => {
-        if (isControl) onSelect(folder.id);
-        if (isShift) contextMenu.select.setRange(index);
-      }}
       onContextMenu={e => {
         e.preventDefault();
-        contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
+        context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
-      className={tw(
-        'group flex w-full items-center rounded-lg bg-stone-400/40',
-        'shadow-md transition-all hover:bg-stone-500/40 hover:shadow-lg',
-        isSelected && 'bg-indigo-100',
-        isShift && 'cursor-pointer hover:scale-95',
-        contextMenu.select.rangeStart === index && 'scale-95 bg-indigo-50',
-      )}>
-      <div className={'relative min-h-10 min-w-10'}>
-        <div
-          className={tw(
-            'absolute inset-0 z-10 grid h-10 w-10 place-items-center opacity-0',
-            'transition-opacity group-hover:opacity-100',
-            isSelected && 'opacity-100',
-          )}>
-          <Checkbox
-            className={'h-5 w-5 p-0'}
-            isSelected={isSelected}
-            onValueChange={() => onSelect(folder.id)}
-          />
+      className={'group w-full cursor-pointer'}>
+      <motion.div
+        onClick={() => {
+          if (isControl) onSelect(folder.id);
+          else if (isShift) context.select.setRange(index);
+          else handleFolderClick();
+        }}
+        drag={!context.recentView && !isTouchDevice()}
+        dragSnapToOrigin
+        whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
+        onDragStart={() => {
+          setDragDestination();
+          context.dragMove.setDrag('folder', folder.id);
+          setDisabled(true);
+        }}
+        onDragEnd={() => {
+          if (dragDestination) {
+            moveAction.mutate();
+          }
+        }}
+        onDragTransitionEnd={() => {
+          context.dragMove.resetDrag();
+          setDragDestination();
+          setDisabled(false);
+        }}
+        onMouseEnter={() => {
+          if (!disabled) setDragDestination(folder.id);
+        }}
+        onMouseLeave={() => {
+          if (!disabled) setDragDestination();
+        }}
+        className={tw(
+          'flex items-center',
+          'rounded-lg bg-stone-400/40',
+          'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg',
+          isSelected && 'bg-indigo-100',
+          isShift && 'cursor-pointer hover:scale-95',
+          context.select.rangeStart === index && 'scale-95 bg-indigo-50',
+        )}>
+        <div className={'relative min-h-10 min-w-10'}>
+          <div
+            className={tw(
+              'absolute inset-0 z-10 grid h-10 w-10 place-items-center opacity-0',
+              'transition-opacity group-hover:opacity-100',
+              isSelected && 'opacity-100',
+            )}>
+            <Checkbox
+              className={'h-5 w-5 p-0'}
+              isSelected={isSelected}
+              onValueChange={() => onSelect(folder.id)}
+            />
+          </div>
+          <div
+            className={tw(
+              'absolute transition-opacity group-hover:opacity-0',
+              isSelected && 'opacity-0',
+            )}>
+            <ItemIcon
+              id={folder.id}
+              name={folder.folder_name}
+              type={'folder'}
+            />
+          </div>
         </div>
-        <div
-          className={tw(
-            'absolute transition-opacity group-hover:opacity-0',
-            isSelected && 'opacity-0',
-          )}>
-          <ItemIcon id={folder.id} name={folder.folder_name} type={'folder'} />
-        </div>
-      </div>
-      <ConditionalWrapper
-        wrapper={c => (
-          <Link
-            className={'flex h-full flex-grow items-center'}
-            to={`/home/folder/${folder.id.toString()}`}>
-            {c}
-          </Link>
-        )}
-        alt={c => <div className={'flex-grow'}>{c}</div>}
-        condition={!isControl && !isShift}>
         <div className={'flex flex-grow items-center'}>
           <span
             className={
@@ -93,14 +139,15 @@ export default function GridFolderItem({
             {folder.folder_name}
           </span>
         </div>
-      </ConditionalWrapper>
-      <button
-        onClick={e => {
-          contextMenu.handleContext({ x: e.clientX, y: e.clientY }, folder);
-        }}
-        className={'cursor-pointer p-2'}>
-        <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
-      </button>
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            context.handleContext({ x: e.clientX, y: e.clientY }, folder);
+          }}
+          className={'cursor-pointer p-2'}>
+          <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+        </button>
+      </motion.div>
     </motion.div>
   );
 }

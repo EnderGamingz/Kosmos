@@ -54,7 +54,7 @@ export default function FileGrid({
           'grid gap-3',
           'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
           'xl:grid-cols-5 2xl:grid-cols-7',
-          tw(isControl && '[&>div]:cursor-copy'),
+          isControl && '[&>div]:cursor-copy',
         )}>
         {folders.map((folder, i) => (
           <GridFolderItem
@@ -76,7 +76,7 @@ export default function FileGrid({
           !!recentView && 'mt-3',
           !dynamic &&
             'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7',
-          tw(isControl && '[&>div]:cursor-copy'),
+          isControl && '[&>div]:cursor-copy',
         )}>
         <ConditionalWrapper
           wrapper={c => (
@@ -109,7 +109,7 @@ export default function FileGrid({
           variants={itemTransitionVariant}
           className={tw(
             'w-full cursor-default select-none border-none text-sm text-stone-500/50',
-            'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5',
+            'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
             'flex gap-5 pb-28 pt-4',
           )}>
           <div>

@@ -15,6 +15,10 @@ export type ExplorerState = {
     selectFile: (id: string) => void;
     selectNone: () => void;
   };
+  dragMove: {
+    destination?: string;
+    setDestination: (destination?: string) => void;
+  };
   sidenav: {
     open: boolean;
     toggle: () => void;
@@ -36,6 +40,16 @@ export const useExplorerStore = create<ExplorerState>(set => ({
         current: {
           ...prev.current,
           folder: current,
+        },
+      }));
+    },
+  },
+  dragMove: {
+    setDestination: (destination?: string) => {
+      set(prev => ({
+        dragMove: {
+          ...prev.dragMove,
+          destination,
         },
       }));
     },

@@ -11,6 +11,32 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
+function FileListBreadCrumbs({ crumbs }: { crumbs: SimpleDirectory[] }) {
+  const setDragDestination = useExplorerStore(s => s.dragMove.setDestination);
+
+  return (
+    <BreadCrumbs>
+      <BreadCrumbItem
+        name={<HomeIcon />}
+        href={'/home'}
+        last={!crumbs.length}
+        onMouseEnter={() => setDragDestination(' ')}
+        onMouseLeave={() => setDragDestination()}
+      />
+      {crumbs.map((item, i) => (
+        <BreadCrumbItem
+          last={i === crumbs.length - 1}
+          key={`crumb-${item.id}`}
+          name={item.folder_name}
+          href={`/home/folder/${item.id}`}
+          onMouseEnter={() => setDragDestination(item.id)}
+          onMouseLeave={() => setDragDestination()}
+        />
+      ))}
+    </BreadCrumbs>
+  );
+}
+
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
@@ -62,21 +88,7 @@ export function FileList() {
         />
         <div className={'flex items-center pl-3 md:pl-0'}>
           <SideNavToggle />
-          <BreadCrumbs>
-            <BreadCrumbItem
-              name={<HomeIcon />}
-              href={'/home'}
-              last={!breadCrumbs.length}
-            />
-            {breadCrumbs.map((item, i) => (
-              <BreadCrumbItem
-                last={i === breadCrumbs.length - 1}
-                key={`crumb-${item.id}`}
-                name={item.folder_name}
-                href={`/home/folder/${item.id}`}
-              />
-            ))}
-          </BreadCrumbs>
+          <FileListBreadCrumbs crumbs={breadCrumbs} />
         </div>
         <FileUploadContent folder={folder} isInFileList={true}>
           <ExplorerDataDisplay

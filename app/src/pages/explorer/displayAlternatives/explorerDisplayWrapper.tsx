@@ -1,4 +1,4 @@
-import { FileModel, Selected } from '@models/file.ts';
+import { DataOperationType, FileModel, Selected } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
 import { ReactNode, useState } from 'react';
 import { useExplorerStore } from '@stores/folderStore.ts';
@@ -25,6 +25,9 @@ export function ExplorerDisplayWrapper({
   children: ReactNode;
 }) {
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
+  const [dragged, setDragged] = useState<
+    undefined | { type: DataOperationType; id: string }
+  >(undefined);
   const { selectedFile: selectedDisplayFile } = useExplorerStore(
     s => s.current,
   );
@@ -81,13 +84,9 @@ export function ExplorerDisplayWrapper({
     }
   };
 
-  // Reset range on shift release
-  /*  const shiftPressed = useKeyStore(s => s.keys.shift);
-  useEffect(() => {
-    if (rangeStart !== undefined && !shiftPressed) {
-      setRangeStart(undefined);
-    }
-  }, [rangeStart, shiftPressed]);*/
+  const handleDrag = (type: DataOperationType, id: string) => {
+    setDragged({ type, id });
+  };
 
   return (
     <DisplayContext.Provider
@@ -96,6 +95,12 @@ export function ExplorerDisplayWrapper({
         handleContext,
         files,
         folders,
+        dragMove: {
+          dragged: dragged?.type,
+          id: dragged?.id,
+          setDrag: handleDrag,
+          resetDrag: () => setDragged(undefined),
+        },
         select: { setRange: handleRangeChange, rangeStart },
       }}>
       <MultipleActionButton

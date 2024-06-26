@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
 import { motion } from 'framer-motion';
+import tw from '@lib/classMerge.ts';
 
 function getFileIcon(
   type: FileType | 'folder',
@@ -65,9 +66,10 @@ export default function ItemIcon({
   return (
     <motion.div
       layoutId={`type-${id}`}
-      className={
-        'icon-container text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2'
-      }>
+      className={tw(
+        'icon-container pointer-events-none',
+        'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',
+      )}>
       {getFileIcon(type, id, name, status, dynamic)}
     </motion.div>
   );

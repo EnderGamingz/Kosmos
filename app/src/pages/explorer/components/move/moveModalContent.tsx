@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { invalidateData, useFolders } from '@lib/query.ts';
+import { useFolders } from '@lib/query.ts';
 import {
   CircularProgress,
   ModalBody,
@@ -9,24 +9,22 @@ import {
 } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { DataOperationType } from '@models/file.ts';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
-import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { Collapse } from 'react-collapse';
+import { useMove } from '@pages/explorer/components/move/useMove.tsx';
+
+export type MoveData = { id: string; type: DataOperationType; name: string };
 
 export function MoveModalContent({
   moveData,
   parent,
   onClose,
 }: {
-  moveData: { id: string; type: DataOperationType; name: string };
+  moveData: MoveData;
   parent?: string;
   onClose: () => void;
 }) {
   const [selectedFolder, setSelectedFolder] = useState(parent);
-  const notifications = useNotifications(s => s.actions);
   const { data, isLoading } = useFolders(selectedFolder);
 
   const handleChangeFolder = (id?: string) => () => {
@@ -34,37 +32,7 @@ export function MoveModalContent({
     setSelectedFolder(id);
   };
 
-  const moveAction = useMutation({
-    mutationFn: async () => {
-      const moveId = notifications.notify({
-        title: `Move ${moveData.type}`,
-        severity: Severity.INFO,
-        loading: true,
-      });
-      await axios
-        .put(
-          `${BASE_URL}auth/${moveData.type}/move/${moveData.id}?folder_id=${selectedFolder}`,
-        )
-        .then(() => {
-          notifications.updateNotification(moveId, {
-            severity: Severity.SUCCESS,
-            status: 'Moved',
-            timeout: 1000,
-          });
-
-          invalidateData(moveData.type).then();
-          onClose();
-        })
-        .catch(e => {
-          notifications.updateNotification(moveId, {
-            severity: Severity.ERROR,
-            status: 'Error',
-            description: e.response?.data?.error || 'Error',
-            timeout: 2000,
-          });
-        });
-    },
-  });
+  const moveAction = useMove(moveData, selectedFolder, onClose);
 
   return (
     <>
