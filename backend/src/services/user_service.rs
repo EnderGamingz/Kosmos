@@ -92,25 +92,20 @@ impl UserService {
         }
     }
 
-    pub async fn check_user(&self, session: &Session) -> Result<UserModel, AppError> {
-        let user_id = SessionService::check_logged_in(session).await?;
-        let user_result = self.get_user(user_id).await?;
-
-        match user_result {
-            Some(user) => Ok(user),
-            None => Err(AppError::UserNotFound)?,
-        }
-    }
-
     pub async fn get_auth_user(&self, user_id: UserId) -> Result<UserModel, AppError> {
-        sqlx::query_as::<_, UserModel>("SELECT * FROM users WHERE id = $1")
+        let user = sqlx::query_as::<_, UserModel>("SELECT * FROM users WHERE id = $1")
             .bind(user_id)
-            .fetch_one(&self.db_pool)
+            .fetch_optional(&self.db_pool)
             .await
             .map_err(|e| {
                 tracing::error!("Error fetching user: {}", e);
                 AppError::UserNotFound
-            })
+            })?;
+
+        match user {
+            Some(user) => Ok(user),
+            None => Err(AppError::UserNotFound),
+        }
     }
 
     pub async fn check_user_optional(
@@ -165,7 +160,7 @@ impl UserService {
             })
     }
 
-    pub async fn delete_user(&self, user_id: i32) -> Result<KosmosDbResult, AppError> {
+    pub async fn delete_user(&self, user_id: UserId) -> Result<KosmosDbResult, AppError> {
         sqlx::query("DELETE FROM users WHERE id = $1")
             .bind(user_id)
             .execute(&self.db_pool)

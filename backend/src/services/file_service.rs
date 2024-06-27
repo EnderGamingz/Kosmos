@@ -115,6 +115,25 @@ impl FileService {
         .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
+    pub async fn get_files_for_user_delete(
+        &self,
+        user_id: UserId,
+    ) -> Result<Vec<FileModel>, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT * FROM files WHERE user_id = $1
+             AND deleted_at IS NULL",
+            user_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching files for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
+        .map(|rows| rows.into_iter().map(FileModel::from).collect())
+    }
+
     pub async fn get_marked_deleted_files(
         &self,
         user_id: UserId,

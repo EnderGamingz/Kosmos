@@ -56,7 +56,7 @@ export function PreviewImage({
           alt={alt}
         />
       )}
-      {!isUnavailable && (!loaded || isProcessing) && (
+      {!isUnavailable && !isFailed && (!loaded || isProcessing) && (
         <Skeleton
           className={tw(
             'h-full w-full',

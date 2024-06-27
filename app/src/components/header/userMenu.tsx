@@ -14,16 +14,17 @@ import {
   ArrowRightStartOnRectangleIcon,
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
+import useLogout from '@hooks/useLogout.ts';
 
 export function UserMenu() {
   const user = useUserState();
   const navigate = useNavigate();
+  const logout = useLogout();
 
   const logoutAction = useMutation({
     mutationFn: () => axios.post(`${BASE_URL}auth/logout`),
     onSuccess: () => {
-      user.logout();
-      navigate('/auth/login');
+      logout();
     },
   });
 

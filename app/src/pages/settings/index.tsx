@@ -1,10 +1,15 @@
-import { WindowIcon } from '@heroicons/react/24/outline';
+import { UserIcon, WindowIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { Link, Outlet } from 'react-router-dom';
 import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 
 const links = [
+  {
+    name: 'Account',
+    href: '/settings/account',
+    icon: UserIcon,
+  },
   {
     name: 'Preferences',
     href: '/settings/preferences',

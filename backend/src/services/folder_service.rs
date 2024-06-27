@@ -294,6 +294,17 @@ impl FolderService {
             .map(|_| ())
     }
 
+    pub async fn delete_all_folders(&self, user_id: UserId) -> Result<(), AppError> {
+        sqlx::query!("DELETE FROM folder WHERE user_id = $1", user_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error deleting all folders for user {}: {}", user_id, e);
+                AppError::InternalError
+            })
+            .map(|_| ())
+    }
+
     pub async fn get_children_directories(
         &self,
         folder_id: i64,

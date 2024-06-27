@@ -38,19 +38,19 @@ pub async fn login(
         }
     };
 
-    let is_password_valid = bcrypt::verify(payload.password, &*user.password_hash)
-        .map_err(|_| AppError::InternalError)?;
+    let is_password_valid =
+        bcrypt::verify(payload.password, &*user.password_hash).map_err(|e| {
+            tracing::error!("Failed to verify password: {}", e);
+            AppError::InternalError
+        })?;
 
     if !is_password_valid {
-        return Err(AppError::Forbidden {
+        Err(AppError::Forbidden {
             error: Some("Invalid credentials".to_string()),
-        });
+        })?;
     }
 
-    session
-        .insert("user_id", user.id)
-        .await
-        .unwrap();
+    session.insert("user_id", user.id).await.unwrap();
 
     Ok(AppSuccess::OK {
         data: Some(serde_json::to_string(&user).unwrap()),

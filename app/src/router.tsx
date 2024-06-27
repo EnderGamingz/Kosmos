@@ -13,6 +13,7 @@ import Settings from '@pages/settings/index.tsx';
 import BinPage from '@pages/explorer/pages/bin';
 import RecentFiles from '@pages/explorer/pages/recent.tsx';
 import Preferences from '@pages/settings/preferences';
+import AccountSettings from '@pages/settings/account';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -42,6 +43,7 @@ export default function Router() {
             path={'settings'}
             element={<AccessWrapper el={<Settings />} page={'Settings'} />}>
             <Route path={'preferences'} element={<Preferences />} />
+            <Route path={'account'} element={<AccountSettings />} />
           </Route>
         </Routes>
       </main>
