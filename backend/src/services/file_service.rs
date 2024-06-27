@@ -283,6 +283,7 @@ impl FileService {
             metadata: file.metadata,
             parent_folder_id: file.parent_folder_id.map(|x| x.to_string()),
             preview_status: file.preview_status,
+            favorite: file.favorite,
             created_at: file.created_at,
             updated_at: file.updated_at,
             deleted_at: file.deleted_at,
@@ -455,6 +456,21 @@ impl FileService {
             self.permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type)))
                 .await?;
         }
+        Ok(())
+    }
+
+    pub async fn set_favorite(&self, file_id: i64, favorite: bool) -> Result<(), AppError> {
+        sqlx::query!(
+            "UPDATE files SET favorite = $1 WHERE id = $2",
+            favorite,
+            file_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error while setting file favorite: {}", e);
+            AppError::InternalError
+        })?;
         Ok(())
     }
 

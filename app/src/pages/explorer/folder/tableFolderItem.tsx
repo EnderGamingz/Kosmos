@@ -18,6 +18,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useExplorerStore } from '@stores/folderStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@lib/touch.ts';
+import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export function TableFolderItem({
   i,
@@ -85,7 +86,7 @@ export function TableFolderItem({
         />
       </th>
       <td className={'!p-0'}>
-        <div className={'flex w-full items-center gap-2'}>
+        <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
             drag={!context.recentView && !isTouchDevice()}
@@ -112,14 +113,25 @@ export function TableFolderItem({
             onMouseLeave={() => {
               if (!disabled) setDragDestination();
             }}
-            className={'flex w-full cursor-pointer items-center gap-2'}>
+            className={'flex w-full cursor-pointer items-center'}>
             <ItemIcon
               id={folder.id}
               name={folder.folder_name}
               type={'folder'}
             />
-            <span className={'w-full'}>{folder.folder_name}</span>
+            <span
+              className={
+                'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
+              }>
+              {folder.folder_name}
+            </span>
           </motion.div>
+          <Favorite
+            id={folder.id}
+            type={'folder'}
+            active={folder.favorite}
+            iconOnly
+          />
           <button
             onClick={e => {
               context.handleContext({ x: e.clientX, y: e.clientY }, folder);

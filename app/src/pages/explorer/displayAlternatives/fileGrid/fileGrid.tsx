@@ -98,6 +98,7 @@ export default function FileGrid({
               key={file.id}
               file={file}
               index={folders.length + i}
+              fileIndex={i}
               onSelect={selectFile}
               selected={selectedFiles}
               dynamic={dynamic}

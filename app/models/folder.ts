@@ -5,6 +5,7 @@ export type FolderModel = {
   user_id: string;
   folder_name: string;
   parent_id?: string;
+  favorite: boolean;
   created_at: string;
   updated_at: string;
 };

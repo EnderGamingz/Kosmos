@@ -24,6 +24,10 @@ fn get_folder_router() -> KosmosRouter {
                 .patch(crate::routes::api::v1::auth::folder::rename_folder),
         )
         .route(
+            "/favorite/:folder_id",
+            put(crate::routes::api::v1::auth::folder::favorite::favorite_folder),
+        )
+        .route(
             "/all",
             get(crate::routes::api::v1::auth::folder::get_folders),
         )
@@ -68,6 +72,7 @@ fn get_file_router() -> KosmosRouter {
             "/:file_id/restore",
             post(crate::routes::api::v1::auth::file::bin::restore_file),
         )
+        .route("/favorite/:file_id", put(crate::routes::api::v1::auth::file::favorite::favorite_file))
         .route(
             "/upload",
             post(crate::routes::api::v1::auth::file::upload::upload_file),

@@ -89,6 +89,7 @@ impl FolderService {
             user_id: folder.user_id.to_string(),
             folder_name: folder.folder_name,
             parent_id: folder.parent_id.map(|x| x.to_string()),
+            favorite: folder.favorite,
             created_at: folder.created_at,
             updated_at: folder.updated_at,
         }
@@ -389,5 +390,20 @@ impl FolderService {
         })?;
 
         Ok(folder_res)
+    }
+
+    pub async fn set_favorite(&self, folder_id: i64, favorite: bool) -> Result<(), AppError> {
+        sqlx::query!(
+            "UPDATE folder SET favorite = $1 WHERE id = $2",
+            favorite,
+            folder_id
+        )
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error while setting folder favorite: {}", e);
+                AppError::InternalError
+            })?;
+        Ok(())
     }
 }

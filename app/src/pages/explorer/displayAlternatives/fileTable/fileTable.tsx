@@ -45,6 +45,7 @@ export function FileTable() {
           {files.map((file: FileModel, i: number) => (
             <TableFileItem
               i={folders.length + i}
+              fileIndex={i}
               selected={selectedFiles}
               onSelect={selectFile}
               key={file.id}

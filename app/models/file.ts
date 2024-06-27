@@ -28,6 +28,7 @@ export type FileModel = {
   metadata?: never;
   parent_folder_id?: string;
   preview_status?: FilePreviewStatus;
+  favorite: boolean;
   created_at: string;
   updated_at: string;
   deleted_at?: string;

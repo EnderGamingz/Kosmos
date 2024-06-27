@@ -28,9 +28,7 @@ export function ExplorerDisplayWrapper({
   const [dragged, setDragged] = useState<
     undefined | { type: DataOperationType; id: string }
   >(undefined);
-  const { selectedFile: selectedDisplayFile } = useExplorerStore(
-    s => s.current,
-  );
+  const { selectedFileIndex } = useExplorerStore(s => s.current);
 
   const {
     selectedFolders,
@@ -110,13 +108,8 @@ export function ExplorerDisplayWrapper({
       <div id={'display'}>{children}</div>
       <FileDisplay
         onSelect={selectFile}
-        file={selectedDisplayFile}
-        isSelected={
-          !!(
-            selectedDisplayFile &&
-            selectedFiles.includes(selectedDisplayFile?.id)
-          )
-        }
+        fileIndex={selectedFileIndex}
+        selected={selectedFiles}
       />
       <AnimatePresence>
         {context.clicked && (

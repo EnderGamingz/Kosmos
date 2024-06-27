@@ -18,14 +18,17 @@ import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@lib/touch.ts';
+import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export function TableFileItem({
   i,
+  fileIndex,
   file,
   selected,
   onSelect,
 }: {
   i: number;
+  fileIndex: number;
   file: FileModel;
   selected: string[];
   onSelect: (id: string) => void;
@@ -106,7 +109,7 @@ export function TableFileItem({
           className={'flex flex-grow items-center'}
           onClick={() => {
             if (isControl || isShift || disabled) return;
-            selectFile(file);
+            selectFile(fileIndex);
           }}>
           <ItemIcon
             id={file.id}
@@ -123,6 +126,7 @@ export function TableFileItem({
             {file.file_name}
           </motion.p>
         </motion.div>
+        <Favorite id={file.id} type={'file'} iconOnly active={file.favorite} />
         <button
           onClick={e => {
             context.handleContext({ x: e.clientX, y: e.clientY }, file);

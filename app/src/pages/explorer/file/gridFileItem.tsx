@@ -19,9 +19,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { DetailType } from '@stores/preferenceStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@lib/touch.ts';
+import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export default function GridFileItem({
   index,
+  fileIndex,
   file,
   selected,
   onSelect,
@@ -29,6 +31,7 @@ export default function GridFileItem({
   details,
 }: {
   index: number;
+  fileIndex: number;
   file: FileModel;
   selected: string[];
   onSelect: (id: string) => void;
@@ -63,7 +66,7 @@ export default function GridFileItem({
     if (disabled) return;
     if (isControl) onSelect(file.id);
     else if (isShift) context.select.setRange(index);
-    else selectFile(file);
+    else selectFile(fileIndex);
   };
 
   const moveAction = useMove(
@@ -86,7 +89,7 @@ export default function GridFileItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={tw(
-        'group relative rounded-xl outline outline-2 -outline-offset-2',
+        'group relative rounded-lg outline outline-2 outline-offset-2',
         'outline-transparent transition-[outline-color]',
         isSelected && 'bg-indigo-100/50 outline-indigo-300',
         isShift && 'cursor-pointer hover:!scale-95',
@@ -113,15 +116,28 @@ export default function GridFileItem({
         }}>
         <motion.div
           className={tw(
-            'absolute z-30',
-            isDefaultDisplay ? 'left-3 top-3' : 'left-1.5 top-0.5',
-          )}
-          layoutId={`check-${file.id}`}>
-          <Checkbox
-            isSelected={isSelected}
-            onValueChange={() => onSelect(file.id)}
-            classNames={{ wrapper: 'backdrop-blur-md' }}
-            size={isDefaultDisplay ? 'md' : 'sm'}
+            'absolute z-30 flex items-start gap-2 px-2 py-1.5',
+            '[&>button>svg]:w-5 [&>button]:-mt-0.5 [&>button]:p-0',
+            'left-1.5 top-1.5 h-20 overflow-hidden rounded-t-lg',
+            isDefaultDisplay &&
+              'gap-3 pl-1.5 pt-2.5 [&>button>svg]:w-6  [&>button]:-mt-1',
+            isHidden && 'left-0 top-0',
+          )}>
+          <motion.div className={'-mt-1 h-4 w-4'} layoutId={`check-${file.id}`}>
+            <Checkbox
+              className={'h-4 w-4'}
+              isSelected={isSelected}
+              onValueChange={() => onSelect(file.id)}
+              classNames={{ wrapper: 'backdrop-blur-md' }}
+              size={isDefaultDisplay ? 'md' : 'sm'}
+            />
+          </motion.div>
+          <Favorite
+            id={file.id}
+            type={'file'}
+            active={file.favorite}
+            iconOnly
+            white
           />
         </motion.div>
         <div
@@ -162,7 +178,7 @@ export default function GridFileItem({
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.3 }}
                 className={
-                  'absolute right-1.5 top-1.5 z-10 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs'
+                  'absolute right-1.5 top-1.5 z-30 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs'
                 }>
                 <p>{formatBytes(file.file_size)}</p>
               </motion.div>

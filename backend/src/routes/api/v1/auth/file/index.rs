@@ -141,18 +141,12 @@ pub async fn move_file(
     let user_id = SessionService::check_logged_in(&session).await?;
 
     // Check if file exists and returns not found if it doesn't
-    let file = match state
-        .file_service
+    let file = state.file_service
         .check_file_exists_by_id(file_id, user_id)
         .await?
-    {
-        None => {
-            return Err(AppError::NotFound {
-                error: "File not found".to_string(),
-            });
-        }
-        Some(file) => file,
-    };
+        .ok_or(AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
 
     if let Some(move_to_folder) = move_to_folder {
         if !state

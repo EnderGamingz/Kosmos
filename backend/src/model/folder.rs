@@ -8,6 +8,7 @@ pub struct FolderModel {
     pub user_id: i64,
     pub folder_name: String,
     pub parent_id: Option<i64>,
+    pub favorite: bool,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -18,6 +19,7 @@ pub struct ParsedFolderModel {
     pub user_id: String,
     pub folder_name: String,
     pub parent_id: Option<String>,
+    pub favorite: bool,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }

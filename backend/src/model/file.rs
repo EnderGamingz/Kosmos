@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
-use sqlx::types::JsonValue;
 use sqlx::FromRow;
+use sqlx::types::JsonValue;
 
 #[repr(i16)]
 #[derive(Clone, Copy, PartialEq)]
@@ -62,6 +62,7 @@ pub struct FileModel {
     pub metadata: Option<JsonValue>,
     pub parent_folder_id: Option<i64>,
     pub preview_status: Option<i16>,
+    pub favorite: bool,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
@@ -78,6 +79,7 @@ pub struct ParsedFileModel {
     pub metadata: Option<JsonValue>,
     pub parent_folder_id: Option<String>,
     pub preview_status: Option<i16>,
+    pub favorite: bool,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
