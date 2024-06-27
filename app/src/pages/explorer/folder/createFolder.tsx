@@ -6,6 +6,8 @@ import { invalidateFolders } from '@lib/query.ts';
 import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
 import tw from '@lib/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { itemTransitionVariantFadeInFromTopSmall } from '@components/transition.ts';
+import { motion } from 'framer-motion';
 
 export function CreateFolder({
   folder,
@@ -63,8 +65,17 @@ export function CreateFolder({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className={'btn-black relative py-2'} onClick={handleActivate}>
-        <FolderIcon />
+      <motion.div
+        variants={itemTransitionVariantFadeInFromTopSmall}
+        className={'btn-black relative flex items-center py-2'}
+        onClick={handleActivate}>
+        <button disabled={!active || !name} type={'submit'}>
+          {active ? (
+            <CheckIcon className={'h-5 w-5'} />
+          ) : (
+            <FolderIcon className={'h-5 w-5 min-w-5'} />
+          )}
+        </button>
         <div className={'flex'}>
           <input
             ref={inputRef}
@@ -73,20 +84,12 @@ export function CreateFolder({
             value={active ? name : 'Create Folder'}
             onChange={e => setName(e.target.value)}
             className={tw(
-              'border-nones rounded-lg bg-transparent py-0.5 outline-none transition-all',
+              'border-nones w-36 rounded-lg bg-transparent py-0.5 outline-none transition-all',
               !active && 'pointer-events-none',
             )}
           />
-          <button
-            disabled={!active}
-            className={tw(
-              'transition-opacity',
-              active ? 'opacity-100' : 'opacity-0',
-            )}>
-            <CheckIcon className={'h-4 w-4'} />
-          </button>
         </div>
-      </div>
+      </motion.div>
     </form>
   );
 }

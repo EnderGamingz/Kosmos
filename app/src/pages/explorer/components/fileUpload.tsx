@@ -28,6 +28,8 @@ import { FileWithPath, useDropzone } from 'react-dropzone';
 import tw from '@lib/classMerge.ts';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
+import { motion } from 'framer-motion';
+import { itemTransitionVariantFadeInFromTopSmall } from '@components/transition.ts';
 
 export function FileUploadContent({
   folder,
@@ -258,7 +260,8 @@ export function FileUpload({ onClick }: { onClick: () => void }) {
   const { data } = useUsage();
   const full = (data?.limit || 0) - (data?.total || 0) <= 0;
   return (
-    <button
+    <motion.button
+      variants={itemTransitionVariantFadeInFromTopSmall}
       className={tw('w-full py-3', full ? 'btn-white' : 'btn-black')}
       onClick={onClick}>
       <ArrowUpTrayIcon />
@@ -270,6 +273,6 @@ export function FileUpload({ onClick }: { onClick: () => void }) {
           </p>
         )}
       </div>
-    </button>
+    </motion.button>
   );
 }

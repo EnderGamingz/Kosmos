@@ -5,15 +5,16 @@
 @layer components {
     .btn-black {
         @apply font-semibold flex cursor-pointer items-center gap-2 rounded-xl bg-stone-700 px-4
-        py-2 text-stone-100 shadow-sm transition-all
+        py-2 text-stone-100 shadow-sm transition-colors-opacity
         hover:bg-stone-800 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
         disabled:cursor-default disabled:opacity-50
         disabled:hover:bg-stone-700
     }
 
     .btn-white {
-        @apply font-semibold flex cursor-pointer items-center gap-2 rounded-xl bg-transparent outline-1 outline outline-stone-900 px-4
-        py-2 text-stone-900 shadow-sm transition-all
+        @apply font-semibold flex cursor-pointer items-center gap-2
+        rounded-xl bg-transparent outline-1 outline outline-stone-900 px-4
+        py-2 text-stone-900 shadow-sm transition-colors
         hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
     }
 

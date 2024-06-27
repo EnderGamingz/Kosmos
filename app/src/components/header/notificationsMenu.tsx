@@ -97,7 +97,6 @@ export function NotificationsMenu() {
   return (
     <Popover
       placement={'bottom'}
-      showArrow={true}
       onOpenChange={b => {
         if (b) setSeen(true);
       }}>
@@ -133,7 +132,7 @@ export function NotificationsMenu() {
               initial={'hidden'}
               animate={'show'}
               className={tw(
-                'h-full max-h-[150px] md:max-h-[300px]',
+                'h-full max-h-[150px] max-w-56 md:max-h-[300px]',
                 'flex w-full flex-col gap-1 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
               )}>
               {notifications.length ? (
@@ -146,7 +145,7 @@ export function NotificationsMenu() {
               ) : (
                 <p
                   className={
-                    'self-center justify-self-center font-light text-stone-600'
+                    'self-center justify-self-center font-light text-stone-400'
                   }>
                   No notifications
                 </p>
@@ -167,9 +166,18 @@ export function NotificationsMenu() {
                 'max-h-[150px] md:max-h-[300px]',
                 'grid w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
               )}>
-              {operations.data?.map(operation => (
-                <OperationItem key={operation.id} data={operation} />
-              ))}
+              {operations.data?.length ? (
+                operations.data?.map(operation => (
+                  <OperationItem key={operation.id} data={operation} />
+                ))
+              ) : (
+                <p
+                  className={
+                    'self-center justify-self-center font-light text-stone-400'
+                  }>
+                  No operations
+                </p>
+              )}
             </ScrollShadow>
           </div>
         </div>
