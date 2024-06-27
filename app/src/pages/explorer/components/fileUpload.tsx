@@ -152,7 +152,7 @@ export function FileUploadContent({
       <div
         {...getRootProps()}
         className={tw(
-          'rounded-lg outline-dashed outline-2 outline-transparent transition-all',
+          'flex-grow rounded-lg outline-dashed outline-2 outline-transparent transition-all',
           isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
         )}>
         <input {...getInputProps()} />

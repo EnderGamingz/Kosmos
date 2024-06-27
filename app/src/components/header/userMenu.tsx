@@ -55,9 +55,7 @@ export function UserMenu() {
             <p className={'text-sm font-semibold'}>
               {user.user?.full_name?.split(' ')[0] || user.user?.username}
             </p>
-            <span className={'text-xs font-light'}>
-              @{user.user?.full_name && user.user?.username}
-            </span>
+            <span className={'text-xs font-light'}>@{user.user?.username}</span>
           </div>
         </button>
       </DropdownTrigger>

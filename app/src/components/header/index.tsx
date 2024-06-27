@@ -3,6 +3,7 @@ import { useUserState } from '@stores/userStore';
 import {
   ArrowRightEndOnRectangleIcon,
   GlobeAsiaAustraliaIcon,
+  UserPlusIcon,
 } from '@heroicons/react/24/outline';
 import { UserMenu } from './userMenu.tsx';
 import { NewMenu } from './newMenu.tsx';
@@ -25,24 +26,28 @@ export default function Header() {
         <GlobeAsiaAustraliaIcon className={'h-8 w-8'} />
         <span className={'hidden text-2xl font-semibold sm:block'}>Kosmos</span>
       </Link>
-      <div className={'ml-auto flex items-center gap-4'}>
+      <div
+        className={tw(
+          'ml-auto rounded-lg bg-stone-700/5 px-2 py-1 text-stone-700',
+          'flex items-center gap-4 rounded-lg transition-all',
+        )}>
         {user ? (
-          <div
-            className={tw(
-              'rounded-lg bg-stone-700/5 px-2 py-1 text-stone-700',
-              'flex items-center gap-4 rounded-lg transition-all',
-            )}>
+          <>
             <NewMenu />
             <NotificationsMenu />
             <UserMenu />
-          </div>
+          </>
         ) : (
           <>
-            <Link to={'/auth/login'} className={'btn-black'}>
+            <Link to={'/auth/login'} className={'header-login-btn'}>
               <ArrowRightEndOnRectangleIcon /> Login
             </Link>
-            <Link to={'/auth/register'} className={'btn-white'}>
-              <ArrowRightEndOnRectangleIcon /> Register
+            <Link
+              to={'/auth/register'}
+              className={
+                'header-login-btn bg-stone-700/80 text-stone-200 hover:bg-stone-700'
+              }>
+              <UserPlusIcon /> Register
             </Link>
           </>
         )}
