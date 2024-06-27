@@ -71,9 +71,7 @@ function DeleteAccount() {
         onSubmit={handleSubmit}
         className={'flex flex-col gap-2 md:flex-row'}>
         <input
-          className={
-            'rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20'
-          }
+          className={'input'}
           placeholder={'Password'}
           type={'password'}
           value={password}
@@ -94,7 +92,7 @@ export function DangerSettings() {
   return (
     <section
       className={tw(
-        'space-y-3 rounded-xl bg-red-500/5 p-4',
+        '!mt-12 space-y-3 rounded-xl bg-red-500/5 p-4',
         'text-red-950 outline outline-1 outline-red-700/50',
       )}>
       <h2 className={'text-xl font-bold'}>Danger Zone</h2>

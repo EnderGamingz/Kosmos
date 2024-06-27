@@ -4,8 +4,8 @@ use serde::Deserialize;
 use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
-use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
+use crate::services::user_service::UserService;
 use crate::state::AppState;
 
 #[derive(Deserialize)]
@@ -18,10 +18,10 @@ pub async fn login(
     State(state): State<AppState>,
     session: Session,
     Json(payload): Json<LoginCredentials>,
-) -> ResponseResult {
+) -> Result<Json<serde_json::Value>, AppError> {
     let user_id = SessionService::get_user_id(&session).await;
     if user_id.is_some() {
-        return Ok(AppSuccess::OK { data: None });
+        return Ok(Json(serde_json::json!({})));
     }
 
     let result = state
@@ -52,7 +52,5 @@ pub async fn login(
 
     session.insert("user_id", user.id).await.unwrap();
 
-    Ok(AppSuccess::OK {
-        data: Some(serde_json::to_string(&user).unwrap()),
-    })
+    Ok(Json(serde_json::json!(UserService::parse_user(user))))
 }

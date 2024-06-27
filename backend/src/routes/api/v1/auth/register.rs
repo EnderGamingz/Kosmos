@@ -2,7 +2,7 @@ use crate::constants::FALLBACK_STORAGE_LIMIT;
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::Json;
-
+use axum_valid::Valid;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::AppSuccess;
 use crate::services::user_service::RegisterCredentials;
@@ -10,7 +10,7 @@ use crate::state::KosmosState;
 
 pub async fn register(
     State(state): KosmosState,
-    Json(payload): Json<RegisterCredentials>,
+    Valid(Json(payload)): Valid<Json<RegisterCredentials>>,
 ) -> Result<impl IntoResponse, AppError> {
     let user_results = state
         .user_service

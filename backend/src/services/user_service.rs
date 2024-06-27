@@ -1,10 +1,10 @@
+use bigdecimal::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use sonyflake::Sonyflake;
 use sqlx::types::BigDecimal;
 use sqlx::{Execute, FromRow, QueryBuilder};
 use tower_sessions::Session;
-use bigdecimal::ToPrimitive;
-
+use validator::Validate;
 use crate::db::{KosmosDb, KosmosDbResult};
 use crate::model::user::{ParsedUserModel, UserModel};
 use crate::response::error_handling::AppError;
@@ -17,15 +17,11 @@ pub struct AccountUpdatePayload {
     pub email: Option<String>,
 }
 
-#[derive(Deserialize)]
-pub struct PasswordUpdatePayload {
-    pub old_password: String,
-    pub new_password: String,
-}
-
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Validate)]
 pub struct RegisterCredentials {
+    #[validate(length(min = 3, message = "Username must be at least 3 characters"))]
     pub username: String,
+    #[validate(length(min = 6, message = "Password must be at least 6 characters"))]
     pub password: String,
 }
 
@@ -173,20 +169,41 @@ impl UserService {
 
     pub async fn update_user(
         &self,
-        user_id: i32,
+        user_id: UserId,
         payload: UpdateUserRequest,
+    ) -> Result<UserModel, AppError> {
+        sqlx::query_as!(
+            UserModel,
+            "UPDATE users SET username = $1, email = $2, full_name = $3 WHERE id = $4 RETURNING *",
+            payload.username,
+            payload.email,
+            payload.full_name,
+            user_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating user: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn update_user_password(
+        &self,
+        user_id: UserId,
+        password_hash: String,
     ) -> Result<KosmosDbResult, AppError> {
-        sqlx::query("UPDATE users SET username = $1, email = $2, full_name = $3 WHERE id = $4")
-            .bind(payload.username)
-            .bind(payload.email)
-            .bind(payload.full_name)
-            .bind(user_id)
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error updating user: {}", e);
-                AppError::InternalError
-            })
+        sqlx::query!(
+            "UPDATE users SET password_hash = $1 WHERE id = $2",
+            password_hash,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating user: {}", e);
+            AppError::InternalError
+        })
     }
 
     pub async fn get_all_users(&self) -> Result<Vec<UserModel>, AppError> {

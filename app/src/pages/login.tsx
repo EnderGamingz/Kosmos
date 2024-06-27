@@ -17,17 +17,14 @@ export function Login() {
     if (user) navigate('/home');
   }, [navigate, user]);
 
-  const loginFn = () =>
-    axios.post(BASE_URL + 'auth/login', {
-      username,
-      password,
-    });
-
   const { isPending, mutate } = useMutation({
-    mutationFn: loginFn,
+    mutationFn: () =>
+      axios.post(`${BASE_URL}auth/login`, {
+        username,
+        password,
+      }),
     onSuccess: res => {
-      const userRes = JSON.parse(res.data.message);
-      updateUser(userRes);
+      updateUser(res.data);
       navigate('/home');
     },
   });

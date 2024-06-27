@@ -12,7 +12,13 @@
     }
 
     .btn-white {
-        @apply font-semibold flex cursor-pointer items-center gap-2 rounded-xl bg-transparent outline-1 outline outline-stone-900 px-4 py-2 text-stone-900 shadow-sm transition-all hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
+        @apply font-semibold flex cursor-pointer items-center gap-2 rounded-xl bg-transparent outline-1 outline outline-stone-900 px-4
+        py-2 text-stone-900 shadow-sm transition-all
+        hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
+    }
+
+    .input {
+        @apply rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20
     }
 }
 

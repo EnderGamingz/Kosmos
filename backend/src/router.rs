@@ -1,5 +1,5 @@
 use axum::extract::DefaultBodyLimit;
-use axum::routing::{delete, get, post, put};
+use axum::routing::{delete, get, patch, post, put};
 use axum::Router;
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
@@ -110,11 +110,19 @@ fn get_download_router() -> KosmosRouter {
 
 fn get_user_router() -> KosmosRouter {
     Router::new()
-        .route("/", delete(crate::routes::api::v1::auth::user::delete::delete_self))
         .route(
-        "/usage",
-        get(crate::routes::api::v1::auth::user::get_disk_usage),
-    )
+            "/",
+            patch(crate::routes::api::v1::auth::user::update::update_user)
+                .delete(crate::routes::api::v1::auth::user::delete::delete_self),
+        )
+        .route(
+            "/password",
+            patch(crate::routes::api::v1::auth::user::update::update_user_password),
+        )
+        .route(
+            "/usage",
+            get(crate::routes::api::v1::auth::user::get_disk_usage),
+        )
 }
 
 fn get_multi_router() -> KosmosRouter {
