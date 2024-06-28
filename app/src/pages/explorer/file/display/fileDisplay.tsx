@@ -40,8 +40,6 @@ export default function FileDisplay({
 
   const isSelected = selected.includes(file?.id || '');
 
-  console.log(file);
-
   return (
     <AnimatePresence>
       {file && (

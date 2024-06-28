@@ -6,6 +6,8 @@ export type ExplorerState = {
     selectedFileIndex?: number;
     selectCurrentFile: (current?: number) => void;
     selectCurrentFolder: (current?: string) => void;
+    fileNames: string[];
+    setFileNames: (current: string[]) => void;
   };
   selectedResources: {
     selectedFolders: string[];
@@ -39,6 +41,15 @@ export const useExplorerStore = create<ExplorerState>(set => ({
         current: {
           ...prev.current,
           folder: current,
+        },
+      }));
+    },
+    fileNames: [],
+    setFileNames: (current: string[]) => {
+      set(prev => ({
+        current: {
+          ...prev.current,
+          fileNames: current,
         },
       }));
     },

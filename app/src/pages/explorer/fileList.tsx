@@ -6,10 +6,11 @@ import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/folderStore.ts';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
-import { FileUploadContent } from '@pages/explorer/components/fileUpload.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import { useShallow } from 'zustand/react/shallow';
+import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 
 function FileListBreadCrumbs({ crumbs }: { crumbs: SimpleDirectory[] }) {
   const setDragDestination = useExplorerStore(s => s.dragMove.setDestination);
@@ -40,7 +41,12 @@ function FileListBreadCrumbs({ crumbs }: { crumbs: SimpleDirectory[] }) {
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
-  const setCurrentFolder = useExplorerStore(s => s.current.selectCurrentFolder);
+  const { setCurrentFolder, setFileNames } = useExplorerStore(
+    useShallow(s => ({
+      setCurrentFolder: s.current.selectCurrentFolder,
+      setFileNames: s.current.setFileNames,
+    })),
+  );
   const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
   const { folder } = useParams();
 
@@ -52,6 +58,11 @@ export function FileList() {
   const sort = useSearchState(s => s.sort);
 
   const files = useFiles(folder, sort);
+
+  useEffect(() => {
+    setFileNames(files.data?.map(f => f.file_name) || []);
+  }, [files, setFileNames]);
+
   const folders = useFolders(folder, sort);
 
   useEffect(() => {

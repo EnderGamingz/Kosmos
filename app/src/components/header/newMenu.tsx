@@ -9,7 +9,7 @@ import { useState } from 'react';
 import {
   FileUpload,
   FileUploadModal,
-} from '@pages/explorer/components/fileUpload.tsx';
+} from '@pages/explorer/components/upload/fileUpload.tsx';
 import { CreateFolder } from '@pages/explorer/folder/createFolder';
 import { useExplorerStore } from '@stores/folderStore';
 import { motion } from 'framer-motion';

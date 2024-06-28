@@ -1,4 +1,3 @@
-import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import {
   ChangeEvent,
   ReactNode,
@@ -7,29 +6,25 @@ import {
   useRef,
   useState,
 } from 'react';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { useExplorerStore } from '@stores/folderStore.ts';
+import {
+  makeUploadFiles,
+  UploadFile,
+} from '@pages/explorer/components/upload/uploadFile.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 import {
   invalidateFiles,
   invalidateFolders,
   invalidateUsage,
-  useUsage,
 } from '@lib/query.ts';
-import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from '@nextui-org/react';
-import { useExplorerStore } from '@stores/folderStore.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import tw from '@lib/classMerge.ts';
-import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
+import { ModalBody, ModalFooter } from '@nextui-org/react';
 import { Collapse } from 'react-collapse';
-import { motion } from 'framer-motion';
-import { itemTransitionVariantFadeInFromTopSmall } from '@components/transition.ts';
+import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
+import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 
 export function FileUploadContent({
   folder,
@@ -44,8 +39,12 @@ export function FileUploadContent({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const notification = useNotifications(s => s.actions);
+  const filesNames = useExplorerStore(s => s.current.fileNames);
 
-  const [files, setFiles] = useState<File[] | null>(null);
+  const [selectForUpload, setSelectForUpload] = useState<UploadFile[] | null>(
+    null,
+  );
+  const [toUpload, setToUpload] = useState<File[] | null>(null);
   const [isTryingInvalidFolderUpload, setIsTryingInvalidFolderUpload] =
     useState(false);
 
@@ -56,22 +55,22 @@ export function FileUploadContent({
       setIsTryingInvalidFolderUpload(false);
       //setFiles([...e.target.files]);
       const files = Array.from(e.target.files);
-      setFiles(files);
+      setSelectForUpload(makeUploadFiles(files, filesNames));
     }
   };
 
   const handleUpload = async () => {
-    if (!files || !files?.length) return;
+    if (!toUpload || !toUpload?.length) return;
 
     const formData = new FormData();
-    for (const file of files) {
+    for (const file of toUpload) {
       formData.append('file', file);
     }
 
     const uploadId = notification.notify({
       title: 'File upload',
       loading: true,
-      description: `${files.length} files`,
+      description: `${toUpload.length} files`,
       severity: Severity.INFO,
       canDismiss: false,
     });
@@ -104,7 +103,8 @@ export function FileUploadContent({
 
   useEffect(() => {
     handleUpload().then(async () => {
-      setFiles(null);
+      setSelectForUpload(null);
+      setToUpload(null);
       formRef.current?.reset();
       invalidateFiles().then();
       invalidateFolders().then();
@@ -112,7 +112,15 @@ export function FileUploadContent({
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]);
+  }, [toUpload]);
+
+  useEffect(() => {
+    if (!selectForUpload) return;
+    const t = selectForUpload.map(i => i.conflict) || [];
+    if (t.every(x => !x)) {
+      setToUpload(selectForUpload.map(f => f.file));
+    }
+  }, [selectForUpload]);
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
@@ -136,9 +144,9 @@ export function FileUploadContent({
         return;
       }
 
-      setFiles(acceptedFiles);
+      setSelectForUpload(makeUploadFiles(acceptedFiles, filesNames));
     },
-    [isInFileList, notification],
+    [filesNames, isInFileList, notification],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -149,20 +157,32 @@ export function FileUploadContent({
 
   if (isInFileList && children) {
     return (
-      <div
-        {...getRootProps()}
-        className={tw(
-          'flex-grow rounded-lg outline-dashed outline-2 outline-transparent transition-all',
-          isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
-        )}>
-        <input {...getInputProps()} />
-        {children}
-      </div>
+      <>
+        <ConflictModal
+          initial={selectForUpload || []}
+          onAbort={() => setSelectForUpload(null)}
+          onSubmit={setToUpload}
+        />
+        <div
+          {...getRootProps()}
+          className={tw(
+            'flex-grow rounded-lg outline-dashed outline-2 outline-transparent transition-all',
+            isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
+          )}>
+          <input {...getInputProps()} />
+          {children}
+        </div>
+      </>
     );
   }
 
   return (
     <>
+      <ConflictModal
+        initial={selectForUpload || []}
+        onAbort={() => setSelectForUpload(null)}
+        onSubmit={setToUpload}
+      />
       <ModalBody>
         <Collapse isOpened={isTryingInvalidFolderUpload}>
           <div className={'rounded-lg border border-warning-500 bg-warning-50'}>
@@ -227,52 +247,5 @@ export function FileUploadContent({
         </div>
       </ModalFooter>
     </>
-  );
-}
-
-export function FileUploadModal({
-  open,
-  onOpenChange,
-}: {
-  open: boolean;
-  onOpenChange: (x: boolean) => void;
-}) {
-  const currentFolder = useExplorerStore(s => s.current.folder);
-
-  return (
-    <Modal
-      backdrop={'blur'}
-      size={'2xl'}
-      isOpen={open}
-      onOpenChange={onOpenChange}>
-      <ModalContent>
-        <ModalHeader>File Upload</ModalHeader>
-        <FileUploadContent
-          folder={currentFolder}
-          onClose={() => onOpenChange(false)}
-        />
-      </ModalContent>
-    </Modal>
-  );
-}
-
-export function FileUpload({ onClick }: { onClick: () => void }) {
-  const { data } = useUsage();
-  const full = (data?.limit || 0) - (data?.total || 0) <= 0;
-  return (
-    <motion.button
-      variants={itemTransitionVariantFadeInFromTopSmall}
-      className={tw('w-full py-3', full ? 'btn-white' : 'btn-black')}
-      onClick={onClick}>
-      <ArrowUpTrayIcon />
-      <div className={'flex flex-col text-start'}>
-        Upload Files
-        {full && (
-          <p className={'w-full text-xs font-medium text-red-400'}>
-            Storage limit reached
-          </p>
-        )}
-      </div>
-    </motion.button>
   );
 }
