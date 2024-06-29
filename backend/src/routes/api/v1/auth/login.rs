@@ -2,7 +2,7 @@ use axum::extract::State;
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
-
+use crate::constants::SESSION_USER_ID;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::SessionService;
 use crate::services::user_service::UserService;
@@ -50,7 +50,7 @@ pub async fn login(
         })?;
     }
 
-    session.insert("user_id", user.id).await.unwrap();
+    session.insert(SESSION_USER_ID, user.id).await.unwrap();
 
     Ok(Json(serde_json::json!(UserService::parse_user(user))))
 }

@@ -2,7 +2,7 @@ use sqlx::{Execute, QueryBuilder};
 use std::path::Path;
 
 use crate::db::{KosmosDb, KosmosPool};
-use crate::model::file::{FileModel, FileType, ParsedFileModel, PreviewStatus};
+use crate::model::file::{FileModel, FileType, ParsedFileModel, ParsedShareFileModel, PreviewStatus};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{
@@ -89,6 +89,23 @@ impl FileService {
             AppError::InternalError
         })
         .map(|rows| rows.into_iter().map(FileModel::from).collect())
+    }
+
+    pub async fn get_file(
+        &self,
+        file_id: i64,
+    ) -> Result<FileModel, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT * FROM files WHERE id = $1",
+            file_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting file {}: {}", file_id, e);
+            AppError::InternalError
+        })
     }
 
     pub async fn get_recent_files(
@@ -287,6 +304,20 @@ impl FileService {
             created_at: file.created_at,
             updated_at: file.updated_at,
             deleted_at: file.deleted_at,
+        }
+    }
+
+    pub fn parse_share_file(file: FileModel) -> ParsedShareFileModel {
+        ParsedShareFileModel {
+            id: file.id.to_string(),
+            file_name: file.file_name,
+            file_size: file.file_size,
+            file_type: file.file_type,
+            mime_type: file.mime_type,
+            metadata: file.metadata,
+            preview_status: file.preview_status,
+            created_at: file.created_at,
+            updated_at: file.updated_at,
         }
     }
 

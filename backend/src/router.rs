@@ -72,7 +72,10 @@ fn get_file_router() -> KosmosRouter {
             "/:file_id/restore",
             post(crate::routes::api::v1::auth::file::bin::restore_file),
         )
-        .route("/favorite/:file_id", put(crate::routes::api::v1::auth::file::favorite::favorite_file))
+        .route(
+            "/favorite/:file_id",
+            put(crate::routes::api::v1::auth::file::favorite::favorite_file),
+        )
         .route(
             "/upload",
             post(crate::routes::api::v1::auth::file::upload::upload_file),
@@ -138,11 +141,31 @@ fn get_multi_router() -> KosmosRouter {
     )
 }
 
-fn get_operation_router() -> Router<AppState> {
+fn get_operation_router() -> KosmosRouter {
     Router::new().route(
         "/all",
         get(crate::routes::api::v1::auth::operation::get_all_operations),
     )
+}
+
+fn get_share_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/file/:file_id",
+            get(crate::routes::api::v1::share::get_file_shares_for_user),
+        )
+        .route(
+            "/file/public",
+            post(crate::routes::api::v1::share::create::share_file_public),
+        )
+        .route(
+            "/file/private",
+            post(crate::routes::api::v1::share::create::share_file_private),
+        )
+        .route(
+            "/:share_id",
+            delete(crate::routes::api::v1::share::delete_share),
+        )
 }
 
 fn get_auth_router() -> KosmosRouter {
@@ -151,6 +174,7 @@ fn get_auth_router() -> KosmosRouter {
         .route("/login", post(crate::routes::api::v1::auth::login))
         .route("/register", post(crate::routes::api::v1::auth::register))
         .route("/logout", post(crate::routes::api::v1::auth::logout))
+        .nest("/share", get_share_router())
         .nest("/file", get_file_router())
         .nest("/folder", get_folder_router())
         .nest("/download", get_download_router())
@@ -159,8 +183,23 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/user", get_user_router())
 }
 
+fn get_public_share_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/:share_id",
+            get(crate::routes::api::v1::share::access_file_share),
+        )
+        .route(
+            "/:share_id/action/:operation_type",
+            get(crate::routes::api::v1::auth::download::handle_raw_file_share),
+        )
+        .route("/unlock", post(crate::routes::api::v1::share::unlock_share))
+}
+
 pub fn init(cors: CorsLayer, session_layer: KosmosSession, state: AppState) -> Router {
-    let api_router = Router::new().nest("/auth", get_auth_router());
+    let api_router = Router::new()
+        .nest("/auth", get_auth_router())
+        .nest("/s", get_public_share_router());
 
     Router::new()
         .nest("/api/v1", api_router)

@@ -1,6 +1,6 @@
-use tower_sessions::Session;
-
+use crate::constants::SESSION_USER_ID;
 use crate::response::error_handling::AppError;
+use tower_sessions::Session;
 
 #[derive(Clone)]
 pub struct SessionService;
@@ -19,7 +19,7 @@ impl SessionService {
     /// Returns an `Option<String>` representing the user ID if it exists in the session, otherwise returns `None`.
     ///
     pub async fn get_user_id(session: &Session) -> Option<UserId> {
-        let id = session.get::<UserId>("user_id").await;
+        let id = session.get::<UserId>(SESSION_USER_ID).await;
 
         id.unwrap_or_else(|_| None)
     }
@@ -58,5 +58,20 @@ impl SessionService {
     ///
     pub async fn flush_session(session: &Session) {
         session.flush().await.unwrap();
+    }
+
+    pub async fn grant_share_access(session: &Session, share_uuid: &String) {
+        session.insert(share_uuid, "true").await.unwrap();
+    }
+
+    pub async fn revoke_share_access(session: &Session, share_uuid: &String) {
+        session.remove::<String>(share_uuid).await.unwrap();
+    }
+
+    pub async fn check_share_access(session: &Session, share_uuid: &String) -> bool {
+        match session.get::<String>(share_uuid).await {
+            Ok(t) => t.is_some(),
+            Err(_) => false,
+        }
     }
 }

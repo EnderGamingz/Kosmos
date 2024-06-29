@@ -14,7 +14,7 @@ pub struct SuccessResponse {
 #[derive(Serialize)]
 pub enum AppSuccess {
     OK { data: Option<String> },
-    CREATED { id: Option<i64> },
+    CREATED { id: Option<String> },
     DELETED,
     UPDATED,
     MOVED,
@@ -36,7 +36,7 @@ impl IntoResponse for AppSuccess {
                 status_code = StatusCode::CREATED;
 
                 if let Some(id) = id {
-                    body = id.to_string();
+                    body = id;
                 }
             }
             Self::DELETED | Self::UPDATED | Self::MOVED => status_code = StatusCode::ACCEPTED,

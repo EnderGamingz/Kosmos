@@ -2,9 +2,9 @@ use std::io::{BufWriter, Write};
 
 use axum::body::Body;
 use axum::extract::{Path, State};
-use axum::http::header;
-use axum::Json;
+use axum::http::{header, HeaderName};
 use axum::response::{IntoResponse, Response};
+use axum::Json;
 use serde::Deserialize;
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
@@ -14,8 +14,9 @@ use zip::write::{FileOptions, SimpleFileOptions};
 use zip::ZipWriter;
 
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
+use crate::routes::api::v1::share::{get_share_file, is_allowed_to_access_share};
+use crate::services::session_service::{SessionService, UserId};
+use crate::state::{AppState, KosmosState};
 
 #[derive(Deserialize)]
 pub enum RawFileAction {
@@ -23,20 +24,25 @@ pub enum RawFileAction {
     Serve,
 }
 
-pub async fn handle_raw_file(
-    State(state): KosmosState,
-    session: Session,
-    Path((file_id, operation_type)): Path<(i64, RawFileAction)>,
-) -> Result<Response, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    let file = state
-        .file_service
-        .check_file_exists_by_id(file_id, user_id)
-        .await?
-        .ok_or(AppError::NotFound {
-            error: "File not found".to_string(),
-        })?;
+pub async fn get_raw_file(
+    state: &AppState,
+    file_id: i64,
+    operation_type: RawFileAction,
+    user_id: Option<UserId>,
+) -> Result<([(HeaderName, String); 7], Body), AppError> {
+    let file = match user_id {
+        None => {
+            // File is not owned by user, accessed through share
+            state.file_service.get_file(file_id).await?
+        }
+        Some(user_id) => state
+            .file_service
+            .check_file_exists_by_id(file_id, user_id)
+            .await?
+            .ok_or(AppError::NotFound {
+                error: "File not found".to_string(),
+            })?
+    };
 
     let file_path =
         std::path::Path::new(&std::env::var("UPLOAD_LOCATION").unwrap()).join(file.id.to_string());
@@ -75,7 +81,32 @@ pub async fn handle_raw_file(
         (header::LAST_MODIFIED, file.updated_at.to_rfc3339()),
     ];
 
-    Ok((headers, body).into_response())
+    Ok((headers, body))
+}
+
+pub async fn handle_raw_file(
+    State(state): KosmosState,
+    session: Session,
+    Path((file_id, operation_type)): Path<(i64, RawFileAction)>,
+) -> Result<Response, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let raw_response = get_raw_file(&state, file_id, operation_type, Some(user_id)).await?;
+
+    Ok(raw_response.into_response())
+}
+
+pub async fn handle_raw_file_share(
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, operation_type)): Path<(String, RawFileAction)>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, session, share_uuid.clone(), true).await?;
+    let (file, _) = get_share_file(&state, &share).await?;
+
+    let raw_response = get_raw_file(&state, file.id, operation_type, None).await?;
+
+    Ok(raw_response.into_response())
 }
 
 #[derive(Deserialize)]
