@@ -1,6 +1,6 @@
 import { Backdrop } from '@components/backdrop.tsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { FileModel } from '@models/file.ts';
 import tw from '@lib/classMerge.ts';
 import { useMemo, useState } from 'react';
@@ -10,8 +10,8 @@ import { FileDisplayHandler } from '@pages/explorer/file/display/fileDisplayHand
 import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import Favorite from '@pages/explorer/components/favorite.tsx';
-import { queryClient } from '@lib/query.ts';
 import { useSearchState } from '@stores/searchStore.ts';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function FileDisplay({
   fileIndex,
@@ -23,19 +23,22 @@ export default function FileDisplay({
   selected: string[];
 }) {
   const [update, setUpdate] = useState(0);
-  const setFile = useExplorerStore(s => s.current.selectCurrentFile);
+  const { setFile, filesInScope } = useExplorerStore(
+    useShallow(s => ({
+      setFile: s.current.selectCurrentFile,
+      filesInScope: s.current.filesInScope,
+    })),
+  );
   const sort = useSearchState(s => s.sort);
   const currentFolder = useExplorerStore(s => s.current.folder);
   const close = () => () => setFile(undefined);
 
   const file = useMemo(() => {
     if (fileIndex === undefined) return undefined;
-    const files = queryClient.getQueryData([
-      'files',
-      currentFolder,
-      sort,
-    ]) as FileModel[];
-    return files[fileIndex];
+    if (filesInScope?.[fileIndex] === undefined) return undefined;
+    return filesInScope[fileIndex];
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolder, fileIndex, sort, update]);
 
   const isSelected = selected.includes(file?.id || '');

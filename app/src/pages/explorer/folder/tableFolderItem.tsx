@@ -15,7 +15,7 @@ import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@lib/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';

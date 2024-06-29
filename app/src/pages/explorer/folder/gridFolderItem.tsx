@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import tw from '@lib/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@lib/touch.ts';
 

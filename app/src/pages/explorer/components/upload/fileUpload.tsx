@@ -1,7 +1,7 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { useUsage } from '@lib/query.ts';
 import { Modal, ModalContent, ModalHeader } from '@nextui-org/react';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import tw from '@lib/classMerge.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTopSmall } from '@components/transition.ts';

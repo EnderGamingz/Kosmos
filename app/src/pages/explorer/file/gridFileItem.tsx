@@ -2,7 +2,7 @@ import { fileHasPreview, FileModel, normalizeFileType } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import {

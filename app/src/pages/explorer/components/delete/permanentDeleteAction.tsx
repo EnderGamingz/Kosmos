@@ -13,7 +13,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useState } from 'react';
 import tw from '@lib/classMerge.ts';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 
 export function PermanentDeleteAction({
   deleteData,

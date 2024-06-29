@@ -1,7 +1,7 @@
 import { DataOperationType, FileModel, Selected } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
 import { ReactNode, useState } from 'react';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
 import { DisplayContext } from '@lib/contexts.ts';
 import { MultipleActionButton } from '@pages/explorer/components/multipleActionButton.tsx';

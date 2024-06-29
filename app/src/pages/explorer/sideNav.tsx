@@ -9,7 +9,7 @@ import { Progress } from '@nextui-org/react';
 import { formatBytes } from '@lib/fileSize.ts';
 import { useUsage } from '@lib/query.ts';
 import tw from '@lib/classMerge.ts';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion } from 'framer-motion';
 

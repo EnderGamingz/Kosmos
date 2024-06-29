@@ -12,7 +12,7 @@ import {
   itemTransitionVariant,
   transitionStop,
 } from '@components/transition.ts';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';

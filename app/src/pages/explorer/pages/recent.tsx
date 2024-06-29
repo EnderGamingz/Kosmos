@@ -3,9 +3,14 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDis
 import { Progress } from '@nextui-org/react';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 
 export default function RecentFiles() {
   const files = useRecentFiles();
+  const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
+
+  useEffect(() => setFilesInScope(files.data || []), [files, setFilesInScope]);
 
   return (
     <div className={'relative'}>

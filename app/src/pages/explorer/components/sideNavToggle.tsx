@@ -1,4 +1,4 @@
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 export function SideNavToggle({ text }: { text?: string }) {

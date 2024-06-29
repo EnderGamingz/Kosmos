@@ -5,7 +5,7 @@ import { TableFolderItem } from '@pages/explorer/folder/tableFolderItem.tsx';
 import { TableFileItem } from '@pages/explorer/file/tableFileItem.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
 import tw from '@lib/classMerge.ts';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import {
   containerVariant,
   itemTransitionVariant,

@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import {
   makeUploadFiles,
   UploadFile,
@@ -39,7 +39,21 @@ export function FileUploadContent({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const notification = useNotifications(s => s.actions);
-  const filesNames = useExplorerStore(s => s.current.fileNames);
+
+  const fileNamesRef = useRef(
+    useExplorerStore.getState().current.filesInScope.map(x => x.file_name),
+  );
+
+  useEffect(
+    () =>
+      useExplorerStore.subscribe(
+        state =>
+          (fileNamesRef.current = state.current.filesInScope.map(
+            x => x.file_name,
+          )),
+      ),
+    [],
+  );
 
   const [selectForUpload, setSelectForUpload] = useState<UploadFile[] | null>(
     null,
@@ -55,7 +69,7 @@ export function FileUploadContent({
       setIsTryingInvalidFolderUpload(false);
       //setFiles([...e.target.files]);
       const files = Array.from(e.target.files);
-      setSelectForUpload(makeUploadFiles(files, filesNames));
+      setSelectForUpload(makeUploadFiles(files, fileNamesRef.current));
     }
   };
 
@@ -144,9 +158,9 @@ export function FileUploadContent({
         return;
       }
 
-      setSelectForUpload(makeUploadFiles(acceptedFiles, filesNames));
+      setSelectForUpload(makeUploadFiles(acceptedFiles, fileNamesRef.current));
     },
-    [filesNames, isInFileList, notification],
+    [fileNamesRef, isInFileList, notification],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

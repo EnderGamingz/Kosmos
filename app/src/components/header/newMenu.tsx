@@ -11,7 +11,7 @@ import {
   FileUploadModal,
 } from '@pages/explorer/components/upload/fileUpload.tsx';
 import { CreateFolder } from '@pages/explorer/folder/createFolder';
-import { useExplorerStore } from '@stores/folderStore';
+import { useExplorerStore } from '@stores/explorerStore';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/transition.ts';
 

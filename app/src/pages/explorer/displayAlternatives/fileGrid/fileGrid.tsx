@@ -1,4 +1,4 @@
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';

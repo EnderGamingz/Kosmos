@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
-import { useExplorerStore } from '@stores/folderStore.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
@@ -41,10 +41,10 @@ function FileListBreadCrumbs({ crumbs }: { crumbs: SimpleDirectory[] }) {
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
-  const { setCurrentFolder, setFileNames } = useExplorerStore(
+  const { setCurrentFolder, setFilesInScope } = useExplorerStore(
     useShallow(s => ({
       setCurrentFolder: s.current.selectCurrentFolder,
-      setFileNames: s.current.setFileNames,
+      setFilesInScope: s.current.setFilesInScope,
     })),
   );
   const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
@@ -53,6 +53,9 @@ export function FileList() {
   useEffect(() => {
     setSelectedNone();
     setCurrentFolder(folder);
+    return () => {
+      setCurrentFolder(undefined);
+    };
   }, [folder, setCurrentFolder, setSelectedNone]);
 
   const sort = useSearchState(s => s.sort);
@@ -60,8 +63,8 @@ export function FileList() {
   const files = useFiles(folder, sort);
 
   useEffect(() => {
-    setFileNames(files.data?.map(f => f.file_name) || []);
-  }, [files, setFileNames]);
+    setFilesInScope(files.data || []);
+  }, [files, setFilesInScope]);
 
   const folders = useFolders(folder, sort);
 
