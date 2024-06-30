@@ -1,8 +1,10 @@
 use crate::model::file::{FileModel, ParsedShareFileModel};
+use crate::model::folder::{ParsedShareFolderModel};
 use crate::model::share::ShareModel;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::file_service::FileService;
+use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
 use crate::services::share_service::ShareService;
 use crate::state::{AppState, KosmosState};
@@ -93,17 +95,100 @@ pub async fn access_file_share(
     session: Session,
     Path(share_uuid): Path<String>,
 ) -> Result<Json<serde_json::Value>, AppError> {
-    let share = is_allowed_to_access_share(&state, session, share_uuid.clone(), false).await?;
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
 
-    let (_, share_file) = get_share_file(&state, &share).await?;
+    let file = get_share_file(&state, share.file_id).await?;
     let _ = state.share_service.handle_share_access(share.id).await;
 
-    Ok(Json(serde_json::json!(share_file)))
+    Ok(Json(serde_json::json!(file.share_file)))
+}
+
+pub async fn access_folder_share(
+    State(state): KosmosState,
+    session: Session,
+    Path(share_uuid): Path<String>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
+
+    let folder = get_share_folder(&state, share.folder_id).await?;
+    let _ = state.share_service.handle_share_access(share.id).await;
+
+    Ok(Json(serde_json::json!({
+                "folder": folder.share_folder,
+                "folders": folder.folders,
+                "files": folder.files
+            })))
+}
+
+#[derive(serde::Deserialize, PartialEq)]
+pub enum AccessShareItemType {
+    File,
+    Folder,
+}
+
+pub async fn access_folder_share_item(
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, access_type, access_id)): Path<(String, AccessShareItemType, i64)>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
+
+    let can_access_with_share = get_share_access_for_folder_items(&state, &access_type, access_id, share).await?;
+
+    if !can_access_with_share {
+        return Err(AppError::NotAllowed {
+            error: "Not allowed".to_string(),
+        })?;
+    }
+
+    return match access_type {
+        AccessShareItemType::File => {
+            let file = get_share_file(&state, Some(access_id)).await?;
+            Ok(Json(serde_json::json!(file.share_file)))
+        }
+        AccessShareItemType::Folder => {
+            let folder =
+                get_share_folder(&state, Some(access_id)).await?;
+            Ok(Json(serde_json::json!({
+                "folder": folder.share_folder,
+                "folders": folder.folders,
+                "files": folder.files
+            })))
+        }
+    };
+}
+
+pub async fn get_share_access_for_folder_items(state: &AppState, access_type: &AccessShareItemType, access_id: i64, share: ShareModel) -> Result<bool, AppError> {
+    let can_access_with_share = match access_type {
+        AccessShareItemType::File => {
+            let file = state.file_service.get_file(access_id).await?;
+            if let Some(parent_folder_id) = file.parent_folder_id {
+                state
+                    .share_service
+                    .is_folder_existing_under_share(
+                        parent_folder_id,
+                        share.id,
+                        &state.folder_service,
+                    )
+                    .await?
+            } else {
+                false
+            }
+        }
+        AccessShareItemType::Folder => {
+            state
+                .share_service
+                .is_folder_existing_under_share(access_id, share.id, &state.folder_service)
+                .await?
+        }
+    };
+
+    Ok(can_access_with_share)
 }
 
 pub async fn is_allowed_to_access_share(
     state: &AppState,
-    session: Session,
+    session: &Session,
     share_uuid: String,
     count_as_use: bool,
 ) -> Result<ShareModel, AppError> {
@@ -160,11 +245,16 @@ pub async fn is_allowed_to_access_share(
     Ok(share)
 }
 
+pub struct SharedFileData {
+    pub file: FileModel,
+    pub share_file: ParsedShareFileModel,
+}
+
 pub async fn get_share_file(
     state: &AppState,
-    share: &ShareModel,
-) -> Result<(FileModel, ParsedShareFileModel), AppError> {
-    let file = match share.file_id {
+    file_id: Option<i64>,
+) -> Result<SharedFileData, AppError> {
+    let file = match file_id {
         None => Err(AppError::NotFound {
             error: "File not found".to_string(),
         })?,
@@ -173,7 +263,52 @@ pub async fn get_share_file(
 
     let share_file = FileService::parse_share_file(file.clone());
 
-    Ok((file, share_file))
+    Ok(SharedFileData { file, share_file })
+}
+
+pub struct SharedFolderData {
+    share_folder: ParsedShareFolderModel,
+    folders: Vec<ParsedShareFolderModel>,
+    files: Vec<ParsedShareFileModel>,
+}
+
+pub async fn get_share_folder(
+    state: &AppState,
+    folder_id: Option<i64>,
+) -> Result<
+    SharedFolderData,
+    AppError,
+> {
+    let folder = match folder_id {
+        None => Err(AppError::NotFound {
+            error: "Folder not found".to_string(),
+        })?,
+        Some(folder_id) => state.folder_service.get_folder(folder_id).await?,
+    };
+
+    let share_folder = FolderService::parse_share_folder(&folder);
+
+    let folders = state
+        .folder_service
+        .get_folders_for_share(&Some(folder.id))
+        .await?
+        .into_iter()
+        .map(|folder| FolderService::parse_share_folder(&folder))
+        .collect::<Vec<_>>();
+
+    let files = state
+        .file_service
+        .get_files_for_share(Some(folder.id))
+        .await?
+        .into_iter()
+        .map(|file| FileService::parse_share_file(file))
+        .collect::<Vec<_>>();
+
+    Ok(SharedFolderData {
+        share_folder,
+        folders,
+        files,
+    })
 }
 
 pub async fn reduce_access_limit(state: &AppState, share: &ShareModel) -> Result<(), AppError> {

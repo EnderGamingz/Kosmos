@@ -2,10 +2,7 @@ use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
 
 use crate::db::{KosmosDb, KosmosPool};
-use crate::model::folder::{
-    DeletionDirectory, Directory, FolderModel, ParsedFolderModel, ParsedSimpleDirectory,
-    SimpleDirectory,
-};
+use crate::model::folder::{DeletionDirectory, Directory, DirectoryWithShare, FolderModel, ParsedFolderModel, ParsedShareFolderModel, ParsedSimpleDirectory, SimpleDirectory};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{GetFilesParsedSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
@@ -71,6 +68,21 @@ impl FolderService {
             .map(|rows| rows.into_iter().map(FolderModel::from).collect())
     }
 
+    pub async fn get_folders_for_share(
+        &self,
+        parent_id: &Option<i64>,
+    ) -> Result<Vec<FolderModel>, AppError> {
+        sqlx::query_as::<_, FolderModel>("SELECT * FROM folder WHERE parent_id IS NOT DISTINCT FROM $1")
+            .bind(parent_id)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting folders for share: {}", e);
+                AppError::InternalError
+            })
+            .map(|rows| rows.into_iter().map(FolderModel::from).collect())
+    }
+
     pub async fn get_folder(&self, folder_id: i64) -> Result<FolderModel, AppError> {
         sqlx::query_as!(FolderModel, "SELECT * FROM folder WHERE id = $1", folder_id)
             .fetch_one(&self.db_pool)
@@ -83,13 +95,23 @@ impl FolderService {
             })
     }
 
-    pub fn parse_folder(folder: FolderModel) -> ParsedFolderModel {
+    pub fn parse_folder(folder: &FolderModel) -> ParsedFolderModel {
         ParsedFolderModel {
             id: folder.id.to_string(),
             user_id: folder.user_id.to_string(),
-            folder_name: folder.folder_name,
+            folder_name: folder.folder_name.to_string(),
             parent_id: folder.parent_id.map(|x| x.to_string()),
             favorite: folder.favorite,
+            created_at: folder.created_at,
+            updated_at: folder.updated_at,
+        }
+    }
+
+    pub fn parse_share_folder(folder: &FolderModel) -> ParsedShareFolderModel {
+        ParsedShareFolderModel {
+            id: folder.id.to_string(),
+            folder_name: folder.folder_name.to_string(),
+            parent_id: folder.parent_id.map(|x| x.to_string()),
             created_at: folder.created_at,
             updated_at: folder.updated_at,
         }
@@ -386,6 +408,49 @@ impl FolderService {
         .await
         .map_err(|e| {
             tracing::error!("Error getting folder structure: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(folder_res)
+    }
+
+    pub async fn get_folder_structure_upwards_with_share(
+        &self,
+        folder_id: i64,
+    ) -> Result<Vec<DirectoryWithShare>, AppError> {
+        let folder_res = sqlx::query_as::<_, DirectoryWithShare>(
+            "WITH RECURSIVE directories AS (SELECT f.id,
+                                      f.folder_name,
+                                      f.user_id,
+                                      f.parent_id,
+                                      ARRAY []::TEXT[] AS path
+                               FROM folder f
+                               WHERE f.id = $1
+
+                               UNION ALL
+
+                               SELECT f.id,
+                                      f.folder_name,
+                                      f.user_id,
+                                      f.parent_id,
+                                      array_append(d.path, d.folder_name)
+                               FROM folder f
+                                        JOIN directories d ON f.id = d.parent_id)
+            SELECT d.*,
+                s.id AS share_id,
+                s.share_type AS share_type,
+                s.share_target As share_target
+            FROM directories d
+                     LEFT JOIN files f ON f.parent_folder_id = d.id
+                     LEFT JOIN shares s ON s.folder_id = d.id
+            GROUP BY d.folder_name, d.user_id, d.id, d.path, d.parent_id, share_id, share_type,share_target
+            ORDER BY d.path",
+        )
+        .bind(folder_id)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting upwards folder structure: {}", e);
             AppError::InternalError
         })?;
 

@@ -1,4 +1,4 @@
-use crate::model::file::{FileType, PreviewStatus};
+use crate::model::file::{FileModel, FileType, PreviewStatus};
 use crate::model::image::ImageFormat;
 use crate::model::operation::OperationStatus;
 use axum::extract::{Path, State};
@@ -9,26 +9,17 @@ use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::routes::api::v1::share::{AccessShareItemType, get_share_access_for_folder_items, get_share_file, is_allowed_to_access_share};
 use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
 use crate::services::file_service::FileService;
 use crate::services::image_service::ImageService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
-pub async fn get_image_by_format(
-    State(state): KosmosState,
-    session: Session,
-    Path((file_id, format)): Path<(i64, i16)>,
-) -> Result<Response, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let file_data = state
-        .file_service
-        .check_file_exists_by_id(file_id, user_id)
-        .await?
-        .ok_or(AppError::NotFound {
-            error: "File not found".to_string(),
-        })?;
-
+async fn get_image_format_data(
+    format: i16,
+    file_data: &FileModel,
+) -> Result<(Vec<u8>, [(&str, &str); 1]), AppError> {
     let file_type = FileService::get_file_type(&file_data.mime_type);
 
     if file_type != FileType::Image && file_type != FileType::RawImage {
@@ -70,6 +61,45 @@ pub async fn get_image_by_format(
     } else {
         [("Content-Type", file_data.mime_type.as_str())]
     };
+    Ok((image, headers))
+}
+
+pub async fn get_image_by_format(
+    State(state): KosmosState,
+    session: Session,
+    Path((file_id, format)): Path<(i64, i16)>,
+) -> Result<Response, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let file_data = state
+        .file_service
+        .check_file_exists_by_id(file_id, user_id)
+        .await?
+        .ok_or(AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
+
+    let (image, headers) = get_image_format_data(format, &file_data).await?;
+
+    Ok((headers, image).into_response())
+}
+
+pub async fn get_share_image_by_format(
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, file_id, format)): Path<(String, i64, i16)>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), true).await?;
+    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share).await?;
+
+    if !can_access_with_share {
+        return Err(AppError::NotAllowed {
+            error: "Not allowed".to_string(),
+        })?;
+    }
+
+    let share_file_data = get_share_file(&state, Some(file_id)).await?;
+
+    let (image, headers) = get_image_format_data(format, &share_file_data.file).await?;
 
     Ok((headers, image).into_response())
 }

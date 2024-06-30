@@ -91,6 +91,24 @@ impl FileService {
         .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
+    pub async fn get_files_for_share(
+        &self,
+        parent_folder_id: Option<i64>,
+    ) -> Result<Vec<FileModel>, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT * FROM files WHERE parent_folder_id = $1 AND deleted_at IS NULL",
+            parent_folder_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting files for share: {}", e);
+            AppError::InternalError
+        })
+        .map(|rows| rows.into_iter().map(FileModel::from).collect())
+    }
+
     pub async fn get_file(
         &self,
         file_id: i64,

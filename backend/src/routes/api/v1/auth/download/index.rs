@@ -14,7 +14,7 @@ use zip::write::{FileOptions, SimpleFileOptions};
 use zip::ZipWriter;
 
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::share::{get_share_file, is_allowed_to_access_share};
+use crate::routes::api::v1::share::{get_share_file, is_allowed_to_access_share, AccessShareItemType, get_share_access_for_folder_items};
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
 
@@ -41,7 +41,7 @@ pub async fn get_raw_file(
             .await?
             .ok_or(AppError::NotFound {
                 error: "File not found".to_string(),
-            })?
+            })?,
     };
 
     let file_path =
@@ -101,10 +101,31 @@ pub async fn handle_raw_file_share(
     session: Session,
     Path((share_uuid, operation_type)): Path<(String, RawFileAction)>,
 ) -> Result<Response, AppError> {
-    let share = is_allowed_to_access_share(&state, session, share_uuid.clone(), true).await?;
-    let (file, _) = get_share_file(&state, &share).await?;
+    let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), true).await?;
+    let shared_file_data = get_share_file(&state, share.file_id).await?;
 
-    let raw_response = get_raw_file(&state, file.id, operation_type, None).await?;
+    let raw_response = get_raw_file(&state, shared_file_data.file.id, operation_type, None).await?;
+
+    Ok(raw_response.into_response())
+}
+
+pub async fn handle_raw_file_share_through_folder(
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, file_id, operation_type)): Path<(String, i64, RawFileAction)>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
+
+    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share).await?;
+
+    if !can_access_with_share {
+        return Err(AppError::NotAllowed {
+            error: "Not allowed".to_string(),
+        })?;
+    }
+
+    let share_file_data = get_share_file(&state, Some(file_id)).await?;
+    let raw_response = get_raw_file(&state, share_file_data.file.id, operation_type, None).await?;
 
     Ok(raw_response.into_response())
 }

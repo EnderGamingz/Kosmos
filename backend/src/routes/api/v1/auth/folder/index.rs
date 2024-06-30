@@ -5,7 +5,6 @@ use axum_valid::Valid;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
-
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::{
@@ -47,12 +46,12 @@ pub async fn get_folders(
         .get_folders(user_id, parent, parsed_params)
         .await?
         .into_iter()
-        .map(FolderService::parse_folder)
+        .map(|x| FolderService::parse_folder(&x))
         .collect::<Vec<_>>();
 
     let folder = if let Some(folder) = parent {
         Some(FolderService::parse_folder(
-            state.folder_service.get_folder(folder).await?,
+            &state.folder_service.get_folder(folder).await?,
         ))
     } else {
         None
