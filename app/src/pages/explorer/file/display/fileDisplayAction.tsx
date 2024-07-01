@@ -11,6 +11,7 @@ import {
 import tw from '@lib/classMerge.ts';
 import OpenExternally from '@pages/explorer/components/openExternally.tsx';
 import { ReactNode } from 'react';
+import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 
 const actions = (file: FileModel, onClose: () => void) => {
   return [
@@ -30,6 +31,7 @@ const actions = (file: FileModel, onClose: () => void) => {
       onClose={onClose}
     />,
     <MoveToTrash short id={file.id} name={file.file_name} onClose={onClose} />,
+    <ShareButton id={file.id} type={'file'} onClose={onClose} />,
   ].filter(Boolean) as ReactNode[];
 };
 

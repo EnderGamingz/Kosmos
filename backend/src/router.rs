@@ -1,6 +1,6 @@
 use axum::extract::DefaultBodyLimit;
-use axum::routing::{delete, get, patch, post, put};
 use axum::Router;
+use axum::routing::{delete, get, patch, post, put};
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
@@ -163,8 +163,16 @@ fn get_share_router() -> KosmosRouter {
             post(crate::routes::api::v1::share::create::share_file_private),
         )
         .route(
+            "/folder/:folder_id",
+            get(crate::routes::api::v1::share::get_folder_shares_for_user),
+        )
+        .route(
             "/folder/public",
             post(crate::routes::api::v1::share::create::share_folder_public),
+        )
+        .route(
+            "/folder/private",
+            post(crate::routes::api::v1::share::create::share_folder_private),
         )
         .route(
             "/:share_id",

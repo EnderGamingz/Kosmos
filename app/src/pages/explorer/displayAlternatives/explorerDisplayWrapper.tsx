@@ -10,6 +10,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Portal } from 'react-portal';
 import ContextMenu, { ContextMenuContent } from '@components/contextMenu.tsx';
 import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
+import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
 
 export type Vec2 = { x: number; y: number };
 
@@ -28,7 +29,7 @@ export function ExplorerDisplayWrapper({
   const [dragged, setDragged] = useState<
     undefined | { type: DataOperationType; id: string }
   >(undefined);
-  const { selectedFileIndex } = useExplorerStore(s => s.current);
+  const selectedFileIndex = useExplorerStore(s => s.current.selectedFileIndex);
 
   const {
     selectedFolders,
@@ -111,6 +112,7 @@ export function ExplorerDisplayWrapper({
         fileIndex={selectedFileIndex}
         selected={selectedFiles}
       />
+      <ShareModal />
       <AnimatePresence>
         {context.clicked && (
           <Portal>

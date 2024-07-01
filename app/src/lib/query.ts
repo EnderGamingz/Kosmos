@@ -12,6 +12,7 @@ import {
   SortParamsForQuery,
 } from '@models/sort.ts';
 import { UsageResponse } from '@models/user.ts';
+import { ShareModel } from '@models/share.ts';
 
 export const queryClient = new QueryClient();
 
@@ -135,6 +136,17 @@ export const useOperations = (onUnauthorized?: () => void) => {
     refetchInterval: IS_DEVELOPMENT ? 5_000 : 20_000,
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
+  });
+};
+
+export const useUserShareData = (id: string, type: DataOperationType) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/share/${type}/${id}`)
+        .then(res => res.data as ShareModel[]),
+    queryKey: ['share', type, id],
+    refetchOnMount: false,
   });
 };
 

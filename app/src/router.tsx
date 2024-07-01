@@ -44,6 +44,7 @@ export default function Router() {
             element={<AccessWrapper el={<Settings />} page={'Settings'} />}>
             <Route path={'preferences'} element={<Preferences />} />
             <Route path={'account'} element={<AccountSettings />} />
+            <Route index element={<AccountSettings />} />
           </Route>
         </Routes>
       </main>

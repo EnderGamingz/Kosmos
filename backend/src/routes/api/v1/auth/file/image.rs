@@ -88,7 +88,7 @@ pub async fn get_share_image_by_format(
     session: Session,
     Path((share_uuid, file_id, format)): Path<(String, i64, i16)>,
 ) -> Result<Response, AppError> {
-    let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), true).await?;
+    let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), false).await?;
     let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share).await?;
 
     if !can_access_with_share {

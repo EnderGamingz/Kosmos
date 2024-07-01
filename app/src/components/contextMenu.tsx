@@ -20,6 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { Backdrop } from '@components/backdrop.tsx';
+import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 
 const menuWidth = 250;
 
@@ -122,6 +123,7 @@ export function ContextMenuContent({
           name={data.file_name}
           onClose={onClose}
         />
+        <ShareButton id={data.id} type={'file'} onClose={onClose} />
         <RenameAction
           type={'file'}
           id={data.id}
@@ -148,6 +150,7 @@ export function ContextMenuContent({
           isContextAction
           onClose={onClose}
         />
+        <ShareButton id={data.id} type={'folder'} onClose={onClose} />
         <RenameAction
           type={'folder'}
           id={data.id}

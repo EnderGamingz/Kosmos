@@ -9,9 +9,9 @@ import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFoote
 import { FileDisplayHandler } from '@pages/explorer/file/display/fileDisplayHandler.tsx';
 import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
-import Favorite from '@pages/explorer/components/favorite.tsx';
 import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
+import { FileDisplayFavorite } from '@pages/explorer/file/display/fileDisplayFavorite.tsx';
 
 export default function FileDisplay({
   fileIndex,
@@ -55,33 +55,6 @@ export default function FileDisplay({
         />
       )}
     </AnimatePresence>
-  );
-}
-
-function FileDisplayFavorite({
-  file,
-  onUpdate,
-}: {
-  file: FileModel;
-  onUpdate: () => void;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: [0, 0], scale: 0.5 }}
-      className={tw(
-        'absolute -right-3 -top-12 rounded-xl bg-[inherit] p-1 shadow-lg md:-top-10',
-        '[&_svg]:h-7 [&_svg]:w-7',
-      )}>
-      <Favorite
-        id={file.id}
-        type={'file'}
-        active={file.favorite}
-        iconOnly
-        onUpdate={onUpdate}
-      />
-    </motion.div>
   );
 }
 

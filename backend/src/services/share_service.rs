@@ -276,6 +276,36 @@ impl ShareService {
         })
     }
 
+    pub async fn create_private_folder_share(
+        &self,
+        folder_id: i64,
+        user_id: UserId,
+        share_target_id: UserId,
+    ) -> Result<ShareModel, AppError> {
+        sqlx::query_as!(
+            ShareModel,
+            "INSERT INTO shares
+            (id, user_id, share_type, folder_id, share_target)
+            VALUES
+            ($1, $2, $3, $4, $5)
+            RETURNING *",
+            self.sf.next_id().map_err(|e| {
+                tracing::error!("Error creating share id: {}", e);
+                AppError::InternalError
+            })? as i64,
+            user_id,
+            ShareType::Private as i16,
+            folder_id,
+            share_target_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating share: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn delete_share(&self, share_id: i64, user_id: UserId) -> Result<(), AppError> {
         sqlx::query!(
             "DELETE FROM shares WHERE id = $1 AND user_id = $2",
