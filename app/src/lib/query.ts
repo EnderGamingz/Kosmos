@@ -115,7 +115,7 @@ export const useUsage = () => {
       total: 0,
       limit: FALLBACK_STORAGE_LIMIT,
     },
-    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -129,9 +129,9 @@ export const useOperations = (onUnauthorized?: () => void) => {
           if (e.response?.status === 401) {
             onUnauthorized?.();
           }
+          return [] as OperationModel[];
         }),
     queryKey: ['operations'],
-    refetchOnMount: true,
     // 20 seconds
     refetchInterval: IS_DEVELOPMENT ? 5_000 : 20_000,
     refetchIntervalInBackground: true,
@@ -145,10 +145,15 @@ export const useUserShareData = (id: string, type: DataOperationType) => {
       axios
         .get(`${BASE_URL}auth/share/${type}/${id}`)
         .then(res => res.data as ShareModel[]),
-    queryKey: ['share', type, id],
-    refetchOnMount: false,
+    queryKey: ['share', id],
   });
 };
+
+export async function refetchShareData() {
+  return queryClient.invalidateQueries({
+    queryKey: ['share'],
+  });
+}
 
 export async function refetchOperations() {
   return queryClient.refetchQueries({

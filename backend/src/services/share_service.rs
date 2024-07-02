@@ -1,8 +1,8 @@
 use sonyflake::Sonyflake;
 use sqlx::types::Uuid;
 
-use crate::db::KosmosPool;
-use crate::model::share::{ParsedShareModel, ShareModel, ShareType};
+use crate::db::{KosmosDbResult, KosmosPool};
+use crate::model::share::{ExtendedShareModel, ParsedShareModel, ShareModel, ShareType};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::share::create::{ShareFilePublicRequest, ShareFolderPublicRequest};
 use crate::services::folder_service::FolderService;
@@ -23,18 +23,22 @@ impl ShareService {
         &self,
         file_id: i64,
         user_id: UserId,
-    ) -> Result<Vec<ShareModel>, AppError> {
-        sqlx::query_as!(
-            ShareModel,
-            "SELECT * FROM shares WHERE file_id = $1
-            AND user_id = $2",
-            file_id,
-            user_id
+    ) -> Result<Vec<ExtendedShareModel>, AppError> {
+        sqlx::query_as::<_, ExtendedShareModel>(
+            "SELECT s.*,
+               u.username as share_target_username
+            FROM shares s
+               LEFT JOIN users u on s.share_target = u.id
+            WHERE file_id = $1
+            AND user_id = $2
+            ORDER BY updated_at DESC",
         )
+        .bind(file_id)
+        .bind(user_id)
         .fetch_all(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!("Error getting shares: {}", e);
+            tracing::error!("Error getting file shares: {}", e);
             AppError::InternalError
         })
     }
@@ -43,18 +47,22 @@ impl ShareService {
         &self,
         folder_id: i64,
         user_id: UserId,
-    ) -> Result<Vec<ShareModel>, AppError> {
-        sqlx::query_as!(
-            ShareModel,
-            "SELECT * FROM shares WHERE folder_id = $1
-            AND user_id = $2",
-            folder_id,
-            user_id
+    ) -> Result<Vec<ExtendedShareModel>, AppError> {
+        sqlx::query_as::<_, ExtendedShareModel>(
+            "SELECT s.*,
+               u.username as share_target_username
+            FROM shares s
+               LEFT JOIN users u on s.share_target = u.id
+            WHERE folder_id = $1
+            AND user_id = $2
+            ORDER BY updated_at DESC",
         )
+        .bind(folder_id)
+        .bind(user_id)
         .fetch_all(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!("Error getting shares: {}", e);
+            tracing::error!("Error getting folder shares: {}", e);
             AppError::InternalError
         })
     }
@@ -76,7 +84,7 @@ impl ShareService {
         .fetch_optional(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!("Error getting shares: {}", e);
+            tracing::error!("Error getting public file shares by type: {}", e);
             AppError::InternalError
         })
     }
@@ -149,25 +157,28 @@ impl ShareService {
         .fetch_optional(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!("Error getting shares: {}", e);
+            tracing::error!("Error getting private shares by target: {}", e);
             AppError::InternalError
         })
     }
 
-    pub async fn get_share(&self, share_uuid: &String) -> Result<ShareModel, AppError> {
-        let share = sqlx::query_as!(
-            ShareModel,
-            "SELECT * FROM shares WHERE uuid = $1",
-            Uuid::parse_str(share_uuid.as_str()).map_err(|_| {
-                AppError::BadRequest {
-                    error: Some("Invalid share ID".to_string()),
-                }
-            })?
+    pub async fn get_share(&self, share_uuid: &String) -> Result<ExtendedShareModel, AppError> {
+        let share = sqlx::query_as::<_, ExtendedShareModel>(
+            "SELECT s.*,
+               u.username as share_target_username
+            FROM shares s
+                 LEFT JOIN users u on s.share_target = u.id
+            WHERE uuid = $1",
+        )
+        .bind(
+            Uuid::parse_str(share_uuid.as_str()).map_err(|_| AppError::BadRequest {
+                error: Some("Invalid share ID".to_string()),
+            })?,
         )
         .fetch_optional(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!("Error getting share: {}", e);
+            tracing::error!("Error getting share by uuid: {}", e);
             AppError::InternalError
         })?;
 
@@ -178,6 +189,45 @@ impl ShareService {
                 error: "Share not found".to_string(),
             })
         }
+    }
+
+    pub async fn get_share_for_user(&self, share_id: i64, user_id: UserId) -> Result<ShareModel, AppError> {
+        let share = sqlx::query_as!(
+            ShareModel,
+            "SELECT * FROM shares
+            WHERE id = $1
+            AND user_id = $2",
+            share_id,
+            user_id,
+        )
+            .fetch_optional(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting private shares by target: {}", e);
+                AppError::InternalError
+            })?;
+
+        if let Some(share) = share {
+            Ok(share)
+        } else {
+            Err(AppError::NotFound {
+                error: "Share not found".to_string(),
+            })
+        }
+    }
+
+    pub async fn update_share_password(&self, share_id: i64, new_password: String) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE shares SET password = $1 WHERE id = $2",
+            new_password,
+            share_id
+        )
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error updating share password: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn create_public_file_share(
@@ -256,7 +306,7 @@ impl ShareService {
             ShareModel,
             "INSERT INTO shares
             (id, user_id, share_type, file_id, share_target)
-            VALUES
+            VALUES 
             ($1, $2, $3, $4, $5)
             RETURNING *",
             self.sf.next_id().map_err(|e| {
@@ -345,15 +395,16 @@ impl ShareService {
         .await;
     }
 
-    pub fn parse_share(share_model: ShareModel) -> ParsedShareModel {
+    pub fn parse_share(share_model: ExtendedShareModel) -> ParsedShareModel {
         ParsedShareModel {
             id: share_model.id.to_string(),
-            uuid: share_model.uuid,
+            uuid: share_model.uuid.to_string(),
             user_id: share_model.user_id.to_string(),
             file_id: share_model.file_id.map(|id| id.to_string()),
             folder_id: share_model.folder_id.map(|id| id.to_string()),
             share_type: share_model.share_type,
             share_target: share_model.share_target,
+            share_target_username: share_model.share_target_username,
             access_limit: share_model.access_limit,
             password: share_model.password,
             access_count: share_model.access_count,

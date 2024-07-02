@@ -5,8 +5,11 @@ import { useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
 import { Backdrop } from '@components/backdrop.tsx';
 import tw from '@lib/classMerge.ts';
-import { PlusIcon } from '@heroicons/react/24/solid';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
+import { ShareIcon } from '@heroicons/react/24/outline';
+import { ScrollShadow } from '@nextui-org/react';
+import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
+import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 
 export default function ShareModal() {
   const { shareElementId, shareElementType, clearShareElement } =
@@ -58,28 +61,39 @@ export function ShareModalContent({
             className={tw(
               'relative z-10 shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
               'w-full rounded-xl bg-gray-50 p-3 md:p-6',
-              'overflow-hidden text-stone-800',
+              'flex flex-col overflow-hidden text-stone-800',
             )}>
             <div className={'flex items-center justify-between'}>
               <h2 className={'text-2xl font-semibold'}>
-                Share {shareElementType}
+                Share {shareElementType}{' '}
+                <span className={'align-top text-sm font-light'}>
+                  ({data.data?.length ?? '?'})
+                </span>
               </h2>
-              <button>
-                <PlusIcon
-                  className={'h-6 w-6'}
-                  onClick={() => setCreate(prev => !prev)}
-                />
+              <button
+                onClick={() => setCreate(prev => !prev)}
+                className={'flex items-center gap-2 font-bold'}>
+                <ShareIcon className={'h-4 w-4 fill-stone-800'} />
+                {create ? 'Cancel' : 'Create'}
               </button>
             </div>
-            <div className={'flex flex-col justify-center px-1 py-5'}>
+            <ScrollShadow
+              className={
+                'mb-3 flex h-full flex-col overflow-y-auto px-1 py-5 scrollbar-hide'
+              }>
               <AnimatePresence>
-                <ShareData
-                  shares={data.data}
-                  type={shareElementType}
-                  loading={data.isLoading}
-                />
+                {create ? (
+                  <CreateShare />
+                ) : (
+                  <ShareData
+                    shares={data.data}
+                    type={shareElementType}
+                    loading={data.isLoading}
+                  />
+                )}
               </AnimatePresence>
-            </div>
+            </ScrollShadow>
+            <ModalCloseButton onClick={onClose} />
           </motion.div>
         </div>
       </div>

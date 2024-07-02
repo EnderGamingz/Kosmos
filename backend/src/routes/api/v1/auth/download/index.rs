@@ -33,7 +33,7 @@ pub async fn get_raw_file(
     let file = match user_id {
         None => {
             // File is not owned by user, accessed through share
-            state.file_service.get_file(file_id).await?
+            state.file_service.get_file(file_id, None).await?
         }
         Some(user_id) => state
             .file_service

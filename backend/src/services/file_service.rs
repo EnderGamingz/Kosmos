@@ -2,7 +2,9 @@ use sqlx::{Execute, QueryBuilder};
 use std::path::Path;
 
 use crate::db::{KosmosDb, KosmosPool};
-use crate::model::file::{FileModel, FileType, ParsedFileModel, ParsedShareFileModel, PreviewStatus};
+use crate::model::file::{
+    FileModel, FileType, ParsedFileModel, ParsedShareFileModel, PreviewStatus,
+};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{
@@ -109,21 +111,38 @@ impl FileService {
         .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
+    fn get_file_query(file_id: i64, user_id: Option<UserId>) -> String {
+        let mut query: QueryBuilder<KosmosDb> =
+            QueryBuilder::new("SELECT * FROM files WHERE id = ");
+        query.push_bind(file_id);
+
+        if user_id.is_some() {
+            query.push(" AND user_id = ");
+            query.push_bind(user_id);
+        }
+
+        query.build().sql().into()
+    }
+
     pub async fn get_file(
         &self,
         file_id: i64,
+        user_id: Option<UserId>,
     ) -> Result<FileModel, AppError> {
-        sqlx::query_as!(
-            FileModel,
-            "SELECT * FROM files WHERE id = $1",
-            file_id
-        )
-        .fetch_one(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting file {}: {}", file_id, e);
-            AppError::InternalError
-        })
+        let file = sqlx::query_as::<_, FileModel>(&*Self::get_file_query(file_id, user_id))
+            .bind(file_id)
+            .bind(user_id)
+            .fetch_optional(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting file {}: {}", file_id, e);
+                AppError::InternalError
+            })?;
+
+        match file {
+            None => Err(AppError::NotFound {error: "File not Found".to_string()})?,
+            Some(file) => Ok(file)
+        }
     }
 
     pub async fn get_recent_files(

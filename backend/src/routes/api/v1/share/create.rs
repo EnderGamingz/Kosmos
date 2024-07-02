@@ -23,9 +23,18 @@ pub async fn share_file_public(
     Json(mut payload): Json<ShareFilePublicRequest>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let share = state
-        .share_service
-        .get_public_share_by_type_file(payload.file_id, user_id)
+    /* This check for already existing similar shares for this item might be unnecessary
+    let share = match payload.password {
+        None => {  state
+                .share_service
+                .get_public_share_by_type_file(payload.file_id, user_id)
+                .await?
+        }, Some(_) => None };*/
+
+    // Check if file exists by the logged-in user
+    state
+        .file_service
+        .get_file(payload.file_id, Some(user_id))
         .await?;
 
     if payload.password.is_some() {
@@ -36,19 +45,15 @@ pub async fn share_file_public(
             })?;
         payload.password = Some(hashed_password);
     }
+    let uuid = state
+        .share_service
+        .create_public_file_share(payload, user_id)
+        .await?
+        .uuid;
 
-    let uuid = match share {
-        None => {
-            state
-                .share_service
-                .create_public_file_share(payload, user_id)
-                .await?
-                .uuid
-        }
-        Some(s) => s.uuid,
-    };
-
-    Ok(AppSuccess::CREATED { id: Some(uuid) })
+    Ok(AppSuccess::CREATED {
+        id: Some(uuid.to_string()),
+    })
 }
 
 #[derive(Deserialize)]
@@ -104,7 +109,9 @@ pub async fn share_folder_public(
         .await?
         .uuid;
 
-    Ok(AppSuccess::CREATED { id: Some(uuid) })
+    Ok(AppSuccess::CREATED {
+        id: Some(uuid.to_string()),
+    })
 }
 
 #[derive(Deserialize)]
@@ -152,7 +159,7 @@ pub async fn share_file_private(
         .await?;
 
     Ok(AppSuccess::CREATED {
-        id: Some(share.uuid),
+        id: Some(share.uuid.to_string()),
     })
 }
 
@@ -211,6 +218,6 @@ pub async fn share_folder_private(
         .await?;
 
     Ok(AppSuccess::CREATED {
-        id: Some(share.uuid),
+        id: Some(share.uuid.to_string()),
     })
 }
