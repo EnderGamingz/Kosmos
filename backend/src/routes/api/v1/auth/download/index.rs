@@ -1,5 +1,15 @@
 use std::io::{BufWriter, Write};
 
+use crate::model::file::FileModel;
+use crate::model::folder::Directory;
+use crate::model::share::ExtendedShareModel;
+use crate::response::error_handling::AppError;
+use crate::routes::api::v1::share::{
+    get_share_access_for_folder_items, get_share_file, is_allowed_to_access_share,
+    AccessShareItemType,
+};
+use crate::services::session_service::{SessionService, UserId};
+use crate::state::{AppState, KosmosState};
 use axum::body::Body;
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderName};
@@ -12,11 +22,6 @@ use tokio_util::io::ReaderStream;
 use tower_sessions::Session;
 use zip::write::{FileOptions, SimpleFileOptions};
 use zip::ZipWriter;
-
-use crate::response::error_handling::AppError;
-use crate::routes::api::v1::share::{get_share_file, is_allowed_to_access_share, AccessShareItemType, get_share_access_for_folder_items};
-use crate::services::session_service::{SessionService, UserId};
-use crate::state::{AppState, KosmosState};
 
 #[derive(Deserialize)]
 pub enum RawFileAction {
@@ -116,7 +121,9 @@ pub async fn handle_raw_file_share_through_folder(
 ) -> Result<Response, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
 
-    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, &share).await?;
+    let can_access_with_share =
+        get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, &share)
+            .await?;
 
     if !can_access_with_share {
         return Err(AppError::NotAllowed {
@@ -146,6 +153,52 @@ pub async fn multi_download(
     session: Session,
     Json(request_data): Json<MultiDownloadRequest>,
 ) -> Result<Response, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let request = parse_multi_download_payload(request_data)?;
+
+    let folder_structure = state
+        .folder_service
+        .get_folder_structure(request.folders, Some(user_id))
+        .await?;
+
+    let response =
+        handle_multi_download(state, request.files, folder_structure, Some(user_id), None).await;
+    response
+}
+
+pub async fn multi_share_download(
+    State(state): KosmosState,
+    session: Session,
+    Path(share_uuid): Path<String>,
+    Json(request_data): Json<MultiDownloadRequest>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
+    let request = parse_multi_download_payload(request_data)?;
+
+    for folder_id in &request.folders {
+        let t =state
+            .share_service
+            .is_folder_existing_under_share(*folder_id, share.id, &state.folder_service)
+            .await?;
+
+        if !t {
+            return Err(AppError::NotFound {
+                error: "Folder not found".to_string(),
+            })?;
+        }
+    }
+
+    let folder_structure = state
+        .folder_service
+        .get_folder_structure(request.folders, None)
+        .await?;
+
+    let response =
+        handle_multi_download(state, request.files, folder_structure, None, Some(share)).await;
+    response
+}
+
+fn parse_multi_download_payload(request_data: MultiDownloadRequest) -> Result<MultiDownloadParsed, AppError> {
     let request = MultiDownloadParsed {
         files: request_data
             .files
@@ -164,17 +217,20 @@ pub async fn multi_download(
                 error: "Invalid folder id".to_string(),
             })?,
     };
+    Ok(request)
+}
 
-    let user_id = SessionService::check_logged_in(&session).await?;
+async fn handle_multi_download(
+    state: AppState,
+    files: Vec<i64>,
+    folder_structure: Vec<Directory>,
+    user_id: Option<UserId>,
+    share: Option<ExtendedShareModel>,
+) -> Result<Response, AppError> {
     let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
     let upload_path = std::path::Path::new(&upload_location);
     let temp_location = std::path::Path::new(&upload_location).join("temp");
     let temp_path = std::path::Path::new(&temp_location);
-
-    let folder_structure = state
-        .folder_service
-        .get_folder_structure(request.folders, user_id)
-        .await?;
 
     let file_name = format!(
         "Kosmos_Archive_{}.zip",
@@ -194,10 +250,8 @@ pub async fn multi_download(
     let mut writer = BufWriter::new(&file);
     let mut zip = ZipWriter::new(&mut writer);
 
-    for file_id in request.files {
-        let database_file = state
-            .file_service
-            .check_file_exists_by_id(file_id, user_id)
+    for file_id in files {
+        let database_file = multi_download_get_file(&state, file_id, &user_id, &share)
             .await?
             .ok_or(AppError::NotFound {
                 error: "File not found".to_string(),
@@ -280,6 +334,36 @@ pub async fn multi_download(
 
     let _ = tokio::fs::remove_file(temp_zip_path_str).await;
     response
+}
+
+async fn multi_download_get_file(
+    state: &AppState,
+    file_id: i64,
+    user_id: &Option<UserId>,
+    share: &Option<ExtendedShareModel>,
+) -> Result<Option<FileModel>, AppError> {
+    if let Some(user_id) = user_id {
+        return state
+            .file_service
+            .check_file_exists_by_id(file_id, *user_id)
+            .await;
+    }
+
+    if let Some(share) = share {
+        let can_access_with_share =
+            get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share)
+                .await?;
+        if !can_access_with_share {
+            return Err(AppError::NotAllowed {
+                error: "Not allowed".to_string(),
+            })?;
+        }
+        let file = state.file_service.get_file(file_id, None).await?;
+
+        return Ok(Some(file));
+    }
+
+    return Ok(None);
 }
 
 async fn write_file_to_zip(

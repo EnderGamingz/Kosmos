@@ -412,23 +412,31 @@ impl FolderService {
         }
     }
 
-    pub async fn get_folder_structure(
-        &self,
-        folders: Vec<i64>,
-        user_id: UserId,
-    ) -> Result<Vec<Directory>, AppError> {
-        let folders = folders.into_iter().collect::<Vec<_>>();
-        let folder_res = sqlx::query_as::<_, Directory>(
+    pub fn folder_structure_query(folder_ids: &Vec<i64>, user_id: Option<UserId>) -> String{
+        let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
             "WITH RECURSIVE directories AS (SELECT f.id,
                                       f.folder_name,
                                       f.user_id,
                                       ARRAY []::TEXT[] AS path
                                FROM folder f
-                               WHERE f.id = ANY ($1) AND f.user_id = $2
+                               WHERE f.id = ANY (",
+        );
+        query.push_bind(folder_ids);
+        query.push(")");
 
-                               UNION ALL
+        if let Some(user_id) = user_id {
+            query.push(" AND f.user_id = ");
+            query.push_bind(user_id);
+        } else {
+            // Will always return true but is needed as the query returns unexpected results otherwise
+            query.push(" AND ");
+            query.push_bind(user_id);
+            query.push(" IS NULL");
+        }
 
-                               SELECT f.id,
+        query.push(
+            " UNION ALL
+                    SELECT f.id,
                                       f.folder_name,
                                       f.user_id,
                                       d.path || d.folder_name
@@ -439,7 +447,20 @@ impl FolderService {
                COALESCE(ARRAY_AGG(f.file_name) FILTER (WHERE f.file_name IS NOT NULL), ARRAY []::TEXT[]) AS file_names
         FROM directories d
                  LEFT JOIN files f ON f.parent_folder_id = d.id
-        GROUP BY d.folder_name, d.user_id, d.id, d.path",
+        GROUP BY d.folder_name, d.user_id, d.id, d.path"
+        );
+
+        query.sql().into()
+    }
+
+    pub async fn get_folder_structure(
+        &self,
+        folders: Vec<i64>,
+        user_id: Option<UserId>,
+    ) -> Result<Vec<Directory>, AppError> {
+        let folders = folders.into_iter().collect::<Vec<_>>();
+        let folder_res = sqlx::query_as::<_, Directory>(
+            &*Self::folder_structure_query(&folders, user_id)
         ).bind(&folders)
         .bind(user_id)
         .fetch_all(&self.db_pool)
