@@ -232,6 +232,7 @@ impl ShareService {
 
     pub async fn create_public_file_share(
         &self,
+        file_id: i64,
         data: ShareFilePublicRequest,
         user_id: UserId,
     ) -> Result<ShareModel, AppError> {
@@ -248,7 +249,7 @@ impl ShareService {
             })? as i64,
             user_id,
             ShareType::Public as i16,
-            data.file_id,
+            file_id,
             data.limit,
             data.password,
             data.expires_at
@@ -265,6 +266,7 @@ impl ShareService {
 
     pub async fn create_public_folder_share(
         &self,
+        folder_id: i64,
         data: ShareFolderPublicRequest,
         user_id: UserId,
     ) -> Result<ShareModel, AppError> {
@@ -281,7 +283,7 @@ impl ShareService {
             })? as i64,
             user_id,
             ShareType::Public as i16,
-            data.folder_id,
+            folder_id,
             data.limit,
             data.password,
             data.expires_at

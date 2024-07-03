@@ -3,12 +3,12 @@ export enum ShareType {
   Private,
 }
 
-export function getShareTypeString(type: ShareType) {
+export function getShareTypeString(type: ShareType, lower?: boolean) {
   switch (type) {
     case ShareType.Public:
-      return 'Public';
+      return lower ? 'public' : 'Public';
     case ShareType.Private:
-      return 'Private';
+      return lower ? 'private' : 'Private';
   }
 }
 

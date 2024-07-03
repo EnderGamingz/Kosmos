@@ -11,7 +11,7 @@ use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct ShareFilePublicRequest {
-    pub(crate) file_id: i64,
+    pub(crate) file_id: String,
     pub(crate) password: Option<String>,
     pub(crate) limit: Option<i32>,
     pub(crate) expires_at: Option<DateTime<Utc>>,
@@ -23,6 +23,13 @@ pub async fn share_file_public(
     Json(mut payload): Json<ShareFilePublicRequest>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
+    let file_id = payload
+        .file_id
+        .parse::<i64>()
+        .map_err(|_| AppError::BadRequest {
+            error: Some("Invalid file id".to_string()),
+        })?;
+
     /* This check for already existing similar shares for this item might be unnecessary
     let share = match payload.password {
         None => {  state
@@ -34,7 +41,7 @@ pub async fn share_file_public(
     // Check if file exists by the logged-in user
     state
         .file_service
-        .get_file(payload.file_id, Some(user_id))
+        .get_file(file_id, Some(user_id))
         .await?;
 
     if payload.password.is_some() {
@@ -47,7 +54,7 @@ pub async fn share_file_public(
     }
     let uuid = state
         .share_service
-        .create_public_file_share(payload, user_id)
+        .create_public_file_share(file_id, payload, user_id)
         .await?
         .uuid;
 
@@ -58,7 +65,7 @@ pub async fn share_file_public(
 
 #[derive(Deserialize)]
 pub struct ShareFolderPublicRequest {
-    pub(crate) folder_id: i64,
+    pub(crate) folder_id: String,
     pub(crate) password: Option<String>,
     pub(crate) limit: Option<i32>,
     pub(crate) expires_at: Option<DateTime<Utc>>,
@@ -70,7 +77,13 @@ pub async fn share_folder_public(
     Json(mut payload): Json<ShareFolderPublicRequest>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let folder = state.folder_service.get_folder(payload.folder_id).await?;
+    let folder_id = payload
+        .folder_id
+        .parse::<i64>()
+        .map_err(|_| AppError::BadRequest {
+            error: Some("Invalid folder id".to_string()),
+        })?;
+    let folder = state.folder_service.get_folder(folder_id).await?;
 
     if folder.user_id != user_id {
         return Err(AppError::NotAllowed {
@@ -81,7 +94,7 @@ pub async fn share_folder_public(
     let is_folder_already_shared = state
         .share_service
         .is_any_folder_above_already_shared(
-            payload.folder_id,
+            folder_id,
             ShareType::Public,
             None,
             &state.folder_service,
@@ -105,7 +118,7 @@ pub async fn share_folder_public(
 
     let uuid = state
         .share_service
-        .create_public_folder_share(payload, user_id)
+        .create_public_folder_share(folder_id, payload, user_id)
         .await?
         .uuid;
 
@@ -116,7 +129,7 @@ pub async fn share_folder_public(
 
 #[derive(Deserialize)]
 pub struct ShareFilePrivateRequest {
-    pub(crate) file_id: i64,
+    pub(crate) file_id: String,
     pub(crate) target_username: String,
 }
 
@@ -126,6 +139,13 @@ pub async fn share_file_private(
     Json(payload): Json<ShareFilePrivateRequest>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
+
+    let file_id = payload
+        .file_id
+        .parse::<i64>()
+        .map_err(|_| AppError::BadRequest {
+            error: Some("Invalid file id".to_string()),
+        })?;
 
     let target_user = match state
         .user_service
@@ -155,7 +175,7 @@ pub async fn share_file_private(
 
     let share = state
         .share_service
-        .create_private_file_share(payload.file_id, user_id, target_user.id)
+        .create_private_file_share(file_id, user_id, target_user.id)
         .await?;
 
     Ok(AppSuccess::CREATED {
@@ -165,7 +185,7 @@ pub async fn share_file_private(
 
 #[derive(Deserialize)]
 pub struct ShareFolderPrivateRequest {
-    pub(crate) folder_id: i64,
+    pub(crate) folder_id: String,
     pub(crate) target_username: String,
 }
 
@@ -175,6 +195,12 @@ pub async fn share_folder_private(
     Json(payload): Json<ShareFolderPrivateRequest>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
+    let folder_id = payload
+        .folder_id
+        .parse::<i64>()
+        .map_err(|_| AppError::BadRequest {
+            error: Some("Invalid folder id".to_string()),
+        })?;
 
     let target_user = match state
         .user_service
@@ -199,7 +225,7 @@ pub async fn share_folder_private(
     let is_folder_already_shared = state
         .share_service
         .is_any_folder_above_already_shared(
-            payload.folder_id,
+            folder_id,
             ShareType::Private,
             Some(target_user.id),
             &state.folder_service,
@@ -214,7 +240,7 @@ pub async fn share_folder_private(
 
     let share = state
         .share_service
-        .create_private_folder_share(payload.folder_id, user_id, target_user.id)
+        .create_private_folder_share(folder_id, user_id, target_user.id)
         .await?;
 
     Ok(AppSuccess::CREATED {

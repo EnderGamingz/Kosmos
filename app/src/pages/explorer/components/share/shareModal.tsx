@@ -83,7 +83,11 @@ export function ShareModalContent({
               }>
               <AnimatePresence>
                 {create ? (
-                  <CreateShare />
+                  <CreateShare
+                    onDone={() => setCreate(false)}
+                    dataType={shareElementType}
+                    id={shareElementId}
+                  />
                 ) : (
                   <ShareData
                     shares={data.data}
