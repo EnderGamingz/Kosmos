@@ -2,6 +2,8 @@ import { DataOperationType } from '@models/file.ts';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { RenameModalContent } from './renameModalContent.tsx';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function RenameAction({
   type,
@@ -20,6 +22,9 @@ export function RenameAction({
     onOpenChange,
     onClose: disclosureOnClose,
   } = useDisclosure();
+
+  const context = useContext(DisplayContext);
+  if (context.shareUuid) return null;
 
   return (
     <>

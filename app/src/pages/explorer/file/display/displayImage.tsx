@@ -1,5 +1,4 @@
 import { FileModel } from '@models/file.ts';
-import { BASE_URL } from '@lib/vars.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import tw from '@lib/classMerge.ts';
 import { formatBytes } from '@lib/fileSize.ts';
@@ -14,17 +13,18 @@ export function DisplayImage({
   file,
   fullScreen,
   onFullScreen,
+  lowRes,
+  highRes,
 }: {
   file: FileModel;
   fullScreen: boolean;
   onFullScreen: (b: boolean) => void;
+  lowRes: string;
+  highRes: string;
 }) {
   // 75 MiB
   const IMAGE_SIZE_THRESHOLD = 75 * 1024 * 1024;
   const isTooLarge = file.file_size > IMAGE_SIZE_THRESHOLD;
-
-  const lowRes = `${BASE_URL}auth/file/image/${file.id}/0`;
-  const highRes = `${BASE_URL}auth/file/${file.id}/action/Serve`;
 
   const toggleFullScreen = () => {
     if (isTooLarge) return;
@@ -66,7 +66,7 @@ export function DisplayImage({
           </Portal>
         )}
       </AnimatePresence>
-      <div className={'relative overflow-hidden'}>
+      <div className={'relative overflow-hidden rounded-xl'}>
         {!isTooLarge && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}

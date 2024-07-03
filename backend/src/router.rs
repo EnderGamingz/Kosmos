@@ -207,6 +207,10 @@ fn get_public_share_router() -> KosmosRouter {
             get(crate::routes::api::v1::auth::download::handle_raw_file_share),
         )
         .route(
+            "/file/:share_id/image/:format",
+            get(crate::routes::api::v1::auth::file::image::get_share_image_by_format),
+        )
+        .route(
             "/folder/:share_id",
             get(crate::routes::api::v1::share::access_folder_share),
         )
@@ -220,7 +224,7 @@ fn get_public_share_router() -> KosmosRouter {
         )
         .route(
             "/folder/:share_id/image/:file_id/:format",
-            get(crate::routes::api::v1::auth::file::image::get_share_image_by_format),
+            get(crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_folder),
         )
         .route("/unlock", post(crate::routes::api::v1::share::unlock_share))
 }

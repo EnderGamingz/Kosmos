@@ -1,5 +1,5 @@
 import tw from '@lib/classMerge.ts';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Skeleton } from '@nextui-org/react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
 import {
@@ -7,28 +7,34 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
+import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { BASE_URL } from '@lib/vars.ts';
 
 export function PreviewImage({
   id,
-  src,
   alt,
   status,
   type,
   dynamic,
 }: {
   id: string;
-  src: string;
   alt: string;
   status?: FilePreviewStatus;
   type?: FileType;
   dynamic?: boolean;
 }) {
   const [loaded, setLoaded] = useState(false);
+  const context: DisplayContextType | undefined = useContext(DisplayContext);
 
   const isUnavailable = status === FilePreviewStatus.Unavailable;
   const isReady = status === FilePreviewStatus.Ready;
   const isProcessing = status === FilePreviewStatus.Processing;
   const isFailed = status === FilePreviewStatus.Failed;
+
+  const src = context.shareUuid
+    ? `${BASE_URL}s/folder/${context.shareUuid}/image/${id}/0`
+    : `${BASE_URL}auth/file/image/${id}/0`;
+
   return (
     <motion.div
       layoutId={`image-${id}`}

@@ -42,11 +42,13 @@ export default function ExplorerDataDisplay({
   files,
   folders,
   recentView,
+  shareUuid,
 }: {
   isLoading: boolean;
   files: FileModel[];
   folders: FolderModel[];
   recentView?: boolean;
+  shareUuid?: string;
 }) {
   const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
@@ -75,6 +77,7 @@ export default function ExplorerDataDisplay({
 
   return (
     <ExplorerDisplayWrapper
+      shareUuid={shareUuid}
       files={files}
       folders={folders}
       recentView={recentView}>

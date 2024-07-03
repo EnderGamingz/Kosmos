@@ -14,6 +14,7 @@ import BinPage from '@pages/explorer/pages/bin';
 import RecentFiles from '@pages/explorer/pages/recent.tsx';
 import Preferences from '@pages/settings/preferences';
 import AccountSettings from '@pages/settings/account';
+import SharePage from '@pages/share';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -46,6 +47,7 @@ export default function Router() {
             <Route path={'account'} element={<AccountSettings />} />
             <Route index element={<AccountSettings />} />
           </Route>
+          <Route path={'s/:type/:uuid/*'} element={<SharePage />} />
         </Routes>
       </main>
       <NotificationIndicator />

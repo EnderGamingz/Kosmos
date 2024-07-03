@@ -7,6 +7,8 @@ import tw from '@lib/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { motion } from 'framer-motion';
 import { invalidateData } from '@lib/query.ts';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export default function Favorite({
   id,
@@ -44,6 +46,9 @@ export default function Favorite({
         });
     },
   });
+
+  const context = useContext(DisplayContext);
+  if (context.shareUuid) return null;
 
   return (
     <motion.button

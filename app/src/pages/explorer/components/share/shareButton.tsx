@@ -2,6 +2,8 @@ import { DataOperationType } from '@models/file.ts';
 import tw from '@lib/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { ShareIcon } from '@heroicons/react/24/outline';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export default function ShareButton({
   id,
@@ -15,6 +17,9 @@ export default function ShareButton({
   onClose?: () => void;
 }) {
   const setShare = useExplorerStore(s => s.share.setShareElement);
+  const context = useContext(DisplayContext);
+  if (context.shareUuid) return null;
+
   return (
     <button
       className={tw('flex items-center gap-1', iconOnly ? 'p-2' : '')}

@@ -61,7 +61,7 @@ pub async fn get_folders(
         Some(
             state
                 .folder_service
-                .get_children_directories(folder, user_id)
+                .get_parent_directories(folder, Some(user_id), None)
                 .await?
                 .into_iter()
                 .map(FolderService::parse_children_directory)

@@ -57,7 +57,11 @@ export function TableFolderItem({
 
   const handleFolderClick = () => {
     if (isControl || isShift) return;
-    navigate(`/home/folder/${folder.id.toString()}`);
+    navigate(
+      context.shareUuid
+        ? `/s/folder/${context.shareUuid}/${folder.id.toString()}`
+        : `/home/folder/${folder.id.toString()}`,
+    );
   };
 
   return (

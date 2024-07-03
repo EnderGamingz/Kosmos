@@ -34,6 +34,18 @@ export type FileModel = {
   deleted_at?: string;
 };
 
+export type ShareFileModel = {
+  id: string;
+  file_name: string;
+  file_size: number;
+  file_type: FileType;
+  mime_type: string;
+  metadata?: never;
+  preview_status?: FilePreviewStatus;
+  created_at: string;
+  updated_at: string;
+};
+
 export type DataOperationType = 'file' | 'folder';
 
 /**

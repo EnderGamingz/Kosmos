@@ -17,10 +17,12 @@ export default function FileDisplay({
   fileIndex,
   onSelect,
   selected,
+  shareUuid,
 }: {
   fileIndex?: number;
   onSelect: (id: string) => void;
   selected: string[];
+  shareUuid?: string;
 }) {
   const [update, setUpdate] = useState(0);
   const { setFile, filesInScope } = useExplorerStore(
@@ -52,6 +54,7 @@ export default function FileDisplay({
           onSelect={onSelect}
           onClose={close()}
           onUpdate={() => setUpdate(prev => prev + 1)}
+          shareUuid={shareUuid}
         />
       )}
     </AnimatePresence>
@@ -64,12 +67,14 @@ function FileDisplayContent({
   onSelect,
   isSelected,
   onUpdate,
+  shareUuid,
 }: {
   file: FileModel;
   onClose: () => void;
   onSelect: (id: string) => void;
   isSelected: boolean;
   onUpdate: () => void;
+  shareUuid?: string;
 }) {
   const [fullsScreenPreview, setFullsScreenPreview] = useState(false);
 
@@ -95,6 +100,7 @@ function FileDisplayContent({
               file={file}
               fullScreen={fullsScreenPreview}
               onFullScreen={setFullsScreenPreview}
+              shareUuid={shareUuid}
             />
           </div>
           <motion.div
@@ -117,9 +123,15 @@ function FileDisplayContent({
               selected={isSelected}
               onSelect={onSelect}
             />
-            <FileDisplayFavorite file={file} onUpdate={onUpdate} />
+            {!shareUuid && (
+              <FileDisplayFavorite file={file} onUpdate={onUpdate} />
+            )}
             <FileDisplayStats file={file} />
-            <FileDisplayAction file={file} onClose={onClose} />
+            <FileDisplayAction
+              shareUuid={shareUuid}
+              file={file}
+              onClose={onClose}
+            />
             <FileDisplayFooter file={file} onClose={onClose} />
           </motion.div>
         </div>

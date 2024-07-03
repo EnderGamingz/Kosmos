@@ -114,10 +114,19 @@ pub async fn access_folder_share(
     let folder = get_share_folder(&state, share.folder_id).await?;
     let _ = state.share_service.handle_share_access(share.id).await;
 
+    let structure = state
+        .folder_service
+        .get_parent_directories(share.folder_id.unwrap(), None, share.folder_id)
+        .await?
+        .into_iter()
+        .map(FolderService::parse_children_directory)
+        .collect::<Vec<_>>();
+
     Ok(Json(serde_json::json!({
         "folder": folder.share_folder,
         "folders": folder.folders,
-        "files": folder.files
+        "files": folder.files,
+        "structure": structure
     })))
 }
 
@@ -135,7 +144,7 @@ pub async fn access_folder_share_item(
     let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
 
     let can_access_with_share =
-        get_share_access_for_folder_items(&state, &access_type, access_id, share).await?;
+        get_share_access_for_folder_items(&state, &access_type, access_id, &share).await?;
 
     if !can_access_with_share {
         return Err(AppError::NotAllowed {
@@ -150,10 +159,19 @@ pub async fn access_folder_share_item(
         }
         AccessShareItemType::Folder => {
             let folder = get_share_folder(&state, Some(access_id)).await?;
+            let structure = state
+                .folder_service
+                .get_parent_directories(access_id, None, share.folder_id)
+                .await?
+                .into_iter()
+                .map(FolderService::parse_children_directory)
+                .collect::<Vec<_>>();
+
             Ok(Json(serde_json::json!({
                 "folder": folder.share_folder,
                 "folders": folder.folders,
-                "files": folder.files
+                "files": folder.files,
+                "structure": structure
             })))
         }
     };
@@ -163,7 +181,7 @@ pub async fn get_share_access_for_folder_items(
     state: &AppState,
     access_type: &AccessShareItemType,
     access_id: i64,
-    share: ExtendedShareModel,
+    share: &ExtendedShareModel,
 ) -> Result<bool, AppError> {
     let can_access_with_share = match access_type {
         AccessShareItemType::File => {

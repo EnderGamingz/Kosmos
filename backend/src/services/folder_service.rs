@@ -2,7 +2,10 @@ use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
 
 use crate::db::{KosmosDb, KosmosPool};
-use crate::model::folder::{DeletionDirectory, Directory, DirectoryWithShare, FolderModel, ParsedFolderModel, ParsedShareFolderModel, ParsedSimpleDirectory, SimpleDirectory};
+use crate::model::folder::{
+    DeletionDirectory, Directory, DirectoryWithShare, FolderModel, ParsedFolderModel,
+    ParsedShareFolderModel, ParsedSimpleDirectory, SimpleDirectory,
+};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{GetFilesParsedSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
@@ -72,15 +75,17 @@ impl FolderService {
         &self,
         parent_id: &Option<i64>,
     ) -> Result<Vec<FolderModel>, AppError> {
-        sqlx::query_as::<_, FolderModel>("SELECT * FROM folder WHERE parent_id IS NOT DISTINCT FROM $1")
-            .bind(parent_id)
-            .fetch_all(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error getting folders for share: {}", e);
-                AppError::InternalError
-            })
-            .map(|rows| rows.into_iter().map(FolderModel::from).collect())
+        sqlx::query_as::<_, FolderModel>(
+            "SELECT * FROM folder WHERE parent_id IS NOT DISTINCT FROM $1",
+        )
+        .bind(parent_id)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting folders for share: {}", e);
+            AppError::InternalError
+        })
+        .map(|rows| rows.into_iter().map(FolderModel::from).collect())
     }
 
     pub async fn get_folder(&self, folder_id: i64) -> Result<FolderModel, AppError> {
@@ -328,41 +333,74 @@ impl FolderService {
             .map(|_| ())
     }
 
-    pub async fn get_children_directories(
-        &self,
+    pub fn parent_directories_query(
         folder_id: i64,
-        user_id: UserId,
-    ) -> Result<Vec<SimpleDirectory>, AppError> {
-        let children_res = sqlx::query_as::<_, SimpleDirectory>(
+        user_id: Option<UserId>,
+        stop: Option<i64>,
+    ) -> String {
+        let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
             "WITH RECURSIVE directories AS (
                     SELECT f.id,
                            f.folder_name,
                            f.parent_id,
                            ARRAY [f.id]::BIGINT[] AS path
                     FROM folder f
-                    WHERE f.id = $1
-                      AND f.user_id = $2
-                    UNION ALL
+                    WHERE f.id = ",
+        );
+        query.push_bind(folder_id);
+
+        if let Some(user_id) = user_id {
+            query.push(" AND f.user_id = ");
+            query.push_bind(user_id);
+        } else {
+            // Will always return true but is needed as the query returns unexpected results otherwise
+            query.push(" AND ");
+            query.push_bind(user_id);
+            query.push(" IS NULL");
+        }
+
+        query.push(
+            " UNION ALL
                     SELECT f.id,
                            f.folder_name,
                            f.parent_id,
                            d.path || f.id
                     FROM folder f
                              JOIN directories d ON f.id = d.parent_id
-                    WHERE array_length(d.path, 1) < 100
-                )
-                SELECT id, folder_name
+                    WHERE array_length(d.path, 1) < 100",
+        );
+
+        if let Some(stop) = stop {
+            query.push(" AND f.id >= ");
+            query.push_bind(stop);
+        }
+
+        query.push(
+            " ) SELECT id, folder_name
                 FROM directories
                 ORDER BY array_length(path, 1) DESC",
-        )
-        .bind(folder_id)
-        .bind(user_id)
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting children directories: {}", e);
-            AppError::InternalError
-        })?;
+        );
+
+        query.sql().into()
+    }
+
+    pub async fn get_parent_directories(
+        &self,
+        folder_id: i64,
+        user_id: Option<UserId>,
+        stop: Option<i64>,
+    ) -> Result<Vec<SimpleDirectory>, AppError> {
+        let string = Self::parent_directories_query(folder_id, user_id, stop);
+        let children_res = sqlx::query_as::<_, SimpleDirectory>(&*string)
+            .bind(folder_id)
+            .bind(user_id)
+            .bind(stop)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting parent directories: {}", e);
+                AppError::InternalError
+            })?;
 
         Ok(children_res)
     }
@@ -463,12 +501,12 @@ impl FolderService {
             favorite,
             folder_id
         )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error while setting folder favorite: {}", e);
-                AppError::InternalError
-            })?;
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error while setting folder favorite: {}", e);
+            AppError::InternalError
+        })?;
         Ok(())
     }
 }

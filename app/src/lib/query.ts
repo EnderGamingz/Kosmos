@@ -1,8 +1,8 @@
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL, FALLBACK_STORAGE_LIMIT, IS_DEVELOPMENT } from './vars.ts';
-import { FolderResponse } from '@models/folder.ts';
-import { DataOperationType, FileModel } from '@models/file.ts';
+import { FolderResponse, FolderShareResponse } from '@models/folder.ts';
+import { DataOperationType, FileModel, ShareFileModel } from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
 import {
   canFolderBeSorted,
@@ -146,6 +146,30 @@ export const useUserShareData = (id: string, type: DataOperationType) => {
         .get(`${BASE_URL}auth/share/${type}/${id}`)
         .then(res => res.data as ShareModel[]),
     queryKey: ['share', id],
+  });
+};
+
+export const accessShareFile = (uuid: string) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}s/file/${uuid}`)
+        .then(res => res.data as ShareFileModel),
+    queryKey: ['share-access', uuid],
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const accessShareFolder = (uuid: string, folderId?: string) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(
+          `${BASE_URL}s/folder/${uuid}${folderId ? `/Folder/${folderId}` : ''}`,
+        )
+        .then(res => res.data as FolderShareResponse),
+    queryKey: ['share-access', uuid, folderId],
+    refetchOnWindowFocus: false,
   });
 };
 

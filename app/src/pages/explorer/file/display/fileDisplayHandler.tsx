@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import tw from '@lib/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { BASE_URL } from '@lib/vars.ts';
+import { useContext } from 'react';
+import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 
 export function FileTypeDisplay({
   id,
@@ -47,12 +49,28 @@ export function FileDisplayHandler({
   file,
   fullScreen,
   onFullScreen,
+  shareUuid,
 }: {
   file: FileModel;
   fullScreen: boolean;
   onFullScreen: (b: boolean) => void;
+  shareUuid?: string;
 }) {
   const isImage = [FileType.Image, FileType.RawImage].includes(file.file_type);
+  const folderContext: DisplayContextType | undefined =
+    useContext(DisplayContext);
+  const isSharedInFolder = folderContext?.shareUuid;
+
+  const highResUrl = shareUuid
+    ? isSharedInFolder
+      ? `${BASE_URL}s/folder/${shareUuid}/File/${file.id}/action/Serve`
+      : `${BASE_URL}s/file/${shareUuid}/action/Serve`
+    : `${BASE_URL}auth/file/${file.id}/action/Serve`;
+  const lowResUrl = shareUuid
+    ? isSharedInFolder
+      ? `${BASE_URL}s/folder/${shareUuid}/image/${file.id}/0`
+      : `${BASE_URL}s/file/${shareUuid}/image/0`
+    : `${BASE_URL}auth/file/image/${file.id}/0`;
 
   if (isImage)
     return (
@@ -60,6 +78,8 @@ export function FileDisplayHandler({
         file={file}
         fullScreen={fullScreen}
         onFullScreen={onFullScreen}
+        highRes={highResUrl}
+        lowRes={lowResUrl}
       />
     );
 
@@ -72,7 +92,7 @@ export function FileDisplayHandler({
         exit={{ opacity: 0, scale: 0.5 }}
         transition={{ duration: 0.3 }}
         className={'h-full w-full rounded-xl shadow-lg'}
-        data={`${BASE_URL}auth/file/${file.id}/action/Serve`}
+        data={highResUrl}
       />
     );
   }

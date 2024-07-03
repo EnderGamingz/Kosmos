@@ -1,4 +1,5 @@
 import { ContextData } from '@hooks/useContextMenu.ts';
+import { ShareFileModel } from '@models/file.ts';
 
 export type FolderModel = {
   id: string;
@@ -10,10 +11,25 @@ export type FolderModel = {
   updated_at: string;
 };
 
+export type ShareFolderModel = {
+  id: string;
+  folder_name: string;
+  parent_id?: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type FolderResponse = {
   folder?: FolderModel;
   folders: FolderModel[];
   structure?: SimpleDirectory[];
+};
+
+export type FolderShareResponse = {
+  folder?: ShareFolderModel;
+  folders: ShareFolderModel[];
+  files: ShareFileModel[];
+  structure: SimpleDirectory[];
 };
 
 export type SimpleDirectory = {

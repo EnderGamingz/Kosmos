@@ -8,14 +8,19 @@ export function DisplayHeader({
   onSelect,
 }: {
   file: FileModel;
-  selected: boolean;
-  onSelect: (id: string) => void;
+  selected?: boolean;
+  onSelect?: (id: string) => void;
 }) {
   return (
     <div className={'flex items-center gap-2'}>
-      <motion.div layoutId={`check-${file.id}`}>
-        <Checkbox isSelected={selected} onChange={() => onSelect(file.id)} />
-      </motion.div>
+      {selected !== undefined && (
+        <motion.div layoutId={`check-${file.id}`}>
+          <Checkbox
+            isSelected={selected}
+            onChange={() => onSelect?.(file.id)}
+          />
+        </motion.div>
+      )}
       <motion.p
         exit={{ opacity: 0 }}
         layoutId={`title-${file.id}`}

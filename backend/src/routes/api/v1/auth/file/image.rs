@@ -83,13 +83,13 @@ pub async fn get_image_by_format(
     Ok((headers, image).into_response())
 }
 
-pub async fn get_share_image_by_format(
+pub async fn get_share_image_by_format_through_folder(
     State(state): KosmosState,
     session: Session,
     Path((share_uuid, file_id, format)): Path<(String, i64, i16)>,
 ) -> Result<Response, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), false).await?;
-    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share).await?;
+    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, &share).await?;
 
     if !can_access_with_share {
         return Err(AppError::NotAllowed {
@@ -98,6 +98,19 @@ pub async fn get_share_image_by_format(
     }
 
     let share_file_data = get_share_file(&state, Some(file_id)).await?;
+
+    let (image, headers) = get_image_format_data(format, &share_file_data.file).await?;
+
+    Ok((headers, image).into_response())
+}
+
+pub async fn get_share_image_by_format(
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, format)): Path<(String, i16)>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), false).await?;
+    let share_file_data = get_share_file(&state, share.file_id).await?;
 
     let (image, headers) = get_image_format_data(format, &share_file_data.file).await?;
 

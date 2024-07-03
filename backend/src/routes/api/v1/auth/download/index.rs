@@ -116,7 +116,7 @@ pub async fn handle_raw_file_share_through_folder(
 ) -> Result<Response, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
 
-    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share).await?;
+    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, &share).await?;
 
     if !can_access_with_share {
         return Err(AppError::NotAllowed {

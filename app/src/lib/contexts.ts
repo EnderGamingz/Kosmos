@@ -4,7 +4,7 @@ import { FolderModel } from '@models/folder.ts';
 import { DataOperationType, FileModel } from '@models/file.ts';
 import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper';
 
-export const DisplayContext = createContext<{
+export type DisplayContextType = {
   recentView?: boolean;
   handleContext: (pos: Vec2, data?: ContextData) => void;
   files: FileModel[];
@@ -19,7 +19,10 @@ export const DisplayContext = createContext<{
     setDrag: (dragged: DataOperationType, id: string) => void;
     resetDrag: () => void;
   };
-}>({
+  shareUuid?: string;
+};
+
+export const DisplayContext = createContext<DisplayContextType>({
   handleContext: () => {},
   files: [],
   folders: [],

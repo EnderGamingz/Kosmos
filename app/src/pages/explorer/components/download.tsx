@@ -12,11 +12,13 @@ export function DownloadSingleAction({
   id,
   name,
   onClose,
+  overwriteUrl,
 }: {
   type: DataOperationType;
   id: string;
   name: string;
   onClose?: () => void;
+  overwriteUrl?: string;
 }) {
   const [fileId, setFileId] = useState('');
   const notification = useNotifications(s => s.actions);
@@ -24,7 +26,7 @@ export function DownloadSingleAction({
   const downloadAction = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `${BASE_URL}auth/${type}/${id}/action/Download`,
+        overwriteUrl || `${BASE_URL}auth/${type}/${id}/action/Download`,
         {
           method: 'GET',
           credentials: 'include',

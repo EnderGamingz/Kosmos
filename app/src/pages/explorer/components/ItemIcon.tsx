@@ -1,5 +1,4 @@
 import { FilePreviewStatus, FileType } from '@models/file.ts';
-import { BASE_URL } from '@lib/vars.ts';
 import {
   ArchiveBoxIcon,
   DocumentIcon,
@@ -27,7 +26,6 @@ function getFileIcon(
         <PreviewImage
           id={id}
           status={status}
-          src={`${BASE_URL}auth/file/image/${id}/0`}
           alt={name}
           type={type}
           dynamic={dynamic}

@@ -2,6 +2,8 @@ import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { MoveModalContent } from './moveModalContent.tsx';
 import { DataOperationType } from '@models/file.ts';
 import { FolderOpenIcon } from '@heroicons/react/24/outline';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function MoveAction({
   type,
@@ -22,6 +24,8 @@ export function MoveAction({
     onOpenChange,
     onClose: disclosureOnClose,
   } = useDisclosure();
+  const context = useContext(DisplayContext);
+  if (context.shareUuid) return null;
 
   return (
     <>

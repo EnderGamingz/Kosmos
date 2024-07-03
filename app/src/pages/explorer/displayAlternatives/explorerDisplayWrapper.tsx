@@ -19,11 +19,13 @@ export function ExplorerDisplayWrapper({
   folders,
   recentView,
   children,
+  shareUuid,
 }: {
   files: FileModel[];
   folders: FolderModel[];
   recentView?: boolean;
   children: ReactNode;
+  shareUuid?: string;
 }) {
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const [dragged, setDragged] = useState<
@@ -101,18 +103,23 @@ export function ExplorerDisplayWrapper({
           resetDrag: () => setDragged(undefined),
         },
         select: { setRange: handleRangeChange, rangeStart },
+        // Share Uuid in the context implies that this is in a folder share
+        shareUuid: shareUuid,
       }}>
-      <MultipleActionButton
-        someSelected={isSomeSelected}
-        handleClick={handleContext}
-      />
+      {!shareUuid && (
+        <MultipleActionButton
+          someSelected={isSomeSelected}
+          handleClick={handleContext}
+        />
+      )}
       <div id={'display'}>{children}</div>
       <FileDisplay
         onSelect={selectFile}
         fileIndex={selectedFileIndex}
         selected={selectedFiles}
+        shareUuid={shareUuid}
       />
-      <ShareModal />
+      {!shareUuid && <ShareModal />}
       <AnimatePresence>
         {context.clicked && (
           <Portal>

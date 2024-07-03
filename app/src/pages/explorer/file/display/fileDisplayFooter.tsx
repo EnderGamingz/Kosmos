@@ -9,11 +9,11 @@ export function FileDisplayFooter({
   onClose,
 }: {
   file: FileModel;
-  onClose: () => void;
+  onClose?: () => void;
 }) {
   return (
     <div className={'!mt-auto space-y-2'}>
-      <ModalCloseButton onClick={onClose} />
+      {onClose && <ModalCloseButton onClick={onClose} />}
       <div
         className={tw(
           'flex flex-col items-center justify-between gap-2 sm:flex-row',

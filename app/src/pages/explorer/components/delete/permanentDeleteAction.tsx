@@ -11,9 +11,10 @@ import { BASE_URL } from '@lib/vars.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import tw from '@lib/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -56,6 +57,9 @@ export function PermanentDeleteAction({
         });
     },
   });
+
+  const context = useContext(DisplayContext);
+  if (context.shareUuid) return null;
 
   return (
     <button
@@ -121,6 +125,9 @@ export function MultiPermanentDelete({
         });
     },
   });
+
+  const context = useContext(DisplayContext);
+  if (context.shareUuid) return null;
 
   const handleDelete = () => {
     if (!confirmed && !shift) {

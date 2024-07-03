@@ -1,42 +1,15 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { HomeIcon } from '@heroicons/react/24/outline';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
-
-function FileListBreadCrumbs({ crumbs }: { crumbs: SimpleDirectory[] }) {
-  const setDragDestination = useExplorerStore(s => s.dragMove.setDestination);
-
-  return (
-    <BreadCrumbs>
-      <BreadCrumbItem
-        name={<HomeIcon />}
-        href={'/home'}
-        last={!crumbs.length}
-        onMouseEnter={() => setDragDestination(' ')}
-        onMouseLeave={() => setDragDestination()}
-      />
-      {crumbs.map((item, i) => (
-        <BreadCrumbItem
-          last={i === crumbs.length - 1}
-          key={`crumb-${item.id}`}
-          name={item.folder_name}
-          href={`/home/folder/${item.id}`}
-          onMouseEnter={() => setDragDestination(item.id)}
-          onMouseLeave={() => setDragDestination()}
-        />
-      ))}
-    </BreadCrumbs>
-  );
-}
+import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
