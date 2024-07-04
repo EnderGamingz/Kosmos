@@ -14,7 +14,11 @@ import {
   itemTransitionVariantFadeInFromTop,
 } from '@components/transition.ts';
 
-export default function ExplorerPreferences() {
+export default function ExplorerPreferences({
+  inPopup,
+}: {
+  inPopup?: boolean;
+}) {
   const pref = usePreferenceStore();
   const items = selections(pref);
 
@@ -25,16 +29,25 @@ export default function ExplorerPreferences() {
         variants={containerVariant()}
         initial={'hidden'}
         animate={'show'}
-        className={'space-y-3'}>
+        className={tw(
+          'space-y-3',
+          Boolean(inPopup) && 'max-h-[350px] overflow-y-auto scrollbar-hide',
+        )}>
         {items.map(item => (
-          <Preference key={item.name} item={item} />
+          <Preference small={inPopup} key={item.name} item={item} />
         ))}
       </motion.div>
     </section>
   );
 }
 
-export function Preference({ item }: { item: ExplorerStylePreference }) {
+export function Preference({
+  item,
+  small,
+}: {
+  item: ExplorerStylePreference;
+  small?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div
@@ -43,18 +56,28 @@ export function Preference({ item }: { item: ExplorerStylePreference }) {
         'w-full rounded-xl bg-stone-400/10 p-3 shadow transition-colors',
         'outline outline-1 outline-transparent',
         open && 'shadow-md outline-stone-500/20',
+        Boolean(small) && 'p-2 shadow-none',
       )}>
       <div
         onClick={() => setOpen(prev => !prev)}
         className={'flex cursor-pointer items-center justify-between'}>
         <div
-          className={
-            'flex items-center gap-3 text-stone-600 [&_svg]:h-8 [&_svg]:w-8'
-          }>
+          className={tw(
+            'flex items-center gap-3 text-stone-600 [&_svg]:h-8 [&_svg]:w-8',
+            Boolean(small) && 'gap-2 [&_svg]:h-6 [&_svg]:w-6',
+          )}>
           {item.icon}
           <div>
-            <h3 className={'text-lg font-medium'}>{item.name}</h3>
-            <p className={'text-sm'}>{item.type.getName(item.type.current)}</p>
+            <h3
+              className={tw(
+                'text-lg font-medium',
+                Boolean(small) && 'text-base',
+              )}>
+              {item.name}
+            </h3>
+            <p className={tw('text-sm', Boolean(small) && 'text-xs')}>
+              {item.type.getName(item.type.current)}
+            </p>
           </div>
         </div>
         <ChevronDownIcon
@@ -76,6 +99,7 @@ export function Preference({ item }: { item: ExplorerStylePreference }) {
             className={'flex flex-col gap-3 sm:flex-row'}>
             {item.type.options.map(option => (
               <PreferenceSelection
+                small={small}
                 item={option}
                 selected={item.type.current === option.value}
                 onSelect={item.type.onChange}
@@ -100,6 +124,7 @@ export function Preference({ item }: { item: ExplorerStylePreference }) {
               className={'flex flex-col gap-3 sm:flex-row'}>
               {item.details.options.map(option => (
                 <PreferenceSelection
+                  small={small}
                   item={option}
                   selected={item.details!.current === option.value}
                   onSelect={item.details!.onChange}
@@ -120,11 +145,13 @@ export function PreferenceSelection({
   selected,
   onSelect,
   type,
+  small,
 }: {
   item: PreferenceOption;
   selected: boolean;
   onSelect: (value: number) => void;
   type: string;
+  small?: boolean;
 }) {
   return (
     <motion.button
@@ -135,6 +162,7 @@ export function PreferenceSelection({
         'relative flex flex-1 items-center gap-3 p-3 text-lg text-stone-600',
         'isolate rounded-lg bg-stone-500/10 hover:bg-stone-500/20',
         'transition-colors [&_svg]:h-6 [&_svg]:w-6',
+        Boolean(small) && 'gap-2 p-2 text-sm [&_svg]:h-4 [&_svg]:w-4',
       )}>
       {item.icon}
       <div className={'text-start'}>

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { containerVariant } from '@components/transition.ts';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
 
-export function UnitPreferences() {
+export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {
   const unitPref = usePreferenceStore(s => s.unit);
 
   const choices: PreferenceOption[] = [
@@ -32,6 +32,7 @@ export function UnitPreferences() {
         className={'flex flex-col gap-3 sm:flex-row'}>
         {choices.map(option => (
           <PreferenceSelection
+            small={inPopup}
             item={option}
             selected={unitPref.type === option.value}
             onSelect={unitPref.setType}
