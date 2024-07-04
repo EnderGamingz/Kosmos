@@ -1,8 +1,7 @@
-import { getShareTypeString, ShareModel, ShareType } from '@models/share.ts';
+import { getShareTypeString, ShareModel } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTop } from '@components/transition.ts';
 import tw from '@lib/classMerge.ts';
-import { EyeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { Tooltip } from '@nextui-org/react';
 import { LOCAL_URL } from '@lib/vars.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
@@ -12,6 +11,7 @@ import { ChangePassword } from '@pages/explorer/components/share/password/change
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { Copy } from '@pages/explorer/components/share/copy.tsx';
 import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
+import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
@@ -28,16 +28,6 @@ function ShareItemIndicator({ active }: { active: boolean }) {
   );
 }
 
-export function getShareTypeIcon(type: ShareType) {
-  switch (type) {
-    case ShareType.Public:
-      return <EyeIcon className={'w-4'} />;
-    case ShareType.Private:
-    default:
-      return <LockClosedIcon className={'w-4'} />;
-  }
-}
-
 export function ShareItem({
   share,
   type,
@@ -50,7 +40,8 @@ export function ShareItem({
   const isExpired = share.expires_at
     ? new Date() > new Date(share.expires_at)
     : false;
-  const usageLeft = share.access_limit ? share.access_limit > 0 : true;
+  const usageLeft =
+    share.access_limit !== null ? share.access_limit! > 0 : true;
 
   const isActive = !isExpired && usageLeft;
 

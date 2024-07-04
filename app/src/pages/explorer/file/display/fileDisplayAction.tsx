@@ -20,9 +20,7 @@ const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
       type={'file'}
       id={file.id}
       name={file.file_name}
-      overwriteUrl={
-        shareUuid && `${BASE_URL}s/file/${shareUuid}/action/Download`
-      }
+      shareUuid={shareUuid}
     />,
     fileCanOpenExternal(file) && (
       <OpenExternally

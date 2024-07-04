@@ -88,7 +88,7 @@ export function TableFileItem({
       </motion.th>
       <td className={'flex !p-0'}>
         <motion.div
-          drag={!context.recentView && !isTouchDevice()}
+          drag={!context.recentView && !isTouchDevice() && !context.shareUuid}
           dragSnapToOrigin
           whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
           onDragStart={() => {

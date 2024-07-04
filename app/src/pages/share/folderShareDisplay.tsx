@@ -3,11 +3,12 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDis
 import { FileModel } from '@models/file.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { Route, Routes, useParams } from 'react-router-dom';
-import { accessShareFolder } from '@lib/query.ts';
-import { ShareError, ShareMessage } from '@pages/share/index.tsx';
+import { useAccessShareFolder } from '@lib/query.ts';
 import { AxiosError } from 'axios';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
+import { ShareMessage } from '@pages/share/shareMessage.tsx';
+import { ShareError } from '@pages/share/shareError.tsx';
 
 export function FolderShareDisplay({ uuid }: { uuid: string }) {
   return (
@@ -20,7 +21,7 @@ export function FolderShareDisplay({ uuid }: { uuid: string }) {
 
 function Display({ uuid }: { uuid: string }) {
   const { folderId } = useParams();
-  const share = accessShareFolder(uuid, folderId);
+  const share = useAccessShareFolder(uuid, folderId);
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
 
   useEffect(() => {

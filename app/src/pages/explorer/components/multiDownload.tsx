@@ -2,9 +2,10 @@ import { useMutation } from '@tanstack/react-query';
 import { BASE_URL } from '@lib/vars.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function MultiDownload({
   files,
@@ -19,6 +20,8 @@ export function MultiDownload({
 }) {
   const [fileId, setFileId] = useState('');
   const notificationActions = useNotifications(s => s.actions);
+  const context = useContext(DisplayContext);
+  const shareUuid = context?.shareUuid;
 
   const downloadAction = useMutation({
     mutationFn: async () => {
@@ -38,20 +41,36 @@ export function MultiDownload({
         severity: Severity.INFO,
         canDismiss: false,
       });
+
       setFileId(fileId);
 
       // noinspection JSUnusedGlobalSymbols
-      const response = await fetch(`${BASE_URL}auth/multi`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        shareUuid
+          ? `${BASE_URL}s/folder/${shareUuid}/multi`
+          : `${BASE_URL}auth/multi`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            files: files,
+            folders: folders,
+          }),
         },
-        body: JSON.stringify({
-          files: files,
-          folders: folders,
-        }),
-      });
+      );
+
+      if (!response.ok) {
+        notificationActions.updateNotification(fileId, {
+          severity: Severity.ERROR,
+          status: 'Error',
+          description: response.statusText || 'Check console',
+          canDismiss: true,
+        });
+        return;
+      }
 
       notificationActions.updateNotification(fileId, {
         status: 'Downloading',

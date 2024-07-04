@@ -1,7 +1,7 @@
 import { getShareTypeString, ShareType } from '@models/share.ts';
 import tw from '@lib/classMerge.ts';
-import { getShareTypeIcon } from '@pages/explorer/components/share/shareItem.tsx';
 import { motion } from 'framer-motion';
+import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 
 export function TypeButton({
   type,

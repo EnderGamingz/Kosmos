@@ -219,12 +219,28 @@ pub async fn is_allowed_to_access_share(
     let logged_in_user = state.user_service.check_user_optional(&session).await?;
     let share = state.share_service.get_share(&share_uuid).await?;
 
+    //Check expired
+    if let Some(expiry) = share.expires_at {
+        if expiry < chrono::Utc::now() {
+            return Err(AppError::Gone {
+                error: "Share expired".to_string(),
+            })?;
+        }
+    }
+
+    // Check access limit
+    if let Some(uses) = share.access_limit {
+        if uses < 1 {
+            return Err(AppError::Gone {
+                error: "Access limit reached".to_string(),
+            })?;
+        }
+    }
+
     // Check private share
     if let Some(target) = share.share_target {
         match logged_in_user {
-            None => Err(AppError::NotAllowed {
-                error: "Not logged in".to_string(),
-            })?,
+            None => Err(AppError::NotLoggedIn)?,
             Some(user) => {
                 if user.id != target {
                     return Err(AppError::NotAllowed {
@@ -235,29 +251,11 @@ pub async fn is_allowed_to_access_share(
         }
     }
 
-    // Check access limit
-    if let Some(uses) = share.access_limit {
-        if uses < 1 {
-            return Err(AppError::NotAllowed {
-                error: "Access limit reached".to_string(),
-            })?;
-        }
-    }
-
     //Check password
     if share.password.is_some() {
         if !SessionService::check_share_access(&session, &share.uuid.to_string()).await {
-            return Err(AppError::NotAllowed {
+            return Err(AppError::Locked {
                 error: "Password protected".to_string(),
-            })?;
-        }
-    }
-
-    //Check expired
-    if let Some(expiry) = share.expires_at {
-        if expiry < chrono::Utc::now() {
-            return Err(AppError::NotAllowed {
-                error: "Share expired".to_string(),
             })?;
         }
     }

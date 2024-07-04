@@ -21,12 +21,16 @@ export function FileTable() {
     useExplorerStore(s => s.selectedResources);
 
   const isControl = useKeyStore(s => s.keys.ctrl);
-  const { recentView, files, folders } = useContext(DisplayContext);
+  const { recentView, files, folders, shareUuid } = useContext(DisplayContext);
 
   return (
     <>
       <table className={'w-full table-auto text-left'}>
-        <TableHeader noSort={recentView} files={files} folders={folders} />
+        <TableHeader
+          noSort={recentView || !!shareUuid}
+          files={files}
+          folders={folders}
+        />
         <motion.tbody
           variants={containerVariant()}
           initial={'hidden'}

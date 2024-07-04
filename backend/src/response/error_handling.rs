@@ -13,6 +13,8 @@ pub enum AppError {
     NotFound { error: String },
     Forbidden { error: Option<String> },
     UnprocessableEntity { error: String },
+    Gone { error: String },
+    Locked { error: String },
 }
 
 #[derive(Serialize)]
@@ -60,6 +62,14 @@ impl IntoResponse for AppError {
             }
             Self::UnprocessableEntity { error } => {
                 status_code = StatusCode::UNPROCESSABLE_ENTITY;
+                body = error;
+            }
+            Self::Gone { error } => {
+                status_code = StatusCode::GONE;
+                body = error;
+            }
+            Self::Locked { error } => {
+                status_code = StatusCode::LOCKED;
                 body = error;
             }
         }

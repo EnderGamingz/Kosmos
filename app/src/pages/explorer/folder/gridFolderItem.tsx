@@ -56,7 +56,11 @@ export default function GridFolderItem({
 
   const handleFolderClick = () => {
     if (isControl || isShift || disabled) return;
-    navigate(`/home/folder/${folder.id.toString()}`);
+    navigate(
+      context.shareUuid
+        ? `/s/folder/${context.shareUuid}/${folder.id.toString()}`
+        : `/home/folder/${folder.id.toString()}`,
+    );
   };
 
   return (

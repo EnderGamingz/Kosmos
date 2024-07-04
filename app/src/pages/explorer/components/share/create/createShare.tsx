@@ -53,7 +53,7 @@ export function CreateShare({
             password: password || undefined,
             limit: limit,
             expires_at:
-              expiresAt?.toDate(getLocalTimeZone()).toString() || undefined,
+              expiresAt?.toDate(getLocalTimeZone()).toISOString() || undefined,
             target_username: privateUsername || undefined,
           },
         )

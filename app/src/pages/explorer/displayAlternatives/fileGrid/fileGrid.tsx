@@ -29,7 +29,7 @@ export default function FileGrid({
     useExplorerStore(s => s.selectedResources);
 
   const isControl = useKeyStore(s => s.keys.ctrl);
-  const { recentView, files, folders } = useContext(DisplayContext);
+  const { recentView, shareUuid, files, folders } = useContext(DisplayContext);
 
   return (
     <div className={'px-5 py-2'}>
@@ -43,7 +43,7 @@ export default function FileGrid({
           className={'text-sm text-stone-500'}>
           {folders.length} Folders &bull; {files.length} Files
         </motion.p>
-        {!recentView && <FileGridSort />}
+        {!recentView && !shareUuid && <FileGridSort />}
       </div>
       <motion.div
         variants={containerVariant()}

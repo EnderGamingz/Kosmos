@@ -106,12 +106,10 @@ export function ExplorerDisplayWrapper({
         // Share Uuid in the context implies that this is in a folder share
         shareUuid: shareUuid,
       }}>
-      {!shareUuid && (
-        <MultipleActionButton
-          someSelected={isSomeSelected}
-          handleClick={handleContext}
-        />
-      )}
+      <MultipleActionButton
+        someSelected={isSomeSelected}
+        handleClick={handleContext}
+      />
       <div id={'display'}>{children}</div>
       <FileDisplay
         onSelect={selectFile}

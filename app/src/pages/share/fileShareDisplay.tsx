@@ -6,13 +6,14 @@ import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
 import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
-import { accessShareFile } from '@lib/query.ts';
-import { ShareError, ShareMessage } from '@pages/share/index.tsx';
+import { useAccessShareFile } from '@lib/query.ts';
 import { AxiosError } from 'axios';
+import { ShareMessage } from '@pages/share/shareMessage.tsx';
+import { ShareError } from '@pages/share/shareError.tsx';
 
 export function FileShareDisplay({ uuid }: { uuid: string }) {
   const [fullsScreenPreview, setFullScreenPreview] = useState(false);
-  const share = accessShareFile(uuid);
+  const share = useAccessShareFile(uuid);
 
   if (share.isLoading)
     return <ShareMessage text={`Loading file share...`} loading={true} />;

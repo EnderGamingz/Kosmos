@@ -149,7 +149,7 @@ export const useUserShareData = (id: string, type: DataOperationType) => {
   });
 };
 
-export const accessShareFile = (uuid: string) => {
+export const useAccessShareFile = (uuid: string) => {
   return useQuery({
     queryFn: () =>
       axios
@@ -157,10 +157,11 @@ export const accessShareFile = (uuid: string) => {
         .then(res => res.data as ShareFileModel),
     queryKey: ['share-access', uuid],
     refetchOnWindowFocus: false,
+    retry: false,
   });
 };
 
-export const accessShareFolder = (uuid: string, folderId?: string) => {
+export const useAccessShareFolder = (uuid: string, folderId?: string) => {
   return useQuery({
     queryFn: () =>
       axios
@@ -170,8 +171,15 @@ export const accessShareFolder = (uuid: string, folderId?: string) => {
         .then(res => res.data as FolderShareResponse),
     queryKey: ['share-access', uuid, folderId],
     refetchOnWindowFocus: false,
+    retry: false,
   });
 };
+
+export async function invalidateShareAccess() {
+  return queryClient.invalidateQueries({
+    queryKey: ['share-access'],
+  });
+}
 
 export async function refetchShareData() {
   return queryClient.invalidateQueries({
