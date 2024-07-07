@@ -1,3 +1,6 @@
+import { FileModel } from '@models/file.ts';
+import { FolderModel } from '@models/folder.ts';
+
 export enum ShareType {
   Public,
   Private,
@@ -28,4 +31,9 @@ export type ShareModel = {
   created_at: Date;
   expires_at?: Date;
   updated_at: Date;
+};
+
+export type SharedItemsResponse = {
+  files: FileModel[];
+  folders: FolderModel[];
 };

@@ -21,13 +21,13 @@ export function FileTable() {
     useExplorerStore(s => s.selectedResources);
 
   const isControl = useKeyStore(s => s.keys.ctrl);
-  const { recentView, files, folders, shareUuid } = useContext(DisplayContext);
+  const { limitedView, files, folders, shareUuid } = useContext(DisplayContext);
 
   return (
     <>
       <table className={'w-full table-auto text-left'}>
         <TableHeader
-          noSort={recentView || !!shareUuid}
+          noSort={limitedView || !!shareUuid}
           files={files}
           folders={folders}
         />

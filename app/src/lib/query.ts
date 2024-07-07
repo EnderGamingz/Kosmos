@@ -12,21 +12,25 @@ import {
   SortParamsForQuery,
 } from '@models/sort.ts';
 import { UsageResponse } from '@models/user.ts';
-import { ShareModel } from '@models/share.ts';
+import { SharedItemsResponse, ShareModel } from '@models/share.ts';
 
 export const queryClient = new QueryClient();
 
 export async function invalidateFiles() {
   await queryClient.invalidateQueries({
-    exact: false,
     queryKey: ['files'],
+  });
+  await queryClient.invalidateQueries({
+    queryKey: ['shared'],
   });
 }
 
 export async function invalidateFolders() {
   await queryClient.invalidateQueries({
-    exact: false,
     queryKey: ['folders'],
+  });
+  await queryClient.invalidateQueries({
+    queryKey: ['shared'],
   });
 }
 
@@ -136,6 +140,16 @@ export const useOperations = (onUnauthorized?: () => void) => {
     refetchInterval: IS_DEVELOPMENT ? 5_000 : 20_000,
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
+  });
+};
+
+export const useSharedItems = () => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/share/all`)
+        .then(res => res.data as SharedItemsResponse),
+    queryKey: ['shared'],
   });
 };
 

@@ -5,7 +5,7 @@ import { DataOperationType, FileModel } from '@models/file.ts';
 import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper';
 
 export type DisplayContextType = {
-  recentView?: boolean;
+  limitedView?: boolean;
   handleContext: (pos: Vec2, data?: ContextData) => void;
   files: FileModel[];
   folders: FolderModel[];

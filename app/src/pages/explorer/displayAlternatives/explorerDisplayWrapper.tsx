@@ -17,13 +17,13 @@ export type Vec2 = { x: number; y: number };
 export function ExplorerDisplayWrapper({
   files,
   folders,
-  recentView,
+  limitedView,
   children,
   shareUuid,
 }: {
   files: FileModel[];
   folders: FolderModel[];
-  recentView?: boolean;
+  limitedView?: boolean;
   children: ReactNode;
   shareUuid?: string;
 }) {
@@ -92,7 +92,7 @@ export function ExplorerDisplayWrapper({
   return (
     <DisplayContext.Provider
       value={{
-        recentView,
+        limitedView,
         handleContext,
         files,
         folders,

@@ -13,6 +13,33 @@ use crate::services::session_service::SessionService;
 use crate::services::share_service::ShareService;
 use crate::state::{AppState, KosmosState};
 
+pub async fn get_shared_items(
+    State(state): KosmosState,
+    session: Session,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let files = state
+        .share_service
+        .get_shared_files(&user_id)
+        .await?
+        .into_iter()
+        .map(|file| FileService::parse_file(file))
+        .collect::<Vec<_>>();
+    let folders = state
+        .share_service
+        .get_shared_folders(&user_id)
+        .await?
+        .into_iter()
+        .map(|folder| FolderService::parse_folder(&folder))
+        .collect::<Vec<_>>();
+
+    Ok(Json(serde_json::json!({
+        "files": files,
+        "folders": folders
+    })))
+}
+
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
     session: Session,

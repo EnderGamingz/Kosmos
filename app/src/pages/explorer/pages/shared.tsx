@@ -1,4 +1,4 @@
-import { useRecentFiles } from '@lib/query.ts';
+import { useSharedItems } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { Progress } from '@nextui-org/react';
 import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
@@ -6,11 +6,14 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 
-export default function RecentFiles() {
-  const files = useRecentFiles();
+export default function SharedItems() {
+  const items = useSharedItems();
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
 
-  useEffect(() => setFilesInScope(files.data || []), [files, setFilesInScope]);
+  useEffect(
+    () => setFilesInScope(items.data?.files || []),
+    [items, setFilesInScope],
+  );
 
   return (
     <div className={'relative'}>
@@ -20,7 +23,7 @@ export default function RecentFiles() {
         }>
         <Progress
           aria-label={'Recent Files loading...'}
-          isIndeterminate={!files?.data || files.isLoading}
+          isIndeterminate={!items?.data || items.isLoading}
           value={100}
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}
@@ -32,14 +35,14 @@ export default function RecentFiles() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
             className={'text-3xl font-semibold text-stone-800'}>
-            Recent Files
+            Shared Items
           </motion.h1>
         </div>
         <div>
           <ExplorerDataDisplay
-            isLoading={files.isLoading}
-            files={files.data || []}
-            folders={[]}
+            isLoading={items.isLoading}
+            files={items.data?.files || []}
+            folders={items.data?.folders || []}
             limitedView
           />
         </div>

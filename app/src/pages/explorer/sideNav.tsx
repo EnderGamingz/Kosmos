@@ -2,6 +2,7 @@ import {
   ClockIcon,
   CloudIcon,
   HomeIcon,
+  ShareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
@@ -33,6 +34,11 @@ export function SideNav() {
       name: 'Recent',
       href: '/home/recent',
       icon: ClockIcon,
+    },
+    {
+      name: 'Shared',
+      href: '/home/shared',
+      icon: ShareIcon,
     },
     {
       name: 'Bin',

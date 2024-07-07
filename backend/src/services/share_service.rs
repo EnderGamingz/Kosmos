@@ -2,6 +2,8 @@ use sonyflake::Sonyflake;
 use sqlx::types::Uuid;
 
 use crate::db::{KosmosDbResult, KosmosPool};
+use crate::model::file::FileModel;
+use crate::model::folder::FolderModel;
 use crate::model::share::{ExtendedShareModel, ParsedShareModel, ShareModel, ShareType};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::share::create::{ShareFilePublicRequest, ShareFolderPublicRequest};
@@ -63,6 +65,40 @@ impl ShareService {
         .await
         .map_err(|e| {
             tracing::error!("Error getting folder shares: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn get_shared_files(&self, user_id: &UserId) -> Result<Vec<FileModel>, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT DISTINCT f.*
+                FROM files f
+                INNER JOIN public.shares s on f.id = s.file_id
+                WHERE f.user_id = $1",
+            user_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting shared files: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn get_shared_folders(&self, user_id: &UserId) -> Result<Vec<FolderModel>, AppError> {
+        sqlx::query_as!(
+            FolderModel,
+            "SELECT DISTINCT f.*
+                FROM folder f
+                INNER JOIN public.shares s on f.id = s.folder_id
+                WHERE f.user_id = $1",
+            user_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting shared folders: {}", e);
             AppError::InternalError
         })
     }
@@ -191,7 +227,11 @@ impl ShareService {
         }
     }
 
-    pub async fn get_share_for_user(&self, share_id: i64, user_id: UserId) -> Result<ShareModel, AppError> {
+    pub async fn get_share_for_user(
+        &self,
+        share_id: i64,
+        user_id: UserId,
+    ) -> Result<ShareModel, AppError> {
         let share = sqlx::query_as!(
             ShareModel,
             "SELECT * FROM shares
@@ -200,12 +240,12 @@ impl ShareService {
             share_id,
             user_id,
         )
-            .fetch_optional(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error getting private shares by target: {}", e);
-                AppError::InternalError
-            })?;
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting private shares by target: {}", e);
+            AppError::InternalError
+        })?;
 
         if let Some(share) = share {
             Ok(share)
@@ -216,18 +256,22 @@ impl ShareService {
         }
     }
 
-    pub async fn update_share_password(&self, share_id: i64, new_password: String) -> Result<KosmosDbResult, AppError> {
+    pub async fn update_share_password(
+        &self,
+        share_id: i64,
+        new_password: String,
+    ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
             "UPDATE shares SET password = $1 WHERE id = $2",
             new_password,
             share_id
         )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error updating share password: {}", e);
-                AppError::InternalError
-            })
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating share password: {}", e);
+            AppError::InternalError
+        })
     }
 
     pub async fn create_public_file_share(

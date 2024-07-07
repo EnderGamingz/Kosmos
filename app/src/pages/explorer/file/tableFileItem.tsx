@@ -88,7 +88,7 @@ export function TableFileItem({
       </motion.th>
       <td className={'flex !p-0'}>
         <motion.div
-          drag={!context.recentView && !isTouchDevice() && !context.shareUuid}
+          drag={!context.limitedView && !isTouchDevice() && !context.shareUuid}
           dragSnapToOrigin
           whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
           onDragStart={() => {
@@ -141,7 +141,7 @@ export function TableFileItem({
       <motion.td
         layoutId={`updated-${file.id}`}
         align={'right'}
-        className={'whitespace-nowrap text-sm font-light lg:text-base'}>
+        className={'whitespace-nowrap text-sm font-light'}>
         {formatDistanceToNow(file.updated_at)}
       </motion.td>
     </motion.tr>

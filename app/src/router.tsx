@@ -15,6 +15,7 @@ import RecentFiles from '@pages/explorer/pages/recent.tsx';
 import Preferences from '@pages/settings/preferences';
 import AccountSettings from '@pages/settings/account';
 import SharePage from '@pages/share';
+import SharedItems from '@pages/explorer/pages/shared.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -36,6 +37,7 @@ export default function Router() {
             path={'home'}
             element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
             <Route path={'recent'} element={<RecentFiles />} />
+            <Route path={'shared'} element={<SharedItems />} />
             <Route path={'bin'} element={<BinPage />} />
             <Route path={'folder/:folder'} element={<FileList />} />
             <Route index element={<FileList />} />

@@ -93,7 +93,7 @@ export function TableFolderItem({
         <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
-            drag={!context.recentView && !isTouchDevice()}
+            drag={!context.limitedView && !isTouchDevice()}
             dragSnapToOrigin
             whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
             onDragStart={() => {
@@ -146,9 +146,7 @@ export function TableFolderItem({
         </div>
       </td>
       <td align={'right'}></td>
-      <td
-        align={'right'}
-        className={'whitespace-nowrap text-sm font-light lg:text-base'}>
+      <td align={'right'} className={'whitespace-nowrap text-sm font-light'}>
         {formatDistanceToNow(folder.updated_at)}
       </td>
     </motion.tr>

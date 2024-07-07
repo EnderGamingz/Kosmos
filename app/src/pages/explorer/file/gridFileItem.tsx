@@ -96,7 +96,7 @@ export default function GridFileItem({
         context.select.rangeStart === index && 'bg-indigo-50',
       )}>
       <motion.div
-        drag={!context.recentView && !isTouchDevice() && !context.shareUuid}
+        drag={!context.limitedView && !isTouchDevice() && !context.shareUuid}
         dragSnapToOrigin
         whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
         onDragStart={() => {

@@ -41,13 +41,13 @@ export default function ExplorerDataDisplay({
   isLoading,
   files,
   folders,
-  recentView,
+  limitedView,
   shareUuid,
 }: {
   isLoading: boolean;
   files: FileModel[];
   folders: FolderModel[];
-  recentView?: boolean;
+  limitedView?: boolean;
   shareUuid?: string;
 }) {
   const [prevSort, setPrevSort] = useState('');
@@ -80,7 +80,7 @@ export default function ExplorerDataDisplay({
       shareUuid={shareUuid}
       files={files}
       folders={folders}
-      recentView={recentView}>
+      limitedView={limitedView}>
       {getDisplayComponent(displayType.type, displayType.details)}
     </ExplorerDisplayWrapper>
   );

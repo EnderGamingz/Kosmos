@@ -78,7 +78,7 @@ export default function GridFolderItem({
           else if (isShift) context.select.setRange(index);
           else handleFolderClick();
         }}
-        drag={!context.recentView && !isTouchDevice()}
+        drag={!context.limitedView && !isTouchDevice()}
         dragSnapToOrigin
         whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
         onDragStart={() => {
