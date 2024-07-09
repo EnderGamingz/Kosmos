@@ -17,6 +17,7 @@ import AccountSettings from '@pages/settings/account';
 import SharePage from '@pages/share';
 import SharedItems from '@pages/explorer/pages/shared.tsx';
 import SecuritySettings from '@pages/settings/security';
+import AppInfo from '@pages/settings/appInfo.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -49,6 +50,7 @@ export default function Router() {
             <Route path={'preferences'} element={<Preferences />} />
             <Route path={'account'} element={<AccountSettings />} />
             <Route path={'security'} element={<SecuritySettings />} />
+            <Route path={'info'} element={<AppInfo />} />
             <Route index element={<AccountSettings />} />
           </Route>
           <Route path={'s/:type/:uuid/*'} element={<SharePage />} />

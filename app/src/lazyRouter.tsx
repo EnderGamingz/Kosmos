@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { GlobeAsiaAustraliaIcon } from '@heroicons/react/24/outline';
+import ApplicationIcon from '@components/defaults/icon.tsx';
 
 const Router = lazy(() => import('./router.tsx'));
 
@@ -19,9 +19,7 @@ export function AppScreen({
         'flex flex-col items-center justify-center gap-2'
       }>
       <div className={'flex flex-col items-center gap-2 md:flex-row'}>
-        {logo && (
-          <GlobeAsiaAustraliaIcon className={'app-loading-logo h-32 w-32'} />
-        )}
+        {logo && <ApplicationIcon className={'app-loading-logo h-32 w-32'} />}
         <span className={'app-loading-text text-center text-5xl font-bold'}>
           {text ?? 'Kosmos'}
         </span>

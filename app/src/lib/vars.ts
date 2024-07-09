@@ -2,6 +2,7 @@ export const {
   VITE_BASE_URL: BASE_URL,
   DEV: IS_DEVELOPMENT,
   VITE_LOCAL_URL: LOCAL_URL,
+  VITE_BUILD_ID: BUILD_ID,
 } = import.meta.env;
 
 // 10 GiB
