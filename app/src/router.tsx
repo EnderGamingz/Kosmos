@@ -16,6 +16,7 @@ import Preferences from '@pages/settings/preferences';
 import AccountSettings from '@pages/settings/account';
 import SharePage from '@pages/share';
 import SharedItems from '@pages/explorer/pages/shared.tsx';
+import SecuritySettings from '@pages/settings/security';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -47,6 +48,7 @@ export default function Router() {
             element={<AccessWrapper el={<Settings />} page={'Settings'} />}>
             <Route path={'preferences'} element={<Preferences />} />
             <Route path={'account'} element={<AccountSettings />} />
+            <Route path={'security'} element={<SecuritySettings />} />
             <Route index element={<AccountSettings />} />
           </Route>
           <Route path={'s/:type/:uuid/*'} element={<SharePage />} />

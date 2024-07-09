@@ -61,7 +61,7 @@ export function UserMenu() {
       </DropdownTrigger>
       <DropdownMenu disabledKeys={['signIn']} aria-label={'User actions'}>
         <DropdownItem key={'signIn'} textValue={user.user?.username}>
-          <p className='font-semibold'>Signed in as</p>
+          <p className='font-semibold'>Welcome back</p>
           <p className='font-light'>{user.user?.username}</p>
         </DropdownItem>
         <DropdownItem

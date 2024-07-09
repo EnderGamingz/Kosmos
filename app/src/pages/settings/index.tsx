@@ -1,4 +1,4 @@
-import { UserIcon, WindowIcon } from '@heroicons/react/24/outline';
+import { KeyIcon, UserIcon, WindowIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { Link, Outlet } from 'react-router-dom';
 import tw from '@lib/classMerge.ts';
@@ -9,6 +9,11 @@ const links = [
     name: 'Account',
     href: '/settings/account',
     icon: UserIcon,
+  },
+  {
+    name: 'Security',
+    href: '/settings/security',
+    icon: KeyIcon,
   },
   {
     name: 'Preferences',

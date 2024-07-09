@@ -69,7 +69,7 @@ pub async fn update_user(
     Ok(Json(serde_json::json!(updated_user)))
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct PasswordUpdatePayload {
     pub old_password: String,
     pub new_password: String,
@@ -78,30 +78,47 @@ pub struct PasswordUpdatePayload {
 pub async fn update_user_password(
     State(state): KosmosState,
     session: Session,
-    Json(payload): Json<PasswordUpdatePayload>,
+    Valid(Json(payload)): Valid<Json<PasswordUpdatePayload>>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
     let user = state.user_service.get_auth_user(user_id).await?;
 
+
+    if payload.new_password.len() < 8 || payload.new_password.len() > 255 {
+        return Err(AppError::BadRequest {
+            error: Some("New Password too short".to_string()),
+        });
+    }
+
+    // Make sure old password is not the same as new password
+    if payload.new_password == payload.old_password {
+        return Err(AppError::BadRequest {
+            error: Some("New password cannot be the same as old password".to_string()),
+        });
+    }
+
+    // Make sure old password is correct
     let password_flag = bcrypt::verify(payload.old_password, &user.password_hash).map_err(|e| {
         tracing::error!("Error while verifying password: {}", e);
         AppError::InternalError
     })?;
 
     if !password_flag {
-        return Err(AppError::Forbidden {
-            error: Some("Wrong password provided".to_string()),
+        return Err(AppError::BadRequest {
+            error: Some("Old password is not correct".to_string()),
         });
     }
 
-    let hash = bcrypt::hash(payload.new_password, bcrypt::DEFAULT_COST).map_err(|e| {
+    // Hash new password
+    let new_password_hash = bcrypt::hash(payload.new_password, bcrypt::DEFAULT_COST).map_err(|e| {
         tracing::error!("Error while hashing password: {}", e);
         AppError::InternalError
     })?;
 
+    // Update password
     state
         .user_service
-        .update_user_password(user_id, hash)
+        .update_user_password(user_id, new_password_hash)
         .await?;
 
     Ok(AppSuccess::UPDATED)
