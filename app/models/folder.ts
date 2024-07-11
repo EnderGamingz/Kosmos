@@ -17,6 +17,8 @@ export type ShareFolderModel = {
   parent_id?: string;
   created_at: string;
   updated_at: string;
+  share_uuid?: string;
+  share_target_username?: string;
 };
 
 export type FolderResponse = {

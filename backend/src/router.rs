@@ -150,7 +150,14 @@ fn get_operation_router() -> KosmosRouter {
 
 fn get_share_router() -> KosmosRouter {
     Router::new()
-        .route("/all", get(crate::routes::api::v1::share::get_shared_items))
+        .route(
+            "/all",
+            get(crate::routes::api::v1::share::shared_items::get_shared_items),
+        )
+        .route(
+            "/all/me",
+            get(crate::routes::api::v1::share::shared_items::get_targeted_shared_items_for_user),
+        )
         .route(
             "/file/:file_id",
             get(crate::routes::api::v1::share::get_file_shares_for_user),

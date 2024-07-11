@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTop } from '@components/transition.ts';
 import tw from '@lib/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
-import { LOCAL_URL } from '@lib/vars.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { DataOperationType } from '@models/file.ts';
 import { formatDistanceToNow } from 'date-fns';
@@ -12,6 +11,7 @@ import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { Copy } from '@pages/explorer/components/share/copy.tsx';
 import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
+import { getShareUrl } from '@lib/share/url.ts';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
@@ -109,7 +109,7 @@ export function ShareItem({
         </div>
         {isActive && (
           <Copy
-            text={`${LOCAL_URL}s/${type}/${share.uuid}`}
+            text={getShareUrl(type, share.uuid)}
             notify={notifications.notify}
           />
         )}

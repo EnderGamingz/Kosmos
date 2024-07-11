@@ -143,13 +143,15 @@ export const useOperations = (onUnauthorized?: () => void) => {
   });
 };
 
-export const useSharedItems = () => {
+export const useSharedItems = (forUser?: boolean) => {
+  const userSpecificEndpoint = forUser ? '/me' : '';
+
   return useQuery({
     queryFn: () =>
       axios
-        .get(`${BASE_URL}auth/share/all`)
+        .get(`${BASE_URL}auth/share/all${userSpecificEndpoint}`)
         .then(res => res.data as SharedItemsResponse),
-    queryKey: ['shared'],
+    queryKey: ['shared', userSpecificEndpoint],
   });
 };
 

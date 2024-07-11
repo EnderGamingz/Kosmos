@@ -1,12 +1,14 @@
 use sonyflake::Sonyflake;
 use sqlx::types::Uuid;
+use sqlx::{Execute, QueryBuilder};
 
-use crate::db::{KosmosDbResult, KosmosPool};
-use crate::model::file::FileModel;
-use crate::model::folder::FolderModel;
+use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
+use crate::model::file::{FileModelWithShareInfo};
+use crate::model::folder::{FolderModelWithShareInfo};
 use crate::model::share::{ExtendedShareModel, ParsedShareModel, ShareModel, ShareType};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::share::create::{ShareFilePublicRequest, ShareFolderPublicRequest};
+use crate::routes::api::v1::share::AccessShareItemType;
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::UserId;
 
@@ -69,15 +71,49 @@ impl ShareService {
         })
     }
 
-    pub async fn get_shared_files(&self, user_id: &UserId) -> Result<Vec<FileModel>, AppError> {
-        sqlx::query_as!(
-            FileModel,
-            "SELECT DISTINCT f.*
-                FROM files f
-                INNER JOIN public.shares s on f.id = s.file_id
-                WHERE f.user_id = $1",
-            user_id
-        )
+    pub fn get_share_items_query(
+        user_id: &UserId,
+        share_type: AccessShareItemType,
+        get_target: bool,
+    ) -> String {
+        let mut query: QueryBuilder<KosmosDb> =
+            QueryBuilder::new("SELECT DISTINCT f.*, s.uuid as share_uuid, u.username as share_target_username");
+
+        match share_type {
+            AccessShareItemType::File => query.push(
+                " FROM files f
+                INNER JOIN public.shares s on f.id = s.file_id",
+            ),
+            AccessShareItemType::Folder => query.push(
+                " FROM folder f
+                INNER JOIN public.shares s on f.id = s.folder_id",
+            ),
+        };
+        query.push(" INNER JOIN public.users u on f.user_id = u.id");
+
+        if get_target {
+            query.push(" WHERE s.share_target = ");
+        } else {
+            query.push(" WHERE f.user_id = ");
+        }
+
+        query.push_bind(user_id);
+
+
+        query.build().sql().into()
+    }
+
+    pub async fn get_shared_files(
+        &self,
+        user_id: &UserId,
+        get_target: bool,
+    ) -> Result<Vec<FileModelWithShareInfo>, AppError> {
+        sqlx::query_as::<_, FileModelWithShareInfo>(&*Self::get_share_items_query(
+            user_id,
+            AccessShareItemType::File,
+            get_target,
+        ))
+        .bind(user_id)
         .fetch_all(&self.db_pool)
         .await
         .map_err(|e| {
@@ -86,15 +122,17 @@ impl ShareService {
         })
     }
 
-    pub async fn get_shared_folders(&self, user_id: &UserId) -> Result<Vec<FolderModel>, AppError> {
-        sqlx::query_as!(
-            FolderModel,
-            "SELECT DISTINCT f.*
-                FROM folder f
-                INNER JOIN public.shares s on f.id = s.folder_id
-                WHERE f.user_id = $1",
-            user_id
-        )
+    pub async fn get_shared_folders(
+        &self,
+        user_id: &UserId,
+        get_target: bool,
+    ) -> Result<Vec<FolderModelWithShareInfo>, AppError> {
+        sqlx::query_as::<_, FolderModelWithShareInfo>(&*Self::get_share_items_query(
+            user_id,
+            AccessShareItemType::Folder,
+            get_target,
+        ))
+        .bind(user_id)
         .fetch_all(&self.db_pool)
         .await
         .map_err(|e| {
@@ -441,7 +479,7 @@ impl ShareService {
         .await;
     }
 
-    pub fn parse_share(share_model: ExtendedShareModel) -> ParsedShareModel {
+    pub fn parse_extended_share(share_model: ExtendedShareModel) -> ParsedShareModel {
         ParsedShareModel {
             id: share_model.id.to_string(),
             uuid: share_model.uuid.to_string(),
@@ -458,6 +496,25 @@ impl ShareService {
             created_at: share_model.created_at,
             expires_at: share_model.expires_at,
             updated_at: share_model.updated_at,
+        }
+    }
+    pub fn parse_share(share_model: ShareModel) -> ParsedShareModel {
+        ParsedShareModel {
+            id: share_model.id.to_string(),
+            uuid: share_model.uuid.to_string(),
+            user_id: share_model.user_id.to_string(),
+            file_id: share_model.file_id.map(|id| id.to_string()),
+            folder_id: share_model.folder_id.map(|id| id.to_string()),
+            share_type: share_model.share_type,
+            share_target: share_model.share_target,
+            access_limit: share_model.access_limit,
+            password: share_model.password,
+            access_count: share_model.access_count,
+            last_access: share_model.last_access,
+            created_at: share_model.created_at,
+            expires_at: share_model.expires_at,
+            updated_at: share_model.updated_at,
+            share_target_username: None,
         }
     }
 }

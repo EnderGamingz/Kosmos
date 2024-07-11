@@ -39,10 +39,7 @@ pub async fn share_file_public(
         }, Some(_) => None };*/
 
     // Check if file exists by the logged-in user
-    state
-        .file_service
-        .get_file(file_id, Some(user_id))
-        .await?;
+    state.file_service.get_file(file_id, Some(user_id)).await?;
 
     if payload.password.is_some() {
         let hashed_password = bcrypt::hash(payload.password.unwrap(), bcrypt::DEFAULT_COST)
@@ -217,11 +214,13 @@ pub async fn share_folder_private(
         });
     };
 
-    let existing_share = state
-        .share_service
-        .get_private_share_by_target(target_user.id, user_id)
-        .await?;
-
+    // This would check for any file or folder in the target hierarchy that is already shared.
+    // Using it would not allow folders to be shared with something already shared inside it.
+    /*    let existing_share = state
+            .share_service
+            .get_private_share_by_target(target_user.id, user_id)
+            .await?;
+    */
     let is_folder_already_shared = state
         .share_service
         .is_any_folder_above_already_shared(
@@ -232,7 +231,8 @@ pub async fn share_folder_private(
         )
         .await?;
 
-    if existing_share.is_some() || is_folder_already_shared {
+    // existing_share.is_some() ||
+    if is_folder_already_shared {
         return Err(AppError::BadRequest {
             error: Some("Already shared with this user".to_string()),
         });

@@ -1,9 +1,11 @@
-use sqlx::{Execute, QueryBuilder};
 use std::path::Path;
+
+use sqlx::{Execute, QueryBuilder};
 
 use crate::db::{KosmosDb, KosmosPool};
 use crate::model::file::{
-    FileModel, FileType, ParsedFileModel, ParsedShareFileModel, PreviewStatus,
+    FileModel, FileModelWithShareInfo, FileType, ParsedFileModel, ParsedFileModelWithShareInfo,
+    ParsedShareFileModel, PreviewStatus,
 };
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
@@ -140,8 +142,10 @@ impl FileService {
             })?;
 
         match file {
-            None => Err(AppError::NotFound {error: "File not Found".to_string()})?,
-            Some(file) => Ok(file)
+            None => Err(AppError::NotFound {
+                error: "File not Found".to_string(),
+            })?,
+            Some(file) => Ok(file),
         }
     }
 
@@ -341,6 +345,28 @@ impl FileService {
             created_at: file.created_at,
             updated_at: file.updated_at,
             deleted_at: file.deleted_at,
+        }
+    }
+
+    pub fn parse_file_with_share_info(
+        file: FileModelWithShareInfo,
+    ) -> ParsedFileModelWithShareInfo {
+        ParsedFileModelWithShareInfo {
+            id: file.id.to_string(),
+            user_id: file.user_id.to_string(),
+            file_name: file.file_name,
+            file_size: file.file_size,
+            file_type: file.file_type,
+            mime_type: file.mime_type,
+            metadata: file.metadata,
+            parent_folder_id: file.parent_folder_id.map(|x| x.to_string()),
+            preview_status: file.preview_status,
+            favorite: file.favorite,
+            created_at: file.created_at,
+            updated_at: file.updated_at,
+            deleted_at: file.deleted_at,
+            share_uuid: file.share_uuid.to_string(),
+            share_target_username: file.share_target_username,
         }
     }
 

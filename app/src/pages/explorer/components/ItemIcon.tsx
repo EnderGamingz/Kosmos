@@ -18,10 +18,12 @@ function getFileIcon(
   name: string,
   status: undefined | FilePreviewStatus,
   dynamic?: boolean,
+  disablePreview?: boolean,
 ) {
   switch (type) {
     case FileType.Image:
     case FileType.RawImage:
+      if (disablePreview) return <PhotoIcon />;
       return (
         <PreviewImage
           id={id}
@@ -54,12 +56,14 @@ export default function ItemIcon({
   name,
   status,
   dynamic,
+  disablePreview,
 }: {
   id: string;
   type: FileType | 'folder';
   name: string;
   status?: FilePreviewStatus;
   dynamic?: boolean;
+  disablePreview?: boolean;
 }) {
   return (
     <motion.div
@@ -68,7 +72,7 @@ export default function ItemIcon({
         'icon-container pointer-events-none',
         'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',
       )}>
-      {getFileIcon(type, id, name, status, dynamic)}
+      {getFileIcon(type, id, name, status, dynamic, disablePreview)}
     </motion.div>
   );
 }

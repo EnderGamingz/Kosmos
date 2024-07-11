@@ -44,6 +44,8 @@ export type ShareFileModel = {
   preview_status?: FilePreviewStatus;
   created_at: string;
   updated_at: string;
+  share_uuid?: string;
+  share_target_username?: string;
 };
 
 export type DataOperationType = 'file' | 'folder';

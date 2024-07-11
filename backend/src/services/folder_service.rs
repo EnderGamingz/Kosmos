@@ -2,10 +2,7 @@ use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
 
 use crate::db::{KosmosDb, KosmosPool};
-use crate::model::folder::{
-    DeletionDirectory, Directory, DirectoryWithShare, FolderModel, ParsedFolderModel,
-    ParsedShareFolderModel, ParsedSimpleDirectory, SimpleDirectory,
-};
+use crate::model::folder::{DeletionDirectory, Directory, DirectoryWithShare, FolderModel, FolderModelWithShareInfo, ParsedFolderModel, ParsedFolderModelWithShareInfo, ParsedShareFolderModel, ParsedSimpleDirectory, SimpleDirectory};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{GetFilesParsedSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
@@ -109,6 +106,20 @@ impl FolderService {
             favorite: folder.favorite,
             created_at: folder.created_at,
             updated_at: folder.updated_at,
+        }
+    }
+
+    pub fn parse_folder_with_share_info(folder: &FolderModelWithShareInfo) -> ParsedFolderModelWithShareInfo {
+        ParsedFolderModelWithShareInfo {
+            id: folder.id.to_string(),
+            user_id: folder.user_id.to_string(),
+            folder_name: folder.folder_name.to_string(),
+            parent_id: folder.parent_id.map(|x| x.to_string()),
+            favorite: folder.favorite,
+            created_at: folder.created_at,
+            updated_at: folder.updated_at,
+            share_uuid: folder.share_uuid.to_string(),
+            share_target_username: folder.share_target_username.clone(),
         }
     }
 

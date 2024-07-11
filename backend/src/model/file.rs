@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
-use sqlx::types::JsonValue;
+use sqlx::types::{JsonValue, Uuid};
 
 #[repr(i16)]
 #[derive(Clone, Copy, PartialEq)]
@@ -68,6 +68,25 @@ pub struct FileModel {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+#[derive(FromRow)]
+pub struct FileModelWithShareInfo {
+    pub id: i64,
+    pub user_id: i64,
+    pub file_name: String,
+    pub file_size: i64,
+    pub file_type: i16,
+    pub mime_type: String,
+    pub metadata: Option<JsonValue>,
+    pub parent_folder_id: Option<i64>,
+    pub preview_status: Option<i16>,
+    pub favorite: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
+    pub share_uuid: Uuid,
+    pub share_target_username: Option<String>,
+}
+
 #[derive(Serialize)]
 pub struct ParsedFileModel {
     pub id: String,
@@ -83,6 +102,25 @@ pub struct ParsedFileModel {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Serialize)]
+pub struct ParsedFileModelWithShareInfo {
+    pub id: String,
+    pub user_id: String,
+    pub file_name: String,
+    pub file_size: i64,
+    pub file_type: i16,
+    pub mime_type: String,
+    pub metadata: Option<JsonValue>,
+    pub parent_folder_id: Option<String>,
+    pub preview_status: Option<i16>,
+    pub favorite: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
+    pub share_uuid: String,
+    pub share_target_username: Option<String>,
 }
 
 #[derive(Serialize)]

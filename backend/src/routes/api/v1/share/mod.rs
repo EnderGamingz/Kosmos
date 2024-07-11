@@ -6,3 +6,4 @@ mod index;
 mod delete;
 mod update;
 pub mod create;
+pub mod shared_items;

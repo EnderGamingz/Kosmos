@@ -3,7 +3,7 @@ use axum::Json;
 use tower_sessions::Session;
 
 use crate::model::file::{FileModel, ParsedShareFileModel};
-use crate::model::folder::ParsedShareFolderModel;
+use crate::model::folder::{FolderModel, ParsedShareFolderModel};
 use crate::model::share::ExtendedShareModel;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -12,33 +12,6 @@ use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
 use crate::services::share_service::ShareService;
 use crate::state::{AppState, KosmosState};
-
-pub async fn get_shared_items(
-    State(state): KosmosState,
-    session: Session,
-) -> Result<Json<serde_json::Value>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    let files = state
-        .share_service
-        .get_shared_files(&user_id)
-        .await?
-        .into_iter()
-        .map(|file| FileService::parse_file(file))
-        .collect::<Vec<_>>();
-    let folders = state
-        .share_service
-        .get_shared_folders(&user_id)
-        .await?
-        .into_iter()
-        .map(|folder| FolderService::parse_folder(&folder))
-        .collect::<Vec<_>>();
-
-    Ok(Json(serde_json::json!({
-        "files": files,
-        "folders": folders
-    })))
-}
 
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
@@ -54,7 +27,7 @@ pub async fn get_file_shares_for_user(
 
     let shares = shares
         .into_iter()
-        .map(|share| ShareService::parse_share(share))
+        .map(|share| ShareService::parse_extended_share(share))
         .collect::<Vec<_>>();
 
     Ok(Json(serde_json::json!(shares)))
@@ -74,7 +47,7 @@ pub async fn get_folder_shares_for_user(
 
     let shares = shares
         .into_iter()
-        .map(|share| ShareService::parse_share(share))
+        .map(|share| ShareService::parse_extended_share(share))
         .collect::<Vec<_>>();
 
     Ok(Json(serde_json::json!(shares)))
@@ -94,25 +67,28 @@ pub async fn unlock_share(
     let share = state.share_service.get_share(&payload.share_uuid).await?;
 
     //Check password
-    if let Some(password) = share.password {
-        let is_correct = bcrypt::verify(payload.password, &password).map_err(|e| {
-            tracing::error!("Error verifying share password: {}", e);
-            AppError::BadRequest {
-                error: Some("Wrong password".to_string()),
-            }
-        })?;
-
-        if !is_correct {
-            return Err(AppError::BadRequest {
-                error: Some("Wrong password".to_string()),
+    match share.password {
+        Some(password) => {
+            let is_correct = bcrypt::verify(payload.password, &password).map_err(|e| {
+                tracing::error!("Error verifying share password: {}", e);
+                AppError::BadRequest {
+                    error: Some("Wrong password".to_string()),
+                }
             })?;
-        } else {
+
+            if !is_correct {
+                Err(AppError::BadRequest {
+                    error: Some("Wrong password".to_string()),
+                })?;
+            }
+
             SessionService::grant_share_access(&session, &share.uuid.to_string()).await;
         }
-    } else {
-        return Err(AppError::BadRequest {
-            error: Some("Share is not password protected".to_string()),
-        })?;
+        None => {
+            Err(AppError::BadRequest {
+                error: Some("Share is not password protected".to_string()),
+            })?;
+        }
     }
 
     Ok(AppSuccess::OK { data: None })
@@ -138,7 +114,7 @@ pub async fn access_folder_share(
 ) -> Result<Json<serde_json::Value>, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
 
-    let folder = get_share_folder(&state, share.folder_id).await?;
+    let folder = get_share_folder_data(&state, share.folder_id).await?;
     let _ = state.share_service.handle_share_access(share.id).await;
 
     let structure = state
@@ -174,7 +150,7 @@ pub async fn access_folder_share_item(
         get_share_access_for_folder_items(&state, &access_type, access_id, &share).await?;
 
     if !can_access_with_share {
-        return Err(AppError::NotAllowed {
+        Err(AppError::NotAllowed {
             error: "Not allowed".to_string(),
         })?;
     }
@@ -185,7 +161,7 @@ pub async fn access_folder_share_item(
             Ok(Json(serde_json::json!(file.share_file)))
         }
         AccessShareItemType::Folder => {
-            let folder = get_share_folder(&state, Some(access_id)).await?;
+            let folder = get_share_folder_data(&state, Some(access_id)).await?;
             let structure = state
                 .folder_service
                 .get_parent_directories(access_id, None, share.folder_id)
@@ -249,7 +225,7 @@ pub async fn is_allowed_to_access_share(
     //Check expired
     if let Some(expiry) = share.expires_at {
         if expiry < chrono::Utc::now() {
-            return Err(AppError::Gone {
+            Err(AppError::Gone {
                 error: "Share expired".to_string(),
             })?;
         }
@@ -258,7 +234,7 @@ pub async fn is_allowed_to_access_share(
     // Check access limit
     if let Some(uses) = share.access_limit {
         if uses < 1 {
-            return Err(AppError::Gone {
+            Err(AppError::Gone {
                 error: "Access limit reached".to_string(),
             })?;
         }
@@ -270,7 +246,7 @@ pub async fn is_allowed_to_access_share(
             None => Err(AppError::NotLoggedIn)?,
             Some(user) => {
                 if user.id != target {
-                    return Err(AppError::NotAllowed {
+                    Err(AppError::NotAllowed {
                         error: "Not allowed".to_string(),
                     })?;
                 }
@@ -281,7 +257,7 @@ pub async fn is_allowed_to_access_share(
     //Check password
     if share.password.is_some() {
         if !SessionService::check_share_access(&session, &share.uuid.to_string()).await {
-            return Err(AppError::Locked {
+            Err(AppError::Locked {
                 error: "Password protected".to_string(),
             })?;
         }
@@ -315,16 +291,15 @@ pub async fn get_share_file(
     Ok(SharedFileData { file, share_file })
 }
 
-pub struct SharedFolderData {
-    share_folder: ParsedShareFolderModel,
-    folders: Vec<ParsedShareFolderModel>,
-    files: Vec<ParsedShareFileModel>,
+pub struct SharedFolder {
+    pub folder: FolderModel,
+    pub share_folder: ParsedShareFolderModel,
 }
 
 pub async fn get_share_folder(
     state: &AppState,
     folder_id: Option<i64>,
-) -> Result<SharedFolderData, AppError> {
+) -> Result<SharedFolder, AppError> {
     let folder = match folder_id {
         None => Err(AppError::NotFound {
             error: "Folder not found".to_string(),
@@ -334,9 +309,27 @@ pub async fn get_share_folder(
 
     let share_folder = FolderService::parse_share_folder(&folder);
 
+    Ok(SharedFolder {
+        folder,
+        share_folder,
+    })
+}
+
+pub struct SharedFolderData {
+    share_folder: ParsedShareFolderModel,
+    folders: Vec<ParsedShareFolderModel>,
+    files: Vec<ParsedShareFileModel>,
+}
+
+pub async fn get_share_folder_data(
+    state: &AppState,
+    folder_id: Option<i64>,
+) -> Result<SharedFolderData, AppError> {
+    let data = get_share_folder(state, folder_id).await?;
+
     let folders = state
         .folder_service
-        .get_folders_for_share(&Some(folder.id))
+        .get_folders_for_share(&Some(data.folder.id))
         .await?
         .into_iter()
         .map(|folder| FolderService::parse_share_folder(&folder))
@@ -344,14 +337,14 @@ pub async fn get_share_folder(
 
     let files = state
         .file_service
-        .get_files_for_share(Some(folder.id))
+        .get_files_for_share(Some(data.folder.id))
         .await?
         .into_iter()
         .map(|file| FileService::parse_share_file(file))
         .collect::<Vec<_>>();
 
     Ok(SharedFolderData {
-        share_folder,
+        share_folder: data.share_folder,
         folders,
         files,
     })

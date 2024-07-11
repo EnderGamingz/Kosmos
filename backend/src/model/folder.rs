@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
+use sqlx::types::Uuid;
 
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct FolderModel {
@@ -13,6 +14,19 @@ pub struct FolderModel {
     pub updated_at: DateTime<Utc>,
 }
 
+#[derive(FromRow)]
+pub struct FolderModelWithShareInfo {
+    pub id: i64,
+    pub user_id: i64,
+    pub folder_name: String,
+    pub parent_id: Option<i64>,
+    pub favorite: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub share_uuid: Uuid,
+    pub share_target_username: Option<String>,
+}
+
 #[derive(Serialize)]
 pub struct ParsedFolderModel {
     pub id: String,
@@ -22,6 +36,19 @@ pub struct ParsedFolderModel {
     pub favorite: bool,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Serialize)]
+pub struct ParsedFolderModelWithShareInfo {
+    pub id: String,
+    pub user_id: String,
+    pub folder_name: String,
+    pub parent_id: Option<String>,
+    pub favorite: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub share_uuid: String,
+    pub share_target_username: Option<String>,
 }
 
 #[derive(Serialize)]

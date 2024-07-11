@@ -39,7 +39,14 @@ export default function Router() {
             path={'home'}
             element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
             <Route path={'recent'} element={<RecentFiles />} />
-            <Route path={'shared'} element={<SharedItems />} />
+            <Route
+              path={'shared'}
+              element={<SharedItems itemsForUser={false} />}
+            />
+            <Route
+              path={'shares'}
+              element={<SharedItems itemsForUser={true} />}
+            />
             <Route path={'bin'} element={<BinPage />} />
             <Route path={'folder/:folder'} element={<FileList />} />
             <Route index element={<FileList />} />
