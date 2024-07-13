@@ -2,10 +2,11 @@ use axum::extract::State;
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
-use crate::constants::SESSION_USER_ID;
+
+use crate::constants::SESSION_USER_ID_KEY;
+use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::SessionService;
-use crate::services::user_service::UserService;
 use crate::state::AppState;
 
 #[derive(Deserialize)]
@@ -24,12 +25,12 @@ pub async fn login(
         return Ok(Json(serde_json::json!({})));
     }
 
-    let result = state
+    let found_user = state
         .user_service
         .get_user_by_username_optional(&payload.username)
         .await?;
 
-    let user = match result {
+    let user = match found_user {
         Some(user) => user,
         None => {
             return Err(AppError::Forbidden {
@@ -50,7 +51,13 @@ pub async fn login(
         })?;
     }
 
-    session.insert(SESSION_USER_ID, user.id).await.unwrap();
+    session.insert(SESSION_USER_ID_KEY, user.id).await
+        .map_err(|e| {
+            tracing::error!("Failed to insert session: {}", e);
+            AppError::InternalError
+        })?;
 
-    Ok(Json(serde_json::json!(UserService::parse_user(user))))
+    let user_dto: UserModelDTO = user.into();
+
+    Ok(Json(serde_json::json!(user_dto)))
 }

@@ -1,4 +1,4 @@
-use crate::constants::SESSION_USER_ID;
+use crate::constants::SESSION_USER_ID_KEY;
 use crate::response::error_handling::AppError;
 use tower_sessions::Session;
 
@@ -19,7 +19,7 @@ impl SessionService {
     /// Returns an `Option<String>` representing the user ID if it exists in the session, otherwise returns `None`.
     ///
     pub async fn get_user_id(session: &Session) -> Option<UserId> {
-        let id = session.get::<UserId>(SESSION_USER_ID).await;
+        let id = session.get::<UserId>(SESSION_USER_ID_KEY).await;
 
         id.unwrap_or_else(|_| None)
     }

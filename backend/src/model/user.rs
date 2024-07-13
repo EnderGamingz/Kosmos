@@ -10,17 +10,36 @@ pub struct UserModel {
     pub full_name: Option<String>,
     pub email: Option<String>,
     pub storage_limit: i64,
+    pub role: i16,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
 
+
 #[derive(Serialize)]
-pub struct ParsedUserModel {
+pub struct UserModelDTO {
     pub id: String,
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
     pub storage_limit: i64,
+    pub role: i16,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+}
+
+
+impl From<UserModel> for UserModelDTO {
+    fn from(user: UserModel) -> Self {
+        UserModelDTO {
+            id: user.id.to_string(),
+            username: user.username,
+            full_name: user.full_name,
+            email: user.email,
+            storage_limit: user.storage_limit,
+            role: user.role,
+            created_at: user.created_at,
+            updated_at: user.updated_at,
+        }
+    }
 }

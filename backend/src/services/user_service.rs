@@ -1,15 +1,16 @@
 use bigdecimal::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use sonyflake::Sonyflake;
-use sqlx::types::BigDecimal;
 use sqlx::{Execute, FromRow, QueryBuilder};
+use sqlx::types::BigDecimal;
 use tower_sessions::Session;
 use validator::Validate;
+
 use crate::db::{KosmosDb, KosmosDbResult};
-use crate::model::user::{ParsedUserModel, UserModel};
+use crate::KosmosPool;
+use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
-use crate::KosmosPool;
 
 #[derive(Deserialize)]
 pub struct AccountUpdatePayload {
@@ -74,18 +75,6 @@ impl UserService {
             );
             ()
         })
-    }
-
-    pub fn parse_user(user: UserModel) -> ParsedUserModel {
-        ParsedUserModel {
-            id: user.id.to_string(),
-            username: user.username,
-            email: user.email,
-            full_name: user.full_name,
-            storage_limit: user.storage_limit,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-        }
     }
 
     pub async fn get_auth_user(&self, user_id: UserId) -> Result<UserModel, AppError> {
