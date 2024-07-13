@@ -1,7 +1,6 @@
 import { useRecentFiles } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { Progress } from '@nextui-org/react';
-import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
@@ -25,8 +24,7 @@ export default function RecentFiles() {
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}
         />
-        <div className={'flex items-center gap-2 px-5 pt-5'}>
-          <SideNavToggle />
+        <div className={'px-5 pt-5'}>
           <motion.h1
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

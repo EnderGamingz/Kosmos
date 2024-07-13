@@ -27,10 +27,6 @@ export type ExplorerState = {
     destination?: string;
     setDestination: (destination?: string) => void;
   };
-  sidenav: {
-    open: boolean;
-    toggle: () => void;
-  };
 };
 
 export const useExplorerStore = create<ExplorerState>(set => ({
@@ -121,14 +117,6 @@ export const useExplorerStore = create<ExplorerState>(set => ({
           selectedFiles: [],
           selectedFolders: [],
         },
-      }));
-    },
-  },
-  sidenav: {
-    open: false,
-    toggle: () => {
-      set(state => ({
-        sidenav: { ...state.sidenav, open: !state.sidenav.open },
       }));
     },
   },

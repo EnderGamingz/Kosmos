@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { SideNavToggle } from '@pages/explorer/components/sideNavToggle.tsx';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
@@ -74,7 +73,6 @@ export function FileList() {
           style={{ scaleX }}
         />
         <div className={'flex items-center pl-3 md:pl-0'}>
-          <SideNavToggle />
           <FileListBreadCrumbs crumbs={breadCrumbs} />
         </div>
         <FileUploadContent folder={folder} isInFileList={true}>

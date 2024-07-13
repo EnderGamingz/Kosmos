@@ -1,5 +1,5 @@
 import { FileModel, FileType, getFileTypeString } from '@models/file.ts';
-import { DisplayImage } from '@pages/explorer/file/display/displayImage.tsx';
+import { DisplayImage } from '@pages/explorer/file/display/image/displayImage.tsx';
 import { motion } from 'framer-motion';
 import tw from '@lib/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
@@ -113,6 +113,7 @@ export function FileDisplayHandler({
         onFullScreen={onFullScreen}
         highRes={previewOnHold ? lowResUrl : highResUrl}
         lowRes={lowResUrl}
+        shareUuid={shareUuid}
       />
     );
 
