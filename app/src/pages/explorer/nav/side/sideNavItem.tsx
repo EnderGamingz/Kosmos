@@ -32,7 +32,7 @@ export function SideNavItem({
             ? 'py-1 [&_svg]:h-5 [&_svg]:min-w-5'
             : '[&_svg]:h-6 [&_svg]:min-w-6',
         )}>
-        <div id={link.elId}>{link.icon}</div>
+        {link.icon}
         <div className={'flex w-full items-center justify-between'}>
           <p className={tw(small ? 'text-base' : 'text-lg')}>{link.name}</p>
           {link.description && (

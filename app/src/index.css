@@ -97,8 +97,8 @@ a {
 }
 
 ::-webkit-scrollbar {
-    width: 4px;
-    height: 6px;
+    width: 3px;
+    height: 3px;
 }
 
 ::-webkit-scrollbar-thumb {

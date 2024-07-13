@@ -64,7 +64,7 @@ export function FileList() {
       <div
         ref={container}
         className={
-          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto'
+          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
         }>
         <motion.div
           className={

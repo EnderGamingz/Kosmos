@@ -2,7 +2,7 @@ import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
 import { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
 import { ServerIcon, ServerStackIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { containerVariant } from '@components/transition.ts';
+import { containerVariant } from '@components/defaults/transition.ts';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
 
 export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {

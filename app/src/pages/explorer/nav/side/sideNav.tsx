@@ -14,8 +14,6 @@ export function SideNav() {
   const total = usage.data?.total || 0;
   const bin = usage.data?.bin || 0;
 
-  const percentageUsage = (total / limit) * 100;
-
   const links = getExplorerLinks(formatBytes(bin));
 
   return (
@@ -34,10 +32,7 @@ export function SideNav() {
           <CloudIcon className={'h-5 w-5'} />
           Account Storage
         </h2>
-        <UsageIndicator
-          usedPercent={percentageUsage}
-          loading={usage.isLoading}
-        />
+        <UsageIndicator data={usage.data} loading={usage.isLoading} />
         <div className={'text-sm text-stone-800 md:text-base'}>
           {formatBytes(total)}{' '}
           <span className={'text-stone-400'}>of {formatBytes(limit, 0)}</span>

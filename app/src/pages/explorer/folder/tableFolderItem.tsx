@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import {
   itemTransitionVariant,
   transitionStop,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';

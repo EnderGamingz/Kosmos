@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 import {
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -16,6 +17,7 @@ import {
 import useLogout from '@hooks/useLogout.ts';
 import tw from '@lib/classMerge.ts';
 import MinidentIcon from '@components/MinidentIcon.tsx';
+import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 
 export function UserMenu() {
   const user = useUserState();
@@ -59,10 +61,19 @@ export function UserMenu() {
           </div>
         </button>
       </DropdownTrigger>
-      <DropdownMenu disabledKeys={['signIn']} aria-label={'User actions'}>
+      <DropdownMenu
+        disabledKeys={['signIn', 'account-usage']}
+        aria-label={'User actions'}>
         <DropdownItem key={'signIn'} textValue={user.user?.username}>
           <p className='font-semibold'>Welcome back</p>
           <p className='font-light'>{user.user?.username}</p>
+        </DropdownItem>
+        <DropdownItem
+          className={'py-0 opacity-100'}
+          key={'account-usage'}
+          textValue={'usage'}>
+          <UserMenuUsage />
+          <Divider className={'mb-1 mt-2'} />
         </DropdownItem>
         <DropdownItem
           onClick={() => navigate('/settings')}

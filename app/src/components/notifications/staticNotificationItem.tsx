@@ -1,6 +1,6 @@
 import { Notification } from '@stores/notificationStore.ts';
 import { motion } from 'framer-motion';
-import { itemTransitionVariant } from '@components/transition.ts';
+import { itemTransitionVariant } from '@components/defaults/transition.ts';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
 import { NotificationStatus } from '@components/notifications/notificationStatus.tsx';
 import { Bars3BottomLeftIcon, ForwardIcon } from '@heroicons/react/24/outline';

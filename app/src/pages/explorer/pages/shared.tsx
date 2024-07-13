@@ -11,7 +11,7 @@ import { FolderModel, ShareFolderModel } from '@models/folder.ts';
 import {
   containerVariant,
   itemTransitionVariant,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import { useNavigate } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
@@ -32,7 +32,7 @@ export default function SharedItems({
     <div className={'relative h-full'}>
       <div
         className={
-          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto'
+          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
         }>
         <Progress
           aria-label={'Recent Files loading...'}

@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariant,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import tw from '@lib/classMerge.ts';
 import GridFileItem from '@pages/explorer/file/gridFileItem.tsx';
 import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';

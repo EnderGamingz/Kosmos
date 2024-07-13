@@ -2,7 +2,7 @@ import { ShareModel } from '@models/share.ts';
 import { DataOperationType } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import { ShareItem } from '@pages/explorer/components/share/shareItem.tsx';
-import { containerVariant } from '@components/transition.ts';
+import { containerVariant } from '@components/defaults/transition.ts';
 
 const renderMessage = (message: string) => (
   <p className={'text-center text-stone-600'}>{message}</p>

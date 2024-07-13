@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 import {
   itemTransitionVariant,
   transitionStop,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';

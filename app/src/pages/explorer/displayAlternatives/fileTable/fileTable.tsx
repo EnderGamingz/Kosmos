@@ -9,7 +9,7 @@ import { useExplorerStore } from '@stores/explorerStore.ts';
 import {
   containerVariant,
   itemTransitionVariant,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import { formatBytes } from '@lib/fileSize.ts';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
 import { useContext } from 'react';

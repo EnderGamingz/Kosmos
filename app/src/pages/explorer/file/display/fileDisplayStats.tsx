@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import tw from '@lib/classMerge.ts';
 import {
   CircleStackIcon,

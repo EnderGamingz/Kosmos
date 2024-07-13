@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 
 export default function ExplorerPreferences({
   inPopup,

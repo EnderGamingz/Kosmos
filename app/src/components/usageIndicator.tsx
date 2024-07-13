@@ -1,24 +1,86 @@
-import { Progress } from '@nextui-org/react';
 import tw from '@lib/classMerge.ts';
+import { UsageResponse } from '@models/user.ts';
+import { motion } from 'framer-motion';
+import { Progress } from '@nextui-org/react';
+
+function ActiveBar({ percent }: { percent: number }) {
+  return (
+    <motion.div
+      initial={{ width: '0%' }}
+      animate={{ width: `${percent}%` }}
+      className={'h-full rounded-full bg-indigo-400 transition-width'}
+      style={{ width: percent + '%' }}
+    />
+  );
+}
+
+function BinBar({ percent }: { percent: number }) {
+  return (
+    <motion.div
+      initial={{ width: '0%' }}
+      animate={{ width: `${percent}%` }}
+      className={'h-full rounded-full bg-amber-500 transition-width'}
+      style={{ width: percent + '%' }}
+    />
+  );
+}
+
+export function AvailableBar({ percent }: { percent: number }) {
+  return (
+    <motion.div
+      initial={{ width: '0%' }}
+      animate={{ width: `${percent}%` }}
+      className={'h-full rounded-full bg-stone-700/20 transition-width'}
+      style={{ width: percent + '%' }}
+    />
+  );
+}
+
+const calculatePercentage = (value: number = 0, limit: number): number =>
+  Math.min(100, Math.max(0, Math.floor((value / limit) * 100)));
 
 export function UsageIndicator({
-  usedPercent,
+  data,
   loading,
   small,
 }: {
-  usedPercent: number;
+  data?: UsageResponse;
   loading?: boolean;
   small?: boolean;
 }) {
+  const limit = data?.limit || 1;
+
+  const percentageActive = calculatePercentage(data?.active, limit);
+  const percentageBin = calculatePercentage(data?.bin, limit);
+  const remainingPercentage = 100 - percentageActive - percentageBin;
+
+  const anyPercentageExceedsLimit = [
+    percentageActive,
+    percentageBin,
+    remainingPercentage,
+  ].some(x => x > 99);
+
   return (
-    <Progress
-      aria-label={'Usage percent'}
-      className={tw(small ? 'h-1' : 'h-2')}
-      color={
-        usedPercent > 100 ? 'danger' : usedPercent > 90 ? 'warning' : 'default'
-      }
-      isIndeterminate={loading}
-      value={usedPercent}
-    />
+    <div className={tw(small ? 'h-1' : 'h-2')}>
+      <div
+        className={tw(
+          'flex h-full w-full items-center gap-[1px]',
+          anyPercentageExceedsLimit && '[&>div]:bg-red-500',
+        )}>
+        {loading ? (
+          <Progress
+            className={'h-full'}
+            aria-label={'usage loading'}
+            isIndeterminate
+          />
+        ) : (
+          <>
+            <ActiveBar percent={percentageActive} />
+            <BinBar percent={percentageBin} />
+            <AvailableBar percent={remainingPercentage} />
+          </>
+        )}
+      </div>
+    </div>
   );
 }

@@ -12,7 +12,6 @@ export type ExplorerLink = {
   name: string;
   icon: ReactNode;
   href?: string;
-  elId?: string;
   description?: string;
   items?: ExplorerLink[];
 };
@@ -46,7 +45,6 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
   },
   {
     name: 'Bin',
-    elId: 'bin-icon',
     href: '/home/bin',
     description: binUsage,
     icon: <TrashIcon />,

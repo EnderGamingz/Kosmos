@@ -6,7 +6,7 @@ import { invalidateFolders } from '@lib/query.ts';
 import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
 import tw from '@lib/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { itemTransitionVariantFadeInFromTopSmall } from '@components/transition.ts';
+import { itemTransitionVariantFadeInFromTopSmall } from '@components/defaults/transition.ts';
 import { motion } from 'framer-motion';
 
 export function CreateFolder({

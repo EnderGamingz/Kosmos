@@ -110,7 +110,7 @@ export function ExplorerDisplayWrapper({
         someSelected={isSomeSelected}
         handleClick={handleContext}
       />
-      <div id={'display'} className={'h-full overflow-x-auto'}>
+      <div id={'display'} className={'h-full flex-grow overflow-x-auto'}>
         {children}
       </div>
       <FileDisplay

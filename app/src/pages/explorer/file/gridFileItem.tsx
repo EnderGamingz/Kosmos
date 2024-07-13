@@ -8,7 +8,7 @@ import { DisplayContext } from '@lib/contexts.ts';
 import {
   itemTransitionVariant,
   transitionStop,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import tw from '@lib/classMerge.ts';

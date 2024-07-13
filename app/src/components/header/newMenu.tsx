@@ -13,7 +13,7 @@ import {
 import { CreateFolder } from '@pages/explorer/folder/createFolder';
 import { useExplorerStore } from '@stores/explorerStore';
 import { motion } from 'framer-motion';
-import { containerVariant } from '@components/transition.ts';
+import { containerVariant } from '@components/defaults/transition.ts';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);

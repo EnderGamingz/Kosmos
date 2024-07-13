@@ -4,7 +4,7 @@ import { Modal, ModalContent, ModalHeader } from '@nextui-org/react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import tw from '@lib/classMerge.ts';
 import { motion } from 'framer-motion';
-import { itemTransitionVariantFadeInFromTopSmall } from '@components/transition.ts';
+import { itemTransitionVariantFadeInFromTopSmall } from '@components/defaults/transition.ts';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 
 export function FileUploadModal({

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariant,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 
 export function FileTableLoading() {
   return (

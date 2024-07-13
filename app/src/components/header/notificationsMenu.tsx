@@ -30,7 +30,7 @@ import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariant,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import objectHash from 'object-hash';
 import { useUserState } from '@stores/userStore.ts';
 import { useNotifications } from '@stores/notificationStore.ts';

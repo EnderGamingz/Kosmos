@@ -6,7 +6,7 @@ import { DisplayContext } from '@lib/contexts.ts';
 import {
   itemTransitionVariant,
   transitionStop,
-} from '@components/transition.ts';
+} from '@components/defaults/transition.ts';
 import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useNavigate } from 'react-router-dom';
