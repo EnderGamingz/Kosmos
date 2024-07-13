@@ -6,7 +6,7 @@ import tw from '@lib/classMerge.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (
-    <div className={'flex items-center gap-2 px-5 py-2'}>
+    <div className={'flex flex-wrap items-center gap-2 px-5 py-2'}>
       <AnimatePresence>{children}</AnimatePresence>
     </div>
   );
@@ -38,7 +38,15 @@ export function BreadCrumbItem({
       <ConditionalWrapper
         key={`breadcrumb-${href}`}
         condition={!!href}
-        wrapper={c => <Link to={href!}>{c}</Link>}>
+        wrapper={c => (
+          <Link
+            className={
+              'rounded-md px-1 transition-colors hover:bg-stone-500/10'
+            }
+            to={href!}>
+            {c}
+          </Link>
+        )}>
         {name}
       </ConditionalWrapper>
       <span
