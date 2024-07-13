@@ -103,14 +103,16 @@ export function ExplorerDisplayWrapper({
           resetDrag: () => setDragged(undefined),
         },
         select: { setRange: handleRangeChange, rangeStart },
-        // Share Uuid in the context implies that this is in a folder share
+        // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
       }}>
       <MultipleActionButton
         someSelected={isSomeSelected}
         handleClick={handleContext}
       />
-      <div id={'display'}>{children}</div>
+      <div id={'display'} className={'h-full overflow-x-auto'}>
+        {children}
+      </div>
       <FileDisplay
         onSelect={selectFile}
         fileIndex={selectedFileIndex}

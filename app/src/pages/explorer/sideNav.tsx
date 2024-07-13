@@ -58,8 +58,8 @@ function SideNavItem({
           'flex items-center gap-3 rounded-lg px-5 py-2 transition-colors',
           'mt-2 hover:bg-stone-300 md:text-lg',
           small
-            ? 'py-1 md:[&_svg]:h-5 md:[&_svg]:w-5'
-            : 'md:[&_svg]:h-6 md:[&_svg]:w-6',
+            ? 'py-1 [&_svg]:h-5 [&_svg]:min-w-5'
+            : '[&_svg]:h-6 [&_svg]:min-w-6',
         )}>
         <div id={link.elId}>{link.icon}</div>
         <div className={'flex w-full items-center justify-between'}>
@@ -146,7 +146,7 @@ export function SideNav() {
       transition={{ duration: 0.1 }}
       className={tw(
         'body-bg z-40 flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
-        'h-[calc(100vh-90px)] overflow-hidden transition-all md:h-[initial]',
+        'h-[calc(100dvh-90px)] overflow-hidden transition-all md:h-[initial]',
       )}>
       <div className={'px-4 pt-3 text-sm font-light md:hidden'}>
         <SideNavToggle text={'Close Sidebar'} />

@@ -4,19 +4,22 @@ import { motion } from 'framer-motion';
 import tw from '@lib/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { BASE_URL } from '@lib/vars.ts';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { EmbedFile } from '@pages/explorer/file/display/embedFile.tsx';
 
 export function FileTypeDisplay({
   id,
   name,
   type,
   noText,
+  loading,
 }: {
   id: string;
   name: string;
   type: FileType;
   noText?: boolean;
+  loading?: boolean;
 }) {
   return (
     <motion.div
@@ -29,9 +32,20 @@ export function FileTypeDisplay({
         'flex h-full w-full flex-col items-center justify-center',
         'rounded-lg bg-stone-800/20 text-stone-200 shadow-xl [&_svg]:text-stone-200',
         'outline outline-1 -outline-offset-1 outline-stone-500',
-        'pr-5 text-center backdrop-blur-md [&_svg]:h-20 [&_svg]:w-20',
+        'pr-5 text-center backdrop-blur-md',
+        loading ? '[&_svg]:h-14 [&_svg]:w-14' : '[&_svg]:h-20 [&_svg]:w-20',
       )}>
-      <ItemIcon id={id} name={name} type={type} />
+      <div className={'relative'}>
+        {loading && (
+          <div
+            className={
+              'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+            }>
+            <div className={'app-loading-indicator !h-16 !w-16'} />
+          </div>
+        )}
+        <ItemIcon id={id} name={name} type={type} />
+      </div>
       {!noText && (
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -56,6 +70,19 @@ export function FileDisplayHandler({
   onFullScreen: (b: boolean) => void;
   shareUuid?: string;
 }) {
+  const initialLoadingState = () => {
+    if (shareUuid) return false;
+    return [
+      FileType.Image,
+      FileType.Document,
+      FileType.Audio,
+      FileType.Video,
+    ].includes(file.file_type);
+  };
+  // This artificial hold state is to prevent flicker in the preview
+  // and prevent the app from lagging when displaying a file essentially on mobile devices
+  const [previewOnHold, setPreviewOnHold] = useState(initialLoadingState());
+
   const isImage = [FileType.Image, FileType.RawImage].includes(file.file_type);
   const folderContext: DisplayContextType | undefined =
     useContext(DisplayContext);
@@ -72,34 +99,33 @@ export function FileDisplayHandler({
       : `${BASE_URL}s/file/${shareUuid}/image/0`
     : `${BASE_URL}auth/file/image/${file.id}/0`;
 
+  useEffect(() => {
+    if (!previewOnHold) return;
+    const t = setTimeout(() => setPreviewOnHold(false), 500);
+    return () => clearTimeout(t);
+  }, [previewOnHold]);
+
   if (isImage)
     return (
       <DisplayImage
         file={file}
         fullScreen={fullScreen}
         onFullScreen={onFullScreen}
-        highRes={highResUrl}
+        highRes={previewOnHold ? lowResUrl : highResUrl}
         lowRes={lowResUrl}
       />
     );
 
-  if (file.file_type === FileType.Document) {
-    return (
-      <motion.object
-        layoutId={`type-display-${file.id}`}
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.5 }}
-        transition={{ duration: 0.3 }}
-        className={
-          'h-full w-full rounded-xl bg-stone-800/20 p-1 text-stone-50 shadow-lg backdrop-blur-md'
-        }
-        data={highResUrl}
-      />
-    );
+  if (file.file_type === FileType.Document && !previewOnHold) {
+    return <EmbedFile file={file} serveUrl={highResUrl} />;
   }
 
   return (
-    <FileTypeDisplay id={file.id} name={file.file_name} type={file.file_type} />
+    <FileTypeDisplay
+      id={file.id}
+      name={file.file_name}
+      type={file.file_type}
+      loading={previewOnHold}
+    />
   );
 }

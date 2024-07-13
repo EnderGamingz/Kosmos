@@ -23,7 +23,7 @@ export function TableHeader({
         <th>
           <SelectAllCheckBox files={files} folders={folders} />
         </th>
-        <th className={'w-full'}>
+        <th className={'w-full min-w-[300px]'}>
           <ExplorerSort
             name={'Name'}
             sort={SortBy.Name}

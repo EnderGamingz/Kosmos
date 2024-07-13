@@ -154,7 +154,7 @@ export function CreateShare({
             <ClockIcon />
             Expiration
           </label>
-          <div className={'flex gap-2 p-2 [&_div]:text-sm'}>
+          <div className={'flex flex-wrap gap-2 p-2 [&_div]:text-sm'}>
             <Chip content={'Never'} onClick={() => setExpiresAt(undefined)} />
             <Chip
               content={'5 min'}

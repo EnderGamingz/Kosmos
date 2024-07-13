@@ -30,10 +30,10 @@ export default function SharedItems({
   }, [items, setFilesInScope]);
 
   return (
-    <div className={'relative'}>
+    <div className={'relative h-full'}>
       <div
         className={
-          'file-list relative flex h-full max-h-[calc(100vh-90px)] flex-col overflow-y-auto'
+          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto'
         }>
         <Progress
           aria-label={'Recent Files loading...'}
@@ -52,18 +52,16 @@ export default function SharedItems({
             Shared Items {itemsForUser ? 'with me' : 'by me'}
           </motion.h1>
         </div>
-        <div>
-          {itemsForUser ? (
-            <SharedForMe shares={items.data} />
-          ) : (
-            <ExplorerDataDisplay
-              isLoading={items.isLoading}
-              files={items.data?.files || []}
-              folders={items.data?.folders || []}
-              limitedView
-            />
-          )}
-        </div>
+        {itemsForUser ? (
+          <SharedForMe shares={items.data} />
+        ) : (
+          <ExplorerDataDisplay
+            isLoading={items.isLoading}
+            files={items.data?.files || []}
+            folders={items.data?.folders || []}
+            limitedView
+          />
+        )}
       </div>
     </div>
   );

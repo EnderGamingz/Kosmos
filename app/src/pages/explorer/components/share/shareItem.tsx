@@ -12,6 +12,7 @@ import { Copy } from '@pages/explorer/components/share/copy.tsx';
 import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 import { getShareUrl } from '@lib/share/url.ts';
+import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
@@ -44,6 +45,11 @@ export function ShareItem({
     share.access_limit !== null ? share.access_limit! > 0 : true;
 
   const isActive = !isExpired && usageLeft;
+
+  const shareData = {
+    url: getShareUrl(type, share.uuid),
+    title: "Kosmos' share link",
+  };
 
   return (
     <motion.li
@@ -107,12 +113,13 @@ export function ShareItem({
           )}
           {getShareTypeIcon(share.share_type)}
         </div>
-        {isActive && (
-          <Copy
-            text={getShareUrl(type, share.uuid)}
-            notify={notifications.notify}
-          />
-        )}
+        {navigator.share !== undefined && navigator.canShare(shareData) ? (
+          <button onClick={() => navigator.share(shareData)}>
+            <ArrowUpOnSquareIcon className={'h-5 w-5'} />
+          </button>
+        ) : isActive ? (
+          <Copy text={shareData.url} notify={notifications.notify} />
+        ) : null}
       </div>
     </motion.li>
   );
