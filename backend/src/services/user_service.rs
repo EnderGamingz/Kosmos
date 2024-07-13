@@ -51,29 +51,29 @@ impl UserService {
 
     pub async fn create_user(
         &self,
-        payload: RegisterCredentials,
+        username: String,
         hash: String,
         storage_limit: i64,
-    ) -> Result<(), AppError> {
+    ) -> Result<UserId, AppError> {
         sqlx::query!(
-            "INSERT INTO users (id, username, password_hash, storage_limit) VALUES ($1, $2, $3, $4)",
+            "INSERT INTO users (id, username, password_hash, storage_limit) VALUES ($1, $2, $3, $4) RETURNING id",
             self.sf.next_id().unwrap() as i64,
-            &payload.username,
+            username,
             hash,
             storage_limit
         )
-        .execute(&self.db_pool)
+        .fetch_one(&self.db_pool)
         .await
         .map_err(|e| {
             tracing::error!("Error creating user: {}", e);
             return AppError::InternalError;
         })
-        .map(|_| {
+        .map(|row| {
             tracing::info!(
                 "User created successfully with username: {}",
-                payload.username
+                username
             );
-            ()
+            row.id
         })
     }
 

@@ -5,3 +5,4 @@ pub mod folder_service;
 pub mod image_service;
 pub mod operation_service;
 pub mod share_service;
+pub mod permission_service;

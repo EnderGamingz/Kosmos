@@ -12,3 +12,4 @@ pub mod folder;
 pub mod download;
 pub mod user;
 pub mod operation;
+pub mod admin;

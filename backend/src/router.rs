@@ -189,6 +189,11 @@ fn get_share_router() -> KosmosRouter {
         )
 }
 
+fn get_admin_router() -> KosmosRouter {
+    Router::new()
+        .route("/user", post(crate::routes::api::v1::auth::admin::user::create_user))
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -202,6 +207,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/multi", get_multi_router())
         .nest("/operation", get_operation_router())
         .nest("/user", get_user_router())
+        .nest("/admin", get_admin_router())
 }
 
 fn get_public_share_router() -> KosmosRouter {
