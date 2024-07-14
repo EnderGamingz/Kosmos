@@ -5,7 +5,7 @@ use tower_sessions::Session;
 
 use crate::model::file::{FileModel, ShareFileModelDTO};
 use crate::model::folder::{FolderModel, ShareFolderModelDTO, SimpleDirectoryDTO};
-use crate::model::share::{ExtendedShareModel, ShareModelDTO};
+use crate::model::share::{ExtendedShareModel, ExtendedShareModelDTO};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
@@ -16,7 +16,7 @@ pub async fn get_file_shares_for_user(
     State(state): KosmosState,
     session: Session,
     Path(file_id): Path<i64>,
-) -> Result<Json<Vec<ShareModelDTO>>, AppError> {
+) -> Result<Json<Vec<ExtendedShareModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
@@ -24,7 +24,7 @@ pub async fn get_file_shares_for_user(
         .get_file_shares(file_id, user_id)
         .await?
         .into_iter()
-        .map(ShareModelDTO::from)
+        .map(ExtendedShareModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(shares))
@@ -34,7 +34,7 @@ pub async fn get_folder_shares_for_user(
     State(state): KosmosState,
     session: Session,
     Path(folder_id): Path<i64>,
-) -> Result<Json<Vec<ShareModelDTO>>, AppError> {
+) -> Result<Json<Vec<ExtendedShareModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
@@ -42,7 +42,7 @@ pub async fn get_folder_shares_for_user(
         .get_folder_shares(folder_id, user_id)
         .await?
         .into_iter()
-        .map(ShareModelDTO::from)
+        .map(ExtendedShareModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(shares))

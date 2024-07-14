@@ -77,7 +77,7 @@ impl ShareService {
         get_target: bool,
     ) -> String {
         let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
-            "SELECT DISTINCT f.*, s.uuid as share_uuid, u.username as share_target_username",
+            "SELECT DISTINCT ON (f.id) f.*, s.uuid as share_uuid, u.username as share_target_username",
         );
 
         match share_type {
@@ -108,6 +108,8 @@ impl ShareService {
         user_id: &UserId,
         get_target: bool,
     ) -> Result<Vec<FileModelWithShareInfo>, AppError> {
+        let sql = Self::get_share_items_query(user_id, AccessShareItemType::File, get_target);
+        println!("sql: {}", sql);
         sqlx::query_as::<_, FileModelWithShareInfo>(&*Self::get_share_items_query(
             user_id,
             AccessShareItemType::File,
