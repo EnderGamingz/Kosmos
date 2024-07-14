@@ -10,7 +10,7 @@ use crate::state::KosmosState;
 pub async fn auth(
     State(state): KosmosState,
     session: Session,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<UserModelDTO>, AppError> {
     if let Some(user_id) = SessionService::get_user_id(&session).await {
         let auth_user = state.user_service.get_user(user_id).await?;
 
@@ -21,8 +21,7 @@ pub async fn auth(
                 Err(AppError::NotLoggedIn)?
             }
             Some(user) => {
-                let user_dto: UserModelDTO = user.into();
-                return Ok(Json(serde_json::json!(user_dto)));
+                return Ok(Json(user.into()));
             }
         }
     };

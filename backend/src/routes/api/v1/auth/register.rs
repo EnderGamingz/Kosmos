@@ -41,10 +41,10 @@ pub async fn register(
         Err(_) => FALLBACK_STORAGE_LIMIT,
     };
 
-    state
+    let id = state
         .user_service
         .create_user(payload.username, password_hash, default_storage_limit)
         .await?;
 
-    Ok(AppSuccess::CREATED { id: None })
+    Ok(AppSuccess::CREATED { id: Some(id.to_string()) })
 }

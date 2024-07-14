@@ -202,6 +202,10 @@ fn get_admin_router() -> KosmosRouter {
                 .delete(crate::routes::api::v1::auth::admin::user::delete_user)
                 .patch(crate::routes::api::v1::auth::admin::user::update_user),
         )
+        .route(
+            "/user/:user_id/usage",
+            get(crate::routes::api::v1::auth::admin::user::get_user_usage),
+        )
 }
 
 fn get_auth_router() -> KosmosRouter {

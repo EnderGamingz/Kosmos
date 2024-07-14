@@ -1,3 +1,9 @@
+use crate::model::file::ParsedFileModel;
+use crate::response::error_handling::AppError;
+use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::services::file_service::FileService;
+use crate::services::session_service::SessionService;
+use crate::state::KosmosState;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
 use axum::Json;
@@ -5,12 +11,6 @@ use axum_valid::Valid;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
-
-use crate::response::error_handling::AppError;
-use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::file_service::FileService;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
 
 pub static FILE_SIZE_LIMIT: u64 = 50 * 1024 * 1024;
 
@@ -49,7 +49,7 @@ pub async fn get_files(
     session: Session,
     Query(sort_params): Query<GetFilesSortParams<SortByFiles>>,
     folder_id: Result<Path<i64>, PathRejection>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<Vec<ParsedFileModel>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let parsed_params = GetFilesParsedSortParams {
@@ -72,7 +72,7 @@ pub async fn get_files(
         .map(FileService::parse_file)
         .collect::<Vec<_>>();
 
-    Ok(Json(serde_json::json!(files)))
+    Ok(Json(files))
 }
 
 #[derive(Deserialize)]
@@ -91,7 +91,7 @@ pub async fn get_recent_files(
     State(state): KosmosState,
     session: Session,
     Query(params): Query<GetRecentFilesParams>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<Vec<ParsedFileModel>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let parsed_params = GetRecentFilesParsedParams {
@@ -102,27 +102,28 @@ pub async fn get_recent_files(
     let files = state
         .file_service
         .get_recent_files(user_id, parsed_params)
-        .await?;
-    let parsed_files = files
+        .await?
         .into_iter()
         .map(FileService::parse_file)
         .collect::<Vec<_>>();
 
-    Ok(Json(serde_json::json!(parsed_files)))
+    Ok(Json(files))
 }
 
 pub async fn get_deleted_files(
     State(state): KosmosState,
     session: Session,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<Vec<ParsedFileModel>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let files = state.file_service.get_marked_deleted_files(user_id).await?;
-    let parsed_files = files
+    let files = state
+        .file_service
+        .get_marked_deleted_files(user_id)
+        .await?
         .into_iter()
         .map(FileService::parse_file)
         .collect::<Vec<_>>();
 
-    Ok(Json(serde_json::json!(parsed_files)))
+    Ok(Json(files))
 }
 
 #[derive(Deserialize)]
@@ -141,7 +142,8 @@ pub async fn move_file(
     let user_id = SessionService::check_logged_in(&session).await?;
 
     // Check if file exists and returns not found if it doesn't
-    let file = state.file_service
+    let file = state
+        .file_service
         .check_file_exists_by_id(file_id, user_id)
         .await?
         .ok_or(AppError::NotFound {
@@ -209,4 +211,3 @@ pub async fn rename_file(
 
     Ok(AppSuccess::UPDATED)
 }
-

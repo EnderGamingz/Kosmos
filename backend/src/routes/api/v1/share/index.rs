@@ -1,10 +1,11 @@
 use axum::extract::{Path, State};
 use axum::Json;
+use serde::Serialize;
 use tower_sessions::Session;
 
 use crate::model::file::{FileModel, ParsedShareFileModel};
-use crate::model::folder::{FolderModel, ParsedShareFolderModel};
-use crate::model::share::ExtendedShareModel;
+use crate::model::folder::{FolderModel, ParsedShareFolderModel, ParsedSimpleDirectory};
+use crate::model::share::{ExtendedShareModel, ParsedShareModel};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::file_service::FileService;
@@ -18,40 +19,36 @@ pub async fn get_file_shares_for_user(
     State(state): KosmosState,
     session: Session,
     Path(file_id): Path<i64>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<Vec<ParsedShareModel>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
         .share_service
         .get_file_shares(file_id, user_id)
-        .await?;
-
-    let shares = shares
+        .await?
         .into_iter()
         .map(|share| ShareService::parse_extended_share(share))
         .collect::<Vec<_>>();
 
-    Ok(Json(serde_json::json!(shares)))
+    Ok(Json(shares))
 }
 
 pub async fn get_folder_shares_for_user(
     State(state): KosmosState,
     session: Session,
     Path(folder_id): Path<i64>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<Vec<ParsedShareModel>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
         .share_service
         .get_folder_shares(folder_id, user_id)
-        .await?;
-
-    let shares = shares
+        .await?
         .into_iter()
         .map(|share| ShareService::parse_extended_share(share))
         .collect::<Vec<_>>();
 
-    Ok(Json(serde_json::json!(shares)))
+    Ok(Json(shares))
 }
 
 #[derive(serde::Deserialize)]
@@ -94,20 +91,29 @@ pub async fn access_file_share(
     State(state): KosmosState,
     session: Session,
     Path(share_uuid): Path<String>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<ParsedShareFileModel>, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
 
     let file = get_share_file(&state, share.file_id).await?;
     let _ = state.share_service.handle_share_access(share.id).await;
 
-    Ok(Json(serde_json::json!(file.share_file)))
+    Ok(Json(file.share_file))
+}
+
+
+#[derive(Serialize)]
+pub struct FolderShareData {
+    folder: ParsedShareFolderModel,
+    folders: Vec<ParsedShareFolderModel>,
+    files: Vec<ParsedShareFileModel>,
+    structure: Vec<ParsedSimpleDirectory>,
 }
 
 pub async fn access_folder_share(
     State(state): KosmosState,
     session: Session,
     Path(share_uuid): Path<String>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<FolderShareData>, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
 
     let folder = get_share_folder_data(&state, share.folder_id).await?;
@@ -121,12 +127,12 @@ pub async fn access_folder_share(
         .map(FolderService::parse_children_directory)
         .collect::<Vec<_>>();
 
-    Ok(Json(serde_json::json!({
-        "folder": folder.share_folder,
-        "folders": folder.folders,
-        "files": folder.files,
-        "structure": structure
-    })))
+    Ok(Json(FolderShareData {
+        folder: folder.share_folder,
+        folders: folder.folders,
+        files: folder.files,
+        structure
+    }))
 }
 
 #[derive(serde::Deserialize, PartialEq)]

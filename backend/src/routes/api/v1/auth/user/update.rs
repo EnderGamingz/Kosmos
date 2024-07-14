@@ -23,7 +23,7 @@ pub async fn update_user(
     State(state): KosmosState,
     session: Session,
     Valid(Json(payload)): Valid<Json<UpdateUserPayload>>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<UserModelDTO>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
     let user = state.user_service.get_auth_user(user_id).await?;
 
@@ -57,9 +57,8 @@ pub async fn update_user(
     }
 
     let updated_user = state.user_service.update_user(user_id, user_update).await?;
-    let updated_user: UserModelDTO = updated_user.into();
 
-    Ok(Json(serde_json::json!(updated_user)))
+    Ok(Json(updated_user.into()))
 }
 
 #[derive(Deserialize, Validate)]

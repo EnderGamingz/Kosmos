@@ -19,10 +19,11 @@ pub async fn login(
     State(state): State<AppState>,
     session: Session,
     Json(payload): Json<LoginCredentials>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<UserModelDTO>, AppError> {
     let user_id = SessionService::get_user_id(&session).await;
-    if user_id.is_some() {
-        return Ok(Json(serde_json::json!({})));
+    if let Some(user_id) = user_id {
+        let user = state.user_service.get_auth_user(user_id).await?;
+        return Ok(Json(user.into()));
     }
 
     let found_user = state
@@ -55,7 +56,5 @@ pub async fn login(
             AppError::InternalError
         })?;
 
-    let user_dto: UserModelDTO = user.into();
-
-    Ok(Json(serde_json::json!(user_dto)))
+    Ok(Json(user.into()))
 }

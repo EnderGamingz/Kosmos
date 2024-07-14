@@ -46,17 +46,17 @@ impl SharedItems {
 pub async fn get_shared_items(
     State(state): KosmosState,
     session: Session,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<SharedItems>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
     let shared = SharedItems::get_shared_files_and_folders(&state, &user_id, false).await?;
-    Ok(Json(serde_json::json!(shared)))
+    Ok(Json(shared))
 }
 
 pub async fn get_targeted_shared_items_for_user(
     State(state): KosmosState,
     session: Session,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<SharedItems>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
     let shared = SharedItems::get_shared_files_and_folders(&state, &user_id, true).await?;
-    Ok(Json(serde_json::json!(shared)))
+    Ok(Json(shared))
 }

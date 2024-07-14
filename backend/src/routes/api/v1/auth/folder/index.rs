@@ -1,10 +1,4 @@
-use axum::extract::{Path, Query, State};
-use axum::extract::rejection::PathRejection;
-use axum::Json;
-use axum_valid::Valid;
-use serde::Deserialize;
-use tower_sessions::Session;
-use validator::Validate;
+use crate::model::folder::{ParsedFolderModel, ParsedSimpleDirectory};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::{
@@ -13,6 +7,13 @@ use crate::routes::api::v1::auth::file::{
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::rejection::PathRejection;
+use axum::extract::{Path, Query, State};
+use axum::Json;
+use axum_valid::Valid;
+use serde::{Deserialize, Serialize};
+use tower_sessions::Session;
+use validator::Validate;
 
 #[derive(Deserialize, Debug, PartialEq)]
 pub enum SortByFolders {
@@ -21,12 +22,19 @@ pub enum SortByFolders {
     UpdatedAt,
 }
 
+#[derive(Serialize)]
+pub struct FolderResponse {
+    folder: Option<ParsedFolderModel>,
+    folders: Vec<ParsedFolderModel>,
+    structure: Option<Vec<ParsedSimpleDirectory>>,
+}
+
 pub async fn get_folders(
     State(state): KosmosState,
     session: Session,
     Query(sort_params): Query<GetFilesSortParams<SortByFolders>>,
     folder_id: Result<Path<i64>, PathRejection>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<FolderResponse>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let parent = match folder_id {
@@ -71,11 +79,11 @@ pub async fn get_folders(
         None
     };
 
-    Ok(Json(serde_json::json!({
-        "folder": folder,
-        "folders": folders,
-        "structure": structure
-    })))
+    Ok(Json(FolderResponse {
+        folder,
+        folders,
+        structure,
+    }))
 }
 
 #[derive(Deserialize, Validate)]
@@ -89,7 +97,7 @@ pub async fn create_folder(
     session: Session,
     folder_id: Result<Path<i64>, PathRejection>,
     Valid(Json(payload)): Valid<Json<FolderRequest>>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> ResponseResult {
     let folder_id = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
@@ -112,7 +120,7 @@ pub async fn create_folder(
         .await?
         .to_string();
 
-    Ok(Json(serde_json::json!(folder)))
+    Ok(AppSuccess::CREATED { id: Some(folder) })
 }
 
 pub async fn move_folder(

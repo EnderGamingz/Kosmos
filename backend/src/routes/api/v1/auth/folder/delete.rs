@@ -76,7 +76,7 @@ async fn delete_folder_with_structure(
     state: &AppState,
     folder_id: i64,
     user_id: UserId,
-) -> Result<(), AppError> {
+) -> ResponseResult {
     if state
         .folder_service
         .check_folder_exists_by_id(folder_id, user_id)
@@ -109,7 +109,7 @@ async fn delete_folder_with_structure(
 
     state.folder_service.delete_folder(folder_id).await?;
 
-    Ok(())
+    Ok(AppSuccess::DELETED)
 }
 
 pub async fn delete_folder(
