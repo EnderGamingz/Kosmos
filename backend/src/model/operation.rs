@@ -11,7 +11,7 @@ pub enum OperationType {
 }
 
 impl OperationType {
-    pub fn get_type_by_id(num: i16) -> OperationType {
+    pub fn by_id(num: i16) -> OperationType {
         match num {
             1 => OperationType::ImageProcessing,
             _ => OperationType::General,
@@ -43,6 +43,8 @@ impl OperationStatus {
     }
 }
 
+
+// Start: Operation Model
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct OperationModel {
     pub id: i64,
@@ -57,7 +59,7 @@ pub struct OperationModel {
 }
 
 #[derive(Serialize)]
-pub struct ParsedOperationModel {
+pub struct OperationModelDTO {
     pub id: String,
     pub user_id: String,
     pub operation_type: i16,
@@ -67,3 +69,20 @@ pub struct ParsedOperationModel {
     pub ended_at: Option<DateTime<Utc>>,
     pub updated_at: DateTime<Utc>,
 }
+
+impl From<OperationModel> for OperationModelDTO {
+    fn from(model: OperationModel) -> Self {
+        OperationModelDTO {
+            id: model.id.to_string(),
+            user_id: model.user_id.to_string(),
+            operation_type: model.operation_type,
+            operation_status: model.operation_status,
+            result: model.result,
+            started_at: model.started_at,
+            ended_at: model.ended_at,
+            updated_at: model.updated_at,
+        }
+    }
+}
+
+// End: Operation Model

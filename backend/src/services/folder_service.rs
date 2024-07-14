@@ -2,7 +2,9 @@ use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
 
 use crate::db::{KosmosDb, KosmosPool};
-use crate::model::folder::{DeletionDirectory, Directory, DirectoryWithShare, FolderModel, FolderModelWithShareInfo, ParsedFolderModel, ParsedFolderModelWithShareInfo, ParsedShareFolderModel, ParsedSimpleDirectory, SimpleDirectory};
+use crate::model::folder::{
+    DeletionDirectory, Directory, DirectoryWithShare, FolderModel, SimpleDirectory
+};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{GetFilesParsedSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
@@ -95,42 +97,6 @@ impl FolderService {
                     error: "Folder not found".to_string(),
                 }
             })
-    }
-
-    pub fn parse_folder(folder: &FolderModel) -> ParsedFolderModel {
-        ParsedFolderModel {
-            id: folder.id.to_string(),
-            user_id: folder.user_id.to_string(),
-            folder_name: folder.folder_name.to_string(),
-            parent_id: folder.parent_id.map(|x| x.to_string()),
-            favorite: folder.favorite,
-            created_at: folder.created_at,
-            updated_at: folder.updated_at,
-        }
-    }
-
-    pub fn parse_folder_with_share_info(folder: &FolderModelWithShareInfo) -> ParsedFolderModelWithShareInfo {
-        ParsedFolderModelWithShareInfo {
-            id: folder.id.to_string(),
-            user_id: folder.user_id.to_string(),
-            folder_name: folder.folder_name.to_string(),
-            parent_id: folder.parent_id.map(|x| x.to_string()),
-            favorite: folder.favorite,
-            created_at: folder.created_at,
-            updated_at: folder.updated_at,
-            share_uuid: folder.share_uuid.to_string(),
-            share_target_username: folder.share_target_username.clone(),
-        }
-    }
-
-    pub fn parse_share_folder(folder: &FolderModel) -> ParsedShareFolderModel {
-        ParsedShareFolderModel {
-            id: folder.id.to_string(),
-            folder_name: folder.folder_name.to_string(),
-            parent_id: folder.parent_id.map(|x| x.to_string()),
-            created_at: folder.created_at,
-            updated_at: folder.updated_at,
-        }
     }
 
     pub async fn move_folder(
@@ -416,14 +382,7 @@ impl FolderService {
         Ok(children_res)
     }
 
-    pub fn parse_children_directory(children: SimpleDirectory) -> ParsedSimpleDirectory {
-        ParsedSimpleDirectory {
-            id: children.id.to_string(),
-            folder_name: children.folder_name,
-        }
-    }
-
-    pub fn folder_structure_query(folder_ids: &Vec<i64>, user_id: Option<UserId>) -> String{
+    pub fn folder_structure_query(folder_ids: &Vec<i64>, user_id: Option<UserId>) -> String {
         let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
             "WITH RECURSIVE directories AS (SELECT f.id,
                                       f.folder_name,
@@ -470,16 +429,16 @@ impl FolderService {
         user_id: Option<UserId>,
     ) -> Result<Vec<Directory>, AppError> {
         let folders = folders.into_iter().collect::<Vec<_>>();
-        let folder_res = sqlx::query_as::<_, Directory>(
-            &*Self::folder_structure_query(&folders, user_id)
-        ).bind(&folders)
-        .bind(user_id)
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting folder structure: {}", e);
-            AppError::InternalError
-        })?;
+        let folder_res =
+            sqlx::query_as::<_, Directory>(&*Self::folder_structure_query(&folders, user_id))
+                .bind(&folders)
+                .bind(user_id)
+                .fetch_all(&self.db_pool)
+                .await
+                .map_err(|e| {
+                    tracing::error!("Error getting folder structure: {}", e);
+                    AppError::InternalError
+                })?;
 
         Ok(folder_res)
     }

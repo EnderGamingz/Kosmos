@@ -37,7 +37,7 @@ pub async fn delete_self(
     for file in files {
         state
             .file_service
-            .permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type)))
+            .permanently_delete_file(file.id, Some(FileType::by_id(file.file_type)))
             .await?;
     }
 

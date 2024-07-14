@@ -1,10 +1,9 @@
-use crate::model::folder::{ParsedFolderModel, ParsedSimpleDirectory};
+use crate::model::folder::{FolderModelDTO, SimpleDirectoryDTO};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::{
     GetFilesParsedSortParams, GetFilesSortParams, MoveParams, RenameParams, SortOrder,
 };
-use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::rejection::PathRejection;
@@ -24,9 +23,9 @@ pub enum SortByFolders {
 
 #[derive(Serialize)]
 pub struct FolderResponse {
-    folder: Option<ParsedFolderModel>,
-    folders: Vec<ParsedFolderModel>,
-    structure: Option<Vec<ParsedSimpleDirectory>>,
+    folder: Option<FolderModelDTO>,
+    folders: Vec<FolderModelDTO>,
+    structure: Option<Vec<SimpleDirectoryDTO>>,
 }
 
 pub async fn get_folders(
@@ -49,17 +48,17 @@ pub async fn get_folders(
         offset: sort_params.offset.unwrap_or(0),
     };
 
-    let folders = state
+    let folders: Vec<FolderModelDTO> = state
         .folder_service
         .get_folders(user_id, parent, parsed_params)
         .await?
         .into_iter()
-        .map(|x| FolderService::parse_folder(&x))
+        .map(FolderModelDTO::from)
         .collect::<Vec<_>>();
 
-    let folder = if let Some(folder) = parent {
-        Some(FolderService::parse_folder(
-            &state.folder_service.get_folder(folder).await?,
+    let folder: Option<FolderModelDTO> = if let Some(folder) = parent {
+        Some(FolderModelDTO::from(
+            state.folder_service.get_folder(folder).await?,
         ))
     } else {
         None
@@ -72,7 +71,7 @@ pub async fn get_folders(
                 .get_parent_directories(folder, Some(user_id), None)
                 .await?
                 .into_iter()
-                .map(FolderService::parse_children_directory)
+                .map(SimpleDirectoryDTO::from)
                 .collect::<Vec<_>>(),
         )
     } else {

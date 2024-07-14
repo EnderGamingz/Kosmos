@@ -28,13 +28,13 @@ async fn get_image_format_data(
         });
     }
 
-    let image_format_id = ImageFormat::get_id_by_format(ImageFormat::get_format_by_id(format));
+    let image_format_id = ImageFormat::id_by_format(ImageFormat::format_by_id(format));
 
     // Check that the file exists on disk
     let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
 
     let file_should_have_formats =
-        FileType::get_type_by_id(file_data.file_type) != FileType::RawImage;
+        FileType::by_id(file_data.file_type) != FileType::RawImage;
 
     let format_path =
         if file_should_have_formats {

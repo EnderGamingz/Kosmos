@@ -83,7 +83,7 @@ pub async fn permanently_delete_file(
 
     state
         .file_service
-        .permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type)))
+        .permanently_delete_file(file.id, Some(FileType::by_id(file.file_type)))
         .await?;
 
     Ok(AppSuccess::DELETED)

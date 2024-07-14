@@ -17,7 +17,7 @@ pub enum FileType {
 }
 
 impl FileType {
-    pub fn get_type_by_id(num: i16) -> FileType {
+    pub fn by_id(num: i16) -> FileType {
         match num {
             1 => FileType::Image,
             2 => FileType::Video,
@@ -41,7 +41,7 @@ pub enum PreviewStatus {
 }
 
 impl PreviewStatus {
-    pub fn get_status_by_id(num: i16) -> PreviewStatus {
+    pub fn by_id(num: i16) -> PreviewStatus {
         match num {
             1 => PreviewStatus::Ready,
             2 => PreviewStatus::Failed,
@@ -51,6 +51,7 @@ impl PreviewStatus {
     }
 }
 
+// Start: File Model
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct FileModel {
     pub id: i64,
@@ -68,6 +69,45 @@ pub struct FileModel {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+#[derive(Serialize)]
+pub struct FileModelDTO {
+    pub id: String,
+    pub user_id: String,
+    pub file_name: String,
+    pub file_size: i64,
+    pub file_type: i16,
+    pub mime_type: String,
+    pub metadata: Option<JsonValue>,
+    pub parent_folder_id: Option<String>,
+    pub preview_status: Option<i16>,
+    pub favorite: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
+}
+
+impl From<FileModel> for FileModelDTO {
+    fn from(model: FileModel) -> Self {
+        FileModelDTO {
+            id: model.id.to_string(),
+            user_id: model.user_id.to_string(),
+            file_name: model.file_name,
+            file_size: model.file_size,
+            file_type: model.file_type,
+            mime_type: model.mime_type,
+            metadata: model.metadata,
+            parent_folder_id: model.parent_folder_id.map(|v| v.to_string()),
+            preview_status: model.preview_status,
+            favorite: model.favorite,
+            created_at: model.created_at,
+            updated_at: model.updated_at,
+            deleted_at: model.deleted_at,
+        }
+    }
+}
+// End: File Model
+
+// Start: File Model With Share Info
 #[derive(FromRow)]
 pub struct FileModelWithShareInfo {
     pub id: i64,
@@ -88,24 +128,7 @@ pub struct FileModelWithShareInfo {
 }
 
 #[derive(Serialize)]
-pub struct ParsedFileModel {
-    pub id: String,
-    pub user_id: String,
-    pub file_name: String,
-    pub file_size: i64,
-    pub file_type: i16,
-    pub mime_type: String,
-    pub metadata: Option<JsonValue>,
-    pub parent_folder_id: Option<String>,
-    pub preview_status: Option<i16>,
-    pub favorite: bool,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub deleted_at: Option<DateTime<Utc>>,
-}
-
-#[derive(Serialize)]
-pub struct ParsedFileModelWithShareInfo {
+pub struct FileModelWithShareInfoDTO {
     pub id: String,
     pub user_id: String,
     pub file_name: String,
@@ -123,8 +146,33 @@ pub struct ParsedFileModelWithShareInfo {
     pub share_target_username: Option<String>,
 }
 
+impl From<FileModelWithShareInfo> for FileModelWithShareInfoDTO {
+    fn from(model: FileModelWithShareInfo) -> Self {
+        FileModelWithShareInfoDTO {
+            id: model.id.to_string(),
+            user_id: model.user_id.to_string(),
+            file_name: model.file_name,
+            file_size: model.file_size,
+            file_type: model.file_type,
+            mime_type: model.mime_type,
+            metadata: model.metadata,
+            parent_folder_id: model.parent_folder_id.map(|v| v.to_string()),
+            preview_status: model.preview_status,
+            favorite: model.favorite,
+            created_at: model.created_at,
+            updated_at: model.updated_at,
+            deleted_at: model.deleted_at,
+            share_uuid: model.share_uuid.to_string(),
+            share_target_username: model.share_target_username,
+        }
+    }
+}
+
+// End: File Model With Share Info
+
+// Start: Share File Model
 #[derive(Serialize)]
-pub struct ParsedShareFileModel {
+pub struct ShareFileModelDTO {
     pub id: String,
     pub file_name: String,
     pub file_size: i64,
@@ -135,4 +183,21 @@ pub struct ParsedShareFileModel {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+impl From<FileModel> for ShareFileModelDTO {
+    fn from(model: FileModel) -> Self {
+        ShareFileModelDTO {
+            id: model.id.to_string(),
+            file_name: model.file_name,
+            file_size: model.file_size,
+            file_type: model.file_type,
+            mime_type: model.mime_type,
+            metadata: model.metadata,
+            preview_status: model.preview_status,
+            created_at: model.created_at,
+            updated_at: model.updated_at,
+        }
+    }
+}
+// End: Share File Model
 

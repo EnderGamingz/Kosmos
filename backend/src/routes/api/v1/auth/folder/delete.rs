@@ -65,7 +65,7 @@ pub async fn multi_delete(
             })?;
         state
             .file_service
-            .permanently_delete_file(file_id, Some(FileType::get_type_by_id(file.file_type)))
+            .permanently_delete_file(file_id, Some(FileType::by_id(file.file_type)))
             .await?;
     }
 
@@ -99,7 +99,7 @@ async fn delete_folder_with_structure(
                 .file_service
                 .permanently_delete_file(
                     folder.file_ids[i],
-                    Some(FileType::get_type_by_id(folder.file_types[i])),
+                    Some(FileType::by_id(folder.file_types[i])),
                 )
                 .await?;
         }

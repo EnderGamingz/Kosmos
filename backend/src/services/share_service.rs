@@ -3,9 +3,9 @@ use sqlx::types::Uuid;
 use sqlx::{Execute, QueryBuilder};
 
 use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
-use crate::model::file::{FileModelWithShareInfo};
-use crate::model::folder::{FolderModelWithShareInfo};
-use crate::model::share::{ExtendedShareModel, ParsedShareModel, ShareModel, ShareType};
+use crate::model::file::FileModelWithShareInfo;
+use crate::model::folder::FolderModelWithShareInfo;
+use crate::model::share::{ExtendedShareModel, ShareModel, ShareType};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::share::create::{ShareFilePublicRequest, ShareFolderPublicRequest};
 use crate::routes::api::v1::share::AccessShareItemType;
@@ -76,8 +76,9 @@ impl ShareService {
         share_type: AccessShareItemType,
         get_target: bool,
     ) -> String {
-        let mut query: QueryBuilder<KosmosDb> =
-            QueryBuilder::new("SELECT DISTINCT f.*, s.uuid as share_uuid, u.username as share_target_username");
+        let mut query: QueryBuilder<KosmosDb> = QueryBuilder::new(
+            "SELECT DISTINCT f.*, s.uuid as share_uuid, u.username as share_target_username",
+        );
 
         match share_type {
             AccessShareItemType::File => query.push(
@@ -98,7 +99,6 @@ impl ShareService {
         }
 
         query.push_bind(user_id);
-
 
         query.build().sql().into()
     }
@@ -477,44 +477,5 @@ impl ShareService {
         )
         .execute(&self.db_pool)
         .await;
-    }
-
-    pub fn parse_extended_share(share_model: ExtendedShareModel) -> ParsedShareModel {
-        ParsedShareModel {
-            id: share_model.id.to_string(),
-            uuid: share_model.uuid.to_string(),
-            user_id: share_model.user_id.to_string(),
-            file_id: share_model.file_id.map(|id| id.to_string()),
-            folder_id: share_model.folder_id.map(|id| id.to_string()),
-            share_type: share_model.share_type,
-            share_target: share_model.share_target,
-            share_target_username: share_model.share_target_username,
-            access_limit: share_model.access_limit,
-            password: share_model.password,
-            access_count: share_model.access_count,
-            last_access: share_model.last_access,
-            created_at: share_model.created_at,
-            expires_at: share_model.expires_at,
-            updated_at: share_model.updated_at,
-        }
-    }
-    pub fn parse_share(share_model: ShareModel) -> ParsedShareModel {
-        ParsedShareModel {
-            id: share_model.id.to_string(),
-            uuid: share_model.uuid.to_string(),
-            user_id: share_model.user_id.to_string(),
-            file_id: share_model.file_id.map(|id| id.to_string()),
-            folder_id: share_model.folder_id.map(|id| id.to_string()),
-            share_type: share_model.share_type,
-            share_target: share_model.share_target,
-            access_limit: share_model.access_limit,
-            password: share_model.password,
-            access_count: share_model.access_count,
-            last_access: share_model.last_access,
-            created_at: share_model.created_at,
-            expires_at: share_model.expires_at,
-            updated_at: share_model.updated_at,
-            share_target_username: None,
-        }
     }
 }

@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
 
+// Start: User Model
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct UserModel {
     pub id: i64,
@@ -28,7 +29,6 @@ pub struct UserModelDTO {
     pub updated_at: DateTime<Utc>,
 }
 
-
 impl From<UserModel> for UserModelDTO {
     fn from(user: UserModel) -> Self {
         UserModelDTO {
@@ -43,3 +43,4 @@ impl From<UserModel> for UserModelDTO {
         }
     }
 }
+// End: User Model

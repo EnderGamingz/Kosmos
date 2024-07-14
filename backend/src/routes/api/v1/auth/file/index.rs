@@ -1,16 +1,16 @@
-use crate::model::file::ParsedFileModel;
-use crate::response::error_handling::AppError;
-use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::file_service::FileService;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
-use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
+use axum::extract::rejection::PathRejection;
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
+
+use crate::model::file::FileModelDTO;
+use crate::response::error_handling::AppError;
+use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::services::session_service::SessionService;
+use crate::state::KosmosState;
 
 pub static FILE_SIZE_LIMIT: u64 = 50 * 1024 * 1024;
 
@@ -49,7 +49,7 @@ pub async fn get_files(
     session: Session,
     Query(sort_params): Query<GetFilesSortParams<SortByFiles>>,
     folder_id: Result<Path<i64>, PathRejection>,
-) -> Result<Json<Vec<ParsedFileModel>>, AppError> {
+) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let parsed_params = GetFilesParsedSortParams {
@@ -64,12 +64,12 @@ pub async fn get_files(
         Err(_) => None,
     };
 
-    let files = state
+    let files: Vec<FileModelDTO> = state
         .file_service
         .get_files(user_id, folder, false, parsed_params)
         .await?
         .into_iter()
-        .map(FileService::parse_file)
+        .map(FileModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(files))
@@ -91,7 +91,7 @@ pub async fn get_recent_files(
     State(state): KosmosState,
     session: Session,
     Query(params): Query<GetRecentFilesParams>,
-) -> Result<Json<Vec<ParsedFileModel>>, AppError> {
+) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let parsed_params = GetRecentFilesParsedParams {
@@ -99,12 +99,12 @@ pub async fn get_recent_files(
         offset: params.offset.unwrap_or(0),
     };
 
-    let files = state
+    let files: Vec<FileModelDTO> = state
         .file_service
         .get_recent_files(user_id, parsed_params)
         .await?
         .into_iter()
-        .map(FileService::parse_file)
+        .map(FileModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(files))
@@ -113,14 +113,14 @@ pub async fn get_recent_files(
 pub async fn get_deleted_files(
     State(state): KosmosState,
     session: Session,
-) -> Result<Json<Vec<ParsedFileModel>>, AppError> {
+) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let files = state
+    let files: Vec<FileModelDTO> = state
         .file_service
         .get_marked_deleted_files(user_id)
         .await?
         .into_iter()
-        .map(FileService::parse_file)
+        .map(FileModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(files))

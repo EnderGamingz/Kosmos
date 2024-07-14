@@ -13,19 +13,19 @@ pub const IMAGE_FORMATS: [ImageFormat; 1] = [
 ];
 
 impl ImageFormat {
-    pub fn get_format_by_id(num: i16) -> ImageFormat {
+    pub fn format_by_id(num: i16) -> ImageFormat {
         match num {
             _ => ImageFormat::Thumbnail,
         }
     }
 
-    pub fn get_id_by_format(num: ImageFormat) -> i16 {
+    pub fn id_by_format(num: ImageFormat) -> i16 {
         match num {
             ImageFormat::Thumbnail => 0,
         }
     }
 
-    pub fn get_width_by_format(num: ImageFormat) -> u32 {
+    pub fn width_by_format(num: ImageFormat) -> u32 {
         match num {
             ImageFormat::Thumbnail => 256,
         }

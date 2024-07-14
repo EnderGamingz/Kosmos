@@ -3,15 +3,12 @@ use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
 
-use crate::model::file::{FileModel, ParsedShareFileModel};
-use crate::model::folder::{FolderModel, ParsedShareFolderModel, ParsedSimpleDirectory};
-use crate::model::share::{ExtendedShareModel, ParsedShareModel};
+use crate::model::file::{FileModel, ShareFileModelDTO};
+use crate::model::folder::{FolderModel, ShareFolderModelDTO, SimpleDirectoryDTO};
+use crate::model::share::{ExtendedShareModel, ShareModelDTO};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::file_service::FileService;
-use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
-use crate::services::share_service::ShareService;
 use crate::state::{AppState, KosmosState};
 use crate::utils::auth;
 
@@ -19,7 +16,7 @@ pub async fn get_file_shares_for_user(
     State(state): KosmosState,
     session: Session,
     Path(file_id): Path<i64>,
-) -> Result<Json<Vec<ParsedShareModel>>, AppError> {
+) -> Result<Json<Vec<ShareModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
@@ -27,7 +24,7 @@ pub async fn get_file_shares_for_user(
         .get_file_shares(file_id, user_id)
         .await?
         .into_iter()
-        .map(|share| ShareService::parse_extended_share(share))
+        .map(ShareModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(shares))
@@ -37,7 +34,7 @@ pub async fn get_folder_shares_for_user(
     State(state): KosmosState,
     session: Session,
     Path(folder_id): Path<i64>,
-) -> Result<Json<Vec<ParsedShareModel>>, AppError> {
+) -> Result<Json<Vec<ShareModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
@@ -45,7 +42,7 @@ pub async fn get_folder_shares_for_user(
         .get_folder_shares(folder_id, user_id)
         .await?
         .into_iter()
-        .map(|share| ShareService::parse_extended_share(share))
+        .map(ShareModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(shares))
@@ -91,7 +88,7 @@ pub async fn access_file_share(
     State(state): KosmosState,
     session: Session,
     Path(share_uuid): Path<String>,
-) -> Result<Json<ParsedShareFileModel>, AppError> {
+) -> Result<Json<ShareFileModelDTO>, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
 
     let file = get_share_file(&state, share.file_id).await?;
@@ -100,13 +97,12 @@ pub async fn access_file_share(
     Ok(Json(file.share_file))
 }
 
-
 #[derive(Serialize)]
 pub struct FolderShareData {
-    folder: ParsedShareFolderModel,
-    folders: Vec<ParsedShareFolderModel>,
-    files: Vec<ParsedShareFileModel>,
-    structure: Vec<ParsedSimpleDirectory>,
+    folder: ShareFolderModelDTO,
+    folders: Vec<ShareFolderModelDTO>,
+    files: Vec<ShareFileModelDTO>,
+    structure: Vec<SimpleDirectoryDTO>,
 }
 
 pub async fn access_folder_share(
@@ -124,14 +120,14 @@ pub async fn access_folder_share(
         .get_parent_directories(share.folder_id.unwrap(), None, share.folder_id)
         .await?
         .into_iter()
-        .map(FolderService::parse_children_directory)
+        .map(SimpleDirectoryDTO::from)
         .collect::<Vec<_>>();
 
     Ok(Json(FolderShareData {
         folder: folder.share_folder,
         folders: folder.folders,
         files: folder.files,
-        structure
+        structure,
     }))
 }
 
@@ -169,7 +165,7 @@ pub async fn access_folder_share_item(
                 .get_parent_directories(access_id, None, share.folder_id)
                 .await?
                 .into_iter()
-                .map(FolderService::parse_children_directory)
+                .map(SimpleDirectoryDTO::from)
                 .collect::<Vec<_>>();
 
             Ok(Json(serde_json::json!({
@@ -274,7 +270,7 @@ pub async fn is_allowed_to_access_share(
 
 pub struct SharedFileData {
     pub file: FileModel,
-    pub share_file: ParsedShareFileModel,
+    pub share_file: ShareFileModelDTO,
 }
 
 pub async fn get_share_file(
@@ -288,14 +284,14 @@ pub async fn get_share_file(
         Some(file_id) => state.file_service.get_file(file_id, None).await?,
     };
 
-    let share_file = FileService::parse_share_file(file.clone());
+    let share_file: ShareFileModelDTO = file.clone().into();
 
     Ok(SharedFileData { file, share_file })
 }
 
 pub struct SharedFolder {
     pub folder: FolderModel,
-    pub share_folder: ParsedShareFolderModel,
+    pub share_folder: ShareFolderModelDTO,
 }
 
 pub async fn get_share_folder(
@@ -309,7 +305,7 @@ pub async fn get_share_folder(
         Some(folder_id) => state.folder_service.get_folder(folder_id).await?,
     };
 
-    let share_folder = FolderService::parse_share_folder(&folder);
+    let share_folder = folder.clone().into();
 
     Ok(SharedFolder {
         folder,
@@ -318,9 +314,9 @@ pub async fn get_share_folder(
 }
 
 pub struct SharedFolderData {
-    share_folder: ParsedShareFolderModel,
-    folders: Vec<ParsedShareFolderModel>,
-    files: Vec<ParsedShareFileModel>,
+    share_folder: ShareFolderModelDTO,
+    folders: Vec<ShareFolderModelDTO>,
+    files: Vec<ShareFileModelDTO>,
 }
 
 pub async fn get_share_folder_data(
@@ -334,15 +330,15 @@ pub async fn get_share_folder_data(
         .get_folders_for_share(&Some(data.folder.id))
         .await?
         .into_iter()
-        .map(|folder| FolderService::parse_share_folder(&folder))
+        .map(ShareFolderModelDTO::from)
         .collect::<Vec<_>>();
 
-    let files = state
+    let files: Vec<ShareFileModelDTO> = state
         .file_service
         .get_files_for_share(Some(data.folder.id))
         .await?
         .into_iter()
-        .map(|file| FileService::parse_share_file(file))
+        .map(ShareFileModelDTO::from)
         .collect::<Vec<_>>();
 
     Ok(SharedFolderData {

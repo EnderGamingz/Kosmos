@@ -1,6 +1,6 @@
 use crate::db::KosmosPool;
 use crate::model::operation::{
-    OperationModel, OperationStatus, OperationType, ParsedOperationModel,
+    OperationModel, OperationStatus, OperationType,
 };
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
@@ -165,18 +165,5 @@ impl OperationService {
             AppError::InternalError
         });
         tracing::info!("Prepared operations for startup");
-    }
-
-    pub fn parse_operation(operation: OperationModel) -> ParsedOperationModel {
-        ParsedOperationModel {
-            id: operation.id.to_string(),
-            user_id: operation.user_id.to_string(),
-            operation_type: operation.operation_type,
-            operation_status: operation.operation_status,
-            result: operation.result,
-            started_at: operation.started_at,
-            ended_at: operation.ended_at,
-            updated_at: operation.updated_at,
-        }
     }
 }

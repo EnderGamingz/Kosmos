@@ -3,18 +3,16 @@ use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
 
-use crate::model::file::ParsedFileModelWithShareInfo;
-use crate::model::folder::ParsedFolderModelWithShareInfo;
+use crate::model::file::FileModelWithShareInfoDTO;
+use crate::model::folder::FolderModelWithShareInfoDTO;
 use crate::response::error_handling::AppError;
-use crate::services::file_service::FileService;
-use crate::services::folder_service::FolderService;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
 
 #[derive(Serialize)]
 pub struct SharedItems {
-    files: Vec<ParsedFileModelWithShareInfo>,
-    folders: Vec<ParsedFolderModelWithShareInfo>,
+    files: Vec<FileModelWithShareInfoDTO>,
+    folders: Vec<FolderModelWithShareInfoDTO>,
 }
 
 impl SharedItems {
@@ -23,12 +21,12 @@ impl SharedItems {
         user_id: &UserId,
         targeted: bool,
     ) -> Result<SharedItems, AppError> {
-        let files = state
+        let files: Vec<FileModelWithShareInfoDTO> = state
             .share_service
             .get_shared_files(user_id, targeted)
             .await?
             .into_iter()
-            .map(|file| FileService::parse_file_with_share_info(file))
+            .map(FileModelWithShareInfoDTO::from)
             .collect::<Vec<_>>();
 
         let folders = state
@@ -36,7 +34,7 @@ impl SharedItems {
             .get_shared_folders(user_id, targeted)
             .await?
             .into_iter()
-            .map(|folder| FolderService::parse_folder_with_share_info(&folder))
+            .map(FolderModelWithShareInfoDTO::from)
             .collect::<Vec<_>>();
 
         Ok(SharedItems { files, folders })

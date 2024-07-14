@@ -219,7 +219,7 @@ impl ImageService {
         formats_folder_path: &str,
         image: &PhotonImage,
     ) -> Result<ImageFormatInsert, i64> {
-        let format_width = ImageFormat::get_width_by_format(format);
+        let format_width = ImageFormat::width_by_format(format);
 
         let format = format as i16;
 
