@@ -73,10 +73,7 @@ export function FileDisplayHandler({
   const folderContext = useContext(DisplayContext);
   const isSharedInFolder = folderContext?.shareUuid;
 
-  const initialLoadingState = (
-    shareUuid?: string,
-    isSharedInFolder?: boolean,
-  ) => {
+  const initialLoadingState = () => {
     if (shareUuid && !isSharedInFolder) return;
     return [
       FileType.Image,
