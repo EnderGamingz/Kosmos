@@ -23,6 +23,7 @@ impl Role {
                 permissions.insert(Permission::ListUser);
                 permissions.insert(Permission::ReadUser);
                 permissions.insert(Permission::DeleteUser);
+                permissions.insert(Permission::UpdateUser);
                 permissions
             }
             Role::User => {
@@ -50,4 +51,5 @@ pub enum Permission {
     ReadUser,
     ListUser,
     DeleteUser,
+    UpdateUser,
 }

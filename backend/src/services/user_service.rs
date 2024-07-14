@@ -8,6 +8,7 @@ use validator::Validate;
 
 use crate::db::{KosmosDb, KosmosDbResult};
 use crate::KosmosPool;
+use crate::model::role::Role;
 use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
@@ -185,6 +186,24 @@ impl UserService {
         sqlx::query!(
             "UPDATE users SET storage_limit = $1 WHERE id = $2",
             storage_limit,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating user: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn update_role(
+        &self,
+        user_id: UserId,
+        role: Role
+    ) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE users SET role = $1 WHERE id = $2",
+            role as i16,
             user_id
         )
         .execute(&self.db_pool)

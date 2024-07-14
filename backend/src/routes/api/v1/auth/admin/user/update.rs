@@ -3,7 +3,7 @@ use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
 
-use crate::model::role::Permission;
+use crate::model::role::{Permission, Role};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::user_service::UpdateUserRequest;
@@ -17,6 +17,7 @@ pub struct AdminUpdateUserPayload {
     pub full_name: Option<String>,
     pub new_password: Option<String>,
     pub storage_limit: Option<i64>,
+    pub new_role: Option<i16>,
 }
 
 pub async fn update_user(
@@ -25,9 +26,9 @@ pub async fn update_user(
     Path(user_id): Path<i64>,
     Json(payload): Json<AdminUpdateUserPayload>,
 ) -> ResponseResult {
-    state
+    let admin = state
         .permission_service
-        .verify_permission(&session, Permission::DeleteUser)
+        .verify_permission(&session, Permission::UpdateUser)
         .await?;
 
     let user = state.user_service.get_auth_user(user_id).await?;
@@ -59,6 +60,17 @@ pub async fn update_user(
     }
     if let Some(full_name) = payload.full_name {
         user_update.full_name = Some(full_name);
+    }
+
+    if let Some(new_role) = payload.new_role {
+        let selected_role = Role::by_id(new_role);
+        if admin.id == user.id && !selected_role.has_permission(Permission::UpdateUser) {
+            return Err(AppError::NotAllowed {
+                error: "Role change is not allowed".to_string(),
+            });
+        }
+
+        state.user_service.update_role(user.id, selected_role).await?;
     }
 
     if let Some(new_password) = payload.new_password {
