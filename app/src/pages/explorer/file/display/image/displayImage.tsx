@@ -14,14 +14,17 @@ export function DisplayImage({
   onFullScreen,
   lowRes,
   highRes,
-  shareUuid,
+  share,
 }: {
   file: FileModel;
   fullScreen: boolean;
   onFullScreen: (b: boolean) => void;
   lowRes: string;
   highRes: string;
-  shareUuid?: string;
+  share?: {
+    shareUuid?: string;
+    isSharedInFolder?: boolean;
+  };
 }) {
   // 75 MiB
   const isTooLarge = file.file_size > IMAGE_LOAD_SIZE_THRESHOLD;
@@ -39,14 +42,14 @@ export function DisplayImage({
         onDoubleClick={toggleFullScreen}
         file={file}
         src={highRes}
-        noOffset={!!shareUuid}
+        noOffset={!!share?.shareUuid && !share?.isSharedInFolder}
       />
       <div className={'relative overflow-hidden rounded-xl'}>
         {!isTooLarge && (
           <ImageFullscreenToggle
             isFullscreen={fullScreen}
             toggle={toggleFullScreen}
-            noOffset={!!shareUuid}
+            noOffset={!!share?.shareUuid && !share?.isSharedInFolder}
           />
         )}
         {/* Background for transparent file previews */}

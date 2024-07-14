@@ -114,7 +114,10 @@ export function FileDisplayHandler({
         onFullScreen={onFullScreen}
         highRes={previewOnHold ? lowResUrl : highResUrl}
         lowRes={lowResUrl}
-        shareUuid={shareUuid}
+        share={{
+          shareUuid: shareUuid,
+          isSharedInFolder: !!isSharedInFolder,
+        }}
       />
     );
 
