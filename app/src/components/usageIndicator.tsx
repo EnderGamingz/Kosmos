@@ -54,11 +54,9 @@ export function UsageIndicator({
   const percentageBin = calculatePercentage(data?.bin, limit);
   const remainingPercentage = 100 - percentageActive - percentageBin;
 
-  const anyPercentageExceedsLimit = [
-    percentageActive,
-    percentageBin,
-    remainingPercentage,
-  ].some(x => x > 99);
+  const anyPercentageExceedsLimit = [percentageActive, percentageBin].some(
+    x => x > 99,
+  );
 
   return (
     <div className={tw(small ? 'h-1' : 'h-2')}>

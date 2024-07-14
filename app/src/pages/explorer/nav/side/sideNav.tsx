@@ -35,7 +35,7 @@ export function SideNav() {
         <UsageIndicator data={usage.data} loading={usage.isLoading} />
         <div className={'text-sm text-stone-800 md:text-base'}>
           {formatBytes(total)}{' '}
-          <span className={'text-stone-400'}>of {formatBytes(limit, 0)}</span>
+          <span className={'text-stone-400'}>of {formatBytes(limit)}</span>
         </div>
       </div>
     </motion.aside>
