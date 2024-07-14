@@ -19,7 +19,7 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 import { DataOperationType } from '@models/file.ts';
-import { refetchShareData } from '@lib/query.ts';
+import { invalidateShares } from '@lib/query.ts';
 
 export function CreateShare({
   dataType,
@@ -58,7 +58,7 @@ export function CreateShare({
           },
         )
         .then(() => {
-          refetchShareData().then();
+          invalidateShares().then();
           onDone();
 
           notifications.updateNotification(createId, {

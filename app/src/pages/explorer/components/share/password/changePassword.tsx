@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { BASE_URL } from '@lib/vars.ts';
 import axios from 'axios';
-import { refetchShareData } from '@lib/query.ts';
+import { invalidateShares } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
 function ChangePasswordForm({
@@ -31,7 +31,7 @@ function ChangePasswordForm({
           password: value,
         })
         .then(() => {
-          refetchShareData().then();
+          invalidateShares().then();
           onClose();
           notifications.updateNotification(updateId, {
             severity: Severity.SUCCESS,

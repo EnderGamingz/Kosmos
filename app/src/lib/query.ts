@@ -197,10 +197,15 @@ export async function invalidateShareAccess() {
   });
 }
 
-export async function refetchShareData() {
-  return queryClient.invalidateQueries({
-    queryKey: ['share'],
-  });
+export async function invalidateShares() {
+  return Promise.all([
+    queryClient.invalidateQueries({
+      queryKey: ['share'],
+    }),
+    queryClient.invalidateQueries({
+      queryKey: ['shared'],
+    }),
+  ]);
 }
 
 export async function refetchOperations() {
