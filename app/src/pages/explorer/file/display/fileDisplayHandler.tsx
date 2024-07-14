@@ -5,7 +5,7 @@ import tw from '@lib/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { BASE_URL } from '@lib/vars.ts';
 import { useContext, useEffect, useState } from 'react';
-import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { DisplayContext } from '@lib/contexts.ts';
 import { EmbedFile } from '@pages/explorer/file/display/embedFile.tsx';
 
 export function FileTypeDisplay({
@@ -70,8 +70,14 @@ export function FileDisplayHandler({
   onFullScreen: (b: boolean) => void;
   shareUuid?: string;
 }) {
-  const initialLoadingState = () => {
-    if (shareUuid) return false;
+  const folderContext = useContext(DisplayContext);
+  const isSharedInFolder = folderContext?.shareUuid;
+
+  const initialLoadingState = (
+    shareUuid?: string,
+    isSharedInFolder?: boolean,
+  ) => {
+    if (shareUuid && !isSharedInFolder) return;
     return [
       FileType.Image,
       FileType.Document,
@@ -79,14 +85,12 @@ export function FileDisplayHandler({
       FileType.Video,
     ].includes(file.file_type);
   };
+
   // This artificial hold state is to prevent flicker in the preview
   // and prevent the app from lagging when displaying a file essentially on mobile devices
   const [previewOnHold, setPreviewOnHold] = useState(initialLoadingState());
 
   const isImage = [FileType.Image, FileType.RawImage].includes(file.file_type);
-  const folderContext: DisplayContextType | undefined =
-    useContext(DisplayContext);
-  const isSharedInFolder = folderContext?.shareUuid;
 
   const highResUrl = shareUuid
     ? isSharedInFolder

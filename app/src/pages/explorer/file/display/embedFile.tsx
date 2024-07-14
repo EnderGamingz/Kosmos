@@ -10,7 +10,7 @@ export function EmbedFile({
 }) {
   return (
     <motion.object
-      layoutId={`type-display-${file.id}`}
+      layoutId={`type-${file.id}`}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5 }}
