@@ -1,6 +1,6 @@
 use axum::extract::{Path, State};
 use tower_sessions::Session;
-
+use crate::model::file::FileType;
 use crate::model::role::Permission;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -23,6 +23,20 @@ pub async fn delete_user(
             error: "You cannot delete yourself".to_string(),
         })?
     }
+
+    let files = state
+        .file_service
+        .get_files_for_user_delete(user_id)
+        .await?;
+
+    for file in files {
+        state
+            .file_service
+            .permanently_delete_file(file.id, Some(FileType::get_type_by_id(file.file_type)))
+            .await?;
+    }
+
+    state.folder_service.delete_all_folders(user_id).await?;
 
     state.user_service.delete_user(user_to_delete.id).await?;
 
