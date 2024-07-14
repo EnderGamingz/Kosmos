@@ -177,6 +177,24 @@ impl UserService {
         })
     }
 
+    pub async fn update_storage_limit(
+        &self,
+        user_id: UserId,
+        storage_limit: i64
+    ) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE users SET storage_limit = $1 WHERE id = $2",
+            storage_limit,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating user: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn update_user_password(
         &self,
         user_id: UserId,

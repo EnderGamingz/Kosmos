@@ -1,12 +1,14 @@
+use axum::extract::State;
+use axum::response::IntoResponse;
+use axum::Json;
+use axum_valid::Valid;
+
 use crate::constants::FALLBACK_STORAGE_LIMIT;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::AppSuccess;
 use crate::services::user_service::RegisterCredentials;
 use crate::state::KosmosState;
-use axum::extract::State;
-use axum::response::IntoResponse;
-use axum::Json;
-use axum_valid::Valid;
+use crate::utils::auth;
 
 pub async fn register(
     State(state): KosmosState,
@@ -32,25 +34,17 @@ pub async fn register(
         })?;
     }
 
-    let password_hash = bcrypt::hash(&payload.password, 12);
+    let password_hash = auth::hash_password(&payload.password)?;
 
-    match password_hash {
-        Ok(hash) => {
-            let default_storage_limit = match std::env::var("DEFAULT_STORAGE_LIMIT") {
-                Ok(env) => env.parse::<i64>().unwrap_or(FALLBACK_STORAGE_LIMIT),
-                Err(_) => FALLBACK_STORAGE_LIMIT,
-            };
-
-            state
-                .user_service
-                .create_user(payload.username, hash, default_storage_limit)
-                .await?;
-        }
-        Err(e) => {
-            tracing::error!("Error hashing password: {}", e);
-            Err(AppError::InternalError)?
-        }
+    let default_storage_limit = match std::env::var("DEFAULT_STORAGE_LIMIT") {
+        Ok(env) => env.parse::<i64>().unwrap_or(FALLBACK_STORAGE_LIMIT),
+        Err(_) => FALLBACK_STORAGE_LIMIT,
     };
+
+    state
+        .user_service
+        .create_user(payload.username, password_hash, default_storage_limit)
+        .await?;
 
     Ok(AppSuccess::CREATED { id: None })
 }

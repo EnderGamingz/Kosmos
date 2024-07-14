@@ -8,7 +8,7 @@ use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::SessionService;
 use crate::state::AppState;
-
+use crate::utils::auth;
 #[derive(Deserialize)]
 pub struct LoginCredentials {
     username: String,
@@ -39,11 +39,7 @@ pub async fn login(
         }
     };
 
-    let is_password_valid =
-        bcrypt::verify(payload.password, &*user.password_hash).map_err(|e| {
-            tracing::error!("Failed to verify password: {}", e);
-            AppError::InternalError
-        })?;
+    let is_password_valid = auth::verify_password(payload.password.as_str(), &user.password_hash)?;
 
     if !is_password_valid {
         Err(AppError::Forbidden {
@@ -51,7 +47,9 @@ pub async fn login(
         })?;
     }
 
-    session.insert(SESSION_USER_ID_KEY, user.id).await
+    session
+        .insert(SESSION_USER_ID_KEY, user.id)
+        .await
         .map_err(|e| {
             tracing::error!("Failed to insert session: {}", e);
             AppError::InternalError

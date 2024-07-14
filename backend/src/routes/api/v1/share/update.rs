@@ -1,11 +1,12 @@
-use crate::response::error_handling::AppError;
-use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
 use axum::extract::{Path, State};
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
+
+use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::services::session_service::SessionService;
+use crate::state::KosmosState;
+use crate::utils::auth;
 
 #[derive(Deserialize)]
 pub struct UpdateShareRequest {
@@ -25,10 +26,7 @@ pub async fn update_share(
         .await?;
 
     if let Some(password) = payload.password {
-        let hashed_password = bcrypt::hash(password, bcrypt::DEFAULT_COST).map_err(|e| {
-            tracing::error!("Error hashing password: {}", e);
-            AppError::InternalError
-        })?;
+        let hashed_password = auth::hash_password(password.as_str())?;
         state
             .share_service
             .update_share_password(share.id, hashed_password)

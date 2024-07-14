@@ -4,7 +4,7 @@ use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
 use crate::services::user_service::UpdateUserRequest;
 use crate::state::KosmosState;
-use crate::utils::string;
+use crate::utils::{auth, string, validation};
 use axum::extract::State;
 use axum::Json;
 use axum_valid::Valid;
@@ -34,13 +34,8 @@ pub async fn update_user(
     };
 
     if let Some(username) = payload.username {
-        let username = string::remove_whitespace(&username);
+        let username = validation::verify_username(username.as_str())?;
         if username != user.username {
-            if username.len() < 4 || username.len() > 255 {
-                return Err(AppError::BadRequest {
-                    error: Some("Username too short".to_string()),
-                });
-            }
             let exists = state
                 .user_service
                 .get_user_by_username_optional(&username)
@@ -50,8 +45,8 @@ pub async fn update_user(
                     error: "Username already in use".to_string(),
                 });
             }
-            user_update.username = username;
         }
+        user_update.username = username;
     }
 
     if let Some(email) = payload.email {
@@ -81,11 +76,7 @@ pub async fn update_user_password(
     let user_id = SessionService::check_logged_in(&session).await?;
     let user = state.user_service.get_auth_user(user_id).await?;
 
-    if payload.new_password.len() < 8 || payload.new_password.len() > 255 {
-        return Err(AppError::BadRequest {
-            error: Some("New Password too short".to_string()),
-        });
-    }
+    validation::validate_password(&payload.new_password)?;
 
     // Make sure old password is not the same as new password
     if payload.new_password == payload.old_password {
@@ -95,10 +86,7 @@ pub async fn update_user_password(
     }
 
     // Make sure old password is correct
-    let password_flag = bcrypt::verify(payload.old_password, &user.password_hash).map_err(|e| {
-        tracing::error!("Error while verifying password: {}", e);
-        AppError::InternalError
-    })?;
+    let password_flag = auth::verify_password(&payload.old_password, &user.password_hash)?;
 
     if !password_flag {
         return Err(AppError::BadRequest {
@@ -107,11 +95,7 @@ pub async fn update_user_password(
     }
 
     // Hash new password
-    let new_password_hash =
-        bcrypt::hash(payload.new_password, bcrypt::DEFAULT_COST).map_err(|e| {
-            tracing::error!("Error while hashing password: {}", e);
-            AppError::InternalError
-        })?;
+    let new_password_hash = auth::hash_password(&payload.new_password)?;
 
     // Update password
     state

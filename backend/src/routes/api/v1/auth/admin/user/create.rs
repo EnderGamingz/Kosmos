@@ -1,7 +1,6 @@
 use axum::extract::State;
 use axum::Json;
 use axum_valid::Valid;
-use bcrypt::DEFAULT_COST;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
@@ -10,6 +9,7 @@ use crate::model::role::Permission;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::state::KosmosState;
+use crate::utils::auth;
 
 #[derive(Deserialize, Validate)]
 pub struct AdminCreateUser {
@@ -41,10 +41,7 @@ pub async fn create_user(
         })?;
     }
 
-    let hashed_password = bcrypt::hash(&payload.password, DEFAULT_COST).map_err(|e| {
-        tracing::error!("Error hashing password: {}", e);
-        AppError::InternalError
-    })?;
+    let hashed_password = auth::hash_password(payload.password.as_str())?;
 
     let new_user_id = state
         .user_service

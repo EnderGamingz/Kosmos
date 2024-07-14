@@ -191,7 +191,17 @@ fn get_share_router() -> KosmosRouter {
 
 fn get_admin_router() -> KosmosRouter {
     Router::new()
-        .route("/user", post(crate::routes::api::v1::auth::admin::user::create_user))
+        .route(
+            "/user",
+            get(crate::routes::api::v1::auth::admin::user::get_all_users)
+                .post(crate::routes::api::v1::auth::admin::user::create_user),
+        )
+        .route(
+            "/user/:user_id",
+            get(crate::routes::api::v1::auth::admin::user::get_user)
+                .delete(crate::routes::api::v1::auth::admin::user::delete_user)
+                .patch(crate::routes::api::v1::auth::admin::user::update_user),
+        )
 }
 
 fn get_auth_router() -> KosmosRouter {

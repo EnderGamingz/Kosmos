@@ -8,6 +8,7 @@ use axum::Json;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use tower_sessions::Session;
+use crate::utils::auth;
 
 #[derive(Deserialize)]
 pub struct ShareFilePublicRequest {
@@ -41,14 +42,11 @@ pub async fn share_file_public(
     // Check if file exists by the logged-in user
     state.file_service.get_file(file_id, Some(user_id)).await?;
 
-    if payload.password.is_some() {
-        let hashed_password = bcrypt::hash(payload.password.unwrap(), bcrypt::DEFAULT_COST)
-            .map_err(|e| {
-                tracing::error!("Error hashing password: {}", e);
-                AppError::InternalError
-            })?;
+    if let Some(password) = payload.password {
+        let hashed_password = auth::hash_password(password.as_str())?;
         payload.password = Some(hashed_password);
     }
+
     let uuid = state
         .share_service
         .create_public_file_share(file_id, payload, user_id)
@@ -104,12 +102,8 @@ pub async fn share_folder_public(
         });
     }
 
-    if payload.password.is_some() {
-        let hashed_password = bcrypt::hash(payload.password.unwrap(), bcrypt::DEFAULT_COST)
-            .map_err(|e| {
-                tracing::error!("Error hashing password: {}", e);
-                AppError::InternalError
-            })?;
+    if let Some(password) = payload.password {
+        let hashed_password = auth::hash_password(password.as_str())?;
         payload.password = Some(hashed_password);
     }
 

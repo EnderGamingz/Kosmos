@@ -20,6 +20,9 @@ impl Role {
             Role::Admin => {
                 let mut permissions = HashSet::new();
                 permissions.insert(Permission::CreateUser);
+                permissions.insert(Permission::ListUser);
+                permissions.insert(Permission::ReadUser);
+                permissions.insert(Permission::DeleteUser);
                 permissions
             }
             Role::User => {
@@ -44,4 +47,7 @@ impl Role {
 #[derive(Clone, Copy, PartialEq, Hash, Eq)]
 pub enum Permission {
     CreateUser,
+    ReadUser,
+    ListUser,
+    DeleteUser,
 }

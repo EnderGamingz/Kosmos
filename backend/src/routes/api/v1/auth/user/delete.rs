@@ -6,6 +6,7 @@ use crate::state::KosmosState;
 use axum::extract::State;
 use axum::Json;
 use tower_sessions::Session;
+use crate::utils::auth;
 
 #[derive(serde::Deserialize)]
 pub struct DeleteSelfUserRequest {
@@ -20,10 +21,7 @@ pub async fn delete_self(
     let user_id = SessionService::check_logged_in(&session).await?;
     let user = state.user_service.get_auth_user(user_id).await?;
 
-    let password_flag = bcrypt::verify(payload.password, &user.password_hash).map_err(|e| {
-        tracing::error!("Error while verifying password: {}", e);
-        AppError::InternalError
-    })?;
+    let password_flag = auth::verify_password(payload.password.as_str(), &user.password_hash)?;
 
     if !password_flag {
         return Err(AppError::Forbidden {

@@ -12,6 +12,7 @@ use crate::services::folder_service::FolderService;
 use crate::services::session_service::SessionService;
 use crate::services::share_service::ShareService;
 use crate::state::{AppState, KosmosState};
+use crate::utils::auth;
 
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
@@ -69,12 +70,7 @@ pub async fn unlock_share(
     //Check password
     match share.password {
         Some(password) => {
-            let is_correct = bcrypt::verify(payload.password, &password).map_err(|e| {
-                tracing::error!("Error verifying share password: {}", e);
-                AppError::BadRequest {
-                    error: Some("Wrong password".to_string()),
-                }
-            })?;
+            let is_correct = auth::verify_password(payload.password.as_str(), password.as_str())?;
 
             if !is_correct {
                 Err(AppError::BadRequest {
