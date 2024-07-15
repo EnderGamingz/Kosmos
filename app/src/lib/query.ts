@@ -76,7 +76,38 @@ export const useFiles = (parent_id?: string, sort?: SortParams) => {
   });
 };
 
-export const useFileByTypeInfinite = (fileType: number, limit?: number) => {
+export const useFilesInfinite = (
+  parent_id?: string,
+  sort?: SortParams,
+  limit?: number,
+) => {
+  return useInfiniteQuery({
+    queryFn: ({ pageParam }) =>
+      axios
+        .get(`${BASE_URL}auth/file/all${parent_id ? `/${parent_id}` : ''}`, {
+          params: {
+            sort_by: getQuerySortString(sort?.sort_by),
+            sort_order: getSortOrderString(sort?.sort_order),
+            limit: limit,
+            page: pageParam,
+          },
+        })
+        .then(res => res.data as FileModel[]),
+    queryKey: ['files', parent_id, sort],
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (limit && lastPage.length < limit) return undefined;
+      if (lastPage.length === 0) return undefined;
+      return lastPageParam + 1;
+    },
+    getPreviousPageParam: (_firstPage, _allPages, firstPageParam) => {
+      if (firstPageParam <= 1) return undefined;
+      return firstPageParam - 1;
+    },
+  });
+};
+
+export const useFileByTypeInfinite = (fileType: number, limit: number) => {
   return useInfiniteQuery({
     queryFn: ({ pageParam }) =>
       axios
@@ -90,6 +121,7 @@ export const useFileByTypeInfinite = (fileType: number, limit?: number) => {
     queryKey: ['files', 'type', fileType],
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (limit && lastPage.length < limit) return undefined;
       if (lastPage.length === 0) return undefined;
       return lastPageParam + 1;
     },
@@ -100,14 +132,13 @@ export const useFileByTypeInfinite = (fileType: number, limit?: number) => {
   });
 };
 
-export const useRecentFiles = (limit?: number, offset?: number) => {
+export const useRecentFiles = (limit?: number) => {
   return useQuery({
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/file/all/recent`, {
           params: {
             limit: limit,
-            offset: offset,
           },
         })
         .then(res => res.data as FileModel[]),

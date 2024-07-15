@@ -7,7 +7,7 @@ use crate::model::file::{FileModel, FileType, PreviewStatus};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{
-    GetFilesParsedSortParams, GetRecentFilesParsedParams, SortByFiles, SortOrder,
+    GetFilesSortParams, GetRecentFilesParams, SortByFiles, SortOrder,
 };
 use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
@@ -26,7 +26,7 @@ impl FileService {
         user_id: UserId,
         parent_folder_id: Option<i64>,
         with_deleted: bool,
-        search: &GetFilesParsedSortParams<SortByFiles>,
+        search: &GetFilesSortParams<SortByFiles>,
     ) -> String {
         let mut query: QueryBuilder<KosmosDb> =
             QueryBuilder::new("SELECT * FROM files WHERE user_id = ");
@@ -41,27 +41,31 @@ impl FileService {
         query.push(" AND parent_folder_id IS NOT DISTINCT FROM ");
         query.push_bind(parent_folder_id);
 
-        if search.sort_by == SortByFiles::Name {
+        let sort_by = search.get_sort_by();
+
+        if sort_by == &SortByFiles::Name {
             query.push(" ORDER BY LOWER(file_name)");
-        } else if search.sort_by == SortByFiles::FileSize {
+        } else if sort_by == &SortByFiles::FileSize {
             query.push(" ORDER BY file_size");
-        } else if search.sort_by == SortByFiles::CreatedAt {
+        } else if sort_by == &SortByFiles::CreatedAt {
             query.push(" ORDER BY created_at");
-        } else if search.sort_by == SortByFiles::UpdatedAt {
+        } else if sort_by == &SortByFiles::UpdatedAt {
             query.push(" ORDER BY updated_at");
         }
 
-        if search.sort_order == SortOrder::Asc {
+        let search_order = search.get_sort_order();
+
+        if search_order == &SortOrder::Asc {
             query.push(" ASC");
         } else {
             query.push(" DESC");
         }
 
         query.push(" LIMIT ");
-        query.push_bind(search.limit);
+        query.push_bind(search.get_limit());
 
         query.push(" OFFSET ");
-        query.push_bind(search.offset);
+        query.push_bind(search.get_page() * search.get_limit());
 
         query.build().sql().into()
     }
@@ -71,7 +75,7 @@ impl FileService {
         user_id: UserId,
         parent_folder_id: Option<i64>,
         with_deleted: bool,
-        search: GetFilesParsedSortParams<SortByFiles>,
+        search: GetFilesSortParams<SortByFiles>,
     ) -> Result<Vec<FileModel>, AppError> {
         sqlx::query_as::<_, FileModel>(&*Self::files_search_query(
             user_id,
@@ -81,8 +85,8 @@ impl FileService {
         ))
         .bind(user_id)
         .bind(parent_folder_id)
-        .bind(search.limit)
-        .bind(search.offset)
+        .bind(search.get_limit())
+        .bind(search.get_page() * search.get_limit())
         .fetch_all(&self.db_pool)
         .await
         .map_err(|e| {
@@ -176,7 +180,7 @@ impl FileService {
     pub async fn get_recent_files(
         &self,
         user_id: UserId,
-        search: GetRecentFilesParsedParams,
+        search: GetRecentFilesParams,
     ) -> Result<Vec<FileModel>, AppError> {
         sqlx::query_as!(
             FileModel,
@@ -185,8 +189,8 @@ impl FileService {
              ORDER BY updated_at DESC
              LIMIT $2 OFFSET $3",
             user_id,
-            search.limit,
-            search.offset
+            search.get_limit(),
+            search.get_page() * search.get_limit()
         )
         .fetch_all(&self.db_pool)
         .await

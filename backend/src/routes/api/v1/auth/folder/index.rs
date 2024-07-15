@@ -1,18 +1,17 @@
-use crate::model::folder::{FolderModelDTO, SimpleDirectoryDTO};
-use crate::response::error_handling::AppError;
-use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::routes::api::v1::auth::file::{
-    GetFilesParsedSortParams, GetFilesSortParams, MoveParams, RenameParams, SortOrder,
-};
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
-use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
+use axum::extract::rejection::PathRejection;
 use axum::Json;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
 use validator::Validate;
+
+use crate::model::folder::{FolderModelDTO, SimpleDirectoryDTO};
+use crate::response::error_handling::AppError;
+use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::routes::api::v1::auth::file::{GetFilesSortParams, MoveParams, RenameParams};
+use crate::services::session_service::SessionService;
+use crate::state::KosmosState;
 
 #[derive(Deserialize, Debug, PartialEq)]
 pub enum SortByFolders {
@@ -41,16 +40,9 @@ pub async fn get_folders(
         Err(_) => None,
     };
 
-    let parsed_params = GetFilesParsedSortParams {
-        sort_order: sort_params.sort_order.unwrap_or(SortOrder::Asc),
-        sort_by: sort_params.sort_by.unwrap_or(SortByFolders::Name),
-        limit: sort_params.limit.unwrap_or(200),
-        offset: sort_params.offset.unwrap_or(0),
-    };
-
     let folders: Vec<FolderModelDTO> = state
         .folder_service
-        .get_folders(user_id, parent, parsed_params)
+        .get_folders(user_id, parent, sort_params)
         .await?
         .into_iter()
         .map(FolderModelDTO::from)

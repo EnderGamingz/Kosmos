@@ -6,7 +6,7 @@ use crate::model::folder::{
     DeletionDirectory, Directory, DirectoryWithShare, FolderModel, SimpleDirectory
 };
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::auth::file::{GetFilesParsedSortParams, SortOrder};
+use crate::routes::api::v1::auth::file::{GetFilesSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
 use crate::services::session_service::UserId;
 
@@ -24,7 +24,7 @@ impl FolderService {
     fn folder_search_query(
         user_id: UserId,
         parent_id: Option<i64>,
-        search: &GetFilesParsedSortParams<SortByFolders>,
+        search: &GetFilesSortParams<SortByFolders>,
     ) -> String {
         let mut query: QueryBuilder<KosmosDb> =
             QueryBuilder::new("SELECT * FROM folder WHERE user_id = ");
@@ -33,19 +33,31 @@ impl FolderService {
         query.push(" AND parent_id IS NOT DISTINCT FROM ");
         query.push_bind(parent_id);
 
-        if search.sort_by == SortByFolders::Name {
+        let sort_by = search.get_sort_by();
+
+        if sort_by == &SortByFolders::Name {
             query.push(" ORDER BY LOWER(folder_name)");
-        } else if search.sort_by == SortByFolders::CreatedAt {
+        } else if sort_by == &SortByFolders::CreatedAt {
             query.push(" ORDER BY created_at");
-        } else if search.sort_by == SortByFolders::UpdatedAt {
+        } else if sort_by == &SortByFolders::UpdatedAt {
             query.push(" ORDER BY updated_at");
         }
 
-        if search.sort_order == SortOrder::Asc {
+
+        let search_order = search.get_sort_order();
+
+        if search_order == &SortOrder::Asc {
             query.push(" ASC");
         } else {
             query.push(" DESC");
         }
+
+
+        query.push(" LIMIT ");
+        query.push_bind(search.get_limit());
+
+        query.push(" OFFSET ");
+        query.push_bind(search.get_page() * search.get_limit());
 
         query.sql().into()
     }
@@ -54,13 +66,13 @@ impl FolderService {
         &self,
         user_id: UserId,
         parent_id: Option<i64>,
-        search: GetFilesParsedSortParams<SortByFolders>,
+        search: GetFilesSortParams<SortByFolders>,
     ) -> Result<Vec<FolderModel>, AppError> {
         sqlx::query_as::<_, FolderModel>(&*Self::folder_search_query(user_id, parent_id, &search))
             .bind(user_id)
             .bind(parent_id)
-            .bind(search.limit)
-            .bind(search.offset)
+            .bind(search.get_limit())
+            .bind(search.get_page())
             .fetch_all(&self.db_pool)
             .await
             .map_err(|e| {

@@ -29,12 +29,12 @@ import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.t
 export function FileUploadContent({
   folder,
   onClose,
-  isInFileList,
+  isInHeader,
   children,
 }: {
   folder?: string;
   onClose?: () => void;
-  isInFileList?: boolean;
+  isInHeader?: boolean;
   children?: ReactNode;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -145,7 +145,7 @@ export function FileUploadContent({
         .map(file => file.path?.split('/').length)
         .some(x => (x || 0) > 1);
       if (isPossibleFolderUpload) {
-        if (isInFileList) {
+        if (isInHeader) {
           notification.notify({
             title: 'Folder Upload',
             status: 'Prevented',
@@ -160,16 +160,16 @@ export function FileUploadContent({
 
       setSelectForUpload(makeUploadFiles(acceptedFiles, fileNamesRef.current));
     },
-    [fileNamesRef, isInFileList, notification],
+    [fileNamesRef, isInHeader, notification],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    noClick: isInFileList,
-    noKeyboard: isInFileList,
+    noClick: isInHeader,
+    noKeyboard: isInHeader,
   });
 
-  if (isInFileList && children) {
+  if (isInHeader && children) {
     return (
       <>
         <ConflictModal
@@ -180,7 +180,7 @@ export function FileUploadContent({
         <div
           {...getRootProps()}
           className={tw(
-            'flex-grow rounded-lg outline-dashed outline-2 outline-transparent transition-all',
+            'flex items-center gap-1 rounded-lg p-2 outline-dashed outline-2 outline-transparent transition-all',
             isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
           )}>
           <input {...getInputProps()} />

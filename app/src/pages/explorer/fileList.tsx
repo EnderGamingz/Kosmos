@@ -1,13 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { useFiles, useFolders } from '@lib/query.ts';
+import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
-import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 
 export function FileList() {
@@ -32,10 +31,10 @@ export function FileList() {
 
   const sort = useSearchState(s => s.sort);
 
-  const files = useFiles(folder, sort);
+  const files = useFilesInfinite(folder, sort, 50);
 
   useEffect(() => {
-    setFilesInScope(files.data || []);
+    setFilesInScope(files.data?.pages.flat() || []);
   }, [files, setFilesInScope]);
 
   const folders = useFolders(folder, sort);
@@ -74,13 +73,19 @@ export function FileList() {
       <div className={'flex items-center pl-3 md:pl-0'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
-      <FileUploadContent folder={folder} isInFileList={true}>
-        <ExplorerDataDisplay
-          isLoading={isLoading}
-          files={files.data || []}
-          folders={folders.data?.folders || []}
-        />
-      </FileUploadContent>
+      <ExplorerDataDisplay
+        isLoading={isLoading}
+        files={files.data?.pages.flat() || []}
+        folders={folders.data?.folders || []}
+        viewSettings={{
+          paged: true,
+          hasNextPage: files.hasNextPage,
+          onLoadNextPage: async () => {
+            if (files.isFetching) return;
+            await files.fetchNextPage();
+          },
+        }}
+      />
     </div>
   );
 }

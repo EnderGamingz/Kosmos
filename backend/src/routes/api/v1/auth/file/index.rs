@@ -9,6 +9,7 @@ use validator::Validate;
 use crate::model::file::{FileModelDTO, FileType};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::routes::api::v1::auth::folder::SortByFolders;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
@@ -33,15 +34,43 @@ pub struct GetFilesSortParams<SortBy> {
     pub sort_order: Option<SortOrder>,
     pub sort_by: Option<SortBy>,
     pub limit: Option<i64>,
-    pub offset: Option<i64>,
+    pub page: Option<i64>,
 }
 
-#[derive(Debug)]
-pub struct GetFilesParsedSortParams<Sort> {
-    pub sort_order: SortOrder,
-    pub sort_by: Sort,
-    pub limit: i64,
-    pub offset: i64,
+impl GetFilesSortParams<SortByFiles> {
+    pub fn get_sort_order(&self) -> &SortOrder {
+        self.sort_order.as_ref().unwrap_or(&SortOrder::Asc)
+    }
+
+    pub fn get_sort_by(&self) -> &SortByFiles {
+        self.sort_by.as_ref().unwrap_or(&SortByFiles::Name)
+    }
+
+    pub fn get_limit(&self) -> i64 {
+        self.limit.unwrap_or(50)
+    }
+
+    pub fn get_page(&self) -> i64 {
+        self.page.unwrap_or(0)
+    }
+}
+
+impl GetFilesSortParams<SortByFolders> {
+    pub fn get_sort_order(&self) -> &SortOrder {
+        self.sort_order.as_ref().unwrap_or(&SortOrder::Asc)
+    }
+
+    pub fn get_sort_by(&self) -> &SortByFolders {
+        self.sort_by.as_ref().unwrap_or(&SortByFolders::Name)
+    }
+
+    pub fn get_limit(&self) -> i64 {
+        self.limit.unwrap_or(50)
+    }
+
+    pub fn get_page(&self) -> i64 {
+        self.page.unwrap_or(0)
+    }
 }
 
 pub async fn get_files(
@@ -52,13 +81,6 @@ pub async fn get_files(
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let parsed_params = GetFilesParsedSortParams {
-        sort_order: sort_params.sort_order.unwrap_or(SortOrder::Asc),
-        sort_by: sort_params.sort_by.unwrap_or(SortByFiles::Name),
-        limit: sort_params.limit.unwrap_or(200),
-        offset: sort_params.offset.unwrap_or(0),
-    };
-
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
@@ -66,7 +88,7 @@ pub async fn get_files(
 
     let files = state
         .file_service
-        .get_files(user_id, folder, false, parsed_params)
+        .get_files(user_id, folder, false, sort_params)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
@@ -78,13 +100,17 @@ pub async fn get_files(
 #[derive(Deserialize)]
 pub struct GetRecentFilesParams {
     pub limit: Option<i64>,
-    pub offset: Option<i64>,
+    pub page: Option<i64>,
 }
 
-#[derive(Debug)]
-pub struct GetRecentFilesParsedParams {
-    pub limit: i64,
-    pub offset: i64,
+impl GetRecentFilesParams {
+    pub fn get_limit(&self) -> i64 {
+        self.limit.unwrap_or(50)
+    }
+
+    pub fn get_page(&self) -> i64 {
+        self.page.unwrap_or(0)
+    }
 }
 
 pub async fn get_recent_files(
@@ -94,14 +120,9 @@ pub async fn get_recent_files(
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let parsed_params = GetRecentFilesParsedParams {
-        limit: params.limit.unwrap_or(50),
-        offset: params.offset.unwrap_or(0),
-    };
-
     let files = state
         .file_service
-        .get_recent_files(user_id, parsed_params)
+        .get_recent_files(user_id, params)
         .await?
         .into_iter()
         .map(FileModelDTO::from)

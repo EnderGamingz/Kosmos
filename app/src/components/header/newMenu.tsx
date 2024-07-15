@@ -14,6 +14,7 @@ import { CreateFolder } from '@pages/explorer/folder/createFolder';
 import { useExplorerStore } from '@stores/explorerStore';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
+import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);
@@ -26,9 +27,11 @@ export function NewMenu() {
     <>
       <Popover isOpen={open} onOpenChange={setOpen} placement={'bottom'}>
         <PopoverTrigger>
-          <button className={'flex items-center px-2'}>
-            <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
-            <span className={'text-md text-md hidden sm:inline'}>New</span>
+          <button>
+            <FileUploadContent folder={currentFolder} isInHeader={true}>
+              <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
+              <span className={'text-md text-md hidden sm:inline'}>New</span>
+            </FileUploadContent>
           </button>
         </PopoverTrigger>
         <PopoverContent>
