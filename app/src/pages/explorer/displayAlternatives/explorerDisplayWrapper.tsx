@@ -20,12 +20,14 @@ export function ExplorerDisplayWrapper({
   limitedView,
   children,
   shareUuid,
+  noScrollControl,
 }: {
   files: FileModel[];
   folders: FolderModel[];
   limitedView?: boolean;
   children: ReactNode;
   shareUuid?: string;
+  noScrollControl?: boolean;
 }) {
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const [dragged, setDragged] = useState<
@@ -93,6 +95,7 @@ export function ExplorerDisplayWrapper({
     <DisplayContext.Provider
       value={{
         limitedView,
+        noScrollControl,
         handleContext,
         files,
         folders,
@@ -120,20 +123,22 @@ export function ExplorerDisplayWrapper({
         shareUuid={shareUuid}
       />
       {!shareUuid && <ShareModal />}
-      <AnimatePresence>
-        {context.clicked && (
-          <Portal>
-            <ContextMenu
-              pos={context.pos}
-              onClose={() => context.setClicked(false)}>
-              <ContextMenuContent
-                data={context.data}
-                onClose={() => context.setClicked(false)}
-              />
-            </ContextMenu>
-          </Portal>
-        )}
-      </AnimatePresence>
+      {!noScrollControl && (
+        <AnimatePresence>
+          {context.clicked && (
+            <Portal>
+              <ContextMenu
+                pos={context.pos}
+                onClose={() => context.setClicked(false)}>
+                <ContextMenuContent
+                  data={context.data}
+                  onClose={() => context.setClicked(false)}
+                />
+              </ContextMenu>
+            </Portal>
+          )}
+        </AnimatePresence>
+      )}
     </DisplayContext.Provider>
   );
 }

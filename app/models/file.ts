@@ -80,7 +80,7 @@ export function getFileTypeString(id: number): string {
     case FileType.Archive:
       return 'Archive';
     default:
-      return 'Unknown';
+      return 'Generic';
   }
 }
 

@@ -43,12 +43,14 @@ export default function ExplorerDataDisplay({
   folders,
   limitedView,
   shareUuid,
+  noScrollControl,
 }: {
   isLoading: boolean;
   files: FileModel[];
   folders: FolderModel[];
   limitedView?: boolean;
   shareUuid?: string;
+  noScrollControl?: boolean;
 }) {
   const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
@@ -80,7 +82,8 @@ export default function ExplorerDataDisplay({
       shareUuid={shareUuid}
       files={files}
       folders={folders}
-      limitedView={limitedView}>
+      limitedView={limitedView}
+      noScrollControl={noScrollControl}>
       {getDisplayComponent(displayType.type, displayType.details)}
     </ExplorerDisplayWrapper>
   );

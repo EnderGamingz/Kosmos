@@ -127,13 +127,15 @@ export function TableFileItem({
           </motion.p>
         </motion.div>
         <Favorite id={file.id} type={'file'} iconOnly active={file.favorite} />
-        <button
-          onClick={e => {
-            context.handleContext({ x: e.clientX, y: e.clientY }, file);
-          }}
-          className={'cursor-pointer p-2'}>
-          <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
-        </button>
+        {!context.noScrollControl && (
+          <button
+            onClick={e => {
+              context.handleContext({ x: e.clientX, y: e.clientY }, file);
+            }}
+            className={'cursor-pointer p-2'}>
+            <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+          </button>
+        )}
       </td>
       <motion.td layoutId={`size-${file.id}`} align={'right'}>
         {formatBytes(file.file_size)}

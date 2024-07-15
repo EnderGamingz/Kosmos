@@ -90,6 +90,10 @@ fn get_file_router() -> KosmosRouter {
         )
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
         .route(
+            "/all/type/:file_type",
+            get(crate::routes::api::v1::auth::file::get_file_by_type),
+        )
+        .route(
             "/all/recent",
             get(crate::routes::api::v1::auth::file::get_recent_files),
         )
@@ -116,6 +120,18 @@ fn get_download_router() -> KosmosRouter {
     )
 }
 
+fn get_usage_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/stats",
+            get(crate::routes::api::v1::auth::user::usage::get_usage_stats),
+        )
+        .route(
+            "/report",
+            get(crate::routes::api::v1::auth::user::usage::get_usage_report),
+        )
+}
+
 fn get_user_router() -> KosmosRouter {
     Router::new()
         .route(
@@ -127,10 +143,7 @@ fn get_user_router() -> KosmosRouter {
             "/password",
             patch(crate::routes::api::v1::auth::user::update::update_user_password),
         )
-        .route(
-            "/usage",
-            get(crate::routes::api::v1::auth::user::get_disk_usage),
-        )
+        .nest("/usage", get_usage_router())
 }
 
 fn get_multi_router() -> KosmosRouter {

@@ -1,5 +1,5 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
-import { useUsage } from '@lib/query.ts';
+import { useUsageStats } from '@lib/query.ts';
 import { Modal, ModalContent, ModalHeader } from '@nextui-org/react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import tw from '@lib/classMerge.ts';
@@ -34,7 +34,7 @@ export function FileUploadModal({
 }
 
 export function FileUpload({ onClick }: { onClick: () => void }) {
-  const { data } = useUsage();
+  const { data } = useUsageStats();
   const full = (data?.limit || 0) - (data?.total || 0) <= 0;
   return (
     <motion.button

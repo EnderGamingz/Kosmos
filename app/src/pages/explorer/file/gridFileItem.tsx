@@ -231,13 +231,20 @@ export default function GridFileItem({
                   )}>
                   {file.file_name}
                 </motion.p>
-                <motion.button
-                  onClick={e => {
-                    context.handleContext({ x: e.clientX, y: e.clientY }, file);
-                  }}
-                  className={'cursor-pointer'}>
-                  <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
-                </motion.button>
+                {!context.noScrollControl && (
+                  <motion.button
+                    onClick={e => {
+                      context.handleContext(
+                        { x: e.clientX, y: e.clientY },
+                        file,
+                      );
+                    }}
+                    className={'cursor-pointer'}>
+                    <EllipsisVerticalIcon
+                      className={'h-6 w-6 text-stone-700'}
+                    />
+                  </motion.button>
+                )}
               </div>
               <motion.p
                 key={`updated-${file.updated_at}`}

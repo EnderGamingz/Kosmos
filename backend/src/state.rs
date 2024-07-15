@@ -8,23 +8,25 @@ use crate::services::image_service::ImageService;
 use crate::services::operation_service::OperationService;
 use crate::services::permission_service::PermissionService;
 use crate::services::share_service::ShareService;
+use crate::services::usage_service::UsageService;
 use crate::services::user_service::UserService;
 
 pub type KosmosState = State<AppState>;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub(crate) user_service: UserService,
-    pub(crate) file_service: FileService,
-    pub(crate) folder_service: FolderService,
-    pub(crate) image_service: ImageService,
-    pub(crate) operation_service: OperationService,
-    pub(crate) share_service: ShareService,
-    pub(crate) permission_service: PermissionService,
+    pub user_service: UserService,
+    pub file_service: FileService,
+    pub folder_service: FolderService,
+    pub image_service: ImageService,
+    pub operation_service: OperationService,
+    pub share_service: ShareService,
+    pub permission_service: PermissionService,
+    pub usage_service: UsageService,
     pub sf: Sonyflake,
 }
 
-pub(crate) fn init(db: &KosmosPool) -> AppState {
+pub fn init(db: &KosmosPool) -> AppState {
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
     let file_service = FileService::new(db.clone());
@@ -32,7 +34,8 @@ pub(crate) fn init(db: &KosmosPool) -> AppState {
     let image_service = ImageService::new(db.clone(), sf.clone());
     let operation_service = OperationService::new(db.clone(), sf.clone());
     let share_service = ShareService::new(db.clone(), sf.clone());
-    let permission_service = PermissionService::new(db.clone(), user_service.clone());
+    let permission_service = PermissionService::new(user_service.clone());
+    let usage_service = UsageService::new(db.clone());
 
     AppState {
         user_service,
@@ -42,6 +45,7 @@ pub(crate) fn init(db: &KosmosPool) -> AppState {
         operation_service,
         share_service,
         permission_service,
+        usage_service,
         sf,
     }
 }

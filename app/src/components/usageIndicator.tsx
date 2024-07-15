@@ -1,7 +1,7 @@
 import tw from '@lib/classMerge.ts';
-import { UsageResponse } from '@models/user.ts';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
+import { UsageStats } from '@models/usage.ts';
 
 function ActiveBar({ percent }: { percent: number }) {
   return (
@@ -43,10 +43,12 @@ export function UsageIndicator({
   data,
   loading,
   small,
+  large,
 }: {
-  data?: UsageResponse;
+  data?: UsageStats;
   loading?: boolean;
   small?: boolean;
+  large?: boolean;
 }) {
   const limit = data?.limit || 1;
 
@@ -59,7 +61,7 @@ export function UsageIndicator({
   );
 
   return (
-    <div className={tw(small ? 'h-1' : 'h-2')}>
+    <div className={tw(small ? 'h-1' : large ? 'h-5' : 'h-2')}>
       <div
         className={tw(
           'flex h-full w-full items-center gap-[1px]',

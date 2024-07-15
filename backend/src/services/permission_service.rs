@@ -1,4 +1,3 @@
-use crate::db::KosmosPool;
 use crate::model::role::{Permission, Role};
 use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
@@ -8,14 +7,12 @@ use tower_sessions::Session;
 
 #[derive(Clone)]
 pub struct PermissionService {
-    db_pool: KosmosPool,
     user_service: UserService,
 }
 
 impl PermissionService {
-    pub fn new(db_pool: KosmosPool, user_service: UserService) -> Self {
+    pub fn new(user_service: UserService) -> Self {
         PermissionService {
-            db_pool,
             user_service,
         }
     }

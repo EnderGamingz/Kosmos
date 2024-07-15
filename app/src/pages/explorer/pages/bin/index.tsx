@@ -2,7 +2,7 @@ import {
   invalidateBin,
   invalidateUsage,
   useDeletedFiles,
-  useUsage,
+  useUsageStats,
 } from '@lib/query.ts';
 import { formatBytes } from '@lib/fileSize.ts';
 import { Progress } from '@nextui-org/react';
@@ -13,7 +13,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/vars.ts';
 
 export default function BinPage() {
-  const { data: usageData } = useUsage();
+  const { data: usageData } = useUsageStats();
   const deletedFiles = useDeletedFiles();
 
   const deleteAll = useMutation({

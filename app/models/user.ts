@@ -13,10 +13,3 @@ export type UserModel = {
   created_at: string;
   updated_at: string;
 };
-
-export type UsageResponse = {
-  active: number;
-  bin: number;
-  total: number;
-  limit: number;
-};

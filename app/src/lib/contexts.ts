@@ -6,6 +6,7 @@ import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper
 
 export type DisplayContextType = {
   limitedView?: boolean;
+  noScrollControl?: boolean;
   handleContext: (pos: Vec2, data?: ContextData) => void;
   files: FileModel[];
   folders: FolderModel[];

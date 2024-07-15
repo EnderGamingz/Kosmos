@@ -6,3 +6,4 @@ pub mod image_service;
 pub mod operation_service;
 pub mod share_service;
 pub mod permission_service;
+pub mod usage_service;

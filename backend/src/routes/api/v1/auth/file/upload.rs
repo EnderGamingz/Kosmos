@@ -37,9 +37,9 @@ pub async fn upload_file(
         .await?;
 
     let storage_used = state
-        .user_service
+        .usage_service
         .get_user_storage_usage(user_id, None)
-        .await?;
+        .await?.get_sum();
 
     let mut storage_remaining = user.storage_limit - storage_used;
 

@@ -6,7 +6,7 @@ import { DataOperationType } from '@models/file.ts';
 import tw from '@lib/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { motion } from 'framer-motion';
-import { invalidateData } from '@lib/query.ts';
+import { invalidateData, invalidateUsageReport } from '@lib/query.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 
@@ -34,6 +34,7 @@ export default function Favorite({
         .put(`${BASE_URL}auth/${type}/favorite/${id}`)
         .then(() => {
           invalidateData(type).then(onUpdate);
+          invalidateUsageReport().then();
         })
         .catch(err => {
           notifications.notify({

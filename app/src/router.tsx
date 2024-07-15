@@ -7,7 +7,7 @@ import { Login } from '@pages/login.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 import Dashboard from '@pages/explorer/dashboard.tsx';
 import NotificationIndicator from '@components/notifications';
-import { FileList } from '@pages/explorer/fileList.tsx';
+import { FileList, FileListByType } from '@pages/explorer/fileList.tsx';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import Settings from '@pages/settings/index.tsx';
 import BinPage from '@pages/explorer/pages/bin';
@@ -18,6 +18,7 @@ import SharePage from '@pages/share';
 import SharedItems from '@pages/explorer/pages/shared.tsx';
 import SecuritySettings from '@pages/settings/security';
 import AppInfo from '@pages/settings/appInfo.tsx';
+import UsageReport from '@pages/usage/report';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -38,6 +39,7 @@ export default function Router() {
           <Route
             path={'home'}
             element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
+            <Route path={'files/:fileType'} element={<FileListByType />} />
             <Route path={'recent'} element={<RecentFiles />} />
             <Route
               path={'shared'}
@@ -60,6 +62,9 @@ export default function Router() {
             <Route path={'info'} element={<AppInfo />} />
             <Route index element={<AccountSettings />} />
           </Route>
+          <Route path={'/usage/report'} element={<UsageReport />} />
+
+          {/* Public Share */}
           <Route path={'s/:type/:uuid/*'} element={<SharePage />} />
         </Routes>
       </main>

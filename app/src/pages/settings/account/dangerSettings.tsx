@@ -5,11 +5,11 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { FormEvent, useState } from 'react';
 import useLogout from '@hooks/useLogout.ts';
 import tw from '@lib/classMerge.ts';
-import { useUsage } from '@lib/query.ts';
+import { useUsageStats } from '@lib/query.ts';
 import { formatBytes } from '@lib/fileSize.ts';
 
 function DeleteAccount() {
-  const usage = useUsage();
+  const usage = useUsageStats();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState(false);
   const notifications = useNotifications(s => s.actions);

@@ -1,17 +1,14 @@
-use bigdecimal::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use sonyflake::Sonyflake;
-use sqlx::{Execute, FromRow, QueryBuilder};
-use sqlx::types::BigDecimal;
 use tower_sessions::Session;
 use validator::Validate;
 
-use crate::db::{KosmosDb, KosmosDbResult};
-use crate::KosmosPool;
+use crate::db::KosmosDbResult;
 use crate::model::role::Role;
 use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
+use crate::KosmosPool;
 
 #[derive(Deserialize)]
 pub struct AccountUpdatePayload {
@@ -32,11 +29,6 @@ pub struct UpdateUserRequest {
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
-}
-
-#[derive(Debug, FromRow)]
-pub struct FileSizeSum {
-    sum: Option<BigDecimal>,
 }
 
 #[derive(Clone)]
@@ -181,7 +173,7 @@ impl UserService {
     pub async fn update_storage_limit(
         &self,
         user_id: UserId,
-        storage_limit: i64
+        storage_limit: i64,
     ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
             "UPDATE users SET storage_limit = $1 WHERE id = $2",
@@ -199,7 +191,7 @@ impl UserService {
     pub async fn update_role(
         &self,
         user_id: UserId,
-        role: Role
+        role: Role,
     ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
             "UPDATE users SET role = $1 WHERE id = $2",
@@ -240,39 +232,6 @@ impl UserService {
                 tracing::error!("Error fetching all users: {}", e);
                 AppError::InternalError
             })
-    }
-
-    fn get_storage_query(user_id: UserId, marked_deleted: Option<bool>) -> String {
-        let mut query: QueryBuilder<KosmosDb> =
-            QueryBuilder::new("SELECT SUM (file_size) FROM files WHERE user_id = ");
-        query.push_bind(user_id);
-
-        if let Some(bool) = marked_deleted {
-            if bool {
-                query.push(" AND deleted_at IS NOT NULL");
-            } else {
-                query.push(" AND deleted_at IS NULL");
-            }
-        }
-
-        query.build().sql().into()
-    }
-
-    pub async fn get_user_storage_usage(
-        &self,
-        user_id: UserId,
-        marked_deleted: Option<bool>,
-    ) -> Result<i64, AppError> {
-        sqlx::query_as::<_, FileSizeSum>(&*Self::get_storage_query(user_id, marked_deleted))
-            .bind(user_id)
-            .fetch_one(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error fetching user storage usage: {}", e);
-                AppError::InternalError
-            })
-            .map(|row| row.sum.unwrap_or(BigDecimal::from(0)))
-            .map(|sum| sum.to_i64().unwrap_or(0))
     }
 
     pub async fn get_user_storage_limit(&self, user_id: UserId) -> Result<i64, AppError> {

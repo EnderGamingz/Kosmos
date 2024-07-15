@@ -25,7 +25,7 @@ export function NoAccess({
   return (
     <div
       className={tw(
-        'body-bg absolute inset-0 z-20 p-10 text-stone-700',
+        'body-bg absolute inset-0 z-20 !m-0 p-10 text-stone-700',
         'flex flex-col items-center justify-center gap-2',
       )}>
       <motion.button

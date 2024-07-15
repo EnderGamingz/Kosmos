@@ -22,9 +22,14 @@
         @apply rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20
     }
 
-    .header-login-btn{
+    .header-login-btn {
         @apply flex items-center gap-2 rounded-lg hover:bg-stone-700/5 px-2 py-1 sm:px-4 sm:py-2
         text-stone-700 transition-all [&_svg]:h-5 [&_svg]:w-5
+    }
+
+    .user-menu-link {
+        @apply flex cursor-pointer items-center gap-2 rounded-md bg-stone-700/5 p-2 text-stone-700
+        transition-colors hover:bg-stone-700/10
     }
 }
 

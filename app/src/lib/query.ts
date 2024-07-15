@@ -11,8 +11,8 @@ import {
   SortParams,
   SortParamsForQuery,
 } from '@models/sort.ts';
-import { UsageResponse } from '@models/user.ts';
 import { SharedItemsResponse, ShareModel } from '@models/share.ts';
+import { UsageReport, UsageStats } from '@models/usage.ts';
 
 export const queryClient = new QueryClient();
 
@@ -76,6 +76,16 @@ export const useFiles = (parent_id?: string, sort?: SortParams) => {
   });
 };
 
+export const useFileByType = (fileType: number) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/file/all/type/${fileType}`)
+        .then(res => res.data as FileModel[]),
+    queryKey: ['files', 'type', fileType],
+  });
+};
+
 export const useRecentFiles = (limit?: number, offset?: number) => {
   return useQuery({
     queryFn: () =>
@@ -101,24 +111,30 @@ export const useDeletedFiles = () => {
   });
 };
 
-export const useUsage = () => {
+export const useUsageStats = () => {
   return useQuery({
     queryFn: () =>
-      axios.get(`${BASE_URL}auth/user/usage`).then(res => {
-        return {
-          active: parseInt(res.data.active) ?? 0,
-          bin: parseInt(res.data.bin) ?? 0,
-          total: parseInt(res.data.total) ?? 0,
-          limit: parseInt(res.data.limit) ?? FALLBACK_STORAGE_LIMIT,
-        } satisfies UsageResponse;
-      }),
-    queryKey: ['usage'],
+      axios
+        .get(`${BASE_URL}auth/user/usage/stats`)
+        .then(res => res.data as UsageStats),
+    queryKey: ['usage', 'stats'],
     placeholderData: {
       active: 0,
       bin: 0,
       total: 0,
       limit: FALLBACK_STORAGE_LIMIT,
-    },
+    } satisfies UsageStats,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useUsageReport = () => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/user/usage/report`)
+        .then(res => res.data as UsageReport),
+    queryKey: ['usage', 'report'],
     refetchOnWindowFocus: false,
   });
 };
@@ -138,7 +154,6 @@ export const useOperations = (onUnauthorized?: () => void) => {
     queryKey: ['operations'],
     // 20 seconds
     refetchInterval: IS_DEVELOPMENT ? 5_000 : 20_000,
-    refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
   });
 };
@@ -151,7 +166,7 @@ export const useSharedItems = (forUser?: boolean) => {
       axios
         .get(`${BASE_URL}auth/share/all${userSpecificEndpoint}`)
         .then(res => res.data as SharedItemsResponse),
-    queryKey: ['shared', userSpecificEndpoint],
+    queryKey: ['share', 'items', userSpecificEndpoint],
   });
 };
 
@@ -161,7 +176,7 @@ export const useUserShareData = (id: string, type: DataOperationType) => {
       axios
         .get(`${BASE_URL}auth/share/${type}/${id}`)
         .then(res => res.data as ShareModel[]),
-    queryKey: ['share', id],
+    queryKey: ['share', id, type],
   });
 };
 
@@ -198,14 +213,9 @@ export async function invalidateShareAccess() {
 }
 
 export async function invalidateShares() {
-  return Promise.all([
-    queryClient.invalidateQueries({
-      queryKey: ['share'],
-    }),
-    queryClient.invalidateQueries({
-      queryKey: ['shared'],
-    }),
-  ]);
+  return queryClient.invalidateQueries({
+    queryKey: ['share'],
+  });
 }
 
 export async function refetchOperations() {
@@ -222,6 +232,12 @@ export async function invalidateData(type: DataOperationType) {
 export async function invalidateUsage() {
   return queryClient.invalidateQueries({
     queryKey: ['usage'],
+  });
+}
+
+export async function invalidateUsageReport() {
+  return queryClient.invalidateQueries({
+    queryKey: ['usage', 'report'],
   });
 }
 

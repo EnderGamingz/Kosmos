@@ -6,7 +6,7 @@ use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
 
-use crate::model::file::FileModelDTO;
+use crate::model::file::{FileModelDTO, FileType};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
@@ -64,13 +64,13 @@ pub async fn get_files(
         Err(_) => None,
     };
 
-    let files: Vec<FileModelDTO> = state
+    let files = state
         .file_service
         .get_files(user_id, folder, false, parsed_params)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
-        .collect::<Vec<_>>();
+        .collect();
 
     Ok(Json(files))
 }
@@ -99,13 +99,13 @@ pub async fn get_recent_files(
         offset: params.offset.unwrap_or(0),
     };
 
-    let files: Vec<FileModelDTO> = state
+    let files = state
         .file_service
         .get_recent_files(user_id, parsed_params)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
-        .collect::<Vec<_>>();
+        .collect();
 
     Ok(Json(files))
 }
@@ -115,13 +115,31 @@ pub async fn get_deleted_files(
     session: Session,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let files: Vec<FileModelDTO> = state
+    let files = state
         .file_service
         .get_marked_deleted_files(user_id)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
-        .collect::<Vec<_>>();
+        .collect();
+
+    Ok(Json(files))
+}
+
+pub async fn get_file_by_type(
+    State(state): KosmosState,
+    session: Session,
+    Path(file_type): Path<i16>,
+) -> Result<Json<Vec<FileModelDTO>>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let file_type = FileType::by_id(file_type);
+    let files = state
+        .file_service
+        .get_files_by_file_type(user_id, file_type)
+        .await?
+        .into_iter()
+        .map(FileModelDTO::from)
+        .collect();
 
     Ok(Json(files))
 }
