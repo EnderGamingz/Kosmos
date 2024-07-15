@@ -11,23 +11,22 @@ import { Portal } from 'react-portal';
 import ContextMenu, { ContextMenuContent } from '@components/contextMenu.tsx';
 import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
 import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
+import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export type Vec2 = { x: number; y: number };
 
 export function ExplorerDisplayWrapper({
   files,
   folders,
-  limitedView,
   children,
   shareUuid,
-  noScrollControl,
+  viewSettings,
 }: {
   files: FileModel[];
   folders: FolderModel[];
-  limitedView?: boolean;
   children: ReactNode;
   shareUuid?: string;
-  noScrollControl?: boolean;
+  viewSettings?: ViewSettings;
 }) {
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const [dragged, setDragged] = useState<
@@ -94,8 +93,7 @@ export function ExplorerDisplayWrapper({
   return (
     <DisplayContext.Provider
       value={{
-        limitedView,
-        noScrollControl,
+        viewSettings,
         handleContext,
         files,
         folders,
@@ -123,7 +121,7 @@ export function ExplorerDisplayWrapper({
         shareUuid={shareUuid}
       />
       {!shareUuid && <ShareModal />}
-      {!noScrollControl && (
+      {!viewSettings?.noScrollControl && (
         <AnimatePresence>
           {context.clicked && (
             <Portal>

@@ -96,7 +96,11 @@ export default function GridFileItem({
         context.select.rangeStart === index && 'bg-indigo-50',
       )}>
       <motion.div
-        drag={!context.limitedView && !isTouchDevice() && !context.shareUuid}
+        drag={
+          !context.viewSettings?.limitedView &&
+          !isTouchDevice() &&
+          !context.shareUuid
+        }
         dragSnapToOrigin
         whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
         onDragStart={() => {
@@ -231,7 +235,7 @@ export default function GridFileItem({
                   )}>
                   {file.file_name}
                 </motion.p>
-                {!context.noScrollControl && (
+                {!context.viewSettings?.noScrollControl && (
                   <motion.button
                     onClick={e => {
                       context.handleContext(

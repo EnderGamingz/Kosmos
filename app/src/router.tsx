@@ -7,7 +7,7 @@ import { Login } from '@pages/login.tsx';
 import { AccessWrapper } from './accessWrapper.tsx';
 import Dashboard from '@pages/explorer/dashboard.tsx';
 import NotificationIndicator from '@components/notifications';
-import { FileList, FileListByType } from '@pages/explorer/fileList.tsx';
+import { FileList } from '@pages/explorer/fileList.tsx';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import Settings from '@pages/settings/index.tsx';
 import BinPage from '@pages/explorer/pages/bin';
@@ -19,6 +19,7 @@ import SharedItems from '@pages/explorer/pages/shared.tsx';
 import SecuritySettings from '@pages/settings/security';
 import AppInfo from '@pages/settings/appInfo.tsx';
 import UsageReport from '@pages/usage/report';
+import { FileListByType } from '@pages/explorer/fileListByType.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);

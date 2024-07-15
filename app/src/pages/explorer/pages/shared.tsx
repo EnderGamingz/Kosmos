@@ -58,7 +58,7 @@ export default function SharedItems({
             isLoading={items.isLoading}
             files={items.data?.files || []}
             folders={items.data?.folders || []}
-            limitedView
+            viewSettings={{ limitedView: true }}
           />
         )}
       </div>

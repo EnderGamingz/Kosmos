@@ -93,7 +93,7 @@ export function TableFolderItem({
         <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
-            drag={!context.limitedView && !isTouchDevice()}
+            drag={!context.viewSettings?.limitedView && !isTouchDevice()}
             dragSnapToOrigin
             whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
             onDragStart={() => {

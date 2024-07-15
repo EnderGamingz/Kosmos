@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL, FALLBACK_STORAGE_LIMIT, IS_DEVELOPMENT } from './vars.ts';
 import { FolderResponse, FolderShareResponse } from '@models/folder.ts';
@@ -76,13 +76,27 @@ export const useFiles = (parent_id?: string, sort?: SortParams) => {
   });
 };
 
-export const useFileByType = (fileType: number) => {
-  return useQuery({
-    queryFn: () =>
+export const useFileByTypeInfinite = (fileType: number, limit?: number) => {
+  return useInfiniteQuery({
+    queryFn: ({ pageParam }) =>
       axios
-        .get(`${BASE_URL}auth/file/all/type/${fileType}`)
+        .get(`${BASE_URL}auth/file/all/type/${fileType}`, {
+          params: {
+            limit: limit,
+            page: pageParam,
+          },
+        })
         .then(res => res.data as FileModel[]),
     queryKey: ['files', 'type', fileType],
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (lastPage.length === 0) return undefined;
+      return lastPageParam + 1;
+    },
+    getPreviousPageParam: (_firstPage, _allPages, firstPageParam) => {
+      if (firstPageParam <= 1) return undefined;
+      return firstPageParam - 1;
+    },
   });
 };
 

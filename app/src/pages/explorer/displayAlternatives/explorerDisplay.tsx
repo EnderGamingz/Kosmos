@@ -37,20 +37,27 @@ function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
   }
 }
 
+export type ViewSettings = {
+  limitedView?: boolean;
+  noScrollControl?: boolean;
+  paged?: boolean;
+  onLoadNextPage?: () => void;
+  pagedFiles?: FileModel[][];
+  hasNextPage?: boolean;
+};
+
 export default function ExplorerDataDisplay({
   isLoading,
   files,
   folders,
-  limitedView,
   shareUuid,
-  noScrollControl,
+  viewSettings,
 }: {
   isLoading: boolean;
   files: FileModel[];
   folders: FolderModel[];
-  limitedView?: boolean;
   shareUuid?: string;
-  noScrollControl?: boolean;
+  viewSettings?: ViewSettings;
 }) {
   const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
@@ -82,8 +89,7 @@ export default function ExplorerDataDisplay({
       shareUuid={shareUuid}
       files={files}
       folders={folders}
-      limitedView={limitedView}
-      noScrollControl={noScrollControl}>
+      viewSettings={viewSettings}>
       {getDisplayComponent(displayType.type, displayType.details)}
     </ExplorerDisplayWrapper>
   );

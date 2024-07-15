@@ -25,11 +25,13 @@ export function UsageReportLargeFiles({ files }: { files: FileModel[] }) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.2, delay: 0.7 }}>
         <ExplorerDataDisplay
-          limitedView
           files={files}
           folders={[]}
           isLoading={false}
-          noScrollControl
+          viewSettings={{
+            limitedView: true,
+            noScrollControl: true,
+          }}
         />
       </motion.div>
     </div>

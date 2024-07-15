@@ -1,6 +1,6 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { useFileByType, useFiles, useFolders } from '@lib/query.ts';
+import { useFiles, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { motion, useScroll, useSpring } from 'framer-motion';
@@ -9,7 +9,6 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDis
 import { useShallow } from 'zustand/react/shallow';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
-import { getFileTypeString } from '@models/file.ts';
 
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
@@ -82,44 +81,6 @@ export function FileList() {
           folders={folders.data?.folders || []}
         />
       </FileUploadContent>
-    </div>
-  );
-}
-
-export function FileListByType() {
-  const { fileType } = useParams();
-  const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
-  const fileTypeParsed = fileType ? parseInt(fileType) : 0;
-  const files = useFileByType(fileTypeParsed);
-  const navigate = useNavigate();
-
-  if (!fileType || isNaN(parseInt(fileType))) {
-    navigate('/home');
-  }
-
-  useEffect(() => {
-    setFilesInScope(files.data || []);
-  }, [files, setFilesInScope]);
-
-  if (!fileType) return null;
-  return (
-    <div
-      className={
-        'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-      }>
-      <div className={'p-5'}>
-        <h1>
-          Showing files of type{' '}
-          <span className={'font-semibold'}>
-            {getFileTypeString(fileTypeParsed)}
-          </span>
-        </h1>
-      </div>
-      <ExplorerDataDisplay
-        isLoading={files.isLoading}
-        files={files.data || []}
-        folders={[]}
-      />
     </div>
   );
 }

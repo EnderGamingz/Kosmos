@@ -3,10 +3,10 @@ import { ContextData } from '@hooks/useContextMenu.ts';
 import { FolderModel } from '@models/folder.ts';
 import { DataOperationType, FileModel } from '@models/file.ts';
 import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper';
+import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export type DisplayContextType = {
-  limitedView?: boolean;
-  noScrollControl?: boolean;
+  viewSettings?: ViewSettings;
   handleContext: (pos: Vec2, data?: ContextData) => void;
   files: FileModel[];
   folders: FolderModel[];

@@ -88,7 +88,11 @@ export function TableFileItem({
       </motion.th>
       <td className={'flex !p-0'}>
         <motion.div
-          drag={!context.limitedView && !isTouchDevice() && !context.shareUuid}
+          drag={
+            !context.viewSettings?.limitedView &&
+            !isTouchDevice() &&
+            !context.shareUuid
+          }
           dragSnapToOrigin
           whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
           onDragStart={() => {
@@ -127,7 +131,7 @@ export function TableFileItem({
           </motion.p>
         </motion.div>
         <Favorite id={file.id} type={'file'} iconOnly active={file.favorite} />
-        {!context.noScrollControl && (
+        {!context.viewSettings?.noScrollControl && (
           <button
             onClick={e => {
               context.handleContext({ x: e.clientX, y: e.clientY }, file);

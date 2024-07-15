@@ -96,14 +96,20 @@ impl FileService {
         &self,
         user_id: UserId,
         file_type: FileType,
+        limit: i64,
+        page: i64,
     ) -> Result<Vec<FileModel>, AppError> {
         sqlx::query_as!(
             FileModel,
             "SELECT * FROM files WHERE user_id = $1
              AND file_type = $2
-             AND deleted_at IS NULL",
+             AND deleted_at IS NULL
+             ORDER BY file_name ASC
+             LIMIT $3 OFFSET $4",
             user_id,
-            file_type as i16
+            file_type as i16,
+            limit,
+            page * limit
         )
         .fetch_all(&self.db_pool)
         .await
@@ -533,7 +539,7 @@ impl FileService {
     }
 
     pub fn get_file_type(mime_type: &str) -> FileType {
-        const TYPES: [(&'static str, FileType); 39] = [
+        const TYPES: [(&'static str, FileType); 43] = [
             ("image/gif", FileType::Image),
             ("image/jpeg", FileType::Image),
             ("image/png", FileType::Image),
@@ -569,6 +575,10 @@ impl FileService {
             ("application/x-tar-compressed", FileType::Archive),
             ("application/x-rar-compressed", FileType::Archive),
             ("application/x-7z-compressed", FileType::Archive),
+            ("application/zip", FileType::Archive),
+            ("application/tar", FileType::Archive),
+            ("application/rar", FileType::Archive),
+            ("application-7z", FileType::Archive),
             ("application/x-bzip", FileType::Archive),
             ("application/x-bzip2", FileType::Archive),
             ("application/x-gzip", FileType::Archive),

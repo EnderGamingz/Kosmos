@@ -47,6 +47,7 @@ export function PreviewImage({
       {(isReady || type === FileType.RawImage) && (
         <motion.img
           loading={'lazy'}
+          decoding={'async'}
           onLoad={() => setLoaded(true)}
           onError={() => setLoaded(true)}
           data-loaded={loaded}

@@ -126,16 +126,34 @@ pub async fn get_deleted_files(
     Ok(Json(files))
 }
 
+#[derive(Deserialize)]
+pub struct GetFilesByType {
+    pub limit: Option<i32>,
+    pub page: Option<i32>,
+}
+
+impl GetFilesByType {
+    fn get_limit(&self) -> i64 {
+        self.limit.unwrap_or(50) as i64
+    }
+
+    fn get_page(&self) -> i64 {
+        self.page.unwrap_or(0) as i64
+    }
+}
+
 pub async fn get_file_by_type(
     State(state): KosmosState,
     session: Session,
     Path(file_type): Path<i16>,
+    Query(params): Query<GetFilesByType>,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
     let file_type = FileType::by_id(file_type);
+
     let files = state
         .file_service
-        .get_files_by_file_type(user_id, file_type)
+        .get_files_by_file_type(user_id, file_type, params.get_limit(), params.get_page())
         .await?
         .into_iter()
         .map(FileModelDTO::from)

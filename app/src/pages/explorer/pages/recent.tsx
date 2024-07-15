@@ -38,7 +38,7 @@ export default function RecentFiles() {
             isLoading={files.isLoading}
             files={files.data || []}
             folders={[]}
-            limitedView
+            viewSettings={{ limitedView: true }}
           />
         </div>
       </div>
