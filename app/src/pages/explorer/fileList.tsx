@@ -8,6 +8,7 @@ import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
+import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.tsx';
 
 export function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
@@ -73,6 +74,7 @@ export function FileList() {
       <div className={'flex items-center pl-3 md:pl-0'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
+      <StorageLimitBanner />
       <ExplorerDataDisplay
         isLoading={isLoading}
         files={files.data?.pages.flat() || []}
