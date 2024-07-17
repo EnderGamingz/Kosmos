@@ -47,17 +47,16 @@ export function PreviewImage({
       {(isReady || type === FileType.RawImage) && (
         <motion.img
           loading={'lazy'}
-          decoding={'async'}
           onLoad={() => setLoaded(true)}
           onError={() => setLoaded(true)}
           data-loaded={loaded}
           width={40}
           height={40}
           className={tw(
-            'img img relative z-10 aspect-square rounded-lg object-cover text-[0] opacity-0',
+            'img relative z-10 aspect-square rounded-lg object-cover text-[0] opacity-0',
             'rounded-lg shadow-xl !duration-300 transition-transform-opacity',
             'data-[loaded=true]:opacity-100 motion-reduce:transition-none',
-            !dynamic && 'h-10 w-10',
+            dynamic ? 'max-h-[400px] min-h-16' : 'h-10 w-10',
           )}
           src={src}
           alt={alt}
