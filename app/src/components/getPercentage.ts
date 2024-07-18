@@ -3,7 +3,7 @@ import { UsageStats } from '@models/usage.ts';
 const calculatePercentage = (value: number = 0, limit: number): number =>
   Math.min(100, Math.max(0, Math.floor((value / limit) * 100)));
 
-export function getPercentageStats(data?: UsageStats) {
+export function getPercentageStats(data?: UsageStats, isLoaded?: boolean) {
   const limit = data?.limit || 1;
 
   const percentageActive = calculatePercentage(data?.active, limit);
@@ -19,5 +19,6 @@ export function getPercentageStats(data?: UsageStats) {
     remainingPercentage,
     alertLimit: altertLimit,
     warningLimit,
+    isLoaded: isLoaded,
   };
 }
