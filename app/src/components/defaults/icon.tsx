@@ -1,5 +1,14 @@
-import { GlobeAsiaAustraliaIcon } from '@heroicons/react/24/outline';
+import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
 
-const ApplicationIcon = GlobeAsiaAustraliaIcon;
+const ApplicationIcon = (
+  props: DetailedHTMLProps<
+    ImgHTMLAttributes<HTMLImageElement>,
+    HTMLImageElement
+  >,
+) => {
+  return (
+    <img {...props} src={'/img/logo_outline_full.svg'} alt={'Kosmos Logo'} />
+  );
+};
 
 export default ApplicationIcon;

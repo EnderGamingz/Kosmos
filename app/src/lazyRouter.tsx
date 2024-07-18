@@ -18,7 +18,7 @@ export function AppScreen({
         'body-bg absolute inset-0 z-20 p-10 text-stone-700 ' +
         'flex flex-col items-center justify-center gap-2'
       }>
-      <div className={'flex flex-col items-center gap-2 md:flex-row'}>
+      <div className={'flex flex-col items-center gap-4'}>
         {logo && <ApplicationIcon className={'app-loading-logo h-32 w-32'} />}
         <span className={'app-loading-text text-center text-5xl font-bold'}>
           {text ?? 'Kosmos'}
