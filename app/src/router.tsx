@@ -10,7 +10,7 @@ import NotificationIndicator from '@components/notifications';
 import { FileList } from '@pages/explorer/fileList.tsx';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import Settings from '@pages/settings/index.tsx';
-import BinPage from '@pages/explorer/pages/bin';
+import BinPage from '@pages/explorer/pages/bin.tsx';
 import RecentFiles from '@pages/explorer/pages/recent.tsx';
 import Preferences from '@pages/settings/preferences';
 import AccountSettings from '@pages/settings/account';

@@ -121,7 +121,7 @@ export function ExplorerDisplayWrapper({
         shareUuid={shareUuid}
       />
       {!shareUuid && <ShareModal />}
-      {!viewSettings?.noScrollControl && (
+      {!viewSettings?.scrollControlMissing && (
         <AnimatePresence>
           {context.clicked && (
             <Portal>

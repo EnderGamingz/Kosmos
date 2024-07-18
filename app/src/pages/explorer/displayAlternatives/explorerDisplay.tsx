@@ -39,11 +39,13 @@ function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
 
 export type ViewSettings = {
   limitedView?: boolean;
-  noScrollControl?: boolean;
+  scrollControlMissing?: boolean;
   paged?: boolean;
   onLoadNextPage?: () => void;
-  pagedFiles?: FileModel[][];
   hasNextPage?: boolean;
+  binView?: boolean;
+  noSelect?: boolean;
+  noDisplay?: boolean;
 };
 
 export default function ExplorerDataDisplay({
@@ -84,13 +86,17 @@ export default function ExplorerDataDisplay({
   if (isLoading || prevSort !== sort)
     return getLoadingComponent(preferences.loading.type);
 
+  const displayMode = viewSettings?.binView
+    ? ExplorerDisplay.Table
+    : displayType.type;
+
   return (
     <ExplorerDisplayWrapper
       shareUuid={shareUuid}
       files={files}
       folders={folders}
       viewSettings={viewSettings}>
-      {getDisplayComponent(displayType.type, displayType.details)}
+      {getDisplayComponent(displayMode, displayType.details)}
     </ExplorerDisplayWrapper>
   );
 }

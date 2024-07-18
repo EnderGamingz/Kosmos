@@ -30,7 +30,7 @@ export function UsageReportLargeFiles({ files }: { files: FileModel[] }) {
           isLoading={false}
           viewSettings={{
             limitedView: true,
-            noScrollControl: true,
+            scrollControlMissing: true,
           }}
         />
       </motion.div>

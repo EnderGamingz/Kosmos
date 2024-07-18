@@ -3,7 +3,10 @@ import { ReactNode } from 'react';
 import { DataOperationType, isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
-import { MoveToTrash } from '@pages/explorer/components/delete';
+import {
+  MoveToTrash,
+  MultiMoveToTrash,
+} from '@pages/explorer/components/delete';
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import tw from '@lib/classMerge.ts';
@@ -186,6 +189,13 @@ export function ContextMenuContent({
           isContextAction
           onClose={onClose}
         />
+        {data.files.length && !data.folders.length && (
+          <MultiMoveToTrash
+            deleteData={{ files: data.files }}
+            onClose={onClose}
+          />
+        )}
+        <hr />
         <MultiPermanentDelete
           deleteData={{ folders: data.folders, files: data.files }}
           onClose={onClose}

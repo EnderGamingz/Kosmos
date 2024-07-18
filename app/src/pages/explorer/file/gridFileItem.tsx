@@ -66,7 +66,7 @@ export default function GridFileItem({
     if (disabled) return;
     if (isControl) onSelect(file.id);
     else if (isShift) context.select.setRange(index);
-    else selectFile(fileIndex);
+    else if (!context.viewSettings?.noDisplay) selectFile(fileIndex);
   };
 
   const moveAction = useMove(
@@ -78,8 +78,6 @@ export default function GridFileItem({
     dragDestination,
   );
 
-  // The error checker will mark `isDynamic` as an error otherwise
-  // noinspection PointlessBooleanExpressionJS
   return (
     <motion.div
       layout
@@ -92,7 +90,7 @@ export default function GridFileItem({
         'group relative rounded-lg outline outline-2 outline-offset-2',
         'outline-transparent transition-[outline-color]',
         isSelected && 'bg-indigo-100/50 outline-indigo-300',
-        isShift && 'cursor-pointer hover:!scale-95',
+        isShift && 'cursor-pointer',
         context.select.rangeStart === index && 'bg-indigo-50',
       )}>
       <motion.div
@@ -127,15 +125,19 @@ export default function GridFileItem({
               'gap-3 pl-1.5 pt-2.5 [&>button>svg]:w-6  [&>button]:-mt-1',
             isHidden && 'left-0 top-0',
           )}>
-          <motion.div className={'-mt-1 h-4 w-4'} layoutId={`check-${file.id}`}>
-            <Checkbox
-              className={'h-4 w-4'}
-              isSelected={isSelected}
-              onValueChange={() => onSelect(file.id)}
-              classNames={{ wrapper: 'backdrop-blur-md' }}
-              size={isDefaultDisplay ? 'md' : 'sm'}
-            />
-          </motion.div>
+          {!context.viewSettings?.noSelect && (
+            <motion.div
+              className={'-mt-1 h-4 w-4'}
+              layoutId={`check-${file.id}`}>
+              <Checkbox
+                className={'h-4 w-4'}
+                isSelected={isSelected}
+                onValueChange={() => onSelect(file.id)}
+                classNames={{ wrapper: 'backdrop-blur-md' }}
+                size={isDefaultDisplay ? 'md' : 'sm'}
+              />
+            </motion.div>
+          )}
           <Favorite
             id={file.id}
             type={'file'}
@@ -154,7 +156,7 @@ export default function GridFileItem({
               : isCompact
                 ? '[&>div]:p-0 [&_svg]:h-12 [&_svg]:w-12'
                 : '[&>div]:p-0 [&_svg]:h-14 [&_svg]:w-14',
-            !!isDynamic && 'h-auto [&_.img-container]:h-auto [&_img]:h-auto',
+            isDynamic ? 'h-auto [&_.img-container]:h-auto [&_img]:h-auto' : '',
           )}>
           {fileHasPreview(file) ? (
             <ItemIcon
@@ -235,7 +237,7 @@ export default function GridFileItem({
                   )}>
                   {file.file_name}
                 </motion.p>
-                {!context.viewSettings?.noScrollControl && (
+                {!context.viewSettings?.scrollControlMissing && (
                   <motion.button
                     onClick={e => {
                       context.handleContext(

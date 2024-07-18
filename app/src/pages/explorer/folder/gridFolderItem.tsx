@@ -107,22 +107,24 @@ export default function GridFolderItem({
           'rounded-lg bg-stone-400/40',
           'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg',
           isSelected && 'bg-indigo-100',
-          isShift && 'cursor-pointer hover:scale-95',
-          context.select.rangeStart === index && 'scale-95 bg-indigo-50',
+          isShift && 'cursor-pointer',
+          context.select.rangeStart === index && 'bg-indigo-50',
         )}>
         <div className={'relative min-h-10 min-w-10'}>
-          <div
-            className={tw(
-              'absolute inset-0 z-10 grid h-10 w-10 place-items-center opacity-0',
-              'transition-opacity group-hover:opacity-100',
-              isSelected && 'opacity-100',
-            )}>
-            <Checkbox
-              className={'h-5 w-5 p-0'}
-              isSelected={isSelected}
-              onValueChange={() => onSelect(folder.id)}
-            />
-          </div>
+          {!context.viewSettings?.noSelect && (
+            <div
+              className={tw(
+                'absolute inset-0 z-10 grid h-10 w-10 place-items-center opacity-0',
+                'transition-opacity group-hover:opacity-100',
+                isSelected && 'opacity-100',
+              )}>
+              <Checkbox
+                className={'h-5 w-5 p-0'}
+                isSelected={isSelected}
+                onValueChange={() => onSelect(folder.id)}
+              />
+            </div>
+          )}
           <div
             className={tw(
               'absolute transition-opacity group-hover:opacity-0',

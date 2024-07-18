@@ -5,24 +5,29 @@ import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAll
 import { FolderModel } from '@models/folder.ts';
 import { FileModel } from '@models/file.ts';
 import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function TableHeader({
   files,
   folders,
-  noSort,
 }: {
   files: FileModel[];
   folders: FolderModel[];
-  noSort?: boolean;
 }) {
   const currentSort = useSearchState(s => s.sort);
+  const context = useContext(DisplayContext);
+
+  const noSort = context.viewSettings?.limitedView || !!context.shareUuid;
 
   return (
     <thead>
       <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
-        <th>
-          <SelectAllCheckBox files={files} folders={folders} />
-        </th>
+        {!context.viewSettings?.noSelect && (
+          <th>
+            <SelectAllCheckBox files={files} folders={folders} />
+          </th>
+        )}
         <th className={'w-full min-w-[300px]'}>
           <ExplorerSort
             name={'Name'}
@@ -43,7 +48,7 @@ export function TableHeader({
         </th>
         <th align={'right'} className={'min-w-[155px]'}>
           <ExplorerSort
-            name={'Modified'}
+            name={context.viewSettings?.binView ? 'Deleted' : 'Modified'}
             sort={SortBy.UpdatedAt}
             disable={noSort}
             currentSortBy={currentSort.sort_by}

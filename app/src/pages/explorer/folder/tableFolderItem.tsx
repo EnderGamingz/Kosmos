@@ -77,18 +77,20 @@ export function TableFolderItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={tw(
-        'group transition-all [&_td]:p-3 [&_th]:p-3',
+        'group transition-colors [&_td]:p-3 [&_th]:p-3',
         'hover:bg-stone-500/10 hover:shadow-sm',
         isSelected && 'bg-indigo-100',
-        isShift && 'cursor-pointer hover:scale-95',
-        context.select.rangeStart === i && 'scale-95 bg-indigo-50',
+        isShift && 'cursor-pointer',
+        context.select.rangeStart === i && 'bg-indigo-50',
       )}>
-      <th>
-        <Checkbox
-          isSelected={isSelected}
-          onValueChange={() => onSelect(folder.id)}
-        />
-      </th>
+      {!context.viewSettings?.noSelect && (
+        <th>
+          <Checkbox
+            isSelected={isSelected}
+            onValueChange={() => onSelect(folder.id)}
+          />
+        </th>
+      )}
       <td className={'!p-0'}>
         <div className={'flex w-full items-center'}>
           <motion.div

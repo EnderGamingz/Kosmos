@@ -9,7 +9,7 @@ export function EmbedFile({
   serveUrl: string;
 }) {
   return (
-    <motion.object
+    <motion.iframe
       layoutId={`type-${file.id}`}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -18,7 +18,9 @@ export function EmbedFile({
       className={
         'h-full w-full rounded-xl bg-stone-800/20 p-1 text-stone-50 shadow-lg backdrop-blur-md'
       }
-      data={serveUrl}
+      sandbox={''}
+      title={file.file_name}
+      src={serveUrl}
     />
   );
 }

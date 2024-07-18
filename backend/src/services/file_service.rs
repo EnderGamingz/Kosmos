@@ -227,7 +227,8 @@ impl FileService {
         sqlx::query_as!(
             FileModel,
             "SELECT * FROM files WHERE user_id = $1
-             AND deleted_at IS NOT NULL",
+             AND deleted_at IS NOT NULL
+             ORDER BY deleted_at DESC",
             user_id
         )
         .fetch_all(&self.db_pool)
@@ -404,14 +405,22 @@ impl FileService {
         Ok(result)
     }
 
-    pub async fn mark_file_for_deletion(&self, file_id: i64) -> Result<(), AppError> {
-        sqlx::query!("UPDATE files SET deleted_at = now() WHERE id = $1", file_id)
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error marking file {} for deletion: {}", file_id, e);
-                AppError::InternalError
-            })?;
+    pub async fn mark_file_for_deletion(
+        &self,
+        file_id: i64,
+        user_id: UserId,
+    ) -> Result<(), AppError> {
+        sqlx::query!(
+            "UPDATE files SET deleted_at = now() WHERE id = $1 AND user_id = $2",
+            file_id,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error marking file {} for deletion: {}", file_id, e);
+            AppError::InternalError
+        })?;
         Ok(())
     }
 
@@ -426,9 +435,13 @@ impl FileService {
         Ok(())
     }
 
-    pub async fn mark_files_for_deletion(&self, file_ids: Vec<i64>) -> Result<(), AppError> {
+    pub async fn mark_files_for_deletion(
+        &self,
+        file_ids: Vec<i64>,
+        user_id: UserId,
+    ) -> Result<(), AppError> {
         for file_id in file_ids {
-            self.mark_file_for_deletion(file_id).await?;
+            self.mark_file_for_deletion(file_id, user_id).await?;
         }
         Ok(())
     }

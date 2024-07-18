@@ -147,11 +147,16 @@ fn get_user_router() -> KosmosRouter {
 }
 
 fn get_multi_router() -> KosmosRouter {
-    Router::new().route(
-        "/",
-        post(crate::routes::api::v1::auth::download::multi_download)
-            .delete(crate::routes::api::v1::auth::folder::delete::multi_delete),
-    )
+    Router::new()
+        .route(
+            "/",
+            post(crate::routes::api::v1::auth::download::multi_download)
+                .delete(crate::routes::api::v1::auth::folder::delete::multi_delete),
+        )
+        .route(
+            "/bin",
+            post(crate::routes::api::v1::auth::file::bin::mark_files_for_deletion),
+        )
 }
 
 fn get_operation_router() -> KosmosRouter {

@@ -48,17 +48,12 @@ export function FileTable() {
     useExplorerStore(s => s.selectedResources);
 
   const isControl = useKeyStore(s => s.keys.ctrl);
-  const { viewSettings, files, folders, shareUuid } =
-    useContext(DisplayContext);
+  const { viewSettings, files, folders } = useContext(DisplayContext);
 
   return (
     <PagedWrapper viewSettings={viewSettings}>
       <table className={'w-full table-auto text-left'}>
-        <TableHeader
-          noSort={viewSettings?.limitedView || !!shareUuid}
-          files={files}
-          folders={folders}
-        />
+        <TableHeader files={files} folders={folders} />
         <motion.tbody
           variants={containerVariant()}
           initial={'hidden'}
@@ -89,8 +84,8 @@ export function FileTable() {
             className={
               'cursor-default select-none border-none text-sm text-stone-500/50 [&>td]:py-5 [&>td]:pb-32'
             }>
-            <td />
-            <td>
+            {!viewSettings?.binView && <td />}
+            <td className={tw(!!viewSettings?.binView && 'pl-4')}>
               {folders.length} Folders <br />
               {files.length} Files
             </td>

@@ -5,7 +5,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { formatBytes } from '@lib/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowPathIcon,
+  EllipsisVerticalIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
 import {
@@ -19,6 +23,45 @@ import { useShallow } from 'zustand/react/shallow';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@lib/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { BASE_URL } from '@lib/vars.ts';
+import { invalidateBin, invalidateUsage } from '@lib/query.ts';
+
+function TableFileItemBinActions({ id }: { id: string }) {
+  const deleteAction = useMutation({
+    mutationFn: () => axios.delete(`${BASE_URL}auth/file/${id}`),
+    onSuccess: () => {
+      invalidateBin().then();
+      invalidateUsage().then();
+    },
+  });
+
+  const restoreAction = useMutation({
+    mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/restore`),
+    onSuccess: () => {
+      invalidateBin().then();
+      invalidateUsage().then();
+    },
+  });
+
+  return (
+    <div className={'flex items-center gap-5'}>
+      <button
+        title={'Restore'}
+        className={'text-blue-500'}
+        onClick={() => restoreAction.mutate()}>
+        <ArrowPathIcon className={'h-5 w-5'} />
+      </button>
+      <button
+        title={'Delete'}
+        className={'text-red-500'}
+        onClick={() => deleteAction.mutate()}>
+        <TrashIcon className={'h-5 w-5'} />
+      </button>
+    </div>
+  );
+}
 
 export function TableFileItem({
   i,
@@ -75,18 +118,24 @@ export function TableFileItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={tw(
-        'group transition-all [&_td]:p-3 [&_th]:p-3',
+        'group transition-colors [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100',
-        isShift && 'cursor-pointer hover:scale-95',
-        context.select.rangeStart === i && 'scale-95 bg-indigo-50',
+        isShift && 'cursor-pointer',
+        context.select.rangeStart === i && 'bg-indigo-50',
       )}>
-      <motion.th layoutId={`check-${file.id}`}>
-        <Checkbox
-          isSelected={isSelected}
-          onValueChange={() => onSelect(file.id)}
-        />
-      </motion.th>
-      <td className={'flex !p-0'}>
+      {!context.viewSettings?.noSelect && (
+        <motion.th layoutId={`check-${file.id}`}>
+          <Checkbox
+            isSelected={isSelected}
+            onValueChange={() => onSelect(file.id)}
+          />
+        </motion.th>
+      )}
+      <td
+        className={tw(
+          'flex !p-0',
+          !!context.viewSettings?.noSelect && '!pl-3',
+        )}>
         <motion.div
           drag={
             !context.viewSettings?.limitedView &&
@@ -112,7 +161,13 @@ export function TableFileItem({
           }}
           className={'flex flex-grow items-center'}
           onClick={() => {
-            if (isControl || isShift || disabled) return;
+            if (
+              isControl ||
+              isShift ||
+              disabled ||
+              context.viewSettings?.noDisplay
+            )
+              return;
             selectFile(fileIndex);
           }}>
           <ItemIcon
@@ -130,8 +185,15 @@ export function TableFileItem({
             {file.file_name}
           </motion.p>
         </motion.div>
-        <Favorite id={file.id} type={'file'} iconOnly active={file.favorite} />
-        {!context.viewSettings?.noScrollControl && (
+        {!context.viewSettings?.binView && (
+          <Favorite
+            id={file.id}
+            type={'file'}
+            iconOnly
+            active={file.favorite}
+          />
+        )}
+        {!context.viewSettings?.scrollControlMissing && (
           <button
             onClick={e => {
               context.handleContext({ x: e.clientX, y: e.clientY }, file);
@@ -150,6 +212,11 @@ export function TableFileItem({
         className={'whitespace-nowrap text-sm font-light'}>
         {formatDistanceToNow(file.updated_at)}
       </motion.td>
+      {context.viewSettings?.binView && (
+        <td>
+          <TableFileItemBinActions id={file.id} />
+        </td>
+      )}
     </motion.tr>
   );
 }

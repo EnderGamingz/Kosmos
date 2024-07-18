@@ -37,7 +37,9 @@ export default function FileGrid({
     <PagedWrapper viewSettings={viewSettings}>
       <div className={'px-5 py-2'}>
         <div className={'mb-3 flex items-center gap-2'}>
-          <SelectAllCheckBox files={files} folders={folders} />
+          {!viewSettings?.noSelect && (
+            <SelectAllCheckBox files={files} folders={folders} />
+          )}
           <motion.p
             key={`count-${currentFolder}`}
             initial={{ opacity: 0, x: -10 }}
