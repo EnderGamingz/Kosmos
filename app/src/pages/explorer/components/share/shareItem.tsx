@@ -13,6 +13,7 @@ import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
+import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
@@ -113,13 +114,16 @@ export function ShareItem({
           )}
           {getShareTypeIcon(share.share_type)}
         </div>
-        {navigator.share !== undefined && navigator.canShare(shareData) ? (
-          <button onClick={() => navigator.share(shareData)}>
-            <ArrowUpOnSquareIcon className={'h-5 w-5'} />
-          </button>
-        ) : isActive ? (
-          <Copy text={shareData.url} notify={notifications.notify} />
-        ) : null}
+        <div className={'flex items-center gap-2'}>
+          <QrCodeModal value={shareData.url} />
+          {navigator.share !== undefined && navigator.canShare(shareData) ? (
+            <button onClick={() => navigator.share(shareData)}>
+              <ArrowUpOnSquareIcon className={'h-5 w-5'} />
+            </button>
+          ) : isActive ? (
+            <Copy text={shareData.url} notify={notifications.notify} />
+          ) : null}
+        </div>
       </div>
     </motion.li>
   );
