@@ -52,12 +52,13 @@ export function FileTable() {
 
   return (
     <PagedWrapper viewSettings={viewSettings}>
-      <table className={'w-full table-auto text-left'}>
+      <table className={'w-full table-auto overflow-hidden text-left'}>
         <TableHeader files={files} folders={folders} />
         <motion.tbody
           variants={containerVariant()}
           initial={'hidden'}
           animate={'show'}
+          transition={{ duration: 10 }}
           key={currentFolder}
           className={tw(isControl && '[&_tr]:cursor-copy')}>
           {folders.map((folder: FolderModel, i: number) => (
@@ -80,6 +81,7 @@ export function FileTable() {
             />
           ))}
           <motion.tr
+            layout
             variants={itemTransitionVariant}
             className={
               'cursor-default select-none border-none text-sm text-stone-500/50 [&>td]:py-5 [&>td]:pb-32'

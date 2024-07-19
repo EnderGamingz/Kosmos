@@ -15,7 +15,8 @@ export function FileTableLoading() {
         }
         `}
       </style>
-      <table className={'w-full table-auto text-left opacity-60'}>
+      <table
+        className={'w-full table-auto overflow-hidden text-left opacity-60'}>
         <thead>
           <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
             <th>
