@@ -28,6 +28,8 @@
       "@components/*": ["./src/components/*"],
       "@stores/*": ["./src/stores/*"],
       "@pages/*": ["./src/pages/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@public": ["./public"],
     }
   },
   "include": ["src"],
