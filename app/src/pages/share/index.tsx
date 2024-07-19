@@ -9,7 +9,7 @@ import { WindowIcon } from '@heroicons/react/24/outline';
 
 function SharePreferences() {
   return (
-    <div className={'absolute bottom-3 right-3'}>
+    <div className={'fixed bottom-3 right-3 z-20'}>
       <Popover>
         <PopoverTrigger>
           <button className={'btn-black'}>
