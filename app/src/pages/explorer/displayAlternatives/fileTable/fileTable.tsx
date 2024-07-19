@@ -16,6 +16,7 @@ import { ReactNode, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import InfiniteScroll from 'react-infinite-scroller';
 import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 
 export function PagedWrapper({
   viewSettings,
@@ -50,6 +51,8 @@ export function FileTable() {
   const isControl = useKeyStore(s => s.keys.ctrl);
   const { viewSettings, files, folders } = useContext(DisplayContext);
 
+  const totalFileSize = formatBytes(files.reduce((a, b) => a + b.file_size, 0));
+
   return (
     <PagedWrapper viewSettings={viewSettings}>
       <table className={'w-full table-auto overflow-hidden text-left'}>
@@ -80,22 +83,24 @@ export function FileTable() {
               file={file}
             />
           ))}
-          <motion.tr
-            layout
-            variants={itemTransitionVariant}
-            className={
-              'cursor-default select-none border-none text-sm text-stone-500/50 [&>td]:py-5 [&>td]:pb-32'
-            }>
-            {!viewSettings?.binView && <td />}
-            <td className={tw(!!viewSettings?.binView && 'pl-4')}>
-              {folders.length} Folders <br />
-              {files.length} Files
-            </td>
-            <td align={'right'}>
-              {formatBytes(files.reduce((a, b) => a + b.file_size, 0))}
-            </td>
-            <td />
-          </motion.tr>
+          {!files.length && !folders.length ? (
+            <EmptyList table />
+          ) : (
+            <motion.tr
+              layout
+              variants={itemTransitionVariant}
+              className={
+                'cursor-default select-none border-none text-sm text-stone-500/50 [&>td]:py-5 [&>td]:pb-32'
+              }>
+              {!viewSettings?.binView && <td />}
+              <td className={tw(!!viewSettings?.binView && 'pl-4')}>
+                {folders.length} Folders <br />
+                {files.length} Files
+              </td>
+              <td align={'right'}>{totalFileSize}</td>
+              <td />
+            </motion.tr>
+          )}
         </motion.tbody>
       </table>
     </PagedWrapper>

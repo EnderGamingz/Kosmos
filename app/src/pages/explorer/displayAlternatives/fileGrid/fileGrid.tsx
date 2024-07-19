@@ -17,6 +17,7 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { FileGridSort } from '@pages/explorer/displayAlternatives/fileGrid/fileGridSort.tsx';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
+import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 
 export default function FileGrid({
   dynamic,
@@ -33,6 +34,7 @@ export default function FileGrid({
   const { viewSettings, shareUuid, files, folders } =
     useContext(DisplayContext);
 
+  const totalFileSize = formatBytes(files.reduce((a, b) => a + b.file_size, 0));
   return (
     <PagedWrapper viewSettings={viewSettings}>
       <div className={'px-5 py-2'}>
@@ -111,19 +113,23 @@ export default function FileGrid({
               />
             ))}
           </ConditionalWrapper>
-          <motion.div
-            variants={itemTransitionVariant}
-            className={tw(
-              'w-full cursor-default select-none border-none text-sm text-stone-500/50',
-              'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
-              'flex gap-5 pb-28 pt-4',
-            )}>
-            <div>
-              {folders.length} Folders <br />
-              {files.length} Files
-            </div>
-            <div>{formatBytes(files.reduce((a, b) => a + b.file_size, 0))}</div>
-          </motion.div>
+          {!files.length && !folders.length ? (
+            <EmptyList grid />
+          ) : (
+            <motion.div
+              variants={itemTransitionVariant}
+              className={tw(
+                'w-full cursor-default select-none border-none text-sm text-stone-500/50',
+                'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
+                'flex gap-5 pb-28 pt-4',
+              )}>
+              <div>
+                {folders.length} Folders <br />
+                {files.length} Files
+              </div>
+              <div>{totalFileSize}</div>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </PagedWrapper>

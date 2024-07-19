@@ -15,6 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 
 export default function SharedItems({
   itemsForUser,
@@ -79,6 +80,7 @@ function SharedForMe({ shares }: { shares?: SharedItemsResponse }) {
       {shares?.files.map(share => (
         <ShareForMeItem key={share.id} share={share} type={'file'} />
       ))}
+      {!shares?.files.length && !shares?.folders.length && <EmptyList />}
     </motion.ul>
   );
 }
