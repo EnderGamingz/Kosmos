@@ -3,6 +3,15 @@ export enum Role {
   Admin,
 }
 
+export function roleToString(role: Role) {
+  switch (role) {
+    case Role.User:
+      return 'User';
+    case Role.Admin:
+      return 'Admin';
+  }
+}
+
 export type UserModel = {
   id: string;
   username: string;

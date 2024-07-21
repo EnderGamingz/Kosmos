@@ -50,3 +50,11 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
     icon: <TrashIcon />,
   },
 ];
+
+export const getAdminLinks = (): ExplorerLink[] => [
+  {
+    name: 'User',
+    href: '/admin/user',
+    icon: <UserIcon />,
+  },
+];

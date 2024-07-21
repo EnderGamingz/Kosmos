@@ -11,13 +11,17 @@ export function NoAccess({
   page,
   loading,
   error,
+  isLoggedIn,
 }: {
   page?: string;
   loading?: boolean;
   error?: string;
+  isLoggedIn?: boolean;
 }) {
   const noAccessText = `You dont have access to ${page ? `the ${page}` : 'this'} page.`;
-  const noAccessSubText = 'Login to continue.';
+  const noAccessSubText = isLoggedIn
+    ? 'Please return to the previous page'
+    : 'Login to continue.';
   const loadingText = 'We are checking if you are logged in';
   const loadingSubText = 'Please wait a moment';
   const errorText = 'Something went wrong, please try again later';
@@ -67,7 +71,7 @@ export function NoAccess({
           {loading ? loadingSubText : error ? error : noAccessSubText}
         </motion.p>
       </div>
-      {!loading && !error && (
+      {!loading && !error && !isLoggedIn && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -6,19 +6,30 @@ import { formatBytes } from '@utils/fileSize.ts';
 import { useUsageStats } from '@lib/query.ts';
 import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
-import { getExplorerLinks } from '@pages/explorer/nav/explorerLinks.tsx';
+import {
+  getAdminLinks,
+  getExplorerLinks,
+} from '@pages/explorer/nav/explorerLinks.tsx';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
 
-export function SideNav() {
+export function SideNav({ admin }: { admin?: boolean }) {
   const usage = useUsageStats();
 
   const limit = usage.data?.limit || 0;
   const total = usage.data?.total || 0;
   const bin = usage.data?.bin || 0;
 
-  const links = getExplorerLinks(formatBytes(bin));
+  const binUsage = formatBytes(bin);
+
+  const links = useMemo(() => {
+    if (admin) {
+      return getAdminLinks();
+    }
+    return getExplorerLinks(binUsage);
+  }, [admin, binUsage]);
 
   return (
     <motion.aside

@@ -4,6 +4,7 @@ use axum::Json;
 use axum_valid::Valid;
 
 use crate::constants::FALLBACK_STORAGE_LIMIT;
+use crate::model::role::Role;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::AppSuccess;
 use crate::services::user_service::RegisterCredentials;
@@ -17,11 +18,18 @@ pub async fn register(
     let is_register_enabled =
         std::env::var("ALLOW_REGISTER").unwrap_or("false".to_string()) == "true";
 
+    let user_count = state.user_service.get_user_count().await?;
+
+    // Only allow registration if no users exist
     if !is_register_enabled {
-        return Err(AppError::BadRequest {
-            error: Some("Registration is not allowed".to_string()),
-        })?;
+        if user_count > 0 {
+            return Err(AppError::BadRequest {
+                error: Some("Registration is not allowed".to_string()),
+            })?;
+        }
     }
+
+    let should_make_admin = user_count == 0;
 
     let user_results = state
         .user_service
@@ -46,5 +54,12 @@ pub async fn register(
         .create_user(payload.username, password_hash, default_storage_limit)
         .await?;
 
-    Ok(AppSuccess::CREATED { id: Some(id.to_string()) })
+    // Make the user admin if it is the first one created
+    if should_make_admin {
+        state.user_service.update_role(id, Role::Admin).await?;
+    }
+
+    Ok(AppSuccess::CREATED {
+        id: Some(id.to_string()),
+    })
 }

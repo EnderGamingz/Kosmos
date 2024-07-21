@@ -11,6 +11,7 @@ import {
 } from '@nextui-org/react';
 import {
   ArrowRightStartOnRectangleIcon,
+  CodeBracketIcon,
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import useLogout from '@hooks/useLogout.ts';
@@ -18,6 +19,7 @@ import tw from '@utils/classMerge.ts';
 import MinidentIcon from '@components/MinidentIcon.tsx';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useState } from 'react';
+import { Role } from '@models/user.ts';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -73,6 +75,15 @@ export function UserMenu() {
           <UserMenuUsage onClick={handleClose} />
           <Divider className={'mb-1 mt-2'} />
           <div className={'space-y-1'}>
+            {user.user?.role === Role.Admin && (
+              <Link
+                to={'/admin/user'}
+                className={'user-menu-link'}
+                onClick={handleClose}>
+                <CodeBracketIcon className={'h-5 w-5'} />
+                Admin
+              </Link>
+            )}
             <Link
               to={'/settings/account'}
               className={'user-menu-link'}

@@ -21,6 +21,10 @@ import AppInfo from '@pages/settings/appInfo.tsx';
 import UsageReport from '@pages/usage/report';
 import FileListByType from '@pages/explorer/fileListByType.tsx';
 import HomePage from '@pages/home';
+import AdminPage from '@pages/admin';
+import { Role } from '@models/user.ts';
+import AdminUserList from '@pages/admin/user/list.tsx';
+import AdminUser from '@pages/admin/user/single.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -63,6 +67,18 @@ export default function Router() {
             <Route path={'security'} element={<SecuritySettings />} />
             <Route path={'info'} element={<AppInfo />} />
             <Route index element={<AccountSettings />} />
+          </Route>
+          <Route
+            path={'admin'}
+            element={
+              <AccessWrapper
+                el={<AdminPage />}
+                page={'Admin'}
+                role={Role.Admin}
+              />
+            }>
+            <Route path={'user'} element={<AdminUserList />} />
+            <Route path={'user/:id'} element={<AdminUser />} />
           </Route>
           <Route path={'/usage/report'} element={<UsageReport />} />
 

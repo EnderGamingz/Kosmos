@@ -124,6 +124,17 @@ impl UserService {
         }
     }
 
+    pub async fn get_user_count(&self) -> Result<i64, AppError> {
+        sqlx::query!("SELECT COUNT(*) FROM users")
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error fetching user count: {}", e);
+                AppError::InternalError
+            })
+            .map(|row| row.count.unwrap_or(0))
+    }
+
     pub async fn get_user_by_username_optional(
         &self,
         username: &String,

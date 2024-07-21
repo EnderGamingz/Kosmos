@@ -20,49 +20,53 @@ export function UsageReportStats({
   report,
   usage,
 }: {
-  report: UsageReport;
+  report?: UsageReport;
   usage: UsageStats;
 }) {
   return (
     <section>
       <div className={'flex flex-col gap-1'}>
         <span className={'ml-auto text-xs text-stone-500'}>
-          Total: {formatBytes(usage.limit)}
+          {formatBytes(usage.total)}, Total: {formatBytes(usage.limit)}
         </span>
         <UsageIndicator
           large
           data={{
-            bin: report.bin_storage.sum,
-            active: report.active_storage.sum,
+            bin: usage.bin,
+            active: usage.active,
             total: usage.total,
             limit: usage.limit,
           }}
         />
       </div>
-      <motion.ul
-        variants={containerVariant(0.08, 0.2)}
-        initial={'hidden'}
-        animate={'show'}
-        className={'mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3'}>
-        <UsageReportItem
-          sum={report.active_storage.sum}
-          count={report.active_storage.count}
-          icon={<DocumentIcon />}
-          label={'Files'}
-        />
-        <UsageReportItem
-          sum={report.bin_storage.sum}
-          count={report.bin_storage.count}
-          link={'/home/bin'}
-          icon={<TrashIcon />}
-          label={'Files in Bin'}
-        />
-        <UsageReportItem
-          sum={usage.limit - usage.total}
-          icon={<CircleStackIcon />}
-          label={'Free Space'}
-        />
-      </motion.ul>
+      {report && (
+        <motion.ul
+          variants={containerVariant(0.08, 0.2)}
+          initial={'hidden'}
+          animate={'show'}
+          className={
+            'mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3'
+          }>
+          <UsageReportItem
+            sum={report.active_storage.sum}
+            count={report.active_storage.count}
+            icon={<DocumentIcon />}
+            label={'Files'}
+          />
+          <UsageReportItem
+            sum={report.bin_storage.sum}
+            count={report.bin_storage.count}
+            link={'/home/bin'}
+            icon={<TrashIcon />}
+            label={'Files in Bin'}
+          />
+          <UsageReportItem
+            sum={usage.limit - usage.total}
+            icon={<CircleStackIcon />}
+            label={'Free Space'}
+          />
+        </motion.ul>
+      )}
     </section>
   );
 }
