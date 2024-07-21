@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { getShareTypeString, ShareType } from '@models/share.ts';
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { TypeButton } from '@pages/explorer/components/share/create/typeButton.tsx';
 import { Collapse } from 'react-collapse';
 import {
@@ -17,7 +17,7 @@ import { DateValue, getLocalTimeZone, now } from '@internationalized/date';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { DataOperationType } from '@models/file.ts';
 import { invalidateShares } from '@lib/query.ts';
 

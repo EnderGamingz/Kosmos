@@ -1,7 +1,7 @@
 import { FileTypeSum } from '@models/usage.ts';
 import { getFileTypeString } from '@models/file.ts';
-import { formatBytes } from '@lib/fileSize.ts';
-import tw from '@lib/classMerge.ts';
+import { formatBytes } from '@utils/fileSize.ts';
+import tw from '@utils/classMerge.ts';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {

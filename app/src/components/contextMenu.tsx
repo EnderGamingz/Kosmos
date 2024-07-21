@@ -9,7 +9,7 @@ import {
 } from '@pages/explorer/components/delete';
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import {
   MultiPermanentDelete,
@@ -22,7 +22,7 @@ import {
   Square2StackIcon,
 } from '@heroicons/react/24/outline';
 import { ContextData } from '@hooks/useContextMenu.ts';
-import { Backdrop } from '@components/backdrop.tsx';
+import { Backdrop } from '@components/overlay/backdrop.tsx';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 
 const menuWidth = 250;

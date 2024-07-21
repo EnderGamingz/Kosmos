@@ -1,12 +1,13 @@
 import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import {
   ImageFullscreenToggle,
   ImageFullscreenView,
 } from '@pages/explorer/file/display/image/imageFullscreenView.tsx';
 import { ImageTooLargePrompt } from '@pages/explorer/file/display/image/imageTooLargePrompt.tsx';
-import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/vars.ts';
+
+import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
 
 export function DisplayImage({
   file,

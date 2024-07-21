@@ -8,11 +8,11 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromLeft,
 } from '@components/defaults/transition.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import OpenExternally from '@pages/explorer/components/openExternally.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 
 const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
   return [

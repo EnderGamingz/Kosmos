@@ -1,10 +1,10 @@
 import { FormEvent, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolders } from '@lib/query.ts';
 import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { itemTransitionVariantFadeInFromTopSmall } from '@components/defaults/transition.ts';
 import { motion } from 'framer-motion';

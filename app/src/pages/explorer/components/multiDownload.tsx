@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { useContext, useState } from 'react';

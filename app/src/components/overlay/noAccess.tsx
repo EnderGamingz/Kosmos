@@ -1,4 +1,4 @@
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import {
   ChevronLeftIcon,

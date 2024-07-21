@@ -4,12 +4,12 @@ import {
   useDeletedFiles,
   useUsageStats,
 } from '@lib/query.ts';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export default function BinPage() {

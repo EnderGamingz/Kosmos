@@ -1,8 +1,8 @@
-import { Backdrop } from '@components/backdrop.tsx';
+import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { FileModel } from '@models/file.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';

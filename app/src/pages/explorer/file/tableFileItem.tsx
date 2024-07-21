@@ -1,8 +1,8 @@
 import { FileModel, normalizeFileType } from '@models/file.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
 import {
@@ -21,11 +21,11 @@ import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
-import { isTouchDevice } from '@lib/touch.ts';
+import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
 
 function TableFileItemBinActions({ id }: { id: string }) {

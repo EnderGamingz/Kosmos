@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 
 export function PasswordChange() {
   const [oldPassword, setOldPassword] = useState('');

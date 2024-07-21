@@ -1,5 +1,5 @@
 import { DataOperationType } from '@models/file.ts';
-import { LOCAL_URL } from '@lib/vars.ts';
+import { LOCAL_URL } from '@lib/env.ts';
 
 export function getShareUrl(
   type: DataOperationType,

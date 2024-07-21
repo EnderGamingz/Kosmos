@@ -2,7 +2,7 @@ import { useUsageReport, useUsageStats } from '@lib/query.ts';
 import { motion } from 'framer-motion';
 import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { UsageReportByType } from '@pages/usage/report/usageReportByType.tsx';
-import { NoAccess } from '@components/noAccess.tsx';
+import { NoAccess } from '@components/overlay/noAccess.tsx';
 import { UsageReportLargeFiles } from '@pages/usage/report/usageReportLargeFiles.tsx';
 
 export default function UsageReport() {

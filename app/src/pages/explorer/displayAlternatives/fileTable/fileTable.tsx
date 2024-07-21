@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import { TableFolderItem } from '@pages/explorer/folder/tableFolderItem.tsx';
 import { TableFileItem } from '@pages/explorer/file/tableFileItem.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import {
   containerVariant,
   itemTransitionVariant,
 } from '@components/defaults/transition.ts';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
 import { ReactNode, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';

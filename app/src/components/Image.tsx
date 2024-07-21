@@ -1,4 +1,4 @@
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useContext, useState } from 'react';
 import { Skeleton } from '@nextui-org/react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 
 export function PreviewImage({
   id,

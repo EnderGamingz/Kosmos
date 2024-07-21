@@ -5,7 +5,7 @@ import {
 } from '@lib/query.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import {
   Badge,
   CircularProgress,
@@ -24,7 +24,7 @@ import {
   OperationType,
 } from '@models/operation.ts';
 import { UpdatingTimeIndicator } from '@components/updatingTimeIndicator.tsx';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {

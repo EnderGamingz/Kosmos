@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 function getFileIcon(
   type: FileType | 'folder',

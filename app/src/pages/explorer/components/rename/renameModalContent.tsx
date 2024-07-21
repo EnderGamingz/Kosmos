@@ -16,7 +16,7 @@ import {
 import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
 export function RenameModalContent({

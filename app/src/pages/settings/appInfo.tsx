@@ -1,7 +1,7 @@
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { Link } from 'react-router-dom';
 import { CloudIcon, FingerPrintIcon } from '@heroicons/react/24/outline';
-import { BUILD_ID } from '@lib/vars.ts';
+import { BUILD_ID } from '@lib/env.ts';
 import { Tooltip } from '@nextui-org/react';
 
 const links = [

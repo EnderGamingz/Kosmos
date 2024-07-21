@@ -4,12 +4,12 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import {
   CircleStackIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 
 export function FileDisplayStats({ file }: { file: FileModel }) {
   return (

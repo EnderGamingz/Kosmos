@@ -1,6 +1,6 @@
 import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL, FALLBACK_STORAGE_LIMIT, IS_DEVELOPMENT } from './vars.ts';
+import { BASE_URL, IS_DEVELOPMENT } from './env.ts';
 import { FolderResponse, FolderShareResponse } from '@models/folder.ts';
 import { DataOperationType, FileModel, ShareFileModel } from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
@@ -13,6 +13,7 @@ import {
 } from '@models/sort.ts';
 import { SharedItemsResponse, ShareModel } from '@models/share.ts';
 import { UsageReport, UsageStats } from '@models/usage.ts';
+import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 
 export const queryClient = new QueryClient();
 

@@ -4,12 +4,12 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { UsageReport, UsageStats } from '@models/usage.ts';
-import { UsageIndicator } from '@components/usageIndicator.tsx';
+import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import {
   CircleStackIcon,
   DocumentIcon,

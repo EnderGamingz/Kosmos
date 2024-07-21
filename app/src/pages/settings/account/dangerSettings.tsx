@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import axios from 'axios';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { FormEvent, useState } from 'react';
 import useLogout from '@hooks/useLogout.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useUsageStats } from '@lib/query.ts';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 
 function DeleteAccount() {
   const usage = useUsageStats();

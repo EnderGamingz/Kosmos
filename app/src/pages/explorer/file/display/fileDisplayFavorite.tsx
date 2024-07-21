@@ -1,6 +1,6 @@
 import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export function FileDisplayFavorite({

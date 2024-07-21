@@ -1,6 +1,6 @@
 import { SortBy, SortOrder } from '@models/sort.ts';
 import { useSearchState } from '@stores/searchStore.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 
 export function ExplorerSort({

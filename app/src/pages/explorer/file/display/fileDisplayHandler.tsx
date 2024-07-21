@@ -1,9 +1,9 @@
 import { FileModel, FileType, getFileTypeString } from '@models/file.ts';
 import { DisplayImage } from '@pages/explorer/file/display/image/displayImage.tsx';
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { EmbedFile } from '@pages/explorer/file/display/embedFile.tsx';

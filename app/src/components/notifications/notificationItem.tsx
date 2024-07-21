@@ -1,7 +1,7 @@
 import { Notification, useNotifications } from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { NotificationStatus } from './notificationStatus.tsx';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';

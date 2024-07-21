@@ -3,8 +3,8 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
-import tw from '@lib/classMerge.ts';
+import { BASE_URL } from '@lib/env.ts';
+import tw from '@utils/classMerge.ts';
 import objectHash from 'object-hash';
 
 export function UserInformation() {

@@ -1,5 +1,5 @@
 import { DataOperationType } from '@models/file.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { ShareIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';

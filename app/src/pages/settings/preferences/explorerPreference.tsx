@@ -6,7 +6,7 @@ import {
   selections,
 } from '@pages/settings/preferences/selections.tsx';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { Collapse } from 'react-collapse';
 import { motion } from 'framer-motion';
 import {

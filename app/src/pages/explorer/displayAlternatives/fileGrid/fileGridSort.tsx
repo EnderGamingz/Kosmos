@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { getSortString, SortBy, SortOrder } from '@models/sort.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
 
 export function FileGridSort() {

@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { StarIcon } from '@heroicons/react/24/outline';
 import { DataOperationType } from '@models/file.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { motion } from 'framer-motion';
 import { invalidateData, invalidateUsageReport } from '@lib/query.ts';

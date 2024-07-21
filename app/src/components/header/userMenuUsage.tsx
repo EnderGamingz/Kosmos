@@ -3,8 +3,8 @@ import {
   ArrowTopRightOnSquareIcon,
   CloudIcon,
 } from '@heroicons/react/24/outline';
-import { UsageIndicator } from '@components/usageIndicator.tsx';
-import { formatBytes } from '@lib/fileSize.ts';
+import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
+import { formatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
 
 export function UserMenuUsage({ onClick }: { onClick?: () => void }) {

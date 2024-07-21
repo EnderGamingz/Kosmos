@@ -1,7 +1,7 @@
 import { AnimatePresence } from 'framer-motion';
 import { NotificationItem } from './notificationItem';
 import { useNotifications } from '@stores/notificationStore';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { useEffect, useState } from 'react';
 
 export default function NotificationIndicator() {

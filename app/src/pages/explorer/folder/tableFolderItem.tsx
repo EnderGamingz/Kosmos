@@ -2,7 +2,7 @@ import { FolderModel } from '@models/folder.ts';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { motion } from 'framer-motion';
@@ -17,7 +17,7 @@ import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
-import { isTouchDevice } from '@lib/touch.ts';
+import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export function TableFolderItem({

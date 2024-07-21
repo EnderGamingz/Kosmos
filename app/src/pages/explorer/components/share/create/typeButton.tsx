@@ -1,5 +1,5 @@
 import { getShareTypeString, ShareType } from '@models/share.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 

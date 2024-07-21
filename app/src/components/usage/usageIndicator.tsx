@@ -1,8 +1,8 @@
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
 import { UsageStats } from '@models/usage.ts';
-import { getPercentageStats } from '@components/getPercentage.ts';
+import { getPercentageStats } from '@components/usage/getPercentage.ts';
 
 function ActiveBar({ percent }: { percent: number }) {
   return (

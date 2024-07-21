@@ -2,7 +2,7 @@ import { useUserState } from '@stores/userStore';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import {
   Divider,
   Popover,
@@ -14,7 +14,7 @@ import {
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import useLogout from '@hooks/useLogout.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import MinidentIcon from '@components/MinidentIcon.tsx';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useState } from 'react';

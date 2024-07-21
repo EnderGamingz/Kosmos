@@ -2,13 +2,13 @@ import {
   ArrowTopRightOnSquareIcon,
   CloudIcon,
 } from '@heroicons/react/24/outline';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { useUsageStats } from '@lib/query.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { getExplorerLinks } from '@pages/explorer/nav/explorerLinks.tsx';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
-import { UsageIndicator } from '@components/usageIndicator.tsx';
+import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
 
 export function SideNav() {

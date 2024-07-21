@@ -4,7 +4,7 @@ import { CheckIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { invalidateShareAccess } from '@lib/query.ts';
 import { motion } from 'framer-motion';
 

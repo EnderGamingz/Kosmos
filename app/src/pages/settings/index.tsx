@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { NavLink, Outlet } from 'react-router-dom';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 const links = [
   {

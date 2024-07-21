@@ -1,5 +1,5 @@
 import { FileModel } from '@models/file.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';

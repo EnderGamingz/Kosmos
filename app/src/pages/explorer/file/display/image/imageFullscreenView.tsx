@@ -1,7 +1,7 @@
 import { FileModel } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Portal } from 'react-portal';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,

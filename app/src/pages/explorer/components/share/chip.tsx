@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 export function Chip({
   content,

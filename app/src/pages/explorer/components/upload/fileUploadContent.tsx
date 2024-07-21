@@ -13,14 +13,14 @@ import {
   UploadFile,
 } from '@pages/explorer/components/upload/uploadFile.ts';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import {
   invalidateFiles,
   invalidateFolders,
   invalidateUsage,
 } from '@lib/query.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { ModalBody, ModalFooter } from '@nextui-org/react';
 import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';

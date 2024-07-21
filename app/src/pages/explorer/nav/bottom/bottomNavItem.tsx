@@ -2,7 +2,7 @@ import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { MouseEvent, ReactNode, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 import { NavLink } from 'react-router-dom';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 export function BottomNavItem({
   link,

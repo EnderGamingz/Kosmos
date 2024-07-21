@@ -1,4 +1,4 @@
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
 export default function OpenExternally({

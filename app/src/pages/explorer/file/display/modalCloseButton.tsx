@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export function ModalCloseButton({ onClick }: { onClick: () => void }) {

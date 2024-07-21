@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
-import { formatBytes } from '@lib/fileSize.ts';
+import tw from '@utils/classMerge.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 
 export function ImageTooLargePrompt({

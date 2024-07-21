@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import { UserModel } from '@models/user.ts';
 
 export type UserState = {

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 
 export function MultipleActionButton({

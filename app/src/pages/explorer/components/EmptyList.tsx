@@ -1,6 +1,6 @@
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import Illustration from '@components/Illustration.tsx';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 
 export default function EmptyList({

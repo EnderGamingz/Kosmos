@@ -1,6 +1,6 @@
 import { Notification, Severity } from '@stores/notificationStore.ts';
 import { Progress } from '@nextui-org/react';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 export function NotificationStatus({ data }: { data: Notification }) {
   const isSuccess = data.severity === Severity.SUCCESS;

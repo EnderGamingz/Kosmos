@@ -1,7 +1,7 @@
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { MouseEvent, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
 

@@ -11,14 +11,14 @@ import {
 } from '@components/defaults/transition.ts';
 import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { FileTypeDisplay } from '@pages/explorer/file/display/fileDisplayHandler.tsx';
-import { formatBytes } from '@lib/fileSize.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { ClockIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow } from 'date-fns';
 import { DetailType } from '@stores/preferenceStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
-import { isTouchDevice } from '@lib/touch.ts';
+import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export default function GridFileItem({

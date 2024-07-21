@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { useUserState } from '@stores/userStore';
-import { NoAccess } from '@components/noAccess.tsx';
+import { NoAccess } from '@components/overlay/noAccess.tsx';
 
 export function AccessWrapper({ el, page }: { el: ReactNode; page: string }) {
   const user = useUserState();

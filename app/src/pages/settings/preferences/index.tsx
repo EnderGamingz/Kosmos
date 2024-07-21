@@ -1,6 +1,6 @@
 import ExplorerPreferences from '@pages/settings/preferences/explorerPreference.tsx';
 import { UnitPreferences } from '@pages/settings/preferences/unitPreferences.tsx';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 export default function Preferences({ inPopup }: { inPopup?: boolean }) {
   return (

@@ -5,7 +5,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Modal, ModalContent, ScrollShadow } from '@nextui-org/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 
 export function ConflictModal({
   initial,

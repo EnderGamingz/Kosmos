@@ -1,7 +1,7 @@
 import { useUsageStats } from '@lib/query.ts';
-import { getPercentageStats } from '@components/getPercentage.ts';
-import tw from '@lib/classMerge.ts';
-import { formatBytes } from '@lib/fileSize.ts';
+import { getPercentageStats } from '@components/usage/getPercentage.ts';
+import tw from '@utils/classMerge.ts';
+import { formatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
 import {
   ArrowTopRightOnSquareIcon,

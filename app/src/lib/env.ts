@@ -6,6 +6,4 @@ export const {
   VITE_BUILD_ID: BUILD_ID,
 } = import.meta.env;
 
-/* Constants */
-export const FALLBACK_STORAGE_LIMIT = 10 * 1024 * 1024 * 1024; // 10 GiB
-export const IMAGE_LOAD_SIZE_THRESHOLD = 75 * 1024 * 1024; // 75 MiB
+export const ALLOW_REGISTER = import.meta.env.VITE_ALLOW_REGISTER === 'true';

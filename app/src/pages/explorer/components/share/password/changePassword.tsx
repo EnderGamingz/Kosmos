@@ -3,7 +3,7 @@ import { KeyIcon } from '@heroicons/react/24/outline';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '@lib/vars.ts';
+import { BASE_URL } from '@lib/env.ts';
 import axios from 'axios';
 import { invalidateShares } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';

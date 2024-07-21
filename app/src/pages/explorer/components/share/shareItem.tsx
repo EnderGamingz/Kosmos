@@ -1,7 +1,7 @@
 import { getShareTypeString, ShareModel } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTop } from '@components/defaults/transition.ts';
-import tw from '@lib/classMerge.ts';
+import tw from '@utils/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { DataOperationType } from '@models/file.ts';
