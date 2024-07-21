@@ -5,9 +5,8 @@ import {
   WindowIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-import { Link, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import tw from '@lib/classMerge.ts';
-import { Tooltip } from '@nextui-org/react';
 
 const links = [
   {
@@ -38,7 +37,7 @@ export default function Settings() {
     <div className={'relative flex flex-grow pl-20 md:pl-0'}>
       <motion.aside
         className={tw(
-          'peer border-r border-stone-800/10 py-3 transition-all',
+          'border-r border-stone-800/10 py-3 transition-all',
           'absolute left-0 top-0 h-full w-20 px-2 md:h-[unset]',
           'flex flex-col md:relative md:w-[unset] md:px-4',
           '[&_a]:gap-0 [&_a]:transition-all [&_p]:w-0 [&_p]:overflow-hidden',
@@ -46,9 +45,9 @@ export default function Settings() {
         )}>
         <h2
           className={
-            'pb-0 text-center text-[0] font-[350] transition-all md:pb-2 md:text-lg'
+            'pb-0 text-[0] font-light transition-all md:pb-1 md:text-lg'
           }>
-          Kosmos Settings
+          Settings
         </h2>
         <hr
           className={
@@ -56,27 +55,30 @@ export default function Settings() {
           }
         />
         {links.map(link => (
-          <Tooltip
-            key={link.name}
-            content={link.name}
-            placement={'right'}
-            className={'block md:hidden'}>
-            <Link
-              to={link.href}
-              className={tw(
+          <NavLink
+            to={link.href}
+            end
+            title={link.name}
+            className={({ isActive }) =>
+              tw(
                 'flex items-center rounded-lg p-2 text-stone-700 transition-all',
                 'px-4 text-lg hover:bg-stone-700/5',
-                'peer-hover:bg-red-700 peer-hover:text-stone-100',
                 !!link.bottom && 'mt-auto',
-              )}>
-              <link.icon className={'h-8 w-8'} />
-              <p>{link.name}</p>
-            </Link>
-          </Tooltip>
+                isActive && 'bg-stone-700/5',
+              )
+            }>
+            <link.icon className={'h-8 w-8'} />
+            <p>{link.name}</p>
+          </NavLink>
         ))}
       </motion.aside>
-      <div className={'mx-auto max-w-4xl flex-grow p-5'}>
-        <Outlet />
+      <div
+        className={
+          'h-full max-h-[calc(100dvh-90px)] flex-grow overflow-y-auto p-5'
+        }>
+        <div className={'mx-auto max-w-4xl'}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

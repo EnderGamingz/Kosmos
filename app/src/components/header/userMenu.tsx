@@ -74,7 +74,7 @@ export function UserMenu() {
           <Divider className={'mb-1 mt-2'} />
           <div className={'space-y-1'}>
             <Link
-              to={'/settings'}
+              to={'/settings/account'}
               className={'user-menu-link'}
               onClick={handleClose}>
               <Cog6ToothIcon className={'h-5 w-5'} />
