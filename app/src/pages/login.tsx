@@ -11,7 +11,7 @@ import { AuthScreen } from '@pages/authScreen.tsx';
 
 type LoginData = { username: string; password: string };
 
-export function Login() {
+export default function Login() {
   const navigate = useNavigate();
   const userState = useUserState();
   const notification = useNotifications(s => s.actions);

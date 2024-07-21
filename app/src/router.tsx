@@ -1,14 +1,14 @@
 import { useUserState } from '@stores/userStore.ts';
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import Header from '@components/header';
-import { Register } from '@pages/register.tsx';
-import { Login } from '@pages/login.tsx';
-import { AccessWrapper } from './accessWrapper.tsx';
+import Register from '@pages/register.tsx';
+import Login from '@pages/login.tsx';
+import AccessWrapper from './accessWrapper.tsx';
 import Dashboard from '@pages/explorer/dashboard.tsx';
 import NotificationIndicator from '@components/notifications';
-import { FileList } from '@pages/explorer/fileList.tsx';
-import { useInitializeKeys } from '@hooks/useInitKeys.ts';
+import FileList from '@pages/explorer/fileList.tsx';
 import Settings from '@pages/settings/index.tsx';
 import BinPage from '@pages/explorer/pages/bin.tsx';
 import RecentFiles from '@pages/explorer/pages/recent.tsx';
@@ -19,7 +19,8 @@ import SharedItems from '@pages/explorer/pages/shared.tsx';
 import SecuritySettings from '@pages/settings/security';
 import AppInfo from '@pages/settings/appInfo.tsx';
 import UsageReport from '@pages/usage/report';
-import { FileListByType } from '@pages/explorer/fileListByType.tsx';
+import FileListByType from '@pages/explorer/fileListByType.tsx';
+import HomePage from '@pages/home';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -67,6 +68,7 @@ export default function Router() {
 
           {/* Public Share */}
           <Route path={'s/:type/:uuid/*'} element={<SharePage />} />
+          <Route path={'/'} element={<HomePage />} />
         </Routes>
       </main>
       <NotificationIndicator />

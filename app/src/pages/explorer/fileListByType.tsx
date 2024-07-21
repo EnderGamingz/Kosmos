@@ -5,7 +5,7 @@ import { getFileTypeString } from '@models/file.ts';
 import { useEffect } from 'react';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
-export function FileListByType() {
+export default function FileListByType() {
   const navigate = useNavigate();
   const { fileType } = useParams();
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);

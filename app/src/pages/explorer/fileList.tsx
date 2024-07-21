@@ -10,7 +10,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.tsx';
 
-export function FileList() {
+export default function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
   const { setCurrentFolder, setFilesInScope } = useExplorerStore(

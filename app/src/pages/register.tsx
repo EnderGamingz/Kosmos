@@ -10,7 +10,7 @@ import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
 
 type RegisterData = { username: string; password: string };
 
-export function Register() {
+export default function Register() {
   const notification = useNotifications(s => s.actions);
   const navigate = useNavigate();
 

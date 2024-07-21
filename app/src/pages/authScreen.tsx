@@ -77,7 +77,10 @@ export function AuthScreen({
           </motion.div>
         )}
       </div>
-      <img
+      <motion.img
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5 }}
         className={
           'col-span-2 hidden h-full max-h-[100dvh] w-full object-cover md:block'
         }
