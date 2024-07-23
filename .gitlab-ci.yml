@@ -12,6 +12,7 @@ kosmos_app_build_job:
   stage: build
   image: docker:stable
   script:
+    - cd app
     - cp .env.deploy .env
     - sed -i "s/\[BASE_URL\]/BASE_URL/g" .env
     - sed -i "s/\[LOCAL_URL\]/LOCAL_URL/g" .env
