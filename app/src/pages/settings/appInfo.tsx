@@ -1,8 +1,11 @@
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { Link } from 'react-router-dom';
-import { CloudIcon, FingerPrintIcon } from '@heroicons/react/24/outline';
-import { BUILD_ID } from '@lib/env.ts';
-import { Tooltip } from '@nextui-org/react';
+import {
+  CloudIcon,
+  FingerPrintIcon,
+  TagIcon,
+} from '@heroicons/react/24/outline';
+import { BUILD_ID, BUILD_TAG } from '@lib/env.ts';
 
 const links = [
   {
@@ -44,12 +47,16 @@ export default function AppInfo() {
           </Link>
         </p>
         {BUILD_ID && (
-          <Tooltip content={'Build ID'}>
-            <div className={'flex items-center gap-2'}>
-              <FingerPrintIcon className={'h-5 w-5'} />
-              {BUILD_ID}
-            </div>
-          </Tooltip>
+          <div title={'Build ID'} className={'flex items-center gap-1'}>
+            <FingerPrintIcon className={'h-5 w-5'} />
+            {BUILD_ID}
+          </div>
+        )}
+        {BUILD_TAG && (
+          <div title={'Build Tag'} className={'flex items-center gap-1'}>
+            <TagIcon className={'h-5 w-5'} />
+            {BUILD_TAG}
+          </div>
         )}
       </div>
     </div>
