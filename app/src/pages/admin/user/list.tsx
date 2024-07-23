@@ -113,8 +113,8 @@ export function CreateUserModal() {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const username = formData.get('username') as string;
-    const password = formData.get('new_password') as string;
-    const limit = Number(formData.get('limit')) * multiplier;
+    const password = formData.get('password') as string;
+    const limit = Number(formData.get('limit')) * multiplier || 0;
 
     createMutation.mutate({ username, password, limit });
   }
@@ -135,6 +135,7 @@ export function CreateUserModal() {
                 name={'username'}
                 id={'username'}
                 placeholder={'Username'}
+                required
               />
               <input
                 className={'input'}
@@ -142,6 +143,7 @@ export function CreateUserModal() {
                 name={'password'}
                 id={'password'}
                 placeholder={'Password'}
+                required
               />
               <div className={'flex gap-3'}>
                 <input
@@ -150,6 +152,7 @@ export function CreateUserModal() {
                   name={'limit'}
                   id={'limit'}
                   placeholder={'Limit'}
+                  required
                 />
                 <select
                   className={'input'}
