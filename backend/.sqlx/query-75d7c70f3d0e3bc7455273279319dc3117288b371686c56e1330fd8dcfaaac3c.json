@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE files SET preview_status = $1 WHERE id = ANY($2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int2",
+        "Int8Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "75d7c70f3d0e3bc7455273279319dc3117288b371686c56e1330fd8dcfaaac3c"
+}

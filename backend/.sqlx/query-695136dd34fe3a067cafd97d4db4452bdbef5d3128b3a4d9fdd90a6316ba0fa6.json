@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT file_type, SUM(file_size), COUNT(id)\n                FROM files\n                WHERE user_id = $1\n                GROUP BY file_type\n                ORDER BY SUM(file_size) DESC LIMIT $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "file_type",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 1,
+        "name": "sum",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 2,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "695136dd34fe3a067cafd97d4db4452bdbef5d3128b3a4d9fdd90a6316ba0fa6"
+}

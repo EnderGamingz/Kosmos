@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE operations SET operation_status = $1 WHERE operation_status = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int2",
+        "Int2"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "54e83f91c256ac0eac126a7a7c6d04706c17c6a1c739431314006a79982ecef1"
+}

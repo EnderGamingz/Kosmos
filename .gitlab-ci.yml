@@ -1,0 +1,55 @@
+stages:
+  - build
+  - release
+
+variables:
+  REGISTRY_URL: registry.setilic.com
+  REGISTRY_USER: setilic
+  FRONTEND_IMAGE_PATH: setilic/kosmos/app
+  BACKEND_IMAGE_PATH: setilic/kosmos/backend
+
+kosmos_app_build_job:
+  stage: build
+  image: docker:stable
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - cd app
+    - cp .env.deploy .env
+    - sed -i "s#\[BASE_URL\]#$BASE_URL#g" .env
+    - sed -i "s#\[LOCAL_URL\]#$LOCAL_URL#g" .env
+    - sed -i "s#\[ALLOW_REGISTER\]#$ALLOW_REGISTER#g" .env
+    - sed -i "s#\[SYSTEM_MESSAGE\]#$SYSTEM_MESSAGE#g" .env
+    - sed -i "s#\[BUILD_ID\]#$CI_COMMIT_SHORT_SHA#g" .env
+    - sed -i "s#\[BUILD_TAG\]#$CI_COMMIT_TAG#g" .env
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin $REGISTRY_URL
+    - docker build -t $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG .
+    - docker push $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG
+
+kosmos_backend_build_job:
+  stage: build
+  image: docker:stable
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - cd backend
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin $REGISTRY_URL
+    - docker build -t $REGISTRY_URL/$BACKEND_IMAGE_PATH:$CI_COMMIT_TAG .
+    - docker push $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG
+
+kosmos_release_job:
+  stage: release
+  needs:
+    - kosmos_app_build_job
+    - kosmos_backend_build_job
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Running release job"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release created by release-cli in Pipeline'
+
+
