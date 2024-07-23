@@ -25,6 +25,8 @@ import AdminPage from '@pages/admin';
 import { Role } from '@models/user.ts';
 import AdminUserList from '@pages/admin/user/list.tsx';
 import AdminUser from '@pages/admin/user/single.tsx';
+import DismissedOverview from '@pages/settings/dismissed';
+import SystemMessage from '@components/overlay/systemMessage.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -62,6 +64,7 @@ export default function Router() {
           <Route
             path={'settings'}
             element={<AccessWrapper el={<Settings />} page={'Settings'} />}>
+            <Route path={'dismissed'} element={<DismissedOverview />} />
             <Route path={'preferences'} element={<Preferences />} />
             <Route path={'account'} element={<AccountSettings />} />
             <Route path={'security'} element={<SecuritySettings />} />
@@ -88,6 +91,7 @@ export default function Router() {
         </Routes>
       </main>
       <NotificationIndicator />
+      <SystemMessage />
     </BrowserRouter>
   );
 }

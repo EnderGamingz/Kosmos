@@ -1,36 +1,7 @@
-import {
-  InformationCircleIcon,
-  KeyIcon,
-  UserIcon,
-  WindowIcon,
-} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { NavLink, Outlet } from 'react-router-dom';
 import tw from '@utils/classMerge.ts';
-
-const links = [
-  {
-    name: 'Account',
-    href: '/settings/account',
-    icon: UserIcon,
-  },
-  {
-    name: 'Security',
-    href: '/settings/security',
-    icon: KeyIcon,
-  },
-  {
-    name: 'Preferences',
-    href: '/settings/preferences',
-    icon: WindowIcon,
-  },
-  {
-    name: 'Kosmos',
-    href: '/settings/info',
-    icon: InformationCircleIcon,
-    bottom: true,
-  },
-];
+import { links } from '@pages/settings/links.ts';
 
 export default function Settings() {
   return (
@@ -57,6 +28,7 @@ export default function Settings() {
         {links.map(link => (
           <NavLink
             to={link.href}
+            key={link.name}
             end
             title={link.name}
             className={({ isActive }) =>

@@ -3,13 +3,11 @@ import { getPercentageStats } from '@components/usage/getPercentage.ts';
 import tw from '@utils/classMerge.ts';
 import { formatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
-import {
-  ArrowTopRightOnSquareIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
 
 export default function StorageLimitBanner() {
   const usage = useUsageStats();
@@ -69,16 +67,5 @@ export default function StorageLimitBanner() {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-function DismissButton({ id }: { id: Dismiss }) {
-  const dismiss = useDismissStore(s => s.actions.dismiss);
-
-  return (
-    <button onClick={() => dismiss(id)} className={'btn-white'}>
-      <XMarkIcon />
-      Dismiss
-    </button>
   );
 }

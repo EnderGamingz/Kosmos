@@ -35,7 +35,7 @@ export const useUserState = create<UserState>(set => ({
     if (user) set({ user });
   },
   setUser: (data: UserModel) => {
-    set({ user: data, initialized: true });
+    set({ user: data, initialized: true, error: undefined });
   },
   logout: () => {
     set({ user: undefined });

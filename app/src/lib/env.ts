@@ -7,3 +7,4 @@ export const {
 } = import.meta.env;
 
 export const ALLOW_REGISTER = import.meta.env.VITE_ALLOW_REGISTER === 'true';
+export const SYSTEM_MESSAGE = import.meta.env.VITE_SYSTEM_MESSAGE || undefined;

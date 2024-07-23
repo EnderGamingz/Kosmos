@@ -6,9 +6,11 @@ import { motion } from 'framer-motion';
 export default function EmptyList({
   table,
   grid,
+  message,
 }: {
   table?: boolean;
   grid?: boolean;
+  message?: string;
 }) {
   return (
     <ConditionalWrapper
@@ -34,7 +36,7 @@ export default function EmptyList({
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
           className={'text-center text-stone-700'}>
-          No items
+          {message ?? 'No items'}
         </motion.p>
       </motion.div>
     </ConditionalWrapper>
