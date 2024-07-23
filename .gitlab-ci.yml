@@ -16,12 +16,12 @@ kosmos_app_build_job:
   script:
     - cd app
     - cp .env.deploy .env
-    - sed -i "s/\[BASE_URL\]/$BASE_URL/g" .env
-    - sed -i "s/\[LOCAL_URL\]/$LOCAL_URL/g" .env
-    - sed -i "s/\[ALLOW_REGISTER\]/$ALLOW_REGISTER/g" .env
-    - sed -i "s/\[SYSTEM_MESSAGE\]/$SYSTEM_MESSAGE/g" .env
-    - sed -i "s/\[BUILD_ID\]/$CI_COMMIT_SHORT_SHA/g" .env
-    - sed -i "s/\[BUILD_TAG\]/$CI_COMMIT_TAG/g" .env
+    - sed -i "s#\[BASE_URL\]#$BASE_URL#g" .env
+    - sed -i "s#\[LOCAL_URL\]#$LOCAL_URL#g" .env
+    - sed -i "s#\[ALLOW_REGISTER\]#$ALLOW_REGISTER#g" .env
+    - sed -i "s#\[SYSTEM_MESSAGE\]#$SYSTEM_MESSAGE#g" .env
+    - sed -i "s#\[BUILD_ID\]#$CI_COMMIT_SHORT_SHA#g" .env
+    - sed -i "s#\[BUILD_TAG\]#$CI_COMMIT_TAG#g" .env
     - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin $REGISTRY_URL
     - docker build -t $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG .
     - docker push $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG
