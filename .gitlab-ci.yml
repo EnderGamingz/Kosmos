@@ -9,6 +9,7 @@ variables:
   BACKEND_IMAGE_PATH: setilic/kosmos/backend
 
 kosmos_app_build_job:
+  stage: build
   image: docker:stable
   script:
     - cp .env.deploy .env
