@@ -1,0 +1,102 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM shares WHERE file_id = $1\n            AND user_id = $2\n            AND share_type = $3",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "uuid",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "file_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "folder_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "share_type",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 6,
+        "name": "share_target",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "access_limit",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "password",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "access_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "last_access",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 11,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 12,
+        "name": "expires_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 13,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int2"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "26357e5b1b03d776aa9ce3c9d1cf253c1fc91b5e433fa873e3268e508dcfcc6d"
+}

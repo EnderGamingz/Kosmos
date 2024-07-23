@@ -1,0 +1,101 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM shares\n            WHERE id = $1\n            AND user_id = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "uuid",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "file_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "folder_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "share_type",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 6,
+        "name": "share_target",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "access_limit",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "password",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "access_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "last_access",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 11,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 12,
+        "name": "expires_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 13,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "7c5fbf1c801ccace583ae1f79619d5f7a26b5b2359fd67e6b8ceb4d25f049da7"
+}

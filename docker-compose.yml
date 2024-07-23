@@ -1,6 +1,6 @@
 services:
   kosmos_app:
-    image: registry.setilic.com/setilic/kosmos/app:latest
+    image: registry.setilic.com/setilic/kosmos/app:0.1.1
     ports:
       - "3000:3000"
 
@@ -9,11 +9,22 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - "DATABASE_URL='postgresql://kosmos:secret@localhost:5432/kosmos'"
+      - "DATABASE_URL=postgresql://kosmos:secret@kosmos_db:5432/kosmos"
       - "CORS_ORIGIN=https://kosmos.setilic.com"
-      - "UPLOAD_LOCATION='./uploads'"
+      - "UPLOAD_LOCATION=./uploads"
       - "IMAGE_PROCESSING_THREADS=4"
       - "DEFAULT_STORAGE_LIMIT=10737418240"
       - "ALLOW_REGISTER=true"
     volumes:
-      - ./uploads:./uploads
+      - ./uploads:/app/uploads
+    depends_on:
+      - kosmos_db
+
+  kosmos_db:
+    image: postgres:16.2-alpine
+    environment:
+      - POSTGRES_USER=kosmos
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=kosmos
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
