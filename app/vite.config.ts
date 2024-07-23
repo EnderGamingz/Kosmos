@@ -27,6 +27,7 @@ export default defineConfig({
         'img/favicon.ico',
         'img/favicon.svg',
         'img/pictures/stone.jpg',
+        'img/pictures/hero.jpg',
       ],
       manifest: Manifest as never,
     }),
