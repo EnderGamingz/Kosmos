@@ -34,7 +34,7 @@ export function SideNav({ admin }: { admin?: boolean }) {
   return (
     <motion.aside
       className={tw(
-        'body-bg z-40 flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
+        'body-bg flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
         'overflow-hidden transition-all md:h-[initial]',
       )}>
       <div className={'flex flex-col gap-2 p-3'}>

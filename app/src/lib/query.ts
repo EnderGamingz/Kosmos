@@ -14,6 +14,7 @@ import {
 import { SharedItemsResponse, ShareModel } from '@models/share.ts';
 import { UsageReport, UsageStats } from '@models/usage.ts';
 import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
+import { SearchResponse } from '@models/search.ts';
 
 export const queryClient = new QueryClient();
 
@@ -24,6 +25,9 @@ export async function invalidateFiles() {
   await queryClient.invalidateQueries({
     queryKey: ['shared'],
   });
+  await queryClient.invalidateQueries({
+    queryKey: ['search'],
+  });
 }
 
 export async function invalidateFolders() {
@@ -33,7 +37,23 @@ export async function invalidateFolders() {
   await queryClient.invalidateQueries({
     queryKey: ['shared'],
   });
+  await queryClient.invalidateQueries({
+    queryKey: ['search'],
+  });
 }
+
+export const useSearch = (query: string) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/search`, {
+          params: { q: query },
+        })
+        .then(res => res.data as SearchResponse),
+    enabled: !!query,
+    queryKey: ['search', query],
+  });
+};
 
 export const useFolders = (parent_id?: string, sort?: SortParams) => {
   return useQuery({

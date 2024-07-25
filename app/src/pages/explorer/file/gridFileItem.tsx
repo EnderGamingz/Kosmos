@@ -80,6 +80,7 @@ export default function GridFileItem({
 
   return (
     <motion.div
+      id={file.id}
       layout
       variants={index < transitionStop ? itemTransitionVariant : undefined}
       onContextMenu={e => {

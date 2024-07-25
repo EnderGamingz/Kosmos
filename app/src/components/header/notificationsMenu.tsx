@@ -101,7 +101,7 @@ export function NotificationsMenu() {
         if (b) setSeen(true);
       }}>
       <PopoverTrigger>
-        <button className={'flex'}>
+        <button className={'flex p-2'}>
           <Badge
             content={''}
             color={'danger'}

@@ -226,12 +226,17 @@ fn get_admin_router() -> KosmosRouter {
         )
 }
 
+fn get_search_router() -> KosmosRouter {
+    Router::new().route("/", get(crate::routes::api::v1::auth::search))
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
         .route("/login", post(crate::routes::api::v1::auth::login))
         .route("/register", post(crate::routes::api::v1::auth::register))
         .route("/logout", post(crate::routes::api::v1::auth::logout))
+        .nest("/search", get_search_router())
         .nest("/share", get_share_router())
         .nest("/file", get_file_router())
         .nest("/folder", get_folder_router())

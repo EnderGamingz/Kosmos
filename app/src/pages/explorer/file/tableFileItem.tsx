@@ -107,6 +107,7 @@ export function TableFileItem({
 
   return (
     <motion.tr
+      id={file.id}
       layout
       variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {

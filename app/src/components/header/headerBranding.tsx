@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 export function HeaderBranding({ user }: { user?: UserModel }) {
   return (
-    <motion.div layoutId={'header-branding'}>
+    <motion.div className={'min-w-max'} layoutId={'header-branding'}>
       <Link
         to={user ? '/home' : '/'}
         className={

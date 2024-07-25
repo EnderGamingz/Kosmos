@@ -108,8 +108,6 @@ impl ShareService {
         user_id: &UserId,
         get_target: bool,
     ) -> Result<Vec<FileModelWithShareInfo>, AppError> {
-        let sql = Self::get_share_items_query(user_id, AccessShareItemType::File, get_target);
-        println!("sql: {}", sql);
         sqlx::query_as::<_, FileModelWithShareInfo>(&*Self::get_share_items_query(
             user_id,
             AccessShareItemType::File,

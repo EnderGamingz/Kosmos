@@ -27,6 +27,7 @@ import AdminUserList from '@pages/admin/user/list.tsx';
 import AdminUser from '@pages/admin/user/single.tsx';
 import DismissedOverview from '@pages/settings/dismissed';
 import SystemMessage from '@components/overlay/systemMessage.tsx';
+import SearchPage from '@pages/explorer/pages/search.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -58,6 +59,7 @@ export default function Router() {
               element={<SharedItems itemsForUser={true} />}
             />
             <Route path={'bin'} element={<BinPage />} />
+            <Route path={'search'} element={<SearchPage />} />
             <Route path={'folder/:folder'} element={<FileList />} />
             <Route index element={<FileList />} />
           </Route>
