@@ -35,7 +35,7 @@ kosmos_backend_build_job:
     - cd backend
     - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin $REGISTRY_URL
     - docker build -t $REGISTRY_URL/$BACKEND_IMAGE_PATH:$CI_COMMIT_TAG .
-    - docker push $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG
+    - docker push $REGISTRY_URL/$BACKEND_IMAGE_PATH:$CI_COMMIT_TAG
 
 kosmos_release_job:
   stage: release
