@@ -1,7 +1,7 @@
 import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
 
-export function EmbedFile({
+export default function EmbedFile({
   file,
   serveUrl,
 }: {

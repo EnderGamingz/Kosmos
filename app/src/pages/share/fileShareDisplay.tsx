@@ -1,7 +1,7 @@
 import { FileModel } from '@models/file.ts';
 import { useState } from 'react';
 import tw from '@utils/classMerge.ts';
-import { FileDisplayHandler } from '@pages/explorer/file/display/fileDisplayHandler.tsx';
+import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';

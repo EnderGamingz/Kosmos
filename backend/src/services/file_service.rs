@@ -556,7 +556,7 @@ impl FileService {
     }
 
     pub fn get_file_type(mime_type: &str) -> FileType {
-        const TYPES: [(&'static str, FileType); 43] = [
+        const TYPES: [(&'static str, FileType); 44] = [
             ("image/gif", FileType::Image),
             ("image/jpeg", FileType::Image),
             ("image/png", FileType::Image),
@@ -567,6 +567,7 @@ impl FileService {
             ("video/mp4", FileType::Video),
             ("video/webm", FileType::Video),
             ("video/ogg", FileType::Video),
+            ("video/quicktime", FileType::Video),
             ("audio/mpeg", FileType::Audio),
             ("audio/ogg", FileType::Audio),
             ("audio/wav", FileType::Audio),

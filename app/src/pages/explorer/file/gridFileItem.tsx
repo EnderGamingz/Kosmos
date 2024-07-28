@@ -12,7 +12,7 @@ import {
 import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import tw from '@utils/classMerge.ts';
-import { FileTypeDisplay } from '@pages/explorer/file/display/fileDisplayHandler.tsx';
+import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { formatBytes } from '@utils/fileSize.ts';
 import { ClockIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow } from 'date-fns';

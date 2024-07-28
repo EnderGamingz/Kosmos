@@ -6,7 +6,7 @@ import tw from '@utils/classMerge.ts';
 import { useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
-import { FileDisplayHandler } from '@pages/explorer/file/display/fileDisplayHandler.tsx';
+import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { useSearchState } from '@stores/searchStore.ts';

@@ -11,6 +11,16 @@ export enum FileType {
   Archive,
 }
 
+export class FileTypeActions {
+  static isImage(id: number) {
+    return [FileType.Image, FileType.RawImage].includes(id);
+  }
+
+  static isVideo(id: number) {
+    return [FileType.Video].includes(id);
+  }
+}
+
 export enum FilePreviewStatus {
   Unavailable,
   Ready,

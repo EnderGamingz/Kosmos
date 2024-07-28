@@ -1,12 +1,18 @@
-import { FileModel, FileType, getFileTypeString } from '@models/file.ts';
-import { DisplayImage } from '@pages/explorer/file/display/image/displayImage.tsx';
+import {
+  FileModel,
+  FileType,
+  FileTypeActions,
+  getFileTypeString,
+} from '@models/file.ts';
+import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { BASE_URL } from '@lib/env.ts';
-import { useContext, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
-import { EmbedFile } from '@pages/explorer/file/display/embedFile.tsx';
+import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
+import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
 
 export function FileTypeDisplay({
   id,
@@ -14,13 +20,16 @@ export function FileTypeDisplay({
   type,
   noText,
   loading,
+  children,
 }: {
   id: string;
   name: string;
   type: FileType;
   noText?: boolean;
   loading?: boolean;
+  children?: ReactNode;
 }) {
+  const shouldShowChildren = Boolean(children && !loading);
   return (
     <motion.div
       layoutId={`type-display-${id}`}
@@ -29,13 +38,13 @@ export function FileTypeDisplay({
       exit={{ opacity: 0, scale: 0.5 }}
       transition={{ duration: 0.3 }}
       className={tw(
-        'flex h-full w-full flex-col items-center justify-center',
+        'relative flex h-full w-full flex-col items-center justify-center',
         'rounded-lg bg-stone-800/20 text-stone-200 shadow-xl [&_svg]:text-stone-200',
         'outline outline-1 -outline-offset-1 outline-stone-500',
         'pr-5 text-center backdrop-blur-md',
         loading ? '[&_svg]:h-14 [&_svg]:w-14' : '[&_svg]:h-20 [&_svg]:w-20',
       )}>
-      <div className={'relative'}>
+      <div className={tw('relative', shouldShowChildren && 'opacity-0')}>
         {loading && (
           <div
             className={
@@ -46,7 +55,7 @@ export function FileTypeDisplay({
         )}
         <ItemIcon id={id} name={name} type={type} />
       </div>
-      {!noText && (
+      {!noText && !shouldShowChildren && (
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -55,6 +64,7 @@ export function FileTypeDisplay({
           {getFileTypeString(type)} File
         </motion.p>
       )}
+      {!loading && children}
     </motion.div>
   );
 }
@@ -87,8 +97,6 @@ export function FileDisplayHandler({
   // and prevent the app from lagging when displaying a file essentially on mobile devices
   const [previewOnHold, setPreviewOnHold] = useState(initialLoadingState());
 
-  const isImage = [FileType.Image, FileType.RawImage].includes(file.file_type);
-
   const highResUrl = shareUuid
     ? isSharedInFolder
       ? `${BASE_URL}s/folder/${shareUuid}/File/${file.id}/action/Serve`
@@ -106,7 +114,7 @@ export function FileDisplayHandler({
     return () => clearTimeout(t);
   }, [previewOnHold]);
 
-  if (isImage)
+  if (FileTypeActions.isImage(file.file_type))
     return (
       <DisplayImage
         file={file}
@@ -120,6 +128,18 @@ export function FileDisplayHandler({
         }}
       />
     );
+
+  if (FileTypeActions.isVideo(file.file_type)) {
+    return (
+      <FileTypeDisplay
+        id={file.id}
+        name={file.file_name}
+        type={file.file_type}
+        loading={previewOnHold}>
+        <EmbedVideo file={file} serveUrl={highResUrl} />
+      </FileTypeDisplay>
+    );
+  }
 
   if (file.file_type === FileType.Document && !previewOnHold) {
     return <EmbedFile file={file} serveUrl={highResUrl} />;

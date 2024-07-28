@@ -4,8 +4,8 @@ import tw from '@utils/classMerge.ts';
 import {
   ImageFullscreenToggle,
   ImageFullscreenView,
-} from '@pages/explorer/file/display/image/imageFullscreenView.tsx';
-import { ImageTooLargePrompt } from '@pages/explorer/file/display/image/imageTooLargePrompt.tsx';
+} from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
+import { ImageTooLargePrompt } from '@pages/explorer/file/display/displayTypes/image/imageTooLargePrompt.tsx';
 
 import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
 

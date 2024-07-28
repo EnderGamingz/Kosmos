@@ -1,4 +1,19 @@
-use std::io::{BufWriter, Write};
+use std::io::{BufWriter, SeekFrom, Write};
+use std::str::FromStr;
+
+use axum::body::Body;
+use axum::extract::{Path, State};
+use axum::http::header::{CONTENT_LENGTH, CONTENT_RANGE, RANGE};
+use axum::http::{header, HeaderMap, HeaderName, HeaderValue, StatusCode};
+use axum::response::{IntoResponse, Response};
+use axum::Json;
+use serde::Deserialize;
+use tokio::fs::File;
+use tokio::io::{AsyncReadExt, AsyncSeekExt};
+use tokio_util::io::ReaderStream;
+use tower_sessions::Session;
+use zip::write::{FileOptions, SimpleFileOptions};
+use zip::ZipWriter;
 
 use crate::model::file::FileModel;
 use crate::model::folder::Directory;
@@ -10,18 +25,6 @@ use crate::routes::api::v1::share::{
 };
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
-use axum::body::Body;
-use axum::extract::{Path, State};
-use axum::http::{header, HeaderName};
-use axum::response::{IntoResponse, Response};
-use axum::Json;
-use serde::Deserialize;
-use tokio::fs::File;
-use tokio::io::AsyncReadExt;
-use tokio_util::io::ReaderStream;
-use tower_sessions::Session;
-use zip::write::{FileOptions, SimpleFileOptions};
-use zip::ZipWriter;
 
 #[derive(Deserialize)]
 pub enum RawFileAction {
@@ -29,12 +32,21 @@ pub enum RawFileAction {
     Serve,
 }
 
+fn add_header(headers: &mut HeaderMap, header: HeaderName, value: &str) {
+    headers.insert(
+        header,
+        HeaderValue::from_str(value)
+            .unwrap_or(HeaderValue::from_str("").unwrap()),
+    );
+}
+
 pub async fn get_raw_file(
+    request_headers: &mut HeaderMap,
     state: &AppState,
     file_id: i64,
     operation_type: RawFileAction,
     user_id: Option<UserId>,
-) -> Result<([(HeaderName, String); 7], Body), AppError> {
+) -> Result<(StatusCode, HeaderMap<HeaderValue>, Body), AppError> {
     let file = match user_id {
         None => {
             // File is not owned by user, accessed through share
@@ -51,57 +63,111 @@ pub async fn get_raw_file(
 
     let file_path =
         std::path::Path::new(&std::env::var("UPLOAD_LOCATION").unwrap()).join(file.id.to_string());
-    let system_file = File::open(file_path)
+
+    let mut system_file = File::open(file_path)
         .await
         .map_err(|_| AppError::NotFound {
             error: "File to download not found".to_string(),
         })?;
 
-    let metadata = system_file
+    let metadata = &system_file
         .metadata()
         .await
         .map_err(|_| AppError::NotFound {
             error: "File to download not found".to_string(),
         })?;
 
-    let stream = ReaderStream::new(system_file);
-
-    let body = Body::from_stream(stream);
-
     let disposition = match operation_type {
         RawFileAction::Download => format!("attachment; filename=\"{}\"", file.file_name),
         RawFileAction::Serve => String::from("inline"),
     };
 
-    let headers = [
-        (header::CONTENT_LENGTH, metadata.len().to_string()),
-        (
-            header::CONTENT_TYPE,
-            format!("{}; charset=utf-8", file.mime_type),
-        ),
-        (header::CONTENT_DISPOSITION, disposition),
-        (header::ETAG, format!("\"{}\"", file.id)),
-        (header::CACHE_CONTROL, "no-cache".to_string()),
-        (header::PRAGMA, "no-cache".to_string()),
-        (header::LAST_MODIFIED, file.updated_at.to_rfc3339()),
-    ];
+    let mut response_headers = HeaderMap::new();
+    add_header(&mut response_headers, header::CONTENT_TYPE, file.mime_type.as_str());
+    add_header(&mut response_headers, header::CONTENT_DISPOSITION, disposition.clone().as_str());
+    add_header(&mut response_headers, header::ETAG, &format!("\"{}\"", file.id));
+    add_header(&mut response_headers, header::CACHE_CONTROL, "no-cache");
+    add_header(&mut response_headers, header::PRAGMA, "no-cache");
+    add_header(&mut response_headers, header::LAST_MODIFIED, file.updated_at.to_rfc3339().as_str());
 
-    Ok((headers, body))
+    // If Range header is present, try to serve partial content to client
+    let body = if let Some(range) = request_headers.get(RANGE) {
+        // Parse the range and skip beginning ""bytes="
+        let range_str = &range.to_str().unwrap_or("")[6..];
+        let ranges: Vec<&str> = range_str.split('-').collect();
+
+        let range_start = u64::from_str(ranges[0]).unwrap_or(0);
+
+        // If end isn't specified, read to the end of the file
+        let range_end = if ranges.get(1).is_some() && !ranges[1].is_empty() {
+            u64::from_str(ranges[1]).unwrap_or(0)
+        } else {
+            metadata.len() - 1
+        };
+
+        let mut file_slice = vec![0u8; (range_end - range_start + 1) as usize];
+
+        system_file
+            .seek(SeekFrom::Start(range_start))
+            .await
+            .map_err(|e| {
+                tracing::error!("Error seeking file: {}", e);
+                AppError::InternalError
+            })?;
+
+        system_file.read_exact(&mut file_slice).await.map_err(|e| {
+            tracing::error!("Error reading file slice: {}", e);
+            AppError::InternalError
+        })?;
+
+        // Set Content-Range header to response
+        let _ = HeaderValue::try_from(format!(
+            "bytes {}-{}/{}",
+            range_start,
+            range_end,
+            metadata.len()
+        ))
+        .map(|value| {
+            response_headers.insert(CONTENT_RANGE, value);
+        });
+
+        // Set Content-Length header to response
+        let _ = HeaderValue::try_from(file_slice.len().to_string()).map(|value| {
+            response_headers.insert(CONTENT_LENGTH, value);
+        });
+
+        Body::from(file_slice)
+    } else {
+        response_headers.insert(CONTENT_LENGTH, HeaderValue::from(metadata.len()));
+        let stream = ReaderStream::new(system_file);
+
+        Body::from_stream(stream)
+    };
+
+    // If Content-Range header is present, return partial content to client
+    if response_headers.get(CONTENT_RANGE).is_some() {
+        Ok((StatusCode::PARTIAL_CONTENT, response_headers, body))
+    } else {
+        Ok((StatusCode::OK, response_headers, body))
+    }
 }
 
 pub async fn handle_raw_file(
+    mut headers: HeaderMap,
     State(state): KosmosState,
     session: Session,
     Path((file_id, operation_type)): Path<(i64, RawFileAction)>,
 ) -> Result<Response, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let raw_response = get_raw_file(&state, file_id, operation_type, Some(user_id)).await?;
+    let raw_response =
+        get_raw_file(&mut headers, &state, file_id, operation_type, Some(user_id)).await?;
 
     Ok(raw_response.into_response())
 }
 
 pub async fn handle_raw_file_share(
+    mut headers: HeaderMap,
     State(state): KosmosState,
     session: Session,
     Path((share_uuid, operation_type)): Path<(String, RawFileAction)>,
@@ -109,12 +175,20 @@ pub async fn handle_raw_file_share(
     let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), true).await?;
     let shared_file_data = get_share_file(&state, share.file_id).await?;
 
-    let raw_response = get_raw_file(&state, shared_file_data.file.id, operation_type, None).await?;
+    let raw_response = get_raw_file(
+        &mut headers,
+        &state,
+        shared_file_data.file.id,
+        operation_type,
+        None,
+    )
+    .await?;
 
     Ok(raw_response.into_response())
 }
 
 pub async fn handle_raw_file_share_through_folder(
+    mut headers: HeaderMap,
     State(state): KosmosState,
     session: Session,
     Path((share_uuid, file_id, operation_type)): Path<(String, i64, RawFileAction)>,
@@ -132,7 +206,14 @@ pub async fn handle_raw_file_share_through_folder(
     }
 
     let share_file_data = get_share_file(&state, Some(file_id)).await?;
-    let raw_response = get_raw_file(&state, share_file_data.file.id, operation_type, None).await?;
+    let raw_response = get_raw_file(
+        &mut headers,
+        &state,
+        share_file_data.file.id,
+        operation_type,
+        None,
+    )
+    .await?;
 
     Ok(raw_response.into_response())
 }
@@ -176,7 +257,7 @@ pub async fn multi_share_download(
     let request = parse_multi_download_payload(request_data)?;
 
     for folder_id in &request.folders {
-        let t =state
+        let t = state
             .share_service
             .is_folder_existing_under_share(*folder_id, share.id, &state.folder_service)
             .await?;
@@ -198,7 +279,9 @@ pub async fn multi_share_download(
     response
 }
 
-fn parse_multi_download_payload(request_data: MultiDownloadRequest) -> Result<MultiDownloadParsed, AppError> {
+fn parse_multi_download_payload(
+    request_data: MultiDownloadRequest,
+) -> Result<MultiDownloadParsed, AppError> {
     let request = MultiDownloadParsed {
         files: request_data
             .files
@@ -317,7 +400,7 @@ async fn handle_multi_download(
 
     let header = [
         (header::CONTENT_TYPE, "application/zip".to_string()),
-        (header::CONTENT_LENGTH, meta_data.len().to_string()),
+        (CONTENT_LENGTH, meta_data.len().to_string()),
         (
             header::CONTENT_DISPOSITION,
             format!("attachment; filename={}", file_name),
