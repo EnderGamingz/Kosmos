@@ -241,7 +241,8 @@ export function FileUploadContent({
           )}
         </div>
       </ModalBody>
-      <ModalFooter className={'flex justify-between'}>
+      <ModalFooter
+        className={'flex flex-col-reverse justify-between gap-3 sm:flex-row'}>
         <button
           onClick={onClose}
           className={
@@ -249,7 +250,7 @@ export function FileUploadContent({
           }>
           Cancel
         </button>
-        <div className={'flex gap-1'}>
+        <div className={'flex flex-col gap-1 sm:flex-row'}>
           <label htmlFor={'folders'} className={'btn-black'}>
             <FolderIcon />
             Select Folder
