@@ -36,6 +36,7 @@ export function CreateShare({
   const [password, setPassword] = useState('');
   const [expiresAt, setExpiresAt] = useState<DateValue | undefined>(undefined);
   const [limit, setLimit] = useState<number | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState(-1);
 
   const createAction = useMutation({
     mutationFn: async () => {
@@ -155,36 +156,53 @@ export function CreateShare({
             Expiration
           </label>
           <div className={'flex flex-wrap gap-2 p-2 [&_div]:text-sm'}>
-            <Chip content={'Never'} onClick={() => setExpiresAt(undefined)} />
+            <Chip
+              content={'Never'}
+              selected={selectedTime === -1}
+              onClick={() => {
+                setSelectedTime(-1);
+                setExpiresAt(undefined);
+              }}
+            />
             <Chip
               content={'5 min'}
-              onClick={() =>
-                setExpiresAt(now(getLocalTimeZone()).add({ minutes: 5 }))
-              }
+              selected={selectedTime === 0}
+              onClick={() => {
+                setSelectedTime(0);
+                setExpiresAt(now(getLocalTimeZone()).add({ minutes: 5 }));
+              }}
             />
             <Chip
               content={'1 hour'}
-              onClick={() =>
-                setExpiresAt(now(getLocalTimeZone()).add({ hours: 1 }))
-              }
+              selected={selectedTime === 1}
+              onClick={() => {
+                setSelectedTime(1);
+                setExpiresAt(now(getLocalTimeZone()).add({ hours: 1 }));
+              }}
             />
             <Chip
               content={'1 day'}
-              onClick={() =>
-                setExpiresAt(now(getLocalTimeZone()).add({ days: 1 }))
-              }
+              selected={selectedTime === 2}
+              onClick={() => {
+                setSelectedTime(2);
+                setExpiresAt(now(getLocalTimeZone()).add({ days: 1 }));
+              }}
             />
             <Chip
               content={'1 week'}
-              onClick={() =>
-                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }))
-              }
+              selected={selectedTime === 3}
+              onClick={() => {
+                setSelectedTime(3);
+                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }));
+              }}
             />
             <Chip
               content={'Custom'}
-              onClick={() =>
-                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }))
-              }
+              selected={selectedTime === 4}
+              onClick={() => {
+                setSelectedTime(4);
+                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }));
+              }}
             />
           </div>
           <Collapse isOpened={!!expiresAt}>
@@ -195,7 +213,10 @@ export function CreateShare({
               hourCycle={24}
               showMonthAndYearPickers
               value={expiresAt ?? now(getLocalTimeZone())}
-              onChange={setExpiresAt}
+              onChange={e => {
+                setSelectedTime(4);
+                setExpiresAt(e);
+              }}
               minValue={now(getLocalTimeZone())}
             />
           </Collapse>

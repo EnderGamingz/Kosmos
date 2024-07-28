@@ -116,13 +116,17 @@ export function ShareItem({
         </div>
         <div className={'flex items-center gap-2'}>
           <QrCodeModal value={shareData.url} />
-          {navigator.share !== undefined && navigator.canShare(shareData) ? (
-            <button onClick={() => navigator.share(shareData)}>
-              <ArrowUpOnSquareIcon className={'h-5 w-5'} />
-            </button>
-          ) : isActive ? (
-            <Copy text={shareData.url} notify={notifications.notify} />
-          ) : null}
+          {isActive && (
+            <>
+              {navigator.share !== undefined &&
+                navigator.canShare(shareData) && (
+                  <button onClick={() => navigator.share(shareData)}>
+                    <ArrowUpOnSquareIcon className={'h-5 w-5'} />
+                  </button>
+                )}
+              <Copy text={shareData.url} notify={notifications.notify} />
+            </>
+          )}
         </div>
       </div>
     </motion.li>

@@ -1,15 +1,15 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DataOperationType } from '@models/file.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import tw from '@utils/classMerge.ts';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
-import { ShareIcon } from '@heroicons/react/24/outline';
 import { ScrollShadow } from '@nextui-org/react';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 export default function ShareModal() {
   const { shareElementId, shareElementType, clearShareElement } =
@@ -38,8 +38,14 @@ export function ShareModalContent({
   shareElementType: DataOperationType;
   onClose: () => void;
 }) {
-  const [create, setCreate] = useState(false);
   const data = useUserShareData(shareElementId, shareElementType);
+  const [create, setCreate] = useState(data.data?.length === 0);
+
+  useEffect(() => {
+    if (data.data?.length === 0) {
+      setCreate(true);
+    }
+  }, [data.data]);
 
   return (
     <>
@@ -73,7 +79,12 @@ export function ShareModalContent({
               <button
                 onClick={() => setCreate(prev => !prev)}
                 className={'flex items-center gap-2 font-bold'}>
-                <ShareIcon className={'h-4 w-4 fill-stone-800'} />
+                <PlusIcon
+                  className={tw(
+                    'h-4 w-4 fill-stone-800 transition-all',
+                    create && 'rotate-45',
+                  )}
+                />
                 {create ? 'Cancel' : 'Create'}
               </button>
             </div>
