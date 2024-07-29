@@ -6,7 +6,11 @@ import { DataOperationType } from '@models/file.ts';
 import tw from '@utils/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { motion } from 'framer-motion';
-import { invalidateData, invalidateUsageReport } from '@lib/query.ts';
+import {
+  invalidateData,
+  invalidateFavorites,
+  invalidateUsageReport,
+} from '@lib/query.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 
@@ -31,10 +35,11 @@ export default function Favorite({
     mutationFn: async () => {
       if (action.isPending) return;
       await axios
-        .put(`${BASE_URL}auth/${type}/favorite/${id}`)
+        .put(`${BASE_URL}auth/favorite/${type}/${id}`)
         .then(() => {
           invalidateData(type).then(onUpdate);
           invalidateUsageReport().then();
+          invalidateFavorites().then();
         })
         .catch(err => {
           notifications.notify({

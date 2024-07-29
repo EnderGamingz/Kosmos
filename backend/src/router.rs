@@ -24,10 +24,6 @@ fn get_folder_router() -> KosmosRouter {
                 .patch(crate::routes::api::v1::auth::folder::rename_folder),
         )
         .route(
-            "/favorite/:folder_id",
-            put(crate::routes::api::v1::auth::folder::favorite::favorite_folder),
-        )
-        .route(
             "/all",
             get(crate::routes::api::v1::auth::folder::get_folders),
         )
@@ -71,10 +67,6 @@ fn get_file_router() -> KosmosRouter {
         .route(
             "/:file_id/restore",
             post(crate::routes::api::v1::auth::file::bin::restore_file),
-        )
-        .route(
-            "/favorite/:file_id",
-            put(crate::routes::api::v1::auth::file::favorite::favorite_file),
         )
         .route(
             "/upload",
@@ -231,6 +223,22 @@ fn get_search_router() -> KosmosRouter {
     Router::new().route("/", get(crate::routes::api::v1::auth::search))
 }
 
+fn get_favorite_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/",
+            get(crate::routes::api::v1::auth::favorite::read::get_favorites),
+        )
+        .route(
+            "/folder/:folder_id",
+            put(crate::routes::api::v1::auth::folder::favorite::favorite_folder),
+        )
+        .route(
+            "/file/:file_id",
+            put(crate::routes::api::v1::auth::file::favorite::favorite_file),
+        )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -241,6 +249,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/share", get_share_router())
         .nest("/file", get_file_router())
         .nest("/folder", get_folder_router())
+        .nest("/favorite", get_favorite_router())
         .nest("/download", get_download_router())
         .nest("/multi", get_multi_router())
         .nest("/operation", get_operation_router())

@@ -14,4 +14,5 @@ pub mod download;
 pub mod user;
 pub mod operation;
 pub mod admin;
+pub mod favorite;
 mod search;

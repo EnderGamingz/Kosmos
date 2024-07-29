@@ -96,6 +96,23 @@ impl FileService {
         .map(|rows| rows.into_iter().map(FileModel::from).collect())
     }
 
+    pub async fn get_favorites(&self, user_id: UserId) -> Result<Vec<FileModel>, AppError> {
+        sqlx::query_as!(
+            FileModel,
+            "SELECT * FROM files WHERE user_id = $1
+             AND favorite = true
+             AND deleted_at IS NULL
+             ORDER BY updated_at DESC",
+            user_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting favorite files for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn get_files_by_file_type(
         &self,
         user_id: UserId,

@@ -81,6 +81,20 @@ impl FolderService {
             .map(|rows| rows.into_iter().map(FolderModel::from).collect())
     }
 
+    pub async fn get_favorites(&self, user_id: UserId) -> Result<Vec<FolderModel>, AppError> {
+        sqlx::query_as!(
+            FolderModel,
+            "SELECT * FROM folder WHERE user_id = $1 AND favorite = true",
+            user_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting favorite folders for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn get_folders_for_share(
         &self,
         parent_id: &Option<i64>,
@@ -143,14 +157,13 @@ impl FolderService {
             &folder_ids,
             user_id
         )
-            .execute(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error moving folders: {}", e);
-                AppError::InternalError
-            })
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error moving folders: {}", e);
+            AppError::InternalError
+        })
     }
-
 
     pub async fn multi_move_items(
         &self,
@@ -160,7 +173,9 @@ impl FolderService {
         new_parent_id: Option<i64>,
         file_service: &FileService,
     ) -> Result<(), AppError> {
-        file_service.multi_move(user_id, file_ids, new_parent_id).await?;
+        file_service
+            .multi_move(user_id, file_ids, new_parent_id)
+            .await?;
         self.multi_move(user_id, folder_ids, new_parent_id).await?;
         Ok(())
     }

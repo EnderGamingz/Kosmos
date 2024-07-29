@@ -20,6 +20,7 @@ import { SharedItemsResponse, ShareModel } from '@models/share.ts';
 import { UsageReport, UsageStats } from '@models/usage.ts';
 import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 import { SearchResponse } from '@models/search.ts';
+import { FavoritesResponse } from '@models/favorites.ts';
 
 export const queryClient = new QueryClient();
 
@@ -187,6 +188,16 @@ export const useDeletedFiles = () => {
   });
 };
 
+export const useFavorites = () => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/favorite`)
+        .then(res => res.data as FavoritesResponse),
+    queryKey: ['favorites', 'all'],
+  });
+};
+
 export const useUsageStats = () => {
   return useQuery({
     queryFn: () =>
@@ -281,6 +292,12 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
     retry: false,
   });
 };
+
+export async function invalidateFavorites() {
+  return queryClient.invalidateQueries({
+    queryKey: ['favorites'],
+  });
+}
 
 export async function invalidateShareAccess() {
   return queryClient.invalidateQueries({

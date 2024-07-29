@@ -4,6 +4,7 @@ import {
   CloudIcon,
   HomeIcon,
   ShareIcon,
+  StarIcon,
   TrashIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
@@ -26,6 +27,11 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
     name: 'Recent',
     href: '/home/recent',
     icon: <ClockIcon />,
+  },
+  {
+    name: 'Favorites',
+    href: '/home/favorites',
+    icon: <StarIcon />,
   },
   {
     name: 'Share',
