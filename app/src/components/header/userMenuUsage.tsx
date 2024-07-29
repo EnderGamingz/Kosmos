@@ -4,7 +4,7 @@ import {
   CloudIcon,
 } from '@heroicons/react/24/outline';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
 
 export function UserMenuUsage({ onClick }: { onClick?: () => void }) {
@@ -21,9 +21,9 @@ export function UserMenuUsage({ onClick }: { onClick?: () => void }) {
       </p>
       <UsageIndicator data={usage.data} loading={usage.isLoading} small />
       <p className={'text-xs'}>
-        {formatBytes(usage.data?.total || 0)}{' '}
+        {useFormatBytes(usage.data?.total || 0)}{' '}
         <span className={'text-stone-400'}>
-          of {formatBytes(usage.data?.limit || 0)} used{' '}
+          of {useFormatBytes(usage.data?.limit || 0)} used{' '}
         </span>
       </p>
     </Link>

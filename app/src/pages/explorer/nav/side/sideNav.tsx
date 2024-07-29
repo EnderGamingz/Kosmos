@@ -2,7 +2,7 @@ import {
   ArrowTopRightOnSquareIcon,
   CloudIcon,
 } from '@heroicons/react/24/outline';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { useUsageStats } from '@lib/query.ts';
 import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
@@ -22,7 +22,7 @@ export function SideNav({ admin }: { admin?: boolean }) {
   const total = usage.data?.total || 0;
   const bin = usage.data?.bin || 0;
 
-  const binUsage = formatBytes(bin);
+  const binUsage = useFormatBytes(bin);
 
   const links = useMemo(() => {
     if (admin) {
@@ -54,8 +54,8 @@ export function SideNav({ admin }: { admin?: boolean }) {
         </Link>
         <UsageIndicator data={usage.data} loading={usage.isLoading} />
         <div className={'text-sm text-stone-800 md:text-base'}>
-          {formatBytes(total)}{' '}
-          <span className={'text-stone-400'}>of {formatBytes(limit)}</span>
+          {useFormatBytes(total)}{' '}
+          <span className={'text-stone-400'}>of {useFormatBytes(limit)}</span>
         </div>
       </div>
     </motion.aside>

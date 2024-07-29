@@ -1,10 +1,12 @@
-import {
-  Unit,
-  usePreferenceStore as PreferenceStore,
-} from '@stores/preferenceStore.ts';
+import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
 
-export function formatBytes(bytes: number, precision = 1) {
-  const useSI = PreferenceStore(s => s.unit.type === Unit.SI);
+export function useFormatBytes(bytes: number, precision = 1) {
+  const useSI = usePreferenceStore(s => s.unit.type === Unit.SI);
+
+  return safeFormatBytes(bytes, precision, useSI);
+}
+
+export function safeFormatBytes(bytes: number, precision = 1, useSI = false) {
   const unitSize = useSI ? 1000 : 1024;
 
   if (Math.abs(bytes) < unitSize) {

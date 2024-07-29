@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 
 export function ImageTooLargePrompt({
@@ -28,7 +28,7 @@ export function ImageTooLargePrompt({
           '[&>button]:w-full [&>button]:justify-center [&>button]:rounded-md [&>button]:px-3',
           'outline outline-1 outline-stone-400/40',
         )}>
-        <p className={'text-lg'}>Image is above {formatBytes(threshold)}</p>
+        <p className={'text-lg'}>Image is above {useFormatBytes(threshold)}</p>
         <DownloadSingleAction id={id} name={name} type={'file'} />
       </div>
     </motion.div>

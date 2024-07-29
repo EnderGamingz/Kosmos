@@ -10,7 +10,7 @@ import {
   containerVariant,
   itemTransitionVariant,
 } from '@components/defaults/transition.ts';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
 import { ReactNode, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -51,7 +51,9 @@ export function FileTable() {
   const isControl = useKeyStore(s => s.keys.ctrl);
   const { viewSettings, files, folders } = useContext(DisplayContext);
 
-  const totalFileSize = formatBytes(files.reduce((a, b) => a + b.file_size, 0));
+  const totalFileSize = useFormatBytes(
+    files.reduce((a, b) => a + b.file_size, 0),
+  );
 
   return (
     <PagedWrapper viewSettings={viewSettings}>

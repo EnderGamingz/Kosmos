@@ -4,7 +4,7 @@ import {
   useDeletedFiles,
   useUsageStats,
 } from '@lib/query.ts';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
@@ -23,6 +23,8 @@ export default function BinPage() {
       invalidateUsage().then();
     },
   });
+
+  const binUsage = useFormatBytes(usageData?.bin || 0);
 
   return (
     <div
@@ -48,9 +50,7 @@ export default function BinPage() {
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}>
-            {usageData?.bin !== undefined
-              ? formatBytes(usageData?.bin)
-              : 'Loading...'}
+            {usageData?.bin !== undefined ? binUsage : 'Loading...'}
           </motion.p>
         </div>
         {!!deletedFiles.data?.length && (

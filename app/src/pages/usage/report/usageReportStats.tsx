@@ -7,7 +7,7 @@ import {
 import tw from '@utils/classMerge.ts';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { UsageReport, UsageStats } from '@models/usage.ts';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import {
@@ -27,7 +27,7 @@ export function UsageReportStats({
     <section>
       <div className={'flex flex-col gap-1'}>
         <span className={'ml-auto text-xs text-stone-500'}>
-          {formatBytes(usage.total)}, Total: {formatBytes(usage.limit)}
+          {useFormatBytes(usage.total)}, Total: {useFormatBytes(usage.limit)}
         </span>
         <UsageIndicator
           large
@@ -104,7 +104,7 @@ function UsageReportItem({
             </Link>
           )}
           condition={!!link}>
-          <p className={'text-3xl'}>{formatBytes(sum)}</p>
+          <p className={'text-3xl'}>{useFormatBytes(sum)}</p>
         </ConditionalWrapper>
         <p className={'text-sm'}>{count ? `${count} ${label}` : label}</p>
       </div>

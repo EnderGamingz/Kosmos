@@ -25,6 +25,7 @@ import { ModalBody, ModalFooter } from '@nextui-org/react';
 import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
+import { safeFormatBytes } from '@utils/fileSize.ts';
 
 export function FileUploadContent({
   folder,
@@ -84,22 +85,31 @@ export function FileUploadContent({
     const uploadId = notification.notify({
       title: 'File upload',
       loading: true,
-      description: `${toUpload.length} files`,
+      status: `${toUpload.length} files`,
       severity: Severity.INFO,
       canDismiss: false,
     });
 
     if (onClose) onClose();
 
+    // noinspection JSUnusedGlobalSymbols
     await axios
       .postForm(
         `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
         formData,
+        {
+          onUploadProgress: ({ loaded, total }) => {
+            notification.updateNotification(uploadId, {
+              description: `${safeFormatBytes(loaded)} / ${total ? safeFormatBytes(total) : 'Unknown'}`,
+            });
+          },
+        },
       )
       .then(res => {
         notification.updateNotification(uploadId, {
           timeout: 2000,
           status: 'Complete',
+          description: `${toUpload.length} files uploaded`,
           severity: Severity.SUCCESS,
           canDismiss: true,
         });

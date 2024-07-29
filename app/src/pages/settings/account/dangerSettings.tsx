@@ -6,7 +6,7 @@ import { FormEvent, useState } from 'react';
 import useLogout from '@hooks/useLogout.ts';
 import tw from '@utils/classMerge.ts';
 import { useUsageStats } from '@lib/query.ts';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 
 function DeleteAccount() {
   const usage = useUsageStats();
@@ -65,7 +65,7 @@ function DeleteAccount() {
       <p>Enter your current password to delete your account</p>
       <span className={'text-sm'}>
         This action <b>cannot</b> be undone and will permanently{' '}
-        <b>delete your {formatBytes(usage.data?.total || 0)}</b> of data.
+        <b>delete your {useFormatBytes(usage.data?.total || 0)}</b> of data.
       </span>
       <form
         onSubmit={handleSubmit}

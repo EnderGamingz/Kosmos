@@ -11,7 +11,7 @@ import {
 import tw from '@utils/classMerge.ts';
 import GridFileItem from '@pages/explorer/file/gridFileItem.tsx';
 import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { DetailType } from '@stores/preferenceStore.ts';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
@@ -34,7 +34,9 @@ export default function FileGrid({
   const { viewSettings, shareUuid, files, folders } =
     useContext(DisplayContext);
 
-  const totalFileSize = formatBytes(files.reduce((a, b) => a + b.file_size, 0));
+  const totalFileSize = useFormatBytes(
+    files.reduce((a, b) => a + b.file_size, 0),
+  );
   return (
     <PagedWrapper viewSettings={viewSettings}>
       <div className={'px-5 py-2'}>

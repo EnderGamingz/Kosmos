@@ -13,7 +13,7 @@ import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import tw from '@utils/classMerge.ts';
 import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { ClockIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow } from 'date-fns';
 import { DetailType } from '@stores/preferenceStore.ts';
@@ -82,6 +82,7 @@ export default function GridFileItem({
     dragDestination,
   );
 
+  const formattedSize = useFormatBytes(file.file_size);
   return (
     <motion.div
       id={file.id}
@@ -191,7 +192,7 @@ export default function GridFileItem({
                 className={
                   'absolute right-1.5 top-1.5 z-30 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs'
                 }>
-                <p>{formatBytes(file.file_size)}</p>
+                <p>{formattedSize}</p>
               </motion.div>
             )}
             {isCompact && (

@@ -9,7 +9,7 @@ import {
   CircleStackIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 
 export function FileDisplayStats({ file }: { file: FileModel }) {
   return (
@@ -31,7 +31,7 @@ export function FileDisplayStats({ file }: { file: FileModel }) {
       <motion.div variants={itemTransitionVariantFadeInFromTop}>
         <CircleStackIcon />
         <motion.span layoutId={`size-${file.id}`}>
-          {formatBytes(file.file_size)}
+          {useFormatBytes(file.file_size)}
         </motion.span>
       </motion.div>
     </motion.div>

@@ -12,7 +12,7 @@ axum = { version = "0.7.5", features = ["json", "multipart"] }
 photon-rs = { version = "0.3.2" }
 serde = { version = "1.0.201", features = ["derive"] }
 serde_json = { version = "1.0.117" }
-sqlx = { version = "0.7.4", features = ["runtime-async-std-rustls", "postgres", "chrono", "bigdecimal", "uuid"] }
+sqlx = { version = "0.8.0", features = ["runtime-async-std-rustls", "postgres", "chrono", "bigdecimal", "uuid"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 tracing = "0.1.40"
 tower-sessions = "0.12.2"
@@ -25,7 +25,7 @@ chrono = { version = "0.4.38", features = ["serde"] }
 futures = "0.3.30"
 zip = "2.1.0"
 validator = { version = "0.18.1", features = ["derive"] }
-axum-valid = "0.18.0"
+axum-valid = "0.19.0"
 lazy_static = "1.4.0"
 itertools = "0.13.0"
 bigdecimal = "0.4.5"

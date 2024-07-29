@@ -1,6 +1,6 @@
 import { FileTypeSum } from '@models/usage.ts';
 import { getFileTypeString } from '@models/file.ts';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import tw from '@utils/classMerge.ts';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -51,7 +51,7 @@ function FileTypeUsageItem({ type }: { type: FileTypeSum }) {
         className={'truncate whitespace-nowrap text-lg'}>
         {fileTypeString}
       </p>
-      <p className={'font-semibold'}>{formatBytes(type.sum)}</p>
+      <p className={'font-semibold'}>{useFormatBytes(type.sum)}</p>
       <p className={'text-sm'}>{type.count} Files</p>
     </motion.div>
   );

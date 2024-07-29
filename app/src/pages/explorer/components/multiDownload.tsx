@@ -72,6 +72,8 @@ export function MultiDownload({
         return;
       }
 
+      const total = parseInt(response.headers.get('content-length') || '0');
+
       notificationActions.updateNotification(fileId, {
         status: 'Downloading',
       });
@@ -109,6 +111,8 @@ export function MultiDownload({
       const writer = fileStream.getWriter();
       const reader = response.body?.getReader();
 
+      let downloaded = 0;
+
       const handleRead: () => Promise<void> | undefined = () => {
         return reader?.read().then(res => {
           if (res.done) {
@@ -121,12 +125,17 @@ export function MultiDownload({
               });
             });
           } else {
+            downloaded += res.value.byteLength;
+            notificationActions.updateNotification(fileId, {
+              status: 'Downloading',
+              description: `${((downloaded / (total || 1)) * 100).toFixed(2)}% Downloaded`,
+            });
             return writer.write(res.value).then(handleRead);
           }
         });
       };
 
-      handleRead();
+      await handleRead();
     },
     onError: () => {
       notificationActions.updateNotification(fileId, {

@@ -1,7 +1,7 @@
 import { useUsageStats } from '@lib/query.ts';
 import { getPercentageStats } from '@components/usage/getPercentage.ts';
 import tw from '@utils/classMerge.ts';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
@@ -12,8 +12,8 @@ import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
 export default function StorageLimitBanner() {
   const usage = useUsageStats();
   const percentages = getPercentageStats(usage.data, usage.isFetched);
-  const usedStorage = formatBytes(usage.data?.total || 0);
-  const storageLimit = formatBytes(usage.data?.limit || 0);
+  const usedStorage = useFormatBytes(usage.data?.total || 0);
+  const storageLimit = useFormatBytes(usage.data?.limit || 0);
 
   const isDismissed = useDismissStore(s => s.isDismissed(Dismiss.StorageLimit));
   const resetDismiss = useDismissStore(s => s.actions.reset);

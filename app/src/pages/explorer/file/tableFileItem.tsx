@@ -2,7 +2,7 @@ import { FileModel, normalizeFileType } from '@models/file.ts';
 import tw from '@utils/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
-import { formatBytes } from '@utils/fileSize.ts';
+import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
 import {
@@ -209,7 +209,7 @@ export function TableFileItem({
         )}
       </td>
       <motion.td layoutId={`size-${file.id}`} align={'right'}>
-        {formatBytes(file.file_size)}
+        {useFormatBytes(file.file_size)}
       </motion.td>
       <motion.td
         layoutId={`updated-${file.id}`}
