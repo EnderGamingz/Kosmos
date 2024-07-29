@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { DataOperationType, isFileModel, isMultiple } from '@models/file.ts';
+import { ContextOperationType, isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import {
@@ -24,6 +24,7 @@ import {
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 
 const menuWidth = 250;
 
@@ -80,7 +81,7 @@ function ContextMenuTitle({
   type,
 }: {
   title: string;
-  type: DataOperationType | 'multi';
+  type: ContextOperationType;
 }) {
   return (
     <div
@@ -114,6 +115,7 @@ export function ContextMenuContent({
   data: ContextData;
   onClose: () => void;
 }) {
+  const currentFolder = useExplorerStore(s => s.current.folder);
   if (!data) return null;
 
   if (isFileModel(data)) {
@@ -189,7 +191,14 @@ export function ContextMenuContent({
           isContextAction
           onClose={onClose}
         />
-        {data.files.length && !data.folders.length && (
+        <MoveAction
+          type={'multi'}
+          multiData={{ files: data.files, folders: data.folders }}
+          onClose={onClose}
+          current_parent={currentFolder}
+        />
+
+        {!!data.files.length && !data.folders.length && (
           <MultiMoveToTrash
             deleteData={{ files: data.files }}
             onClose={onClose}

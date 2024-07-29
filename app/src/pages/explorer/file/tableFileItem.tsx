@@ -27,6 +27,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
+import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
@@ -84,13 +85,15 @@ export function TableFileItem({
     })),
   );
 
-  const { selectFile, dragDestination, setDestination } = useExplorerStore(
-    useShallow(s => ({
-      selectFile: s.current.selectCurrentFile,
-      dragDestination: s.dragMove.destination,
-      setDestination: s.dragMove.setDestination,
-    })),
-  );
+  const { selectFile, dragDestination, setDestination, selectedItems } =
+    useExplorerStore(
+      useShallow(s => ({
+        selectFile: s.current.selectCurrentFile,
+        dragDestination: s.dragMove.destination,
+        setDestination: s.dragMove.setDestination,
+        selectedItems: s.selectedResources,
+      })),
+    );
 
   const isSelected = selected.includes(file.id);
 
@@ -102,6 +105,7 @@ export function TableFileItem({
       id: context.dragMove.id as string,
       name: file.file_name,
     },
+    getMultiMoveBySelected(selectedItems),
     dragDestination,
   );
 

@@ -13,13 +13,15 @@ import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.ts
 export default function FileList() {
   const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
 
-  const { setCurrentFolder, setFilesInScope } = useExplorerStore(
-    useShallow(s => ({
-      setCurrentFolder: s.current.selectCurrentFolder,
-      setFilesInScope: s.current.setFilesInScope,
-    })),
-  );
-  const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
+  const { setCurrentFolder, setFilesInScope, setSelectedNone } =
+    useExplorerStore(
+      useShallow(s => ({
+        setCurrentFolder: s.current.selectCurrentFolder,
+        setFilesInScope: s.current.setFilesInScope,
+        setSelectedNone: s.selectedResources.selectNone,
+      })),
+    );
+
   const { folder } = useParams();
 
   useEffect(() => {

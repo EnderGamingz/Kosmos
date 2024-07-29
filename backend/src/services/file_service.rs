@@ -2,7 +2,7 @@ use std::path::Path;
 
 use sqlx::{Execute, QueryBuilder};
 
-use crate::db::{KosmosDb, KosmosPool};
+use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
 use crate::model::file::{FileModel, FileType, PreviewStatus};
 use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
@@ -308,6 +308,26 @@ impl FileService {
             AppError::InternalError
         })
         .map(|row| row.id)
+    }
+
+    pub async fn multi_move(
+        &self,
+        user_id: UserId,
+        file_ids: Vec<i64>,
+        parent_folder_id: Option<i64>,
+    ) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE files SET parent_folder_id = $1 WHERE id = ANY($2) AND user_id = $3",
+            parent_folder_id,
+            &file_ids,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error moving files: {}", e);
+            AppError::InternalError
+        })
     }
 
     pub async fn check_file_exists_in_folder(

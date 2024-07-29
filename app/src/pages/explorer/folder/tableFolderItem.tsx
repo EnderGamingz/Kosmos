@@ -19,6 +19,7 @@ import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
+import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 
 export function TableFolderItem({
   i,
@@ -35,12 +36,14 @@ export function TableFolderItem({
   const { isControl, isShift } = useKeyStore(
     useShallow(s => ({ isControl: s.keys.ctrl, isShift: s.keys.shift })),
   );
-  const { setDragDestination, dragDestination } = useExplorerStore(
-    useShallow(s => ({
-      setDragDestination: s.dragMove.setDestination,
-      dragDestination: s.dragMove.destination,
-    })),
-  );
+  const { setDragDestination, dragDestination, selectedItems } =
+    useExplorerStore(
+      useShallow(s => ({
+        setDragDestination: s.dragMove.setDestination,
+        dragDestination: s.dragMove.destination,
+        selectedItems: s.selectedResources,
+      })),
+    );
   const isSelected = selected.includes(folder.id);
   const context = useContext(DisplayContext);
 
@@ -50,6 +53,7 @@ export function TableFolderItem({
       id: context.dragMove.id as string,
       name: folder.folder_name,
     },
+    getMultiMoveBySelected(selectedItems),
     dragDestination,
   );
 

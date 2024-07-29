@@ -1,13 +1,14 @@
 use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
 
-use crate::db::{KosmosDb, KosmosPool};
+use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
 use crate::model::folder::{
-    DeletionDirectory, Directory, DirectoryWithShare, FolderModel, SimpleDirectory
+    DeletionDirectory, Directory, DirectoryWithShare, FolderModel, SimpleDirectory,
 };
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{GetFilesSortParams, SortOrder};
 use crate::routes::api::v1::auth::folder::SortByFolders;
+use crate::services::file_service::FileService;
 use crate::services::session_service::UserId;
 
 #[derive(Clone)]
@@ -43,7 +44,6 @@ impl FolderService {
             query.push(" ORDER BY updated_at");
         }
 
-
         let search_order = search.get_sort_order();
 
         if search_order == &SortOrder::Asc {
@@ -51,7 +51,6 @@ impl FolderService {
         } else {
             query.push(" DESC");
         }
-
 
         query.push(" LIMIT ");
         query.push_bind(search.get_limit());
@@ -130,6 +129,40 @@ impl FolderService {
             AppError::InternalError
         })
         .map(|row| row.id)
+    }
+
+    pub async fn multi_move(
+        &self,
+        user_id: UserId,
+        folder_ids: Vec<i64>,
+        parent_folder_id: Option<i64>,
+    ) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE folder SET parent_id = $1 WHERE id = ANY($2) AND user_id = $3",
+            parent_folder_id,
+            &folder_ids,
+            user_id
+        )
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error moving folders: {}", e);
+                AppError::InternalError
+            })
+    }
+
+
+    pub async fn multi_move_items(
+        &self,
+        user_id: UserId,
+        file_ids: Vec<i64>,
+        folder_ids: Vec<i64>,
+        new_parent_id: Option<i64>,
+        file_service: &FileService,
+    ) -> Result<(), AppError> {
+        file_service.multi_move(user_id, file_ids, new_parent_id).await?;
+        self.multi_move(user_id, folder_ids, new_parent_id).await?;
+        Ok(())
     }
 
     pub async fn create_folder(

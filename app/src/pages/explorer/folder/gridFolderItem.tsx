@@ -16,6 +16,7 @@ import { Checkbox } from '@nextui-org/react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
+import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 
 export default function GridFolderItem({
   index,
@@ -36,12 +37,14 @@ export default function GridFolderItem({
     })),
   );
   const isSelected = selected.includes(folder.id);
-  const { setDragDestination, dragDestination } = useExplorerStore(
-    useShallow(s => ({
-      setDragDestination: s.dragMove.setDestination,
-      dragDestination: s.dragMove.destination,
-    })),
-  );
+  const { setDragDestination, dragDestination, selectedItems } =
+    useExplorerStore(
+      useShallow(s => ({
+        setDragDestination: s.dragMove.setDestination,
+        dragDestination: s.dragMove.destination,
+        selectedItems: s.selectedResources,
+      })),
+    );
   const context = useContext(DisplayContext);
   const navigate = useNavigate();
 
@@ -51,6 +54,7 @@ export default function GridFolderItem({
       id: context.dragMove.id as string,
       name: folder.folder_name,
     },
+    getMultiMoveBySelected(selectedItems),
     dragDestination,
   );
 

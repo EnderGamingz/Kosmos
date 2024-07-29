@@ -151,7 +151,8 @@ fn get_multi_router() -> KosmosRouter {
         .route(
             "/",
             post(crate::routes::api::v1::auth::download::multi_download)
-                .delete(crate::routes::api::v1::auth::folder::delete::multi_delete),
+                .delete(crate::routes::api::v1::auth::folder::delete::multi_delete)
+                .put(crate::routes::api::v1::auth::folder::multi_move),
         )
         .route(
             "/bin",

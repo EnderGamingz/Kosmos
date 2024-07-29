@@ -1,6 +1,6 @@
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { MoveModalContent } from './moveModalContent.tsx';
-import { DataOperationType } from '@models/file.ts';
+import { ContextOperationType } from '@models/file.ts';
 import { FolderOpenIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -11,12 +11,17 @@ export function MoveAction({
   name,
   current_parent,
   onClose,
+  multiData,
 }: {
-  type: DataOperationType;
-  id: string;
-  name: string;
+  type: ContextOperationType;
+  id?: string;
+  name?: string;
   current_parent?: string;
   onClose?: () => void;
+  multiData?: {
+    files: string[];
+    folders: string[];
+  };
 }) {
   const {
     isOpen,
@@ -38,6 +43,7 @@ export function MoveAction({
         <ModalContent>
           <MoveModalContent
             moveData={{ type, id, name }}
+            multiData={multiData}
             parent={current_parent}
             onClose={() => {
               disclosureOnClose();

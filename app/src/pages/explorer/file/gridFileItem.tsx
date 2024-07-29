@@ -20,6 +20,7 @@ import { DetailType } from '@stores/preferenceStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
+import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 
 export default function GridFileItem({
   index,
@@ -53,13 +54,15 @@ export default function GridFileItem({
   const isCompact = details === DetailType.Compact;
   const isHidden = details === DetailType.Hidden;
 
-  const { selectFile, dragDestination, setDestination } = useExplorerStore(
-    useShallow(s => ({
-      selectFile: s.current.selectCurrentFile,
-      dragDestination: s.dragMove.destination,
-      setDestination: s.dragMove.setDestination,
-    })),
-  );
+  const { selectFile, dragDestination, setDestination, selectedItems } =
+    useExplorerStore(
+      useShallow(s => ({
+        selectFile: s.current.selectCurrentFile,
+        dragDestination: s.dragMove.destination,
+        setDestination: s.dragMove.setDestination,
+        selectedItems: s.selectedResources,
+      })),
+    );
   const context = useContext(DisplayContext);
 
   const handleClick = () => {
@@ -75,6 +78,7 @@ export default function GridFileItem({
       id: context.dragMove.id as string,
       name: file.file_name,
     },
+    getMultiMoveBySelected(selectedItems),
     dragDestination,
   );
 

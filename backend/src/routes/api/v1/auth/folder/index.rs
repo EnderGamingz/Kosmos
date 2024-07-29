@@ -1,5 +1,5 @@
-use axum::extract::{Path, Query, State};
 use axum::extract::rejection::PathRejection;
+use axum::extract::{Path, Query, State};
 use axum::Json;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
@@ -164,6 +164,83 @@ pub async fn move_folder(
     state
         .folder_service
         .move_folder(user_id, folder_id, move_to_folder)
+        .await?;
+
+    Ok(AppSuccess::MOVED)
+}
+
+#[derive(Deserialize)]
+pub struct MultiMovePayload {
+    files: Vec<String>,
+    folders: Vec<String>,
+    target_folder: Option<String>,
+}
+
+impl MultiMovePayload {
+    pub fn get_file_ids(&self) -> Result<Vec<i64>, AppError> {
+        self.files
+            .iter()
+            .map(|id| {
+                id.parse::<i64>().map_err(|_| AppError::BadRequest {
+                    error: Some("Invalid file id".to_string()),
+                })
+            })
+            .collect()
+    }
+
+    pub fn get_folder_ids(&self) -> Result<Vec<i64>, AppError> {
+        self.folders
+            .iter()
+            .map(|id| {
+                id.parse::<i64>().map_err(|_| AppError::BadRequest {
+                    error: Some("Invalid folder id".to_string()),
+                })
+            })
+            .collect()
+    }
+
+    pub fn get_target_folder_id(&self) -> Result<Option<i64>, AppError> {
+        if let Some(target_folder) = &self.target_folder {
+            return Ok(target_folder
+                .parse::<i64>()
+                .map(Some)
+                .map_err(|_| AppError::BadRequest {
+                    error: Some("Invalid target folder id".to_string()),
+                }))?;
+        }
+
+        Ok(None)
+    }
+}
+
+pub async fn multi_move(
+    State(state): KosmosState,
+    session: Session,
+    Json(payload): Json<MultiMovePayload>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let file_ids = payload.get_file_ids()?;
+    let folder_ids = payload.get_folder_ids()?;
+    let target_folder_id = payload.get_target_folder_id()?;
+
+    if let Some(target_folder_id) = target_folder_id {
+        if folder_ids.contains(&target_folder_id) {
+            return Err(AppError::BadRequest {
+                error: Some("Target folder cannot be one of the source folders".to_string()),
+            });
+        };
+    }
+
+    state
+        .folder_service
+        .multi_move_items(
+            user_id,
+            file_ids,
+            folder_ids,
+            target_folder_id,
+            &state.file_service,
+        )
         .await?;
 
     Ok(AppSuccess::MOVED)

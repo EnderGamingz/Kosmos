@@ -1,6 +1,15 @@
 import { create } from 'zustand';
 import { DataOperationType, FileModel } from '@models/file.ts';
 
+export type SelectedResources = {
+  selectedFolders: string[];
+  selectedFiles: string[];
+  selectFolder: (id: string) => void;
+  selectFile: (id: string) => void;
+  selectNone: () => void;
+  unselect: (ids: string[]) => void;
+};
+
 export type ExplorerState = {
   current: {
     folder?: string;
@@ -16,13 +25,7 @@ export type ExplorerState = {
     setShareElement: (id: string, type: DataOperationType) => void;
     clearShareElement: () => void;
   };
-  selectedResources: {
-    selectedFolders: string[];
-    selectedFiles: string[];
-    selectFolder: (id: string) => void;
-    selectFile: (id: string) => void;
-    selectNone: () => void;
-  };
+  selectedResources: SelectedResources;
   dragMove: {
     destination?: string;
     setDestination: (destination?: string) => void;
@@ -116,6 +119,19 @@ export const useExplorerStore = create<ExplorerState>(set => ({
           ...prev.selectedResources,
           selectedFiles: [],
           selectedFolders: [],
+        },
+      }));
+    },
+    unselect: (ids: string[]) => {
+      set(prev => ({
+        selectedResources: {
+          ...prev.selectedResources,
+          selectedFiles: prev.selectedResources.selectedFiles.filter(
+            x => !ids.includes(x),
+          ),
+          selectedFolders: prev.selectedResources.selectedFolders.filter(
+            x => !ids.includes(x),
+          ),
         },
       }));
     },

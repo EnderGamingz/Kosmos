@@ -2,7 +2,12 @@ import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL, IS_DEVELOPMENT } from './env.ts';
 import { FolderResponse, FolderShareResponse } from '@models/folder.ts';
-import { DataOperationType, FileModel, ShareFileModel } from '@models/file.ts';
+import {
+  ContextOperationType,
+  DataOperationType,
+  FileModel,
+  ShareFileModel,
+} from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
 import {
   canFolderBeSorted,
@@ -17,6 +22,11 @@ import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 import { SearchResponse } from '@models/search.ts';
 
 export const queryClient = new QueryClient();
+
+export async function invalidateItems() {
+  await invalidateFiles();
+  await invalidateFolders();
+}
 
 export async function invalidateFiles() {
   await queryClient.invalidateQueries({
@@ -290,8 +300,9 @@ export async function refetchOperations() {
   });
 }
 
-export async function invalidateData(type: DataOperationType) {
+export async function invalidateData(type: ContextOperationType) {
   if (type == 'folder') await invalidateFolders();
+  else if (type === 'multi') await invalidateItems();
   else await invalidateFiles();
 }
 
