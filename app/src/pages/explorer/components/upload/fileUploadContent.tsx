@@ -26,6 +26,7 @@ import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 import { useByteFormatter } from '@utils/fileSize.ts';
+import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
 
 export function FileUploadContent({
   folder,
@@ -75,18 +76,18 @@ export function FileUploadContent({
     }
   };
 
-  const handleUpload = async () => {
-    if (!toUpload || !toUpload?.length) return;
+  const handleUpload = async (chunk: File[], rest: number) => {
+    if (!chunk || !chunk?.length) return;
 
     const formData = new FormData();
-    for (const file of toUpload) {
+    for (const file of chunk) {
       formData.append('file', file);
     }
 
     const uploadId = notification.notify({
       title: 'File upload',
       loading: true,
-      status: `${toUpload.length} files`,
+      status: `${chunk.length} files${rest > 0 ? ` • ${rest} remaining` : ''}`,
       severity: Severity.INFO,
       canDismiss: false,
     });
@@ -110,7 +111,7 @@ export function FileUploadContent({
         notification.updateNotification(uploadId, {
           timeout: 2000,
           status: 'Complete',
-          description: `${toUpload.length} files uploaded`,
+          description: `${chunk.length} files uploaded`,
           severity: Severity.SUCCESS,
           canDismiss: true,
         });
@@ -126,15 +127,29 @@ export function FileUploadContent({
       });
   };
 
-  useEffect(() => {
-    handleUpload().then(async () => {
+  function handleToUpload(files: File[]) {
+    if (!files || !files?.length) {
       setSelectForUpload(null);
       setToUpload(null);
       formRef.current?.reset();
       invalidateFiles().then();
       invalidateFolders().then();
       invalidateUsage().then();
+      return;
+    }
+
+    const uploadChunk = files.slice(0, UPLOAD_CHUNK_SIZE);
+    const rest = files.slice(UPLOAD_CHUNK_SIZE);
+
+    handleUpload(uploadChunk, rest.length).then(() => {
+      handleToUpload(rest);
     });
+  }
+
+  useEffect(() => {
+    if (!toUpload || !toUpload?.length) return;
+
+    handleToUpload(toUpload);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toUpload]);
