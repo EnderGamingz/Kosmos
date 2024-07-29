@@ -25,7 +25,7 @@ import { ModalBody, ModalFooter } from '@nextui-org/react';
 import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
-import { safeFormatBytes } from '@utils/fileSize.ts';
+import { useByteFormatter } from '@utils/fileSize.ts';
 
 export function FileUploadContent({
   folder,
@@ -40,6 +40,7 @@ export function FileUploadContent({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const notification = useNotifications(s => s.actions);
+  const byteFormatter = useByteFormatter();
 
   const fileNamesRef = useRef(
     useExplorerStore.getState().current.filesInScope.map(x => x.file_name),
@@ -100,7 +101,7 @@ export function FileUploadContent({
         {
           onUploadProgress: ({ loaded, total }) => {
             notification.updateNotification(uploadId, {
-              description: `${safeFormatBytes(loaded)} / ${total ? safeFormatBytes(total) : 'Unknown'}`,
+              description: `${byteFormatter.formatBytes(loaded)} / ${total ? byteFormatter.formatBytes(total) : 'Unknown'}`,
             });
           },
         },

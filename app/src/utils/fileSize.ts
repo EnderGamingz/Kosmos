@@ -1,12 +1,22 @@
 import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
 
+export const useByteFormatter = () => {
+  const useSI = usePreferenceStore(s => s.unit.type === Unit.SI);
+
+  return {
+    useSI,
+    formatBytes: (bytes: number, precision = 1) =>
+      formatBytes(bytes, precision, useSI),
+  };
+};
+
 export function useFormatBytes(bytes: number, precision = 1) {
   const useSI = usePreferenceStore(s => s.unit.type === Unit.SI);
 
-  return safeFormatBytes(bytes, precision, useSI);
+  return formatBytes(bytes, precision, useSI);
 }
 
-export function safeFormatBytes(bytes: number, precision = 1, useSI = false) {
+export function formatBytes(bytes: number, precision = 1, useSI = false) {
   const unitSize = useSI ? 1000 : 1024;
 
   if (Math.abs(bytes) < unitSize) {
