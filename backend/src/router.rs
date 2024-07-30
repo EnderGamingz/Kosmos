@@ -57,6 +57,10 @@ fn get_file_router() -> KosmosRouter {
                 .patch(crate::routes::api::v1::auth::file::rename_file),
         )
         .route(
+            "/:file_id/albums",
+            get(crate::routes::api::v1::auth::album::read::get_albums_for_file),
+        )
+        .route(
             "/:file_id/action/:operation_type",
             get(crate::routes::api::v1::auth::download::handle_raw_file),
         )
@@ -239,6 +243,29 @@ fn get_favorite_router() -> KosmosRouter {
         )
 }
 
+fn get_album_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/",
+            get(crate::routes::api::v1::auth::album::read::get_albums)
+                .patch(crate::routes::api::v1::auth::album::update::update_album)
+                .post(crate::routes::api::v1::auth::album::create::create_album),
+        )
+        .route(
+            "/:album_id",
+            get(crate::routes::api::v1::auth::album::read::get_album)
+                .delete(crate::routes::api::v1::auth::album::delete::delete_album),
+        )
+        .route(
+            "/:album_id/link/:file_id",
+            put(crate::routes::api::v1::auth::album::update::link_file_to_album),
+        )
+        .route(
+            "/:album_id/unlink/:file_id",
+            put(crate::routes::api::v1::auth::album::update::unlink_file_from_album),
+        )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -252,6 +279,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/favorite", get_favorite_router())
         .nest("/download", get_download_router())
         .nest("/multi", get_multi_router())
+        .nest("/album", get_album_router())
         .nest("/operation", get_operation_router())
         .nest("/user", get_user_router())
         .nest("/admin", get_admin_router())

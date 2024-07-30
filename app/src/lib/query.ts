@@ -21,6 +21,7 @@ import { UsageReport, UsageStats } from '@models/usage.ts';
 import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 import { SearchResponse } from '@models/search.ts';
 import { FavoritesResponse } from '@models/favorites.ts';
+import { AlbumModel, AlbumResponse } from '@models/album.ts';
 
 export const queryClient = new QueryClient();
 
@@ -245,6 +246,36 @@ export const useOperations = (onUnauthorized?: () => void) => {
   });
 };
 
+export const useAlbums = () => {
+  return useQuery({
+    queryFn: () =>
+      axios.get(`${BASE_URL}auth/album`).then(res => res.data as AlbumModel[]),
+    queryKey: ['album'],
+  });
+};
+
+export const getAlbumData = (id: string) =>
+  axios
+    .get(`${BASE_URL}auth/album/${id}`)
+    .then(res => res.data as AlbumResponse);
+
+export const prefetchAlbum = (id: string) => {
+  return queryClient.prefetchQuery({
+    queryFn: () => getAlbumData(id),
+    queryKey: ['album', id],
+  });
+};
+
+export const useAlbum = (id?: string) => {
+  return useQuery({
+    queryFn: () => getAlbumData(id!),
+    queryKey: ['album', id],
+    enabled: !!id,
+    // Preventing the query from fetching after being prefetched
+    staleTime: 10_000,
+  });
+};
+
 export const useSharedItems = (forUser?: boolean) => {
   const userSpecificEndpoint = forUser ? '/me' : '';
 
@@ -292,6 +323,18 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
     retry: false,
   });
 };
+
+export async function invalidateAlbums() {
+  return queryClient.invalidateQueries({
+    queryKey: ['album'],
+  });
+}
+
+export async function invalidateAlbum(id: string) {
+  return queryClient.invalidateQueries({
+    queryKey: ['album', id],
+  });
+}
 
 export async function invalidateFavorites() {
   return queryClient.invalidateQueries({

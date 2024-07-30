@@ -6,3 +6,4 @@ pub mod operation;
 pub mod share;
 pub mod role;
 pub mod usage;
+pub mod album;

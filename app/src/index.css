@@ -18,6 +18,10 @@
         hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
     }
 
+    .btn-sm {
+        @apply px-3 py-2 text-sm [&_svg]:h-4 [&_svg]:w-4
+    }
+
     .input {
         @apply rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20
     }

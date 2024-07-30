@@ -24,7 +24,7 @@ export function SideNavItem({
       <NavLink
         onClick={e => handleClick(e)}
         to={link.href || ''}
-        end
+        end={link.exact}
         className={({ isActive }) =>
           tw(
             'flex items-center gap-3 rounded-lg px-5 py-2 transition-all',

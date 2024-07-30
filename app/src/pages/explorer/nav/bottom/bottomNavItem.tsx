@@ -7,21 +7,24 @@ import tw from '@utils/classMerge.ts';
 export function BottomNavItem({
   link,
   onClose,
+  noPriority,
 }: {
   link: ExplorerLink;
   onClose?: () => void;
+  noPriority?: boolean;
 }) {
+  if (link.lessPriority && !noPriority) return null;
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (link.items) e.preventDefault();
     onClose?.();
   };
 
   return (
-    <BottomNavPopoverWrapper link={link}>
+    <BottomNavPopoverWrapper noPriority={noPriority} link={link}>
       <NavLink
         onClick={handleClick}
         to={link.href || ''}
-        end
+        end={link.exact}
         className={({ isActive }) =>
           tw(
             'grid cursor-pointer place-items-center px-2 py-2',
@@ -30,7 +33,7 @@ export function BottomNavItem({
           )
         }>
         <div className={'h-5 w-5'}>{link.icon}</div>
-        <p className={'px-4 py-0.5 text-center'}>{link.name}</p>
+        <p className={'py-0.5 text-center sm:px-4'}>{link.name}</p>
       </NavLink>
     </BottomNavPopoverWrapper>
   );
@@ -39,9 +42,11 @@ export function BottomNavItem({
 function BottomNavPopoverWrapper({
   link,
   children,
+  noPriority,
 }: {
   link: ExplorerLink;
   children: ReactNode;
+  noPriority?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   if (!link.items) return children;
@@ -52,9 +57,14 @@ function BottomNavPopoverWrapper({
         <div>{children}</div>
       </PopoverTrigger>
       <PopoverContent className={'bg-stone-100'}>
-        <div className={'flex flex-wrap gap-1 p-1'}>
+        <div
+          className={'grid gap-1 py-1'}
+          style={{
+            gridTemplateColumns: `repeat(${link.items.length}, minmax(0, 1fr))`,
+          }}>
           {link.items.map(item => (
             <BottomNavItem
+              noPriority={noPriority}
               link={item}
               key={item.name}
               onClose={() => setOpen(false)}

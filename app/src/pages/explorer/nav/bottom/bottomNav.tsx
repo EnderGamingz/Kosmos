@@ -1,8 +1,12 @@
-import { getExplorerLinks } from '@pages/explorer/nav/explorerLinks.tsx';
+import {
+  getBottomMoreLinks,
+  getExplorerLinks,
+} from '@pages/explorer/nav/explorerLinks.tsx';
 import { BottomNavItem } from '@pages/explorer/nav/bottom/bottomNavItem.tsx';
 
 export default function BottomNav() {
   const links = getExplorerLinks();
+  const more = getBottomMoreLinks();
 
   return (
     <aside
@@ -13,6 +17,7 @@ export default function BottomNav() {
         {links.map(link => (
           <BottomNavItem key={`bottom-nav-${link.name}`} link={link} />
         ))}
+        <BottomNavItem noPriority key={`bottom-nav-more`} link={more} />
       </div>
     </aside>
   );

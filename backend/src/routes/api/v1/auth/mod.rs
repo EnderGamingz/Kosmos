@@ -16,3 +16,4 @@ pub mod operation;
 pub mod admin;
 pub mod favorite;
 mod search;
+pub mod album;

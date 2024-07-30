@@ -29,6 +29,8 @@ import DismissedOverview from '@pages/settings/dismissed';
 import SystemMessage from '@components/overlay/systemMessage.tsx';
 import SearchPage from '@pages/explorer/pages/search.tsx';
 import FavoritesPage from '@pages/explorer/pages/favorites.tsx';
+import AlbumsPage from '@pages/explorer/pages/albums/all';
+import AlbumPage from '@pages/explorer/pages/albums/single';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -50,6 +52,9 @@ export default function Router() {
             path={'home'}
             element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
             <Route path={'files/:fileType'} element={<FileListByType />} />
+            <Route path={'album'} element={<AlbumsPage />} />
+            <Route path={'album/:albumId'} element={<AlbumPage />} />
+
             <Route path={'recent'} element={<RecentFiles />} />
             <Route
               path={'shared'}
