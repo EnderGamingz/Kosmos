@@ -1,4 +1,4 @@
-import { AdminQuery } from '@lib/adminQuery.ts';
+import { AdminQuery } from '@lib/queries/adminQuery.ts';
 import { roleToString, UserModel } from '@models/user.ts';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';

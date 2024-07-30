@@ -116,19 +116,24 @@ impl FileService {
     pub async fn get_files_by_file_type(
         &self,
         user_id: UserId,
-        file_type: FileType,
+        file_types: Vec<FileType>,
         limit: i64,
         page: i64,
     ) -> Result<Vec<FileModel>, AppError> {
+        let file_types = file_types
+            .iter()
+            .map(|file_type| *file_type as i16)
+            .collect::<Vec<i16>>();
+
         sqlx::query_as!(
             FileModel,
             "SELECT * FROM files WHERE user_id = $1
-             AND file_type = $2
+             AND file_type = ANY($2)
              AND deleted_at IS NULL
              ORDER BY file_name ASC
              LIMIT $3 OFFSET $4",
             user_id,
-            file_type as i16,
+            &file_types,
             limit,
             page * limit
         )

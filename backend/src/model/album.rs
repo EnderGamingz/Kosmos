@@ -1,3 +1,4 @@
+use crate::model::file::{FileModel, FileType};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
@@ -36,3 +37,15 @@ impl From<AlbumModel> for AlbumModelDTO {
     }
 }
 // End: Album Model
+
+impl FileModel {
+    pub fn get_valid_file_types_for_album() -> Vec<FileType> {
+        vec![FileType::Image, FileType::RawImage, FileType::LargeImage]
+    }
+
+    pub fn is_valid_for_album(&self) -> bool {
+        let file_type = FileType::by_id(self.file_type);
+
+        Self::get_valid_file_types_for_album().contains(&file_type)
+    }
+}

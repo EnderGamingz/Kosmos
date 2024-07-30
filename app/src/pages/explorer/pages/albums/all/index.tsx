@@ -1,11 +1,11 @@
 import { Progress } from '@nextui-org/react';
-import { useAlbums } from '@lib/query.ts';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { AlbumItem } from '@pages/explorer/pages/albums/all/albumItem.tsx';
 import { CreateAlbum } from '@pages/explorer/pages/albums/createAlbum.tsx';
+import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 
 export default function AlbumsPage() {
-  const albums = useAlbums();
+  const albums = AlbumQuery.useAlbums();
   return (
     <div>
       <Progress

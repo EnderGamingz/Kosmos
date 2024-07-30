@@ -1,5 +1,5 @@
-use axum::extract::{Path, Query, State};
 use axum::extract::rejection::PathRejection;
+use axum::extract::{Path, Query, State};
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
@@ -154,11 +154,11 @@ pub struct GetFilesByType {
 }
 
 impl GetFilesByType {
-    fn get_limit(&self) -> i64 {
+    pub fn get_limit(&self) -> i64 {
         self.limit.unwrap_or(50) as i64
     }
 
-    fn get_page(&self) -> i64 {
+    pub fn get_page(&self) -> i64 {
         self.page.unwrap_or(0) as i64
     }
 }
@@ -174,7 +174,12 @@ pub async fn get_file_by_type(
 
     let files = state
         .file_service
-        .get_files_by_file_type(user_id, file_type, params.get_limit(), params.get_page())
+        .get_files_by_file_type(
+            user_id,
+            vec![file_type],
+            params.get_limit(),
+            params.get_page(),
+        )
         .await?
         .into_iter()
         .map(FileModelDTO::from)

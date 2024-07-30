@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { AdminQuery, AdminUserUpdate } from '@lib/adminQuery.ts';
+import { AdminQuery, AdminUserUpdate } from '@lib/queries/adminQuery.ts';
 import { Role, roleToString, UserModel } from '@models/user.ts';
 import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';

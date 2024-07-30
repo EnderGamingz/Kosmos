@@ -11,10 +11,10 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { invalidateAlbums } from '@lib/query.ts';
 import { FormEvent } from 'react';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { CheckIcon } from '@heroicons/react/24/outline';
+import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 
 export function CreateAlbum() {
   const notifications = useNotifications(s => s.actions);
@@ -37,7 +37,7 @@ export function CreateAlbum() {
             timeout: 1000,
             canDismiss: true,
           });
-          invalidateAlbums().then();
+          AlbumQuery.invalidateAlbums().then();
           onClose();
         })
         .catch(() => {

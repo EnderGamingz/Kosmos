@@ -8,7 +8,9 @@ import { MultipleActionButton } from '@pages/explorer/components/multipleActionB
 import FileDisplay from '@pages/explorer/file/display/fileDisplay.tsx';
 import { AnimatePresence } from 'framer-motion';
 import { Portal } from 'react-portal';
-import ContextMenu, { ContextMenuContent } from '@components/contextMenu.tsx';
+import ContextMenu, {
+  ContextMenuContent,
+} from '@components/contextMenu/contextMenu.tsx';
 import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
 import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
 import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
@@ -107,10 +109,12 @@ export function ExplorerDisplayWrapper({
         // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
       }}>
-      <MultipleActionButton
-        someSelected={isSomeSelected}
-        handleClick={handleContext}
-      />
+      {!viewSettings?.scrollControlMissing && (
+        <MultipleActionButton
+          someSelected={isSomeSelected}
+          handleClick={handleContext}
+        />
+      )}
       <div id={'display'} className={'h-full flex-grow overflow-x-auto'}>
         {children}
       </div>

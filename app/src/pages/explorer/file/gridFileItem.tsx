@@ -34,8 +34,8 @@ export default function GridFileItem({
   index: number;
   fileIndex: number;
   file: FileModel;
-  selected: string[];
-  onSelect: (id: string) => void;
+  selected?: string[];
+  onSelect?: (id: string) => void;
   dynamic?: boolean;
   details: DetailType;
 }) {
@@ -47,7 +47,7 @@ export default function GridFileItem({
     })),
   );
 
-  const isSelected = selected.includes(file.id);
+  const isSelected = selected?.includes(file.id);
   const isDynamic = dynamic && fileHasPreview(file);
 
   const isDefaultDisplay = details === DetailType.Default;
@@ -67,7 +67,7 @@ export default function GridFileItem({
 
   const handleClick = () => {
     if (disabled) return;
-    if (isControl) onSelect(file.id);
+    if (isControl) onSelect?.(file.id);
     else if (isShift) context.select.setRange(index);
     else if (!context.viewSettings?.noDisplay) selectFile(fileIndex);
   };
@@ -95,7 +95,7 @@ export default function GridFileItem({
       className={tw(
         'group relative rounded-lg outline outline-2 outline-offset-2',
         'outline-transparent transition-[outline-color]',
-        isSelected && 'bg-indigo-100/50 outline-indigo-300',
+        Boolean(isSelected) && 'bg-indigo-100/50 outline-indigo-300',
         isShift && 'cursor-pointer',
         context.select.rangeStart === index && 'bg-indigo-50',
       )}>
@@ -131,7 +131,7 @@ export default function GridFileItem({
               'gap-3 pl-1.5 pt-2.5 [&>button>svg]:w-6  [&>button]:-mt-1',
             isHidden && 'left-0 top-0',
           )}>
-          {!context.viewSettings?.noSelect && (
+          {!context.viewSettings?.noSelect && onSelect && (
             <motion.div
               className={'-mt-1 h-4 w-4'}
               layoutId={`check-${file.id}`}>

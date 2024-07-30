@@ -11,7 +11,9 @@ export default function AlbumCover({
   return (
     <motion.div
       layoutId={`album-cover-${album.id}`}
-      className={'relative aspect-square rounded-lg bg-stone-200'}>
+      className={
+        'relative aspect-square h-auto w-full rounded-lg bg-stone-200'
+      }>
       {loading && (
         <div
           className={

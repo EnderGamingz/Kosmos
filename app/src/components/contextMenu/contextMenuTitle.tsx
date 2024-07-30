@@ -1,0 +1,45 @@
+import { ContextOperationType } from '@models/file.ts';
+import { Tooltip } from '@nextui-org/react';
+import tw from '@utils/classMerge.ts';
+import {
+  DocumentIcon,
+  FolderIcon,
+  Square2StackIcon,
+} from '@heroicons/react/24/outline';
+
+const iconMap = {
+  folder: <FolderIcon />,
+  multi: <Square2StackIcon />,
+  album: <Square2StackIcon />,
+  default: <DocumentIcon />,
+};
+
+export function ContextMenuTitle({
+  title,
+  type,
+}: {
+  title: string;
+  type: ContextOperationType | 'album';
+}) {
+  function renderIcon() {
+    return iconMap[type as keyof typeof iconMap] || iconMap.default;
+  }
+
+  return (
+    <div
+      className={
+        'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
+      }>
+      <Tooltip content={title}>
+        <span
+          className={tw(
+            'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
+            '[&_>svg]:h-4 [&_>svg]:min-w-4',
+          )}>
+          {renderIcon()}
+          {title}
+        </span>
+      </Tooltip>
+    </div>
+  );
+}

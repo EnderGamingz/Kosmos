@@ -78,7 +78,7 @@ export function UserMenu() {
             {user.user?.role === Role.Admin && (
               <Link
                 to={'/admin/user'}
-                className={'user-menu-link'}
+                className={'menu-button'}
                 onClick={handleClose}>
                 <CodeBracketIcon className={'h-5 w-5'} />
                 Admin
@@ -86,14 +86,14 @@ export function UserMenu() {
             )}
             <Link
               to={'/settings/account'}
-              className={'user-menu-link'}
+              className={'menu-button'}
               onClick={handleClose}>
               <Cog6ToothIcon className={'h-5 w-5'} />
               Settings
             </Link>
             <div
               className={
-                'user-menu-link bg-red-200/30 text-red-700 hover:bg-red-200/50'
+                'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50'
               }
               onClick={() => logoutAction.mutate()}>
               <ArrowRightStartOnRectangleIcon className={'h-5 w-5'} />

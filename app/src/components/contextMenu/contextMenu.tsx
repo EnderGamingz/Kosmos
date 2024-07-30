@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { ContextOperationType, isFileModel, isMultiple } from '@models/file.ts';
+import { isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import {
@@ -10,23 +10,17 @@ import {
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import tw from '@utils/classMerge.ts';
-import { Tooltip } from '@nextui-org/react';
 import {
   MultiPermanentDelete,
   PermanentDeleteAction,
 } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
-import {
-  DocumentIcon,
-  FolderIcon,
-  Square2StackIcon,
-} from '@heroicons/react/24/outline';
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-
-const menuWidth = 250;
+import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
+import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 
 export default function ContextMenu({
   children,
@@ -37,8 +31,8 @@ export default function ContextMenu({
   pos: { x: number; y: number };
   onClose: () => void;
 }) {
-  const isOverflowingX = pos.x + menuWidth > window.innerWidth;
-  const isOverflowingY = pos.y + menuWidth > window.innerHeight;
+  const isOverflowingX = pos.x + CONTEXT_MENU_WIDTH > window.innerWidth;
+  const isOverflowingY = pos.y + CONTEXT_MENU_WIDTH > window.innerHeight;
 
   return (
     <>
@@ -66,45 +60,13 @@ export default function ContextMenu({
           bottom: isOverflowingY ? '10px' : undefined,
           left: !isOverflowingX ? pos.x : undefined,
           right: isOverflowingX ? '10px' : undefined,
-          minWidth: menuWidth,
-          maxWidth: menuWidth,
+          minWidth: CONTEXT_MENU_WIDTH,
+          maxWidth: CONTEXT_MENU_WIDTH,
         }}
         onContextMenu={e => e.preventDefault()}>
         {children}
       </motion.div>
     </>
-  );
-}
-
-function ContextMenuTitle({
-  title,
-  type,
-}: {
-  title: string;
-  type: ContextOperationType;
-}) {
-  return (
-    <div
-      className={
-        'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
-      }>
-      <Tooltip content={title}>
-        <span
-          className={tw(
-            'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
-            '[&_>svg]:h-4 [&_>svg]:min-w-4',
-          )}>
-          {type === 'folder' ? (
-            <FolderIcon />
-          ) : type === 'multi' ? (
-            <Square2StackIcon />
-          ) : (
-            <DocumentIcon />
-          )}
-          {title}
-        </span>
-      </Tooltip>
-    </div>
   );
 }
 

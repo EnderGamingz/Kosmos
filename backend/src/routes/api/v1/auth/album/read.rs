@@ -1,11 +1,12 @@
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
 
 use crate::model::album::AlbumModelDTO;
-use crate::model::file::FileModelDTO;
+use crate::model::file::{FileModel, FileModelDTO};
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::file::GetFilesByType;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
@@ -70,3 +71,27 @@ pub async fn get_album(
     }))
 }
 
+
+pub async fn get_available_files(
+    State(state): KosmosState,
+    session: Session,
+    Query(params): Query<GetFilesByType>,
+) -> Result<Json<Vec<FileModelDTO>>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let file_types = FileModel::get_valid_file_types_for_album();
+
+    let files = state
+        .file_service
+        .get_files_by_file_type(
+            user_id,
+            file_types,
+            params.get_limit(),
+            params.get_page(),
+        )
+        .await?
+        .into_iter()
+        .map(FileModelDTO::from)
+        .collect();
+
+    Ok(Json(files))
+}

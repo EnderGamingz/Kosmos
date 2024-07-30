@@ -2,8 +2,8 @@ import { AlbumModel } from '@models/album.ts';
 import { useNavigate } from 'react-router-dom';
 import AlbumCover from '@pages/explorer/pages/albums/albumCover.tsx';
 import { useState } from 'react';
-import { prefetchAlbum } from '@lib/query.ts';
 import { motion } from 'framer-motion';
+import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 
 export function AlbumItem({ album }: { album: AlbumModel }) {
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export function AlbumItem({ album }: { album: AlbumModel }) {
   function handleClick() {
     if (loading) return;
     setLoading(true);
-    prefetchAlbum(album.id)
+    AlbumQuery.prefetchAlbum(album.id)
       .then(() => {
         navigate(`/home/album/${album.id}`);
       })

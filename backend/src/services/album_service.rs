@@ -3,6 +3,7 @@ use crate::model::album::AlbumModel;
 use crate::model::file::FileModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
+use itertools::Itertools;
 use sonyflake::Sonyflake;
 
 #[derive(Clone)]
@@ -72,22 +73,24 @@ impl AlbumService {
         })
     }
 
-    pub async fn add_file_to_album(
+    pub async fn add_files_to_album(
         &self,
         album_id: i64,
-        file_id: i64,
+        file_ids: Vec<i64>,
     ) -> Result<KosmosDbResult, AppError> {
+        let (album_ids, file_ids): (Vec<i64>, Vec<i64>) =
+            file_ids.into_iter().map(|id| (album_id, id)).multiunzip();
+
         sqlx::query!(
-            "INSERT INTO files_on_album (album_id, file_id) VALUES ($1, $2)",
-            album_id,
-            file_id
+            "INSERT INTO files_on_album (album_id, file_id) SELECT * FROM UNNEST($1::BIGINT[], $2::BIGINT[])",
+            &album_ids[..],
+            &file_ids[..]
         )
         .execute(&self.db_pool)
         .await
         .map_err(|e| {
             tracing::error!(
-                "Error adding image {} to album {}: {}",
-                file_id,
+                "Error adding images to album {}: {}",
                 album_id,
                 e
             );
@@ -117,22 +120,21 @@ impl AlbumService {
         })
     }
 
-    pub async fn remove_file_from_album(
+    pub async fn remove_files_from_album(
         &self,
         album_id: i64,
-        file_id: i64,
+        file_ids: Vec<i64>,
     ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
-            "DELETE FROM files_on_album WHERE album_id = $1 AND file_id = $2",
+            "DELETE FROM files_on_album WHERE album_id = $1 AND file_id = ANY($2)",
             album_id,
-            file_id
+            &file_ids
         )
         .execute(&self.db_pool)
         .await
         .map_err(|e| {
             tracing::error!(
-                "Error removing image {} from album {}: {}",
-                file_id,
+                "Error removing images from album {}: {}",
                 album_id,
                 e
             );

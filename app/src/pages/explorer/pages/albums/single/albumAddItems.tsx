@@ -1,0 +1,165 @@
+import { useExplorerStore } from '@stores/explorerStore.ts';
+import { useEffect } from 'react';
+import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import { CheckIcon } from '@heroicons/react/24/outline';
+import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
+import { PlusIcon } from '@heroicons/react/24/solid';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { BASE_URL } from '@lib/env.ts';
+import tw from '@utils/classMerge.ts';
+
+const useToAlbumMutation = (albumId: string) => {
+  const notifications = useNotifications(s => s.actions);
+
+  return useMutation({
+    mutationFn: async ({
+      add,
+      remove,
+    }: {
+      add: string[];
+      remove: string[];
+    }) => {
+      const updateId = notifications.notify({
+        title: 'Update album',
+        severity: Severity.INFO,
+        loading: true,
+        canDismiss: false,
+      });
+      const actions = [];
+      if (add.length > 0) {
+        actions.push(
+          axios.put(`${BASE_URL}auth/album/${albumId}/link`, {
+            file_ids: add,
+          }),
+        );
+      }
+      if (remove.length > 0) {
+        actions.push(
+          axios.put(`${BASE_URL}auth/album/${albumId}/unlink`, {
+            file_ids: remove,
+          }),
+        );
+      }
+
+      Promise.all(actions)
+        .then(() => {
+          AlbumQuery.invalidateAlbum(albumId).then();
+          notifications.updateNotification(updateId, {
+            severity: Severity.SUCCESS,
+            status: 'Updated',
+            canDismiss: true,
+            timeout: 1000,
+          });
+        })
+        .catch(e => {
+          notifications.updateNotification(updateId, {
+            severity: Severity.ERROR,
+            status: e.response.data.message,
+            canDismiss: true,
+            timeout: 1000,
+          });
+        });
+    },
+  });
+};
+
+function AlbumAddItemsContent({
+  addTo,
+  initialFiles,
+  onClose,
+}: {
+  addTo: string;
+  initialFiles: string[];
+  onClose: () => void;
+}) {
+  const { selectedFiles, selectFile, selectNone } = useExplorerStore(
+    s => s.selectedResources,
+  );
+
+  const update = useToAlbumMutation(addTo);
+
+  useEffect(() => {
+    selectNone();
+    initialFiles.map(file => selectFile(file));
+
+    return () => {
+      selectNone();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const submit = () => {
+    // Get added and removed
+    const added = selectedFiles.filter(file => !initialFiles.includes(file));
+    const removed = initialFiles.filter(file => !selectedFiles.includes(file));
+
+    update.mutateAsync({ add: added, remove: removed }).then(() => {
+      onClose();
+    });
+  };
+
+  const files = AlbumQuery.useInfiniteAvailableFiles();
+  return (
+    <div className={'flex h-full flex-col p-10'}>
+      <div
+        className={
+          'file-list relative flex h-full flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
+        }>
+        <ExplorerDataDisplay
+          isLoading={files.isLoading}
+          files={files.data?.pages.flat() || []}
+          folders={[]}
+          viewSettings={{
+            limitedView: true,
+            paged: true,
+            noDisplay: true,
+            scrollControlMissing: true,
+            hasNextPage: files.hasNextPage,
+            onLoadNextPage: async () => {
+              if (files.isFetching) return;
+              await files.fetchNextPage();
+            },
+          }}
+        />
+      </div>
+      <button onClick={submit} className={'btn-black mt-5'}>
+        <CheckIcon />
+        Save
+      </button>
+    </div>
+  );
+}
+
+export function AlbumAddItems({
+  id,
+  added,
+  small,
+}: {
+  id: string;
+  added: string[];
+  small?: boolean;
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <button
+        className={tw('btn-black transition-all', Boolean(small) && 'btn-sm')}
+        onClick={onOpen}>
+        <PlusIcon />
+        Add Items
+      </button>
+      <Modal size={'full'} isOpen={isOpen} onOpenChange={onClose}>
+        <ModalContent>
+          <AlbumAddItemsContent
+            addTo={id}
+            initialFiles={added}
+            onClose={onClose}
+          />
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
