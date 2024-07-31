@@ -38,7 +38,8 @@ export default function AlbumDisplay() {
                 key={file.id}
                 file={file}
                 handleContext={handleContext}
-                albumId={viewSettings?.albumId || ''}
+                onClick={viewSettings?.album?.onFileClick}
+                albumId={viewSettings?.album?.albumId || ''}
               />
             ))}
           </Masonry>
@@ -52,13 +53,16 @@ function AlbumDisplayItem({
   file,
   albumId,
   handleContext,
+  onClick,
 }: {
   file: FileModel;
   albumId: string;
   handleContext: (pos: Vec2, file: FileModel) => void;
+  onClick?: (file: FileModel) => void;
 }) {
   return (
     <div
+      onClick={() => onClick?.(file)}
       onContextMenu={e => {
         e.preventDefault();
         handleContext({ x: e.clientX, y: e.clientY }, {

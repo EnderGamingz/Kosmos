@@ -17,7 +17,6 @@ import { BASE_URL } from '@lib/env.ts';
 const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
   return [
     <DownloadSingleAction
-      type={'file'}
       id={file.id}
       name={file.file_name}
       shareUuid={shareUuid}

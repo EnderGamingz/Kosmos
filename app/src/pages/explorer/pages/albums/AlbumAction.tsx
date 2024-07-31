@@ -17,8 +17,9 @@ import {
 } from '@nextui-org/react';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { DisplayContext } from '@lib/contexts.ts';
 
 function AddToAlbumModalContent({
   onClose,
@@ -129,6 +130,7 @@ export default function AlbumAction({
   onClose: () => void;
 }) {
   const update = useToAlbumMutation(albumId);
+  const context = useContext(DisplayContext);
 
   const {
     isOpen,
@@ -136,6 +138,8 @@ export default function AlbumAction({
     onOpen: disclosureOnOpen,
     onClose: disclosureOnClose,
   } = useDisclosure();
+
+  if (context.shareUuid) return null;
 
   const handleClick = () => {
     if (albumId) {

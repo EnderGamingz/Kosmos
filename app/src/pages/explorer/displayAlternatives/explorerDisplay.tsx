@@ -49,7 +49,10 @@ export type ViewSettings = {
   binView?: boolean;
   noSelect?: boolean;
   noDisplay?: boolean;
-  albumId?: string;
+  album?: {
+    onFileClick?: (file: FileModel) => void;
+    albumId?: string;
+  };
 };
 
 export type OverwriteDisplay = {

@@ -88,7 +88,6 @@ export function ContextMenuContent({
         <ContextMenuTitle type={'file'} title={data.file_name} />
         <AlbumAction file={data} albumId={data.album_id} onClose={onClose} />
         <DownloadSingleAction
-          type={'file'}
           id={data.id}
           name={data.file_name}
           onClose={onClose}
@@ -100,7 +99,6 @@ export function ContextMenuContent({
           name={data.file_name}
           onClose={onClose}
         />
-        <hr />
       </>
     );
   } else if (isFileModel(data)) {
@@ -109,7 +107,6 @@ export function ContextMenuContent({
         <ContextMenuTitle type={'file'} title={data.file_name} />
         <AlbumAction file={data} onClose={onClose} />
         <DownloadSingleAction
-          type={'file'}
           id={data.id}
           name={data.file_name}
           onClose={onClose}

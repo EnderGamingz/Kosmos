@@ -29,7 +29,7 @@ export function ImageTooLargePrompt({
           'outline outline-1 outline-stone-400/40',
         )}>
         <p className={'text-lg'}>Image is above {useFormatBytes(threshold)}</p>
-        <DownloadSingleAction id={id} name={name} type={'file'} />
+        <DownloadSingleAction id={id} name={name} />
       </div>
     </motion.div>
   );

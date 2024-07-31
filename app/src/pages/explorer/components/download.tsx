@@ -1,21 +1,18 @@
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '@lib/env.ts';
 import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useContext, useState } from 'react';
-import { DataOperationType } from '@models/file.ts';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { createDownloadUrl } from '@lib/file.ts';
 
 export function DownloadSingleAction({
-  type,
   id,
   name,
   onClose,
   shareUuid,
 }: {
-  type: DataOperationType;
   id: string;
   name: string;
   onClose?: () => void;
@@ -26,12 +23,7 @@ export function DownloadSingleAction({
   const context: DisplayContextType | undefined = useContext(DisplayContext);
   const folderShareUuid = context?.shareUuid;
 
-  const getOverwriteUrl = () => {
-    if (folderShareUuid)
-      return `${BASE_URL}s/folder/${folderShareUuid}/File/${id}/action/Download`;
-    if (shareUuid) return `${BASE_URL}s/file/${shareUuid}/action/Download`;
-    return undefined;
-  };
+  const downloadUrl = createDownloadUrl(shareUuid, folderShareUuid, id);
 
   const downloadAction = useMutation({
     mutationFn: async () => {
@@ -45,16 +37,13 @@ export function DownloadSingleAction({
 
       setFileId(fileId);
 
-      const response = await fetch(
-        getOverwriteUrl() || `${BASE_URL}auth/${type}/${id}/action/Download`,
-        {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await fetch(downloadUrl, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       if (!response.ok) {
         notification.updateNotification(fileId, {

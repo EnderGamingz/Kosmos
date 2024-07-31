@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
-import { BASE_URL } from '@lib/env.ts';
+import { createPreviewUrl } from '@lib/file.ts';
 
 export function PreviewImage({
   id,
@@ -31,9 +31,7 @@ export function PreviewImage({
   const isProcessing = status === FilePreviewStatus.Processing;
   const isFailed = status === FilePreviewStatus.Failed;
 
-  const src = context.shareUuid
-    ? `${BASE_URL}s/folder/${context.shareUuid}/image/${id}/0`
-    : `${BASE_URL}auth/file/image/${id}/0`;
+  const src = createPreviewUrl(context.shareUuid, !!context.shareUuid, id);
 
   return (
     <motion.div

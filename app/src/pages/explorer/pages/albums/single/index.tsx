@@ -99,8 +99,10 @@ function AlbumPageContent({
   files: FileModel[];
   scrolling: boolean;
 }) {
+  const [selected, setSelected] = useState<string | undefined>(undefined);
   const [size, setSize] = useState(7);
   const fileIds = useMemo(() => files.map(file => file.id), [files]);
+
   return (
     <>
       <div className={'h-[200px]'} />
@@ -140,13 +142,19 @@ function AlbumPageContent({
         files={files}
         folders={[]}
         viewSettings={{
-          albumId: album.id,
+          album: {
+            albumId: album.id,
+            onFileClick: (file: FileModel) => {
+              console.log(file);
+            },
+          },
         }}
         overwriteDisplay={{
           displayMode: ExplorerDisplay.Album,
           gridSize: size,
         }}
       />
+
       {!files.length && (
         <EmptyList
           grid

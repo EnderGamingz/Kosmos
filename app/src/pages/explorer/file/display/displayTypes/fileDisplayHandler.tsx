@@ -8,11 +8,11 @@ import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/di
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { BASE_URL } from '@lib/env.ts';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
 import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
+import { createServeUrl, createPreviewUrl } from '@lib/file.ts';
 
 export function FileTypeDisplay({
   id,
@@ -97,16 +97,8 @@ export function FileDisplayHandler({
   // and prevent the app from lagging when displaying a file essentially on mobile devices
   const [previewOnHold, setPreviewOnHold] = useState(initialLoadingState());
 
-  const highResUrl = shareUuid
-    ? isSharedInFolder
-      ? `${BASE_URL}s/folder/${shareUuid}/File/${file.id}/action/Serve`
-      : `${BASE_URL}s/file/${shareUuid}/action/Serve`
-    : `${BASE_URL}auth/file/${file.id}/action/Serve`;
-  const lowResUrl = shareUuid
-    ? isSharedInFolder
-      ? `${BASE_URL}s/folder/${shareUuid}/image/${file.id}/0`
-      : `${BASE_URL}s/file/${shareUuid}/image/0`
-    : `${BASE_URL}auth/file/image/${file.id}/0`;
+  const highResUrl = createServeUrl(shareUuid, !!isSharedInFolder, file.id);
+  const lowResUrl = createPreviewUrl(shareUuid, !!isSharedInFolder, file.id);
 
   useEffect(() => {
     if (!previewOnHold) return;
