@@ -18,9 +18,9 @@ export function DisplayImage({
   share,
 }: {
   file: FileModel;
-  fullScreen: boolean;
-  onFullScreen: (b: boolean) => void;
-  lowRes: string;
+  fullScreen?: boolean;
+  onFullScreen?: (b: boolean) => void;
+  lowRes?: string;
   highRes: string;
   share?: {
     shareUuid?: string;
@@ -32,21 +32,25 @@ export function DisplayImage({
 
   const toggleFullScreen = () => {
     if (isTooLarge) return;
-    onFullScreen(!fullScreen);
+    onFullScreen?.(!fullScreen);
   };
+
+  const isFullScreenAvailable = fullScreen !== undefined;
 
   return (
     <>
-      <ImageFullscreenView
-        open={fullScreen}
-        tooLarge={isTooLarge}
-        onDoubleClick={toggleFullScreen}
-        file={file}
-        src={highRes}
-        noOffset={!!share?.shareUuid && !share?.isSharedInFolder}
-      />
+      {isFullScreenAvailable && (
+        <ImageFullscreenView
+          open={fullScreen}
+          tooLarge={isTooLarge}
+          onDoubleClick={toggleFullScreen}
+          file={file}
+          src={highRes}
+          noOffset={!!share?.shareUuid && !share?.isSharedInFolder}
+        />
+      )}
       <div className={'relative overflow-hidden rounded-xl'}>
-        {!isTooLarge && (
+        {!isTooLarge && isFullScreenAvailable && (
           <ImageFullscreenToggle
             isFullscreen={fullScreen}
             toggle={toggleFullScreen}
@@ -73,6 +77,7 @@ export function DisplayImage({
               ? 'bg-contain object-contain drop-shadow-lg'
               : 'bg-cover object-cover shadow-lg',
           )}
+          layout
           layoutId={`image-${file.id}`}
           src={isTooLarge ? lowRes : highRes}
           style={{

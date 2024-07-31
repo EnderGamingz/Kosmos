@@ -12,6 +12,9 @@ import { FileModel } from '@models/file.ts';
 import { AlbumModel } from '@models/album.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
+import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlider.tsx';
+import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';
+import { AnimatePresence } from 'framer-motion';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -50,46 +53,6 @@ export default function AlbumPage() {
   );
 }
 
-function GridSizeSlider({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <div className={'!mt-5 w-full min-w-24'}>
-      <label
-        htmlFor={'size-slider'}
-        className={'text-sm font-light text-stone-600'}>
-        Grid Size
-      </label>
-      <input
-        type={'range'}
-        id={'size-slider'}
-        value={value}
-        min={1}
-        max={7}
-        className={'slider'}
-        step={1}
-        onChange={e => onChange(parseInt(e.target.value))}
-      />
-      <div
-        className={
-          'row mx-1 mt-1 flex justify-between text-sm font-light text-stone-600'
-        }>
-        <span>1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-        <span>5</span>
-        <span>6</span>
-        <span>7</span>
-      </div>
-    </div>
-  );
-}
-
 function AlbumPageContent({
   album,
   files,
@@ -99,7 +62,7 @@ function AlbumPageContent({
   files: FileModel[];
   scrolling: boolean;
 }) {
-  const [selected, setSelected] = useState<string | undefined>(undefined);
+  const [selected, setSelected] = useState<FileModel | undefined>(undefined);
   const [size, setSize] = useState(7);
   const fileIds = useMemo(() => files.map(file => file.id), [files]);
 
@@ -145,7 +108,7 @@ function AlbumPageContent({
           album: {
             albumId: album.id,
             onFileClick: (file: FileModel) => {
-              console.log(file);
+              setSelected(file);
             },
           },
         }}
@@ -154,7 +117,14 @@ function AlbumPageContent({
           gridSize: size,
         }}
       />
-
+      <AnimatePresence>
+        {selected && (
+          <AlbumFullscreen
+            file={selected}
+            onClose={() => setSelected(undefined)}
+          />
+        )}
+      </AnimatePresence>
       {!files.length && (
         <EmptyList
           grid
