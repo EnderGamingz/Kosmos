@@ -268,6 +268,10 @@ fn get_album_router() -> KosmosRouter {
             "/available",
             get(crate::routes::api::v1::auth::album::read::get_available_files),
         )
+        .route(
+            "/for/:file_id",
+            get(crate::routes::api::v1::auth::album::read::get_available_albums_for_file),
+        )
 }
 
 fn get_auth_router() -> KosmosRouter {

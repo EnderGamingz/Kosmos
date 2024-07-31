@@ -120,6 +120,26 @@ impl AlbumService {
         })
     }
 
+    pub async fn get_unassociated_albums(
+        &self,
+        user_id: UserId,
+        file_id: i64,
+    ) -> Result<Vec<AlbumModel>, AppError> {
+        sqlx::query_as!(
+            AlbumModel,
+            "SELECT * FROM albums WHERE user_id = $1
+            AND id NOT IN (SELECT album_id FROM files_on_album WHERE file_id = $2)",
+            user_id,
+            file_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting unassociated albums: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn remove_files_from_album(
         &self,
         album_id: i64,

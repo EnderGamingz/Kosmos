@@ -21,6 +21,7 @@ import { UsageReport, UsageStats } from '@models/usage.ts';
 import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 import { SearchResponse } from '@models/search.ts';
 import { FavoritesResponse } from '@models/favorites.ts';
+import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 
 export const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ export async function invalidateFiles() {
   await queryClient.invalidateQueries({
     queryKey: ['search'],
   });
+  await AlbumQuery.invalidateAlbums();
 }
 
 export async function invalidateFolders() {

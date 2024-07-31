@@ -21,6 +21,8 @@ import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
+import { isAlbumFile } from '@models/album.ts';
+import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 
 export default function ContextMenu({
   children,
@@ -80,10 +82,32 @@ export function ContextMenuContent({
   const currentFolder = useExplorerStore(s => s.current.folder);
   if (!data) return null;
 
-  if (isFileModel(data)) {
+  if (isAlbumFile(data)) {
     return (
       <>
         <ContextMenuTitle type={'file'} title={data.file_name} />
+        <AlbumAction file={data} albumId={data.album_id} onClose={onClose} />
+        <DownloadSingleAction
+          type={'file'}
+          id={data.id}
+          name={data.file_name}
+          onClose={onClose}
+        />
+        <ShareButton id={data.id} type={'file'} onClose={onClose} />
+        <RenameAction
+          type={'file'}
+          id={data.id}
+          name={data.file_name}
+          onClose={onClose}
+        />
+        <hr />
+      </>
+    );
+  } else if (isFileModel(data)) {
+    return (
+      <>
+        <ContextMenuTitle type={'file'} title={data.file_name} />
+        <AlbumAction file={data} onClose={onClose} />
         <DownloadSingleAction
           type={'file'}
           id={data.id}

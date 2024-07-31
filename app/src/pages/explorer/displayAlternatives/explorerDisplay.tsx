@@ -49,6 +49,7 @@ export type ViewSettings = {
   binView?: boolean;
   noSelect?: boolean;
   noDisplay?: boolean;
+  albumId?: string;
 };
 
 export type OverwriteDisplay = {

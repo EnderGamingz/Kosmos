@@ -139,6 +139,9 @@ function AlbumPageContent({
         isLoading={false}
         files={files}
         folders={[]}
+        viewSettings={{
+          albumId: album.id,
+        }}
         overwriteDisplay={{
           displayMode: ExplorerDisplay.Album,
           gridSize: size,

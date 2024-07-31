@@ -4,67 +4,9 @@ import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
-import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import tw from '@utils/classMerge.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay';
-
-const useToAlbumMutation = (albumId: string) => {
-  const notifications = useNotifications(s => s.actions);
-
-  return useMutation({
-    mutationFn: async ({
-      add,
-      remove,
-    }: {
-      add: string[];
-      remove: string[];
-    }) => {
-      const updateId = notifications.notify({
-        title: 'Update album',
-        severity: Severity.INFO,
-        loading: true,
-        canDismiss: false,
-      });
-      const actions = [];
-      if (add.length > 0) {
-        actions.push(
-          axios.put(`${BASE_URL}auth/album/${albumId}/link`, {
-            file_ids: add,
-          }),
-        );
-      }
-      if (remove.length > 0) {
-        actions.push(
-          axios.put(`${BASE_URL}auth/album/${albumId}/unlink`, {
-            file_ids: remove,
-          }),
-        );
-      }
-
-      Promise.all(actions)
-        .then(() => {
-          AlbumQuery.invalidateAlbum(albumId).then();
-          notifications.updateNotification(updateId, {
-            severity: Severity.SUCCESS,
-            status: 'Updated',
-            canDismiss: true,
-            timeout: 1000,
-          });
-        })
-        .catch(e => {
-          notifications.updateNotification(updateId, {
-            severity: Severity.ERROR,
-            status: e.response.data.message,
-            canDismiss: true,
-            timeout: 1000,
-          });
-        });
-    },
-  });
-};
+import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
 
 function AlbumAddItemsContent({
   addTo,

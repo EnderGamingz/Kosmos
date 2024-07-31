@@ -36,13 +36,50 @@ pub async fn get_albums_for_file(
 
     let albums: Vec<AlbumModelDTO> = state
         .album_service
-        .get_associated_albums(user_id,file_id)
+        .get_associated_albums(user_id, file_id)
         .await?
         .into_iter()
         .map(AlbumModelDTO::from)
         .collect();
 
     Ok(Json(albums))
+}
+
+#[derive(Serialize)]
+pub struct AvailableAlbumsForFileResponse {
+    pub added: Vec<AlbumModelDTO>,
+    pub available: Vec<AlbumModelDTO>,
+}
+
+pub async fn get_available_albums_for_file(
+    State(state): KosmosState,
+    session: Session,
+    Path(file_id): Path<i64>,
+) -> Result<Json<AvailableAlbumsForFileResponse>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let available_albums: Vec<AlbumModelDTO> = state
+        .album_service
+        .get_unassociated_albums(user_id, file_id)
+        .await?
+        .into_iter()
+        .map(AlbumModelDTO::from)
+        .collect();
+
+    let associated_albums: Vec<AlbumModelDTO> = state
+        .album_service
+        .get_associated_albums(user_id, file_id)
+        .await?
+        .into_iter()
+        .map(AlbumModelDTO::from)
+        .collect();
+
+    Ok(Json(
+        AvailableAlbumsForFileResponse {
+            added: associated_albums,
+            available: available_albums
+        }
+    ))
 }
 
 #[derive(Serialize)]
@@ -71,7 +108,6 @@ pub async fn get_album(
     }))
 }
 
-
 pub async fn get_available_files(
     State(state): KosmosState,
     session: Session,
@@ -82,12 +118,7 @@ pub async fn get_available_files(
 
     let files = state
         .file_service
-        .get_files_by_file_type(
-            user_id,
-            file_types,
-            params.get_limit(),
-            params.get_page(),
-        )
+        .get_files_by_file_type(user_id, file_types, params.get_limit(), params.get_page())
         .await?
         .into_iter()
         .map(FileModelDTO::from)

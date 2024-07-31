@@ -5,9 +5,12 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { FileModel } from '@models/file.ts';
 import { PreviewImage } from '@components/Image.tsx';
 import tw from '@utils/classMerge.ts';
+import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper.tsx';
+import { AlbumFile } from '@models/album.ts';
 
 export default function AlbumDisplay() {
-  const { files, viewSettings, overwriteDisplay } = useContext(DisplayContext);
+  const { files, viewSettings, overwriteDisplay, handleContext } =
+    useContext(DisplayContext);
   const columnsCountBreakPoints: Record<string, number> = {
     320: 1,
     440: 2,
@@ -31,7 +34,12 @@ export default function AlbumDisplay() {
           )}>
           <Masonry gutter={'0.75rem'}>
             {files.map(file => (
-              <AlbumDisplayItem key={file.id} file={file} />
+              <AlbumDisplayItem
+                key={file.id}
+                file={file}
+                handleContext={handleContext}
+                albumId={viewSettings?.albumId || ''}
+              />
             ))}
           </Masonry>
         </ResponsiveMasonry>
@@ -40,9 +48,24 @@ export default function AlbumDisplay() {
   );
 }
 
-function AlbumDisplayItem({ file }: { file: FileModel }) {
+function AlbumDisplayItem({
+  file,
+  albumId,
+  handleContext,
+}: {
+  file: FileModel;
+  albumId: string;
+  handleContext: (pos: Vec2, file: FileModel) => void;
+}) {
   return (
     <div
+      onContextMenu={e => {
+        e.preventDefault();
+        handleContext({ x: e.clientX, y: e.clientY }, {
+          ...file,
+          album_id: albumId,
+        } as AlbumFile);
+      }}
       className={tw(
         '[&_.img-container]:h-full [&_.img-container]:min-h-24 [&_.img-container]:w-full',
         '[&_img]:aspect-auto [&_img]:h-auto [&_img]:min-h-[inherit] [&_img]:w-full',

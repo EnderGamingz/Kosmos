@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { ContextOperationType, FileModel, Selected } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
+import { AlbumFile } from '@models/album.ts';
 
-export type ContextData = FileModel | FolderModel | Selected | undefined;
+export type ContextData =
+  | AlbumFile
+  | FileModel
+  | FolderModel
+  | Selected
+  | undefined;
 
 export type ContextMenuType = {
   setPos: (value: { x: number; y: number }) => void;

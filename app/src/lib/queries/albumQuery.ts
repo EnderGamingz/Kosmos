@@ -2,7 +2,11 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
-import { AlbumModel, AlbumResponse } from '@models/album.ts';
+import {
+  AlbumModel,
+  AlbumResponse,
+  AvailableAlbumsForFileResponse,
+} from '@models/album.ts';
 import { FileModel } from '@models/file.ts';
 
 export class AlbumQuery {
@@ -54,6 +58,16 @@ export class AlbumQuery {
     });
   };
 
+  public static useAvailableAlbums = (fileId: string) => {
+    return useQuery({
+      queryFn: () =>
+        axios
+          .get(`${BASE_URL}auth/album/for/${fileId}`)
+          .then(res => res.data as AvailableAlbumsForFileResponse),
+      queryKey: ['album', 'available'],
+    });
+  };
+
   public static prefetchAlbum = (id: string) => {
     return queryClient.prefetchQuery({
       queryFn: () => this.getAlbumData(id),
@@ -69,5 +83,10 @@ export class AlbumQuery {
   public static invalidateAlbum = (id: string) =>
     queryClient.invalidateQueries({
       queryKey: ['album', id],
+    });
+
+  public static invalidateAvailableAlbums = () =>
+    queryClient.invalidateQueries({
+      queryKey: ['album', 'available'],
     });
 }
