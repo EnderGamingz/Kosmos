@@ -35,11 +35,11 @@ export default function AlbumPage() {
   }, [albumQuery, albumId, navigate, setFilesInScope]);
 
   return (
-    <div className={'relative'}>
+    <div className={'relative h-full'}>
       <div
         ref={container}
         className={
-          'max-h-[calc(100dvh-90px)] space-y-5 overflow-y-auto p-5 max-md:max-h-[calc(100dvh-90px-80px)]'
+          'flex h-full max-h-[calc(100dvh-90px)] flex-col space-y-5 overflow-y-auto p-5 max-md:max-h-[calc(100dvh-90px-80px)]'
         }>
         {albumQuery.data && (
           <AlbumPageContent
@@ -68,7 +68,7 @@ function AlbumPageContent({
 
   return (
     <>
-      <div className={'h-[200px]'} />
+      <div className={'max-h-[200px] min-h-[200px]'} />
       <div
         className={
           'absolute left-5 right-5 top-5 z-40 !mt-0 flex items-start gap-5 rounded-xl transition-all'
@@ -100,23 +100,25 @@ function AlbumPageContent({
           </AlbumMenu>
         </div>
       </div>
-      <ExplorerDataDisplay
-        isLoading={false}
-        files={files}
-        folders={[]}
-        viewSettings={{
-          album: {
-            albumId: album.id,
-            onFileClick: (file: FileModel) => {
-              setSelected(file);
+      <div className={'flex flex-grow flex-col'}>
+        <ExplorerDataDisplay
+          isLoading={false}
+          files={files}
+          folders={[]}
+          viewSettings={{
+            album: {
+              data: album,
+              onFileClick: (file: FileModel) => {
+                setSelected(file);
+              },
             },
-          },
-        }}
-        overwriteDisplay={{
-          displayMode: ExplorerDisplay.Album,
-          gridSize: size,
-        }}
-      />
+          }}
+          overwriteDisplay={{
+            displayMode: ExplorerDisplay.Album,
+            gridSize: size,
+          }}
+        />
+      </div>
       <AnimatePresence>
         {selected && (
           <AlbumFullscreen

@@ -257,6 +257,10 @@ fn get_album_router() -> KosmosRouter {
                 .delete(crate::routes::api::v1::auth::album::delete::delete_album),
         )
         .route(
+            "/:album_id/preview",
+            put(crate::routes::api::v1::auth::album::update::update_album_preview),
+        )
+        .route(
             "/:album_id/link",
             put(crate::routes::api::v1::auth::album::update::link_files_to_album),
         )

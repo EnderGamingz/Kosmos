@@ -23,6 +23,7 @@ import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
+import SetAlbumPreview from '@pages/explorer/pages/albums/setAlbumPrevíew.tsx';
 
 export default function ContextMenu({
   children,
@@ -86,7 +87,12 @@ export function ContextMenuContent({
     return (
       <>
         <ContextMenuTitle type={'file'} title={data.file_name} />
-        <AlbumAction file={data} albumId={data.album_id} onClose={onClose} />
+        <SetAlbumPreview
+          album={data.album}
+          fileId={data.id}
+          onClose={onClose}
+        />
+        <AlbumAction file={data} albumId={data.album.id} onClose={onClose} />
         <DownloadSingleAction
           id={data.id}
           name={data.file_name}

@@ -83,7 +83,7 @@ export function DisplayImage({
           style={{
             // Image background serves as a low-quality placeholder
             // until the high-resolution image is downloaded
-            backgroundImage: `url(${lowRes})`,
+            backgroundImage: lowRes && `url(${lowRes})`,
           }}
           alt={file.file_name}
         />

@@ -46,7 +46,7 @@ function AlbumAddItemsContent({
 
   const files = AlbumQuery.useInfiniteAvailableFiles();
   return (
-    <div className={'flex h-full flex-col p-10'}>
+    <div className={'flex h-full select-none flex-col p-10'}>
       <div
         className={
           'file-list relative flex h-full flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'

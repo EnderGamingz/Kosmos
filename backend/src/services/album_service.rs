@@ -76,7 +76,7 @@ impl AlbumService {
     pub async fn add_files_to_album(
         &self,
         album_id: i64,
-        file_ids: Vec<i64>,
+        file_ids: &Vec<i64>,
     ) -> Result<KosmosDbResult, AppError> {
         let (album_ids, file_ids): (Vec<i64>, Vec<i64>) =
             file_ids.into_iter().map(|id| (album_id, id)).multiunzip();
@@ -143,7 +143,7 @@ impl AlbumService {
     pub async fn remove_files_from_album(
         &self,
         album_id: i64,
-        file_ids: Vec<i64>,
+        file_ids: &Vec<i64>,
     ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
             "DELETE FROM files_on_album WHERE album_id = $1 AND file_id = ANY($2)",
@@ -205,6 +205,45 @@ impl AlbumService {
             tracing::error!("Error updating album {}: {}", album_name, e);
             AppError::InternalError
         })
+    }
+
+    pub async fn set_preview_id(
+        &self,
+        user_id: UserId,
+        album_id: i64,
+        preview_id: Option<i64>,
+    ) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE albums SET preview_id = $1 WHERE user_id = $2 AND id = $3",
+            preview_id,
+            user_id,
+            album_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating albums preview {}: {}", album_id, e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn is_file_in_album(
+        &self,
+        album_id: i64,
+        file_id: i64,
+    ) -> Result<bool, AppError> {
+        let count = sqlx::query_scalar!(
+            "SELECT COUNT(*) FROM files_on_album WHERE album_id = $1 AND file_id = $2",
+            album_id,
+            file_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error checking if file {} is in album {}: {}", file_id, album_id, e);
+            AppError::InternalError
+        })?;
+        Ok(count > Some(0))
     }
 
     pub async fn delete_album(

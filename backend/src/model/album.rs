@@ -10,6 +10,7 @@ pub struct AlbumModel {
     pub user_id: i64,
     pub name: String,
     pub description: Option<String>,
+    pub preview_id: Option<i64>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -20,6 +21,7 @@ pub struct AlbumModelDTO {
     pub user_id: String,
     pub name: String,
     pub description: Option<String>,
+    pub preview_id: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -31,6 +33,7 @@ impl From<AlbumModel> for AlbumModelDTO {
             user_id: model.user_id.to_string(),
             name: model.name,
             description: model.description,
+            preview_id: model.preview_id.map(|id| id.to_string()),
             created_at: model.created_at,
             updated_at: model.updated_at,
         }

@@ -15,6 +15,7 @@ import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx'
 import { useSearchState } from '@stores/searchStore.ts';
 import objectHash from 'object-hash';
 import AlbumDisplay from '@pages/explorer/displayAlternatives/album/albumDisplay.tsx';
+import { AlbumModel } from '@models/album.ts';
 
 function getLoadingComponent(id: ExplorerLoading) {
   switch (id) {
@@ -51,7 +52,7 @@ export type ViewSettings = {
   noDisplay?: boolean;
   album?: {
     onFileClick?: (file: FileModel) => void;
-    albumId?: string;
+    data?: AlbumModel;
   };
 };
 

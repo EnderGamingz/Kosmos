@@ -6,12 +6,13 @@ export type AlbumModel = {
   user_id: string;
   name: string;
   description?: string;
+  preview_id?: string;
   created_at: Date;
   updated_at: Date;
 };
 
 export type AlbumFile = FileModel & {
-  album_id: string;
+  album: AlbumModel;
 };
 
 export type AlbumResponse = {
@@ -35,10 +36,14 @@ export type AvailableAlbumsForFileResponse = {
   available: AlbumModel[];
 };
 
+export type UpdateAlbumPreviewPayload = {
+  file_id: string;
+};
+
 export function isAlbumFile(data: ContextData): data is AlbumFile {
   return (
     (data as AlbumFile).file_name !== undefined &&
-    (data as AlbumFile).album_id !== undefined
+    (data as AlbumFile).album?.id !== undefined
   );
 }
 
