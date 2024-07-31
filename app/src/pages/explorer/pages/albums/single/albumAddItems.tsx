@@ -1,7 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -10,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import tw from '@utils/classMerge.ts';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay';
 
 const useToAlbumMutation = (albumId: string) => {
   const notifications = useNotifications(s => s.actions);
@@ -96,6 +96,7 @@ function AlbumAddItemsContent({
     const added = selectedFiles.filter(file => !initialFiles.includes(file));
     const removed = initialFiles.filter(file => !selectedFiles.includes(file));
 
+    selectNone();
     update.mutateAsync({ add: added, remove: removed }).then(() => {
       onClose();
     });

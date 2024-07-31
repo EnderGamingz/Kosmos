@@ -72,8 +72,8 @@ export function AlbumTitle({
   return (
     <div
       className={tw(
-        'flex flex-grow flex-col space-y-5 transition-all',
-        Boolean(dense) && 'space-y-1',
+        'flex flex-grow flex-col gap-5 transition-all',
+        Boolean(dense) && 'gap-1',
       )}>
       <form
         className={'flex-grow'}
@@ -83,9 +83,12 @@ export function AlbumTitle({
           <motion.input
             layout={'position'}
             layoutId={`album-name-${album.id}`}
-            className={
-              'w-0 flex-grow truncate bg-transparent text-2xl font-light outline-none sm:text-3xl md:text-4xl'
-            }
+            title={album.name}
+            className={tw(
+              'w-0 flex-grow truncate transition-[font-size]',
+              'bg-transparent text-2xl font-light outline-none sm:text-3xl md:text-4xl',
+              Boolean(dense) && 'text-lg sm:text-xl md:text-2xl',
+            )}
             defaultValue={album.name}
             placeholder={'Album name'}
             name={'name'}
@@ -99,6 +102,7 @@ export function AlbumTitle({
           transition={{ delay: 0.3 }}
           className={'bg-transparent font-light text-stone-500 outline-none'}
           defaultValue={album.description}
+          title={album.description}
           placeholder={'Album description'}
           name={'description'}
           type={'text'}
@@ -107,7 +111,13 @@ export function AlbumTitle({
           Update
         </button>
       </form>
-      <div>{children}</div>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className={'flex items-center gap-4'}>
+        {children}
+      </motion.div>
     </div>
   );
 }

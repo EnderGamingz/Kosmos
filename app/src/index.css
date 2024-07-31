@@ -145,6 +145,32 @@ a {
     opacity: 0;
 }
 
+.slider {
+    -webkit-appearance: none;
+    height: 3px;
+    width: 100%;
+    border-radius: 50px;
+    background: gray;
+    outline: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(41 37 36);;
+}
+
+.slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(41 37 36);;
+}
+
 @keyframes rotation {
     0% {
         transform: rotate(0deg);

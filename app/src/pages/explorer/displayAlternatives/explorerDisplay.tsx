@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx';
 import { useSearchState } from '@stores/searchStore.ts';
 import objectHash from 'object-hash';
+import AlbumDisplay from '@pages/explorer/displayAlternatives/album/albumDisplay.tsx';
 
 function getLoadingComponent(id: ExplorerLoading) {
   switch (id) {
@@ -27,6 +28,8 @@ function getLoadingComponent(id: ExplorerLoading) {
 
 function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
   switch (id) {
+    case ExplorerDisplay.Album:
+      return <AlbumDisplay />;
     case ExplorerDisplay.DynamicGrid:
       return <FileGrid dynamic details={details} />;
     case ExplorerDisplay.StaticGrid:
@@ -48,18 +51,26 @@ export type ViewSettings = {
   noDisplay?: boolean;
 };
 
+export type OverwriteDisplay = {
+  displayMode?: ExplorerDisplay;
+  details?: DetailType;
+  gridSize?: number;
+};
+
 export default function ExplorerDataDisplay({
   isLoading,
   files,
   folders,
   shareUuid,
   viewSettings,
+  overwriteDisplay,
 }: {
   isLoading: boolean;
   files: FileModel[];
   folders: FolderModel[];
   shareUuid?: string;
   viewSettings?: ViewSettings;
+  overwriteDisplay?: OverwriteDisplay;
 }) {
   const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
@@ -86,17 +97,24 @@ export default function ExplorerDataDisplay({
   if (isLoading || prevSort !== sort)
     return getLoadingComponent(preferences.loading.type);
 
-  const displayMode = viewSettings?.binView
-    ? ExplorerDisplay.Table
-    : displayType.type;
+  const displayMode = () => {
+    if (overwriteDisplay?.displayMode) {
+      return overwriteDisplay.displayMode;
+    } else if (viewSettings?.binView) {
+      return ExplorerDisplay.Table;
+    } else {
+      return displayType.type;
+    }
+  };
 
   return (
     <ExplorerDisplayWrapper
       shareUuid={shareUuid}
       files={files}
       folders={folders}
-      viewSettings={viewSettings}>
-      {getDisplayComponent(displayMode, displayType.details)}
+      viewSettings={viewSettings}
+      overwriteDisplay={overwriteDisplay}>
+      {getDisplayComponent(displayMode(), displayType.details)}
     </ExplorerDisplayWrapper>
   );
 }

@@ -67,8 +67,9 @@ export default function GridFileItem({
 
   const handleClick = () => {
     if (disabled) return;
-    if (isControl) onSelect?.(file.id);
-    else if (isShift) context.select.setRange(index);
+    if (isControl && !context.viewSettings?.noSelect) onSelect?.(file.id);
+    else if (isShift && !context.viewSettings?.noSelect)
+      context.select.setRange(index);
     else if (!context.viewSettings?.noDisplay) selectFile(fileIndex);
   };
 

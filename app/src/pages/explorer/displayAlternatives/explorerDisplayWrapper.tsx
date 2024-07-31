@@ -13,7 +13,10 @@ import ContextMenu, {
 } from '@components/contextMenu/contextMenu.tsx';
 import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
 import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
-import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import {
+  OverwriteDisplay,
+  ViewSettings,
+} from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export type Vec2 = { x: number; y: number };
 
@@ -23,12 +26,14 @@ export function ExplorerDisplayWrapper({
   children,
   shareUuid,
   viewSettings,
+  overwriteDisplay,
 }: {
   files: FileModel[];
   folders: FolderModel[];
   children: ReactNode;
   shareUuid?: string;
   viewSettings?: ViewSettings;
+  overwriteDisplay?: OverwriteDisplay;
 }) {
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const [dragged, setDragged] = useState<
@@ -96,6 +101,7 @@ export function ExplorerDisplayWrapper({
     <DisplayContext.Provider
       value={{
         viewSettings,
+        overwriteDisplay,
         handleContext,
         files,
         folders,

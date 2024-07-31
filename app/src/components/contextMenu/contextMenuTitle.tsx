@@ -1,5 +1,4 @@
 import { ContextOperationType } from '@models/file.ts';
-import { Tooltip } from '@nextui-org/react';
 import tw from '@utils/classMerge.ts';
 import {
   DocumentIcon,
@@ -30,16 +29,15 @@ export function ContextMenuTitle({
       className={
         'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
       }>
-      <Tooltip content={title}>
-        <span
-          className={tw(
-            'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
-            '[&_>svg]:h-4 [&_>svg]:min-w-4',
-          )}>
-          {renderIcon()}
-          {title}
-        </span>
-      </Tooltip>
+      <span
+        title={title}
+        className={tw(
+          'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
+          '[&_>svg]:h-4 [&_>svg]:min-w-4',
+        )}>
+        {renderIcon()}
+        {title}
+      </span>
     </div>
   );
 }

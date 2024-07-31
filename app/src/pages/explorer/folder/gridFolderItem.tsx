@@ -78,8 +78,9 @@ export default function GridFolderItem({
       className={'group w-full cursor-pointer'}>
       <motion.div
         onClick={() => {
-          if (isControl) onSelect(folder.id);
-          else if (isShift) context.select.setRange(index);
+          if (isControl && !context.viewSettings?.noSelect) onSelect(folder.id);
+          else if (isShift && !context.viewSettings?.noSelect)
+            context.select.setRange(index);
           else handleFolderClick();
         }}
         drag={!context.viewSettings?.limitedView && !isTouchDevice()}

@@ -6,10 +6,13 @@ export enum ExplorerDisplay {
   Table,
   StaticGrid,
   DynamicGrid,
+  Album,
 }
 
 export function getExplorerDisplay(type: ExplorerDisplay) {
   switch (type) {
+    case ExplorerDisplay.Album:
+      return 'Album';
     case ExplorerDisplay.Table:
       return 'Table';
     case ExplorerDisplay.StaticGrid:

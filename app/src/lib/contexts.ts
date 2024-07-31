@@ -3,10 +3,14 @@ import { ContextData } from '@hooks/useContextMenu.ts';
 import { FolderModel } from '@models/folder.ts';
 import { DataOperationType, FileModel } from '@models/file.ts';
 import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper';
-import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import {
+  OverwriteDisplay,
+  ViewSettings,
+} from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 
 export type DisplayContextType = {
   viewSettings?: ViewSettings;
+  overwriteDisplay?: OverwriteDisplay;
   handleContext: (pos: Vec2, data?: ContextData) => void;
   files: FileModel[];
   folders: FolderModel[];
