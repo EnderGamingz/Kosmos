@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE albums SET preview_id = $1 WHERE user_id = $2 AND id = $3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "879b348fd03c72541b5ec1e7121f9d6a8c36215034556ae9a4ca4f11c01e8039"
+}

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM files WHERE user_id = $1\n             AND file_type = $2\n             AND deleted_at IS NULL\n             ORDER BY file_name ASC\n             LIMIT $3 OFFSET $4",
+  "query": "SELECT * FROM files WHERE user_id = $1\n             AND file_type = ANY($2)\n             AND deleted_at IS NULL\n             ORDER BY file_name ASC\n             LIMIT $3 OFFSET $4",
   "describe": {
     "columns": [
       {
@@ -72,7 +72,7 @@
     "parameters": {
       "Left": [
         "Int8",
-        "Int2",
+        "Int2Array",
         "Int8",
         "Int8"
       ]
@@ -93,5 +93,5 @@
       false
     ]
   },
-  "hash": "3404b5b63e8d09031a79e271fa1f6e9768b35b00a62acd8d2f84e374b11d1d16"
+  "hash": "bca8925a82ef01b9fe1d8263844b555d71ac48261c3c300f5b6b0b21f9386f6b"
 }

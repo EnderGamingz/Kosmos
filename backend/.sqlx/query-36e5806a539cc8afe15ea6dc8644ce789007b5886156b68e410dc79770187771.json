@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM files_on_album WHERE album_id = $1 AND file_id = ANY($2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "36e5806a539cc8afe15ea6dc8644ce789007b5886156b68e410dc79770187771"
+}

@@ -23,12 +23,12 @@ export function AlbumItem({ album }: { album: AlbumModel }) {
 
   return (
     <li className={'flex items-center justify-between'}>
-      <div onClick={handleClick} className={'w-full text-lg font-medium'}>
+      <div onClick={handleClick} className={'w-full text-xl text-stone-700'}>
         <AlbumCover album={album} loading={loading} />
-        <div className={'flex'}>
+        <div className={'flex flex-col'}>
           <motion.p
             title={album.name}
-            className={'truncate'}
+            className={'truncate font-medium'}
             layout={'preserve-aspect'}
             layoutId={`album-name-${album.id}`}>
             {album.name}
