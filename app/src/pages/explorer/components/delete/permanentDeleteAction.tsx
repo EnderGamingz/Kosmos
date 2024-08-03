@@ -33,6 +33,7 @@ export function PermanentDeleteAction({
         title: `Deleting ${deleteData.type}`,
         loading: true,
         severity: Severity.INFO,
+        canDismiss: false,
       });
 
       await axios
@@ -42,6 +43,7 @@ export function PermanentDeleteAction({
             severity: Severity.SUCCESS,
             status: 'Deleted',
             timeout: 1000,
+            canDismiss: true,
           });
 
           invalidateData(deleteData.type).then();
@@ -52,7 +54,7 @@ export function PermanentDeleteAction({
             severity: Severity.ERROR,
             status: 'Error',
             description: err.response?.data?.error || 'Error',
-            timeout: 2000,
+            canDismiss: true,
           });
         });
     },
@@ -94,6 +96,7 @@ export function MultiPermanentDelete({
         title: `Deleting data`,
         loading: true,
         severity: Severity.INFO,
+        canDismiss: false,
       });
 
       await axios
@@ -108,6 +111,7 @@ export function MultiPermanentDelete({
             severity: Severity.SUCCESS,
             status: 'Deleted',
             timeout: 1000,
+            canDismiss: true,
           });
 
           if (deleteData.files.length) invalidateFiles().then();
@@ -120,7 +124,7 @@ export function MultiPermanentDelete({
           notification.updateNotification(deleteId, {
             severity: Severity.ERROR,
             description: err.response?.data?.error || 'Error',
-            timeout: 2000,
+            canDismiss: true,
           });
         });
     },

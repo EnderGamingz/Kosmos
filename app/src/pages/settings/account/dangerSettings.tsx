@@ -42,7 +42,6 @@ function DeleteAccount() {
             severity: Severity.ERROR,
             status: 'Failed',
             description: e.response?.data?.error || 'Error',
-            timeout: 4000,
             canDismiss: true,
           });
           setPassword('');

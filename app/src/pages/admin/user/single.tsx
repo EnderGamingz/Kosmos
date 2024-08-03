@@ -73,7 +73,6 @@ function AdminDeleteUser({ user }: { user: UserModel }) {
             status: 'Error',
             description:
               err.response?.data?.error || err.response?.data || 'Error',
-            timeout: 2000,
             canDismiss: true,
           });
         });

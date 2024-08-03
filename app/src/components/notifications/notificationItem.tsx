@@ -62,10 +62,10 @@ export function NotificationItem({
       transition={{ duration: 0.2 }}
       className={tw(
         'relative w-full cursor-grab overflow-hidden shadow-sm transition-colors',
-        'rounded-lg bg-stone-600/60 text-stone-50 shadow-[0_0_5px_-2px_#000000A0] backdrop-blur-2xl',
+        'rounded-md bg-stone-700 text-stone-50 shadow-[0_0_5px_-2px_#000000A0]',
         index === 0 || expanded ? 'text-stone-50' : 'text-stone-50/20',
       )}>
-      <div className={'flex items-center gap-1 px-2 py-2'}>
+      <div className={'flex gap-1 px-2 py-2'}>
         <div className={'mr-1 flex h-7 w-7'}>
           {getSeverityIcon(data.severity)}
         </div>
@@ -87,7 +87,7 @@ export function NotificationItem({
               update(data.id, { popup: false });
             }}
             className={
-              'ml-auto cursor-pointer rounded-full p-1 transition-colors hover:bg-slate-300/50'
+              'ml-auto cursor-pointer self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
             }>
             <XMarkIcon className={'h-5 w-5'} />
           </div>
