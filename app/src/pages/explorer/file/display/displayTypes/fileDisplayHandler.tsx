@@ -12,7 +12,7 @@ import { ReactNode, useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
 import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
-import { createServeUrl, createPreviewUrl } from '@lib/file.ts';
+import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
 
 export function FileTypeDisplay({
   id,
@@ -32,7 +32,6 @@ export function FileTypeDisplay({
   const shouldShowChildren = Boolean(children && !loading);
   return (
     <motion.div
-      layoutId={`type-display-${id}`}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5 }}

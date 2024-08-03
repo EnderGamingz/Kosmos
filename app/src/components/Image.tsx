@@ -35,7 +35,7 @@ export function PreviewImage({
 
   return (
     <motion.div
-      layoutId={`image-${id}`}
+      /*layoutId={`image-${id}`}*/
       className={tw(
         'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
         'shadow-inherit',

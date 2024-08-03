@@ -104,18 +104,15 @@ function FileDisplayContent({
             />
           </div>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: [0, 0] }}
-            transition={{
-              duration: 0.3,
-              ease: 'easeInOut',
-            }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: [0, 0], scale: 0.5, pointerEvents: 'none' }}
+            transition={{ duration: 0.2 }}
             className={tw(
               'relative shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
               'z-10 flex w-full flex-col space-y-5 transition-all',
               'whitespace-nowrap rounded-xl bg-gray-50 p-3 md:p-6',
-              'outline outline-2 -outline-offset-2 outline-transparent max-sm:h-1/2',
+              'max-sm:min-h-1/2 outline outline-2 -outline-offset-2 outline-transparent',
               isSelected && '-outline-offset-4 outline-blue-500',
             )}>
             <DisplayHeader

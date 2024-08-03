@@ -11,11 +11,6 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
-
-import {
-  itemTransitionVariant,
-  transitionStop,
-} from '@components/defaults/transition.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -70,12 +65,14 @@ export function TableFileItem({
   file,
   selected,
   onSelect,
+  outerDisabled,
 }: {
   i: number;
   fileIndex: number;
   file: FileModel;
   selected: string[];
   onSelect: (id: string) => void;
+  outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
@@ -110,10 +107,8 @@ export function TableFileItem({
   );
 
   return (
-    <motion.tr
+    <tr
       id={file.id}
-      layout
-      variants={i < transitionStop ? itemTransitionVariant : undefined}
       onClick={() => {
         if (isControl) onSelect(file.id);
         if (isShift) context.select.setRange(i);
@@ -129,7 +124,7 @@ export function TableFileItem({
         context.select.rangeStart === i && 'bg-indigo-50',
       )}>
       {!context.viewSettings?.noSelect && (
-        <motion.th layoutId={`check-${file.id}`}>
+        <motion.th /*layoutId={`check-${file.id}`}*/>
           <Checkbox
             isSelected={isSelected}
             onValueChange={() => onSelect(file.id)}
@@ -143,6 +138,7 @@ export function TableFileItem({
         )}>
         <motion.div
           drag={
+            !outerDisabled &&
             !context.viewSettings?.limitedView &&
             !isTouchDevice() &&
             !context.shareUuid
@@ -183,7 +179,6 @@ export function TableFileItem({
           />
           <motion.p
             exit={{ opacity: 0 }}
-            layoutId={`title-${file.id}`}
             className={
               'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
             }>
@@ -208,11 +203,13 @@ export function TableFileItem({
           </button>
         )}
       </td>
-      <motion.td layoutId={`size-${file.id}`} align={'right'}>
+      <motion.td
+        /*layoutId={`size-${file.id}`}*/
+        align={'right'}>
         {useFormatBytes(file.file_size)}
       </motion.td>
       <motion.td
-        layoutId={`updated-${file.id}`}
+        /*layoutId={`updated-${file.id}`}*/
         align={'right'}
         className={'whitespace-nowrap text-sm font-light'}>
         {formatDistanceToNow(file.updated_at)}
@@ -222,6 +219,6 @@ export function TableFileItem({
           <TableFileItemBinActions id={file.id} />
         </td>
       )}
-    </motion.tr>
+    </tr>
   );
 }

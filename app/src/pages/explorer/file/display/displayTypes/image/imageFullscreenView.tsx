@@ -73,7 +73,7 @@ export function ImageFullscreenToggle({
       className={tw(
         'absolute top-3 z-[110] rounded-full bg-gray-50/40 p-2 backdrop-blur-sm',
         '[&>svg]:h-5 [&>svg]:w-5',
-        isFullscreen || noOffset ? 'right-3' : 'right-8',
+        isFullscreen || noOffset ? 'right-3' : 'right-3 md:right-8',
       )}>
       {isFullscreen ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
     </motion.div>

@@ -5,10 +5,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
-import {
-  itemTransitionVariant,
-  transitionStop,
-} from '@components/defaults/transition.ts';
 import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import tw from '@utils/classMerge.ts';
@@ -30,6 +26,7 @@ export default function GridFileItem({
   onSelect,
   dynamic,
   details,
+  outerDisabled,
 }: {
   index: number;
   fileIndex: number;
@@ -38,6 +35,7 @@ export default function GridFileItem({
   onSelect?: (id: string) => void;
   dynamic?: boolean;
   details: DetailType;
+  outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
@@ -85,16 +83,14 @@ export default function GridFileItem({
 
   const formattedSize = useFormatBytes(file.file_size);
   return (
-    <motion.div
+    <div
       id={file.id}
-      layout
-      variants={index < transitionStop ? itemTransitionVariant : undefined}
       onContextMenu={e => {
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={tw(
-        'group relative rounded-lg outline outline-2 outline-offset-2',
+        'group relative rounded-lg outline outline-2 ',
         'outline-transparent transition-[outline-color]',
         Boolean(isSelected) && 'bg-indigo-100/50 outline-indigo-300',
         isShift && 'cursor-pointer',
@@ -102,6 +98,7 @@ export default function GridFileItem({
       )}>
       <motion.div
         drag={
+          !outerDisabled &&
           !context.viewSettings?.limitedView &&
           !isTouchDevice() &&
           !context.shareUuid
@@ -123,19 +120,17 @@ export default function GridFileItem({
           setDestination();
           setDisabled(false);
         }}>
-        <motion.div
+        <div
           className={tw(
             'absolute z-30 flex items-start gap-2 px-2 py-1.5',
             '[&>button>svg]:w-5 [&>button]:-mt-0.5 [&>button]:p-0',
             'left-1.5 top-1.5 h-20 overflow-hidden rounded-t-lg',
             isDefaultDisplay &&
-              'gap-3 pl-1.5 pt-2.5 [&>button>svg]:w-6  [&>button]:-mt-1',
+              'gap-3 pl-1.5 pt-2.5 [&>button>svg]:w-6 [&>button]:-mt-1',
             isHidden && 'left-0 top-0',
           )}>
           {!context.viewSettings?.noSelect && onSelect && (
-            <motion.div
-              className={'-mt-1 h-4 w-4'}
-              layoutId={`check-${file.id}`}>
+            <div className={'-mt-1 h-4 w-4'}>
               <Checkbox
                 className={'h-4 w-4'}
                 isSelected={isSelected}
@@ -143,7 +138,7 @@ export default function GridFileItem({
                 classNames={{ wrapper: 'backdrop-blur-md' }}
                 size={isDefaultDisplay ? 'md' : 'sm'}
               />
-            </motion.div>
+            </div>
           )}
           <Favorite
             id={file.id}
@@ -152,7 +147,7 @@ export default function GridFileItem({
             iconOnly
             white
           />
-        </motion.div>
+        </div>
         <div
           onClick={handleClick}
           className={tw(
@@ -183,37 +178,23 @@ export default function GridFileItem({
           )}
           <AnimatePresence>
             {!isHidden && (
-              <motion.div
+              <div
                 key={`size-${file.id}`}
-                layoutId={`size-${file.id}`}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.3 }}
                 className={
                   'absolute right-1.5 top-1.5 z-30 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs'
                 }>
                 <p>{formattedSize}</p>
-              </motion.div>
+              </div>
             )}
             {isCompact && (
-              <motion.div
-                layoutId={`compact-${file.id}`}
+              <div
                 key={`compact-${file.id}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
                 className={tw(
                   'absolute inset-0 z-20 flex rounded-lg !px-1.5 !py-1',
                   'bg-gradient-to-t from-stone-800/70 to-stone-800/0',
                 )}>
-                <motion.p
+                <p
                   onClick={handleClick}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  layoutId={`title-${file.id}`}
                   key={`title-${file.id}`}
                   className={tw(
                     'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
@@ -221,31 +202,26 @@ export default function GridFileItem({
                     !isCompact && 'lg:text-base',
                   )}>
                   {file.file_name}
-                </motion.p>
-              </motion.div>
+                </p>
+              </div>
             )}
           </AnimatePresence>
         </div>
         <AnimatePresence>
           {isDefaultDisplay && (
-            <motion.div
-              animate={{ opacity: 1, height: 'auto', padding: '0.375rem' }}
-              exit={{ opacity: 0, height: 0, padding: 0 }}
-              transition={{ duration: 0.3 }}>
+            <div className={'px-2 py-1'}>
               <div className={'flex items-center'}>
-                <motion.p
+                <p
                   onClick={handleClick}
-                  exit={{ opacity: 0 }}
-                  layoutId={`title-${file.id}`}
                   className={tw(
                     'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                     'text-sm',
                     !isCompact && 'lg:text-base',
                   )}>
                   {file.file_name}
-                </motion.p>
+                </p>
                 {!context.viewSettings?.scrollControlMissing && (
-                  <motion.button
+                  <button
                     onClick={e => {
                       context.handleContext(
                         { x: e.clientX, y: e.clientY },
@@ -256,26 +232,21 @@ export default function GridFileItem({
                     <EllipsisVerticalIcon
                       className={'h-6 w-6 text-stone-700'}
                     />
-                  </motion.button>
+                  </button>
                 )}
               </div>
-              <motion.p
+              <p
                 key={`updated-${file.updated_at}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                layoutId={`updated-${file.id}`}
                 className={
                   'whitespace-nowrap text-xs font-light text-stone-500'
                 }>
                 <ClockIcon className={'inline h-3.5 w-3.5'} />{' '}
                 {formatDistanceToNow(file.updated_at)} ago
-              </motion.p>
-            </motion.div>
+              </p>
+            </div>
           )}
         </AnimatePresence>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }

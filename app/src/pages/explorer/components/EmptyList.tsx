@@ -21,9 +21,11 @@ export default function EmptyList({
     <ConditionalWrapper
       condition={table}
       wrapper={c => (
-        <tr>
-          <td colSpan={5}>{c}</td>
-        </tr>
+        <tfoot>
+          <tr>
+            <td colSpan={5}>{c}</td>
+          </tr>
+        </tfoot>
       )}>
       <motion.div
         initial={{ y: -10, opacity: 0 }}

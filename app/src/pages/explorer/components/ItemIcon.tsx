@@ -67,7 +67,7 @@ export default function ItemIcon({
 }) {
   return (
     <motion.div
-      layoutId={`type-${id}`}
+      /*layoutId={`type-${id}`}*/
       className={tw(
         'icon-container pointer-events-none',
         'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',

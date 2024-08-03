@@ -1,6 +1,6 @@
 import { DataOperationType, FileModel, Selected } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -17,6 +17,7 @@ import {
   OverwriteDisplay,
   ViewSettings,
 } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import { useShallow } from 'zustand/react/shallow';
 
 export type Vec2 = { x: number; y: number };
 
@@ -39,7 +40,7 @@ export function ExplorerDisplayWrapper({
   const [dragged, setDragged] = useState<
     undefined | { type: DataOperationType; id: string }
   >(undefined);
-  const selectedFileIndex = useExplorerStore(s => s.current.selectedFileIndex);
+  const displayRef = useRef<HTMLDivElement>(null);
 
   const {
     selectedFolders,
@@ -47,7 +48,19 @@ export function ExplorerDisplayWrapper({
     selectFile,
     selectFolder,
     selectNone,
-  } = useExplorerStore(s => s.selectedResources);
+    selectedFileIndex,
+    setDisplayHeight,
+  } = useExplorerStore(
+    useShallow(s => ({
+      selectedFolders: s.selectedResources.selectedFolders,
+      selectedFiles: s.selectedResources.selectedFiles,
+      selectFile: s.selectedResources.selectFile,
+      selectFolder: s.selectedResources.selectFolder,
+      selectNone: s.selectedResources.selectNone,
+      selectedFileIndex: s.current.selectedFileIndex,
+      setDisplayHeight: s.display.setHeight,
+    })),
+  );
 
   const isNoneSelected = !selectedFiles.length && !selectedFolders.length;
   const isAllSelected =
@@ -97,6 +110,19 @@ export function ExplorerDisplayWrapper({
     setDragged({ type, id });
   };
 
+  useEffect(() => {
+    const handleHeight = () => {
+      if (displayRef.current) {
+        setDisplayHeight(displayRef.current.clientHeight);
+      }
+    };
+    handleHeight();
+    window.addEventListener('resize', handleHeight);
+    return () => {
+      window.removeEventListener('resize', handleHeight);
+    };
+  }, [setDisplayHeight, displayRef]);
+
   return (
     <DisplayContext.Provider
       value={{
@@ -121,7 +147,10 @@ export function ExplorerDisplayWrapper({
           handleClick={handleContext}
         />
       )}
-      <div id={'display'} className={'h-full flex-grow overflow-x-auto'}>
+      <div
+        ref={displayRef}
+        id={'display'}
+        className={'h-full flex-grow overflow-x-auto'}>
         {children}
       </div>
       <FileDisplay

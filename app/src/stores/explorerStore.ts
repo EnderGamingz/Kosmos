@@ -30,6 +30,10 @@ export type ExplorerState = {
     destination?: string;
     setDestination: (destination?: string) => void;
   };
+  display: {
+    height: number;
+    setHeight: (height: number) => void;
+  };
 };
 
 export const useExplorerStore = create<ExplorerState>(set => ({
@@ -132,6 +136,17 @@ export const useExplorerStore = create<ExplorerState>(set => ({
           selectedFolders: prev.selectedResources.selectedFolders.filter(
             x => !ids.includes(x),
           ),
+        },
+      }));
+    },
+  },
+  display: {
+    height: 0,
+    setHeight: (height: number) => {
+      set(prev => ({
+        display: {
+          ...prev.display,
+          height,
         },
       }));
     },

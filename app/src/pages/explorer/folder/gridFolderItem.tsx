@@ -23,11 +23,13 @@ export default function GridFolderItem({
   folder,
   selected,
   onSelect,
+  outerDisabled,
 }: {
   index: number;
   folder: FolderModel;
   selected: string[];
   onSelect: (id: string) => void;
+  outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
@@ -83,7 +85,11 @@ export default function GridFolderItem({
             context.select.setRange(index);
           else handleFolderClick();
         }}
-        drag={!context.viewSettings?.limitedView && !isTouchDevice()}
+        drag={
+          !outerDisabled &&
+          !context.viewSettings?.limitedView &&
+          !isTouchDevice()
+        }
         dragSnapToOrigin
         whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
         onDragStart={() => {
@@ -145,7 +151,7 @@ export default function GridFolderItem({
         <div className={'flex flex-grow items-center'}>
           <span
             className={
-              'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap'
+              'flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap max-md:min-w-12 md:w-0'
             }>
             {folder.folder_name}
           </span>

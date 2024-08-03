@@ -6,11 +6,6 @@ import tw from '@utils/classMerge.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { motion } from 'framer-motion';
-
-import {
-  itemTransitionVariant,
-  transitionStop,
-} from '@components/defaults/transition.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -26,11 +21,13 @@ export function TableFolderItem({
   folder,
   selected,
   onSelect,
+  outerDisabled,
 }: {
   i: number;
   folder: FolderModel;
   selected: string[];
   onSelect: (id: string) => void;
+  outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
@@ -69,9 +66,7 @@ export function TableFolderItem({
   };
 
   return (
-    <motion.tr
-      layout
-      variants={i < transitionStop ? itemTransitionVariant : undefined}
+    <tr
       onClick={() => {
         if (isControl) onSelect(folder.id);
         if (isShift) context.select.setRange(i);
@@ -99,7 +94,11 @@ export function TableFolderItem({
         <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
-            drag={!context.viewSettings?.limitedView && !isTouchDevice()}
+            drag={
+              !outerDisabled &&
+              !context.viewSettings?.limitedView &&
+              !isTouchDevice()
+            }
             dragSnapToOrigin
             whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
             onDragStart={() => {
@@ -157,6 +156,6 @@ export function TableFolderItem({
       <td align={'right'} className={'whitespace-nowrap text-sm font-light'}>
         {formatDistanceToNow(folder.updated_at)}
       </td>
-    </motion.tr>
+    </tr>
   );
 }

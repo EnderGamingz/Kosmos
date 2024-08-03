@@ -1,9 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { motion, useScroll, useSpring } from 'framer-motion';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
@@ -53,27 +52,12 @@ export default function FileList() {
 
   const isLoading = files.isLoading || folders.isLoading;
 
-  const container = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ container });
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
   return (
     <div
-      ref={container}
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
-      <motion.div
-        className={
-          'sticky top-0 z-20 min-h-0.5 w-full origin-[0%] bg-stone-500'
-        }
-        style={{ scaleX }}
-      />
-      <div className={'flex items-center pl-3 md:pl-0'}>
+      <div className={'flex items-center pl-3 shadow-sm md:pl-0'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />
