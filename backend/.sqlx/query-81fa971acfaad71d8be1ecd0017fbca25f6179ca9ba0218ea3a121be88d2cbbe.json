@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO shares\n            (id, user_id, share_type, file_id, access_limit, password, expires_at)\n            VALUES\n            ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING *",
+  "query": "INSERT INTO shares\n            (id, user_id, share_type, album_id, access_limit, password, expires_at)\n            VALUES\n            ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING *",
   "describe": {
     "columns": [
       {
@@ -108,5 +108,5 @@
       true
     ]
   },
-  "hash": "59c7bb4cb4b323f2881988ba302fd6e6857ce39cf7f10f33d8f1fcc3558f045f"
+  "hash": "81fa971acfaad71d8be1ecd0017fbca25f6179ca9ba0218ea3a121be88d2cbbe"
 }

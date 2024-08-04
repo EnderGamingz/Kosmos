@@ -72,6 +72,11 @@
         "ordinal": 13,
         "name": "updated_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 14,
+        "name": "album_id",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -94,7 +99,8 @@
       true,
       false,
       true,
-      false
+      false,
+      true
     ]
   },
   "hash": "7c5fbf1c801ccace583ae1f79619d5f7a26b5b2359fd67e6b8ceb4d25f049da7"

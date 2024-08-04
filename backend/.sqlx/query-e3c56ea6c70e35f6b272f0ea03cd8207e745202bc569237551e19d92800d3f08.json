@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO shares\n            (id, user_id, share_type, file_id, access_limit, password, expires_at)\n            VALUES\n            ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING *",
+  "query": "SELECT * FROM shares WHERE share_target = $1\n            AND album_id = $2\n            AND user_id = $3\n            AND share_type = $4",
   "describe": {
     "columns": [
       {
@@ -83,11 +83,8 @@
       "Left": [
         "Int8",
         "Int8",
-        "Int2",
         "Int8",
-        "Int4",
-        "Text",
-        "Timestamptz"
+        "Int2"
       ]
     },
     "nullable": [
@@ -108,5 +105,5 @@
       true
     ]
   },
-  "hash": "59c7bb4cb4b323f2881988ba302fd6e6857ce39cf7f10f33d8f1fcc3558f045f"
+  "hash": "e3c56ea6c70e35f6b272f0ea03cd8207e745202bc569237551e19d92800d3f08"
 }

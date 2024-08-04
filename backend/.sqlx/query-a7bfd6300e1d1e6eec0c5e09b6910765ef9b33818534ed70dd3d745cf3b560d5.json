@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM shares WHERE share_target = $1\n            AND user_id = $2\n            AND share_type = $3",
+  "query": "SELECT * FROM shares WHERE share_target = $1\n            AND file_id = $2\n            AND user_id = $3\n            AND share_type = $4",
   "describe": {
     "columns": [
       {
@@ -72,10 +72,16 @@
         "ordinal": 13,
         "name": "updated_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 14,
+        "name": "album_id",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
       "Left": [
+        "Int8",
         "Int8",
         "Int8",
         "Int2"
@@ -95,8 +101,9 @@
       true,
       false,
       true,
-      false
+      false,
+      true
     ]
   },
-  "hash": "3b7d5d0d3b2db96969e20ccff341f90814ec6911658b19b8d700d34a90f65d15"
+  "hash": "a7bfd6300e1d1e6eec0c5e09b6910765ef9b33818534ed70dd3d745cf3b560d5"
 }
