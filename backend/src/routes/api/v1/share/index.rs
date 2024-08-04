@@ -274,7 +274,7 @@ pub async fn is_allowed_to_access_share(
         match logged_in_user {
             None => Err(AppError::NotLoggedIn)?,
             Some(user) => {
-                if user.id != target {
+                if user.id != target && user.id != share.user_id {
                     Err(AppError::NotAllowed {
                         error: "Not allowed".to_string(),
                     })?;
