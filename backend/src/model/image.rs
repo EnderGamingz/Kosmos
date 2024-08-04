@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
+use crate::response::error_handling::AppError;
 
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum ImageFormat {
     Thumbnail = 0,
 }
@@ -13,11 +14,15 @@ pub const IMAGE_FORMATS: [ImageFormat; 1] = [
 ];
 
 impl ImageFormat {
-    pub fn format_by_id(num: i16) -> ImageFormat {
+    pub fn format_by_id_unsafe(num: i16) -> ImageFormat {
         match num {
             _ => ImageFormat::Thumbnail,
         }
     }
+    pub fn format_by_id_save(num: i16) -> Result<ImageFormat, AppError> {
+        Ok(Self::format_by_id_unsafe(num))
+    }
+
 
     pub fn id_by_format(num: ImageFormat) -> i16 {
         match num {
@@ -25,8 +30,8 @@ impl ImageFormat {
         }
     }
 
-    pub fn width_by_format(num: ImageFormat) -> u32 {
-        match num {
+    pub fn width_by_format(&self, num: ImageFormat) -> u32 {
+        match self {
             ImageFormat::Thumbnail => 256,
         }
     }
