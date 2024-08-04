@@ -5,9 +5,11 @@ import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
 export default function AlbumCover({
   album,
   loading,
+  shareUuid,
 }: {
   album: AlbumModel;
   loading?: boolean;
+  shareUuid?: string;
 }) {
   return (
     <motion.div
@@ -23,14 +25,32 @@ export default function AlbumCover({
           <div className={'app-loading-indicator !h-10 !w-10'} />
         </div>
       )}
-      {album.preview_id && <AlbumCoverImage album={album} />}
+      {album.preview_id && (
+        <AlbumCoverImage album={album} shareUuid={shareUuid} />
+      )}
     </motion.div>
   );
 }
 
-function AlbumCoverImage({ album }: { album: AlbumModel }) {
-  const previewUrl = createPreviewUrl(undefined, false, album.preview_id);
-  const serveUrl = createServeUrl(undefined, false, album.preview_id);
+function AlbumCoverImage({
+  album,
+  shareUuid,
+}: {
+  album: AlbumModel;
+  shareUuid?: string;
+}) {
+  const previewUrl = createPreviewUrl(
+    shareUuid,
+    false,
+    album.preview_id,
+    !!shareUuid,
+  );
+  const serveUrl = createServeUrl(
+    shareUuid,
+    false,
+    album.preview_id,
+    !!shareUuid,
+  );
   return (
     <img
       className={

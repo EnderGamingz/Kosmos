@@ -4,9 +4,9 @@ import { BASE_URL, IS_DEVELOPMENT } from './env.ts';
 import { FolderResponse, FolderShareResponse } from '@models/folder.ts';
 import {
   ContextOperationType,
-  DataOperationType,
   FileModel,
   ShareFileModel,
+  ShareOperationType,
 } from '@models/file.ts';
 import { OperationModel } from '@models/operation.ts';
 import {
@@ -22,6 +22,7 @@ import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 import { SearchResponse } from '@models/search.ts';
 import { FavoritesResponse } from '@models/favorites.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import { AlbumShareResponse } from '@models/album.ts';
 
 export const queryClient = new QueryClient();
 
@@ -259,7 +260,7 @@ export const useSharedItems = (forUser?: boolean) => {
   });
 };
 
-export const useUserShareData = (id: string, type: DataOperationType) => {
+export const useUserShareData = (id: string, type: ShareOperationType) => {
   return useQuery({
     queryFn: () =>
       axios
@@ -275,6 +276,18 @@ export const useAccessShareFile = (uuid: string) => {
       axios
         .get(`${BASE_URL}s/file/${uuid}`)
         .then(res => res.data as ShareFileModel),
+    queryKey: ['share-access', uuid],
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+};
+
+export const useAccessAlbumShare = (uuid: string) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}s/album/${uuid}`)
+        .then(res => res.data as AlbumShareResponse),
     queryKey: ['share-access', uuid],
     refetchOnWindowFocus: false,
     retry: false,

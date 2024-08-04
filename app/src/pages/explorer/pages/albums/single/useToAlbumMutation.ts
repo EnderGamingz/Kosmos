@@ -43,6 +43,7 @@ export const useToAlbumMutation = (albumId?: string) => {
 
       Promise.all(actions)
         .then(() => {
+          AlbumQuery.invalidateAvailableAlbums().then();
           AlbumQuery.invalidateAlbum(id!).then();
           notifications.updateNotification(updateId, {
             severity: Severity.SUCCESS,

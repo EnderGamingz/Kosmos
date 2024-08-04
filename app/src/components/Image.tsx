@@ -31,7 +31,12 @@ export function PreviewImage({
   const isProcessing = status === FilePreviewStatus.Processing;
   const isFailed = status === FilePreviewStatus.Failed;
 
-  const src = createPreviewUrl(context.shareUuid, !!context.shareUuid, id);
+  const src = createPreviewUrl(
+    context.shareUuid,
+    !!context.shareUuid,
+    id,
+    !!context.viewSettings?.album,
+  );
 
   return (
     <motion.div

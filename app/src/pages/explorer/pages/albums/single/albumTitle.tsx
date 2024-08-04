@@ -45,14 +45,17 @@ export function AlbumTitle({
   album,
   children,
   dense,
+  disabled,
 }: {
   album: AlbumModel;
   children?: ReactNode;
   dense?: boolean;
+  disabled?: boolean;
 }) {
   const update = useAlbumUpdateMutation();
 
   function handleAlbumUpdate(e: FormEvent<HTMLFormElement>) {
+    if (disabled) return;
     e.preventDefault();
     if (update.isPending) return;
     const formData = new FormData(e.currentTarget);
@@ -60,7 +63,8 @@ export function AlbumTitle({
     const description = formData.get('description') as string;
     if (!name) return;
 
-    if (name === album.name && description === album.description) return;
+    if (name === album.name && description === (album.description || ''))
+      return;
 
     update.mutate({
       id: album.id,
@@ -83,6 +87,7 @@ export function AlbumTitle({
           <motion.input
             layout={'position'}
             layoutId={`album-name-${album.id}`}
+            disabled={disabled}
             title={album.name}
             className={tw(
               'w-0 flex-grow truncate transition-[font-size]',
@@ -103,7 +108,8 @@ export function AlbumTitle({
           className={'bg-transparent font-light text-stone-500 outline-none'}
           defaultValue={album.description}
           title={album.description}
-          placeholder={'Album description'}
+          disabled={disabled}
+          placeholder={!disabled ? 'Album description' : ''}
           name={'description'}
           type={'text'}
         />

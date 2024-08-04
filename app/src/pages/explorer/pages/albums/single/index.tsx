@@ -15,6 +15,7 @@ import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlider.tsx';
 import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';
 import { AnimatePresence } from 'framer-motion';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -53,21 +54,37 @@ export default function AlbumPage() {
   );
 }
 
-function AlbumPageContent({
+export function AlbumPageContent({
   album,
   files,
   scrolling,
+  shareUuid,
 }: {
   album: AlbumModel;
   files: FileModel[];
   scrolling: boolean;
+  shareUuid?: string;
 }) {
   const [selected, setSelected] = useState<FileModel | undefined>(undefined);
   const [size, setSize] = useState(7);
   const fileIds = useMemo(() => files.map(file => file.id), [files]);
 
   return (
-    <>
+    <DisplayContext.Provider
+      value={{
+        shareUuid,
+        handleContext: () => {},
+        files,
+        folders: [],
+        select: {
+          rangeStart: 0,
+          setRange: () => {},
+        },
+        dragMove: {
+          setDrag: () => {},
+          resetDrag: () => {},
+        },
+      }}>
       <div className={'max-h-[200px] min-h-[200px]'} />
       <div
         className={
@@ -85,11 +102,12 @@ function AlbumPageContent({
             height: scrolling ? 100 : 200,
             width: scrolling ? 100 : 200,
           }}>
-          {/* TODO: ADD album cover */}
-          <AlbumCover album={album} />
+          <AlbumCover album={album} shareUuid={shareUuid} />
         </div>
-        <AlbumTitle album={album} dense={scrolling}>
-          <AlbumAddItems id={album.id} added={fileIds} small={scrolling} />
+        <AlbumTitle album={album} dense={scrolling} disabled={!!shareUuid}>
+          {!shareUuid && (
+            <AlbumAddItems id={album.id} added={fileIds} small={scrolling} />
+          )}
         </AlbumTitle>
         <div className={'ml-auto text-stone-800'}>
           <AlbumMenu album={album}>
@@ -113,6 +131,7 @@ function AlbumPageContent({
               },
             },
           }}
+          shareUuid={shareUuid}
           overwriteDisplay={{
             displayMode: ExplorerDisplay.Album,
             gridSize: size,
@@ -124,10 +143,11 @@ function AlbumPageContent({
           <AlbumFullscreen
             file={selected}
             onClose={() => setSelected(undefined)}
+            shareUuid={shareUuid}
           />
         )}
       </AnimatePresence>
-      {!files.length && (
+      {!files.length && !shareUuid && (
         <EmptyList
           grid
           message={'No files added yet'}
@@ -135,6 +155,6 @@ function AlbumPageContent({
           action={<AlbumAddItems id={album.id} added={fileIds} />}
         />
       )}
-    </>
+    </DisplayContext.Provider>
   );
 }

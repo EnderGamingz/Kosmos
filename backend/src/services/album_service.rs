@@ -1,10 +1,11 @@
-use crate::db::{KosmosDbResult, KosmosPool};
+use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
 use crate::model::album::AlbumModel;
 use crate::model::file::FileModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 use itertools::Itertools;
 use sonyflake::Sonyflake;
+use sqlx::{Execute, QueryBuilder};
 
 #[derive(Clone)]
 pub struct AlbumService {
@@ -17,23 +18,33 @@ impl AlbumService {
         AlbumService { db_pool, sf }
     }
 
+    fn get_album_query(album_id: i64, user_id: Option<UserId>) -> String {
+        let mut query: QueryBuilder<KosmosDb> =
+            QueryBuilder::new("SELECT * FROM albums WHERE id = ");
+        query.push_bind(album_id);
+
+        if user_id.is_some() {
+            query.push(" AND user_id = ");
+            query.push_bind(user_id);
+        }
+
+        query.build().sql().into()
+    }
+
     pub async fn get_album_by_id(
         &self,
-        user_id: UserId,
+        user_id: Option<UserId>,
         album_id: i64,
     ) -> Result<AlbumModel, AppError> {
-        let album = sqlx::query_as!(
-            AlbumModel,
-            "SELECT * FROM albums WHERE user_id = $1 AND id = $2",
-            user_id,
-            album_id
-        )
-        .fetch_optional(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting album {}: {}", album_id, e);
-            AppError::InternalError
-        })?;
+        let album = sqlx::query_as::<_, AlbumModel>(&*Self::get_album_query(album_id, user_id))
+            .bind(album_id)
+            .bind(user_id)
+            .fetch_optional(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting album {}: {}", album_id, e);
+                AppError::InternalError
+            })?;
         match album {
             Some(album) => Ok(album),
             None => Err(AppError::NotFound {
@@ -153,11 +164,7 @@ impl AlbumService {
         .execute(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!(
-                "Error removing images from album {}: {}",
-                album_id,
-                e
-            );
+            tracing::error!("Error removing images from album {}: {}", album_id, e);
             AppError::InternalError
         })
     }
@@ -227,11 +234,7 @@ impl AlbumService {
         })
     }
 
-    pub async fn is_file_in_album(
-        &self,
-        album_id: i64,
-        file_id: i64,
-    ) -> Result<bool, AppError> {
+    pub async fn is_file_in_album(&self, album_id: i64, file_id: i64) -> Result<bool, AppError> {
         let count = sqlx::query_scalar!(
             "SELECT COUNT(*) FROM files_on_album WHERE album_id = $1 AND file_id = $2",
             album_id,
@@ -240,7 +243,12 @@ impl AlbumService {
         .fetch_one(&self.db_pool)
         .await
         .map_err(|e| {
-            tracing::error!("Error checking if file {} is in album {}: {}", file_id, album_id, e);
+            tracing::error!(
+                "Error checking if file {} is in album {}: {}",
+                file_id,
+                album_id,
+                e
+            );
             AppError::InternalError
         })?;
         Ok(count > Some(0))

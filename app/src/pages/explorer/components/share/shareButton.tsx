@@ -1,4 +1,4 @@
-import { DataOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
 import tw from '@utils/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { ShareIcon } from '@heroicons/react/24/outline';
@@ -10,11 +10,13 @@ export default function ShareButton({
   type,
   iconOnly,
   onClose,
+  className,
 }: {
   id: string;
-  type: DataOperationType;
+  type: ShareOperationType;
   iconOnly?: boolean;
   onClose?: () => void;
+  className?: string;
 }) {
   const setShare = useExplorerStore(s => s.share.setShareElement);
   const context = useContext(DisplayContext);
@@ -22,7 +24,11 @@ export default function ShareButton({
 
   return (
     <button
-      className={tw('flex items-center gap-1', iconOnly ? 'p-2' : '')}
+      className={tw(
+        'flex items-center gap-1',
+        className || '',
+        iconOnly ? 'p-2' : '',
+      )}
       onClick={e => {
         e.stopPropagation();
         onClose?.();

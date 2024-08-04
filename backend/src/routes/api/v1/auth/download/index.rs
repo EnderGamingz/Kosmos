@@ -20,8 +20,8 @@ use crate::model::folder::Directory;
 use crate::model::share::ExtendedShareModel;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::share::{
-    get_share_access_for_folder_items, get_share_file, is_allowed_to_access_share,
-    AccessShareItemType,
+    get_share_access_for_folder_items, get_share_album_data, get_share_file,
+    is_allowed_to_access_share, AccessShareItemType,
 };
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
@@ -35,8 +35,7 @@ pub enum RawFileAction {
 fn add_header(headers: &mut HeaderMap, header: HeaderName, value: &str) {
     headers.insert(
         header,
-        HeaderValue::from_str(value)
-            .unwrap_or(HeaderValue::from_str("").unwrap()),
+        HeaderValue::from_str(value).unwrap_or(HeaderValue::from_str("").unwrap()),
     );
 }
 
@@ -83,12 +82,28 @@ pub async fn get_raw_file(
     };
 
     let mut response_headers = HeaderMap::new();
-    add_header(&mut response_headers, header::CONTENT_TYPE, file.mime_type.as_str());
-    add_header(&mut response_headers, header::CONTENT_DISPOSITION, disposition.clone().as_str());
-    add_header(&mut response_headers, header::ETAG, &format!("\"{}\"", file.id));
+    add_header(
+        &mut response_headers,
+        header::CONTENT_TYPE,
+        file.mime_type.as_str(),
+    );
+    add_header(
+        &mut response_headers,
+        header::CONTENT_DISPOSITION,
+        disposition.clone().as_str(),
+    );
+    add_header(
+        &mut response_headers,
+        header::ETAG,
+        &format!("\"{}\"", file.id),
+    );
     add_header(&mut response_headers, header::CACHE_CONTROL, "no-cache");
     add_header(&mut response_headers, header::PRAGMA, "no-cache");
-    add_header(&mut response_headers, header::LAST_MODIFIED, file.updated_at.to_rfc3339().as_str());
+    add_header(
+        &mut response_headers,
+        header::LAST_MODIFIED,
+        file.updated_at.to_rfc3339().as_str(),
+    );
 
     // If Range header is present, try to serve partial content to client
     let body = if let Some(range) = request_headers.get(RANGE) {
@@ -214,6 +229,31 @@ pub async fn handle_raw_file_share_through_folder(
         None,
     )
     .await?;
+
+    Ok(raw_response.into_response())
+}
+
+pub async fn handle_raw_file_share_through_album(
+    mut headers: HeaderMap,
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, file_id, operation_type)): Path<(String, i64, RawFileAction)>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, true).await?;
+
+    let shared_file_data = get_share_album_data(&state, share.album_id).await?;
+
+    if !shared_file_data
+        .files
+        .iter()
+        .any(|f| f.id == file_id.to_string())
+    {
+        return Err(AppError::NotFound {
+            error: "File not Found".to_string(),
+        })?;
+    }
+
+    let raw_response = get_raw_file(&mut headers, &state, file_id, operation_type, None).await?;
 
     Ok(raw_response.into_response())
 }

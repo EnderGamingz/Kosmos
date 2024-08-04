@@ -1,3 +1,5 @@
+use crate::session::KosmosSession;
+use crate::state::AppState;
 use axum::extract::DefaultBodyLimit;
 use axum::routing::{delete, get, patch, post, put};
 use axum::Router;
@@ -5,9 +7,6 @@ use tower_http::cors::CorsLayer;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
 use tracing::Level;
-
-use crate::session::KosmosSession;
-use crate::state::AppState;
 
 pub type KosmosRouter = Router<AppState>;
 
@@ -173,6 +172,7 @@ fn get_share_router() -> KosmosRouter {
             "/all/me",
             get(crate::routes::api::v1::share::shared_items::get_targeted_shared_items_for_user),
         )
+        // File
         .route(
             "/file/:file_id",
             get(crate::routes::api::v1::share::get_file_shares_for_user),
@@ -185,6 +185,7 @@ fn get_share_router() -> KosmosRouter {
             "/file/private",
             post(crate::routes::api::v1::share::create::share_file_private),
         )
+        // Folder
         .route(
             "/folder/:folder_id",
             get(crate::routes::api::v1::share::get_folder_shares_for_user),
@@ -197,6 +198,20 @@ fn get_share_router() -> KosmosRouter {
             "/folder/private",
             post(crate::routes::api::v1::share::create::share_folder_private),
         )
+        // Album
+        .route(
+            "/album/public",
+            post(crate::routes::api::v1::share::create::share_album_public),
+        )
+        .route(
+            "/album/private",
+            post(crate::routes::api::v1::share::create::share_album_private),
+        )
+        .route(
+            "/album/:album_id",
+            get(crate::routes::api::v1::share::get_album_shares_for_user),
+        )
+        //
         .route(
             "/:share_id",
             patch(crate::routes::api::v1::share::update_share)
@@ -332,6 +347,18 @@ fn get_public_share_router() -> KosmosRouter {
             get(
                 crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_folder,
             ),
+        )
+        .route(
+            "/album/:share_id",
+            get(crate::routes::api::v1::share::access_album_share),
+        )
+        .route(
+            "/album/:share_id/file/:file_id/action/:operation_type",
+            get(crate::routes::api::v1::auth::download::handle_raw_file_share_through_album),
+        )
+        .route(
+            "/album/:share_id/image/:file_id/:format",
+            get(crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_album),
         )
         .route("/unlock", post(crate::routes::api::v1::share::unlock_share))
 }

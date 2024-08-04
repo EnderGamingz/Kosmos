@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { AnimatePresence, motion } from 'framer-motion';
-import { DataOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
 import { useEffect, useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
@@ -35,7 +35,7 @@ export function ShareModalContent({
   onClose,
 }: {
   shareElementId: string;
-  shareElementType: DataOperationType;
+  shareElementType: ShareOperationType;
   onClose: () => void;
 }) {
   const data = useUserShareData(shareElementId, shareElementType);

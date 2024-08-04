@@ -1,8 +1,4 @@
-use axum::extract::{Path, State};
-use axum::Json;
-use serde::Serialize;
-use tower_sessions::Session;
-
+use crate::model::album::{AlbumModel, SharedAlbumModelDTO};
 use crate::model::file::{FileModel, ShareFileModelDTO};
 use crate::model::folder::{FolderModel, ShareFolderModelDTO, SimpleDirectoryDTO};
 use crate::model::share::{ExtendedShareModel, ExtendedShareModelDTO};
@@ -11,6 +7,10 @@ use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use crate::utils::auth;
+use axum::extract::{Path, State};
+use axum::Json;
+use serde::Serialize;
+use tower_sessions::Session;
 
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
@@ -25,7 +25,7 @@ pub async fn get_file_shares_for_user(
         .await?
         .into_iter()
         .map(ExtendedShareModelDTO::from)
-        .collect::<Vec<_>>();
+        .collect();
 
     Ok(Json(shares))
 }
@@ -43,7 +43,25 @@ pub async fn get_folder_shares_for_user(
         .await?
         .into_iter()
         .map(ExtendedShareModelDTO::from)
-        .collect::<Vec<_>>();
+        .collect();
+
+    Ok(Json(shares))
+}
+
+pub async fn get_album_shares_for_user(
+    State(state): KosmosState,
+    session: Session,
+    Path(album_id): Path<i64>,
+) -> Result<Json<Vec<ExtendedShareModelDTO>>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let shares = state
+        .share_service
+        .get_album_shares(album_id, user_id)
+        .await?
+        .into_iter()
+        .map(ExtendedShareModelDTO::from)
+        .collect();
 
     Ok(Json(shares))
 }
@@ -95,6 +113,19 @@ pub async fn access_file_share(
     let _ = state.share_service.handle_share_access(share.id).await;
 
     Ok(Json(file.share_file))
+}
+
+pub async fn access_album_share(
+    State(state): KosmosState,
+    session: Session,
+    Path(share_uuid): Path<String>,
+) -> Result<Json<SharedAlbumData>, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid, false).await?;
+
+    let album = get_share_album_data(&state, share.album_id).await?;
+    let _ = state.share_service.handle_share_access(share.id).await;
+
+    Ok(Json(album))
 }
 
 #[derive(Serialize)]
@@ -289,6 +320,30 @@ pub async fn get_share_file(
     Ok(SharedFileData { file, share_file })
 }
 
+pub struct SharedAlbum {
+    pub album: AlbumModel,
+    pub shared_album: SharedAlbumModelDTO,
+}
+
+pub async fn get_share_album(
+    state: &AppState,
+    album_id: Option<i64>,
+) -> Result<SharedAlbum, AppError> {
+    let album = match album_id {
+        None => Err(AppError::NotFound {
+            error: "Album not found".to_string(),
+        })?,
+        Some(album_id) => state.album_service.get_album_by_id(None, album_id).await?,
+    };
+
+    let shared_album = album.clone().into();
+
+    Ok(SharedAlbum {
+        album,
+        shared_album,
+    })
+}
+
 pub struct SharedFolder {
     pub folder: FolderModel,
     pub share_folder: ShareFolderModelDTO,
@@ -344,6 +399,32 @@ pub async fn get_share_folder_data(
     Ok(SharedFolderData {
         share_folder: data.share_folder,
         folders,
+        files,
+    })
+}
+
+#[derive(Serialize)]
+pub struct SharedAlbumData {
+    pub album: SharedAlbumModelDTO,
+    pub files: Vec<ShareFileModelDTO>,
+}
+
+pub async fn get_share_album_data(
+    state: &AppState,
+    album_id: Option<i64>,
+) -> Result<SharedAlbumData, AppError> {
+    let data = get_share_album(state, album_id).await?;
+
+    let files: Vec<ShareFileModelDTO> = state
+        .album_service
+        .get_album_files(data.album.id)
+        .await?
+        .into_iter()
+        .map(ShareFileModelDTO::from)
+        .collect();
+
+    Ok(SharedAlbumData {
+        album: data.album.into(),
         files,
     })
 }

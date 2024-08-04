@@ -1,5 +1,5 @@
 import { ShareModel } from '@models/share.ts';
-import { DataOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import { ShareItem } from '@pages/explorer/components/share/shareItem.tsx';
 import { containerVariant } from '@components/defaults/transition.ts';
@@ -14,7 +14,7 @@ export function ShareData({
   loading,
 }: {
   shares?: ShareModel[];
-  type: DataOperationType;
+  type: ShareOperationType;
   loading?: boolean;
 }) {
   if (loading) return renderMessage(`Loading ${type} data...`);

@@ -1,11 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { DataOperationType } from '@models/file.ts';
-import { FileShareDisplay } from '@pages/share/fileShareDisplay.tsx';
-import { FolderShareDisplay } from '@pages/share/folderShareDisplay.tsx';
+import { FileShareDisplay } from '@pages/share/shareTypes/fileShareDisplay.tsx';
+import { FolderShareDisplay } from '@pages/share/shareTypes/folderShareDisplay.tsx';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 import Preferences from '@pages/settings/preferences';
 import { WindowIcon } from '@heroicons/react/24/outline';
+import { AlbumShareDisplay } from '@pages/share/shareTypes/albumShareDisplay.tsx';
 
 function SharePreferences() {
   return (
@@ -35,8 +36,8 @@ export default function SharePage() {
 
   return (
     <>
-      <SharePageData type={type === 'folder' ? 'folder' : 'file'} uuid={uuid} />
-      <SharePreferences />
+      <SharePageData type={type as DataOperationType} uuid={uuid} />
+      {type !== 'album' && <SharePreferences />}
     </>
   );
 }
@@ -50,5 +51,6 @@ function SharePageData({
 }) {
   if (type === 'folder') return <FolderShareDisplay uuid={uuid} />;
   if (type === 'file') return <FileShareDisplay uuid={uuid} />;
+  if (type === 'album') return <AlbumShareDisplay uuid={uuid} />;
   return null;
 }

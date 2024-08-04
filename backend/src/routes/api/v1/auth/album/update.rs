@@ -32,7 +32,7 @@ pub async fn update_album(
 
     let album = state
         .album_service
-        .get_album_by_id(user_id, payload.get_id()?)
+        .get_album_by_id(Some(user_id), payload.get_id()?)
         .await?;
 
     state
@@ -69,7 +69,7 @@ pub async fn link_files_to_album(
     let user_id = SessionService::check_logged_in(&session).await?;
     let album = state
         .album_service
-        .get_album_by_id(user_id, album_id)
+        .get_album_by_id(Some(user_id), album_id)
         .await?;
 
     let files = state.album_service.get_album_files(album.id).await?;
@@ -111,7 +111,7 @@ pub async fn unlink_file_from_album(
     let user_id = SessionService::check_logged_in(&session).await?;
     let album = state
         .album_service
-        .get_album_by_id(user_id, album_id)
+        .get_album_by_id(Some(user_id), album_id)
         .await?;
 
     let file_ids = payload.get_file_ids()?;
@@ -163,12 +163,16 @@ pub async fn update_album_preview(
     let user_id = SessionService::check_logged_in(&session).await?;
     let album = state
         .album_service
-        .get_album_by_id(user_id, album_id)
+        .get_album_by_id(Some(user_id), album_id)
         .await?;
 
     let new_preview_id = payload.get_file_id()?;
 
-    if !state.album_service.is_file_in_album(album.id, new_preview_id).await? {
+    if !state
+        .album_service
+        .is_file_in_album(album.id, new_preview_id)
+        .await?
+    {
         return Err(AppError::BadRequest {
             error: Some("File is not in album".to_string()),
         });

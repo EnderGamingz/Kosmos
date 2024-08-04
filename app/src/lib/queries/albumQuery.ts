@@ -64,7 +64,7 @@ export class AlbumQuery {
         axios
           .get(`${BASE_URL}auth/album/for/${fileId}`)
           .then(res => res.data as AvailableAlbumsForFileResponse),
-      queryKey: ['album', 'available'],
+      queryKey: ['album', 'available', fileId],
     });
   };
 

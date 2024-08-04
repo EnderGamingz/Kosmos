@@ -97,7 +97,7 @@ pub async fn get_album(
 
     let album = state
         .album_service
-        .get_album_by_id(user_id, album_id)
+        .get_album_by_id(Some(user_id), album_id)
         .await?;
 
     let files = state.album_service.get_album_files(album.id).await?;

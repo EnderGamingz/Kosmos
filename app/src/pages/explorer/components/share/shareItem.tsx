@@ -4,7 +4,7 @@ import { itemTransitionVariantFadeInFromTop } from '@components/defaults/transit
 import tw from '@utils/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import { useNotifications } from '@stores/notificationStore.ts';
-import { DataOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
 import { formatDistanceToNow } from 'date-fns';
 import { ChangePassword } from '@pages/explorer/components/share/password/changePassword.tsx';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
@@ -35,7 +35,7 @@ export function ShareItem({
   type,
 }: {
   share: ShareModel;
-  type: DataOperationType;
+  type: ShareOperationType;
 }) {
   const notifications = useNotifications(s => s.actions);
 

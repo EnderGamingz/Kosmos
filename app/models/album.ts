@@ -1,4 +1,4 @@
-import { FileModel, FileType } from './file';
+import { FileModel, FileType, ShareFileModel } from './file';
 import { ContextData } from '@hooks/useContextMenu.ts';
 
 export type AlbumModel = {
@@ -36,8 +36,9 @@ export type AvailableAlbumsForFileResponse = {
   available: AlbumModel[];
 };
 
-export type UpdateAlbumPreviewPayload = {
-  file_id: string;
+export type AlbumShareResponse = {
+  album: AlbumModel;
+  files: ShareFileModel[];
 };
 
 export function isAlbumFile(data: ContextData): data is AlbumFile {

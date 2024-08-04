@@ -60,6 +60,7 @@ export type ShareFileModel = {
 
 export type DataOperationType = 'file' | 'folder';
 export type ContextOperationType = DataOperationType | 'multi';
+export type ShareOperationType = DataOperationType | 'album';
 
 /**
  * Retrieves the file type based on the given ID.

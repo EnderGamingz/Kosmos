@@ -5,6 +5,8 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import { useContext } from 'react';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function AlbumDelete({
   id,
@@ -15,6 +17,7 @@ export function AlbumDelete({
 }) {
   const notifications = useNotifications(s => s.actions);
   const navigate = useNavigate();
+  const context = useContext(DisplayContext);
 
   const deleteAction = useMutation({
     mutationFn: async () => {
@@ -46,6 +49,9 @@ export function AlbumDelete({
       onClose();
     },
   });
+
+  if (context.shareUuid) return null;
+
   return (
     <button
       className={

@@ -7,11 +7,14 @@ import tw from '@utils/classMerge.ts';
 export function AlbumFullscreen({
   file,
   onClose,
+  shareUuid,
 }: {
   file: FileModel;
   onClose: () => void;
+  shareUuid?: string;
 }) {
-  const serveUrl = createServeUrl(undefined, false, file.id);
+  const serveUrl = createServeUrl(shareUuid, false, file.id, !!shareUuid);
+
   return (
     <>
       <Backdrop onClose={onClose} />

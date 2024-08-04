@@ -9,7 +9,7 @@ use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::routes::api::v1::share::{AccessShareItemType, get_share_access_for_folder_items, get_share_file, is_allowed_to_access_share};
+use crate::routes::api::v1::share::{AccessShareItemType, get_share_access_for_folder_items, get_share_album_data, get_share_file, is_allowed_to_access_share};
 use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
 use crate::services::file_service::FileService;
 use crate::services::image_service::ImageService;
@@ -100,6 +100,32 @@ pub async fn get_share_image_by_format_through_folder(
     let share_file_data = get_share_file(&state, Some(file_id)).await?;
 
     let (image, headers) = get_image_format_data(format, &share_file_data.file).await?;
+
+    Ok((headers, image).into_response())
+}
+
+pub async fn get_share_image_by_format_through_album(
+    State(state): KosmosState,
+    session: Session,
+    Path((share_uuid, file_id, format)): Path<(String, i64, i16)>,
+) -> Result<Response, AppError> {
+    let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), true).await?;
+    let shared_file_data = get_share_album_data(&state, share.album_id).await?;
+
+    if !shared_file_data
+        .files
+        .iter()
+        .any(|f| f.id == file_id.to_string())
+    {
+        return Err(AppError::NotFound {
+            error: "File not Found".to_string(),
+        })?;
+    }
+
+    let file = state.file_service.get_file(file_id,None).await?;
+
+
+    let (image, headers) = get_image_format_data(format, &file).await?;
 
     Ok((headers, image).into_response())
 }

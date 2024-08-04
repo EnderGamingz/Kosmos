@@ -41,6 +41,32 @@ impl From<AlbumModel> for AlbumModelDTO {
 }
 // End: Album Model
 
+// Start: Shared Album Model
+
+#[derive(Serialize)]
+pub struct SharedAlbumModelDTO {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+    pub preview_id: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+impl From<AlbumModel> for SharedAlbumModelDTO {
+    fn from(model: AlbumModel) -> Self {
+        SharedAlbumModelDTO {
+            id: model.id.to_string(),
+            name: model.name,
+            description: model.description,
+            preview_id: model.preview_id.map(|id| id.to_string()),
+            created_at: model.created_at,
+            updated_at: model.updated_at,
+        }
+    }
+}
+// End: Shared Album Model
+
 impl FileModel {
     pub fn get_valid_file_types_for_album() -> Vec<FileType> {
         vec![FileType::Image, FileType::RawImage, FileType::LargeImage]

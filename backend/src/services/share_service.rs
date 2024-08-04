@@ -7,7 +7,7 @@ use crate::model::file::FileModelWithShareInfo;
 use crate::model::folder::FolderModelWithShareInfo;
 use crate::model::share::{ExtendedShareModel, ShareModel, ShareType};
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::share::create::{ShareFilePublicRequest, ShareFolderPublicRequest};
+use crate::routes::api::v1::share::create::{ShareAlbumPublicRequest, ShareFilePublicRequest, ShareFolderPublicRequest};
 use crate::routes::api::v1::share::AccessShareItemType;
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::UserId;
@@ -67,6 +67,30 @@ impl ShareService {
         .await
         .map_err(|e| {
             tracing::error!("Error getting folder shares: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn get_album_shares(
+        &self,
+        album_id: i64,
+        user_id: UserId,
+    ) -> Result<Vec<ExtendedShareModel>, AppError> {
+        sqlx::query_as::<_, ExtendedShareModel>(
+            "SELECT s.*,
+               u.username as share_target_username
+            FROM shares s
+               LEFT JOIN users u on s.share_target = u.id
+            WHERE album_id = $1
+            AND user_id = $2
+            ORDER BY updated_at DESC",
+        )
+        .bind(album_id)
+        .bind(user_id)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting album shares: {}", e);
             AppError::InternalError
         })
     }
@@ -214,17 +238,45 @@ impl ShareService {
         Ok(false)
     }
 
-    pub async fn get_private_share_by_target(
+    pub async fn get_private_file_share_by_target(
         &self,
         share_target_id: UserId,
         user_id: UserId,
+        file_id: i64,
     ) -> Result<Option<ShareModel>, AppError> {
         sqlx::query_as!(
             ShareModel,
             "SELECT * FROM shares WHERE share_target = $1
-            AND user_id = $2
-            AND share_type = $3",
+            AND file_id = $2
+            AND user_id = $3
+            AND share_type = $4",
             share_target_id,
+            file_id,
+            user_id,
+            ShareType::Private as i16
+        )
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting private shares by target: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn get_private_album_share_by_target(
+        &self,
+        share_target_id: UserId,
+        user_id: UserId,
+        album_id: i64,
+    ) -> Result<Option<ShareModel>, AppError> {
+        sqlx::query_as!(
+            ShareModel,
+            "SELECT * FROM shares WHERE share_target = $1
+            AND album_id = $2
+            AND user_id = $3
+            AND share_type = $4",
+            share_target_id,
+            album_id,
             user_id,
             ShareType::Private as i16
         )
@@ -380,6 +432,40 @@ impl ShareService {
         Ok(share)
     }
 
+    pub async fn create_public_album_share(
+        &self,
+        album_id: i64,
+        data: ShareAlbumPublicRequest,
+        user_id: UserId,
+    ) -> Result<ShareModel, AppError> {
+        let share = sqlx::query_as!(
+            ShareModel,
+            "INSERT INTO shares
+            (id, user_id, share_type, album_id, access_limit, password, expires_at)
+            VALUES
+            ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *",
+            self.sf.next_id().map_err(|e| {
+                tracing::error!("Error creating share id: {}", e);
+                AppError::InternalError
+            })? as i64,
+            user_id,
+            ShareType::Public as i16,
+            album_id,
+            data.limit,
+            data.password,
+            data.expires_at
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating share: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(share)
+    }
+
     pub async fn create_private_file_share(
         &self,
         file_id: i64,
@@ -430,6 +516,36 @@ impl ShareService {
             user_id,
             ShareType::Private as i16,
             folder_id,
+            share_target_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating share: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn create_private_album_share(
+        &self,
+        album_id: i64,
+        user_id: UserId,
+        share_target_id: UserId,
+    ) -> Result<ShareModel, AppError> {
+        sqlx::query_as!(
+            ShareModel,
+            "INSERT INTO shares
+            (id, user_id, share_type, album_id, share_target)
+            VALUES
+            ($1, $2, $3, $4, $5)
+            RETURNING *",
+            self.sf.next_id().map_err(|e| {
+                tracing::error!("Error creating share id: {}", e);
+                AppError::InternalError
+            })? as i64,
+            user_id,
+            ShareType::Private as i16,
+            album_id,
             share_target_id
         )
         .fetch_one(&self.db_pool)

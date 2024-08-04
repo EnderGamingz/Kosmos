@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { DataOperationType, FileModel } from '@models/file.ts';
+import { FileModel, ShareOperationType } from '@models/file.ts';
 
 export type SelectedResources = {
   selectedFolders: string[];
@@ -21,8 +21,8 @@ export type ExplorerState = {
   };
   share: {
     shareElementId?: string;
-    shareElementType?: DataOperationType;
-    setShareElement: (id: string, type: DataOperationType) => void;
+    shareElementType?: ShareOperationType;
+    setShareElement: (id: string, type: ShareOperationType) => void;
     clearShareElement: () => void;
   };
   selectedResources: SelectedResources;
@@ -65,7 +65,7 @@ export const useExplorerStore = create<ExplorerState>(set => ({
     },
   },
   share: {
-    setShareElement: (id: string, type: DataOperationType) => {
+    setShareElement: (id: string, type: ShareOperationType) => {
       set(prev => ({
         share: {
           ...prev.share,

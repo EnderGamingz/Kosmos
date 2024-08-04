@@ -1,11 +1,11 @@
 import { AxiosError } from 'axios';
-import { DataOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
 import { PasswordUnlock } from '@pages/share/passwordUnlock.tsx';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 
 function getErrorText(
   errorStatus: number,
-  type: DataOperationType,
+  type: ShareOperationType,
   altText?: string,
 ) {
   switch (errorStatus) {
@@ -23,7 +23,7 @@ export function ShareError({
   type,
 }: {
   error?: AxiosError;
-  type: DataOperationType;
+  type: ShareOperationType;
 }) {
   const errorStatus = (error as AxiosError)?.response?.status;
   //@ts-expect-error backend passes `error` on error

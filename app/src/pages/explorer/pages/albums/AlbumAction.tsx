@@ -65,12 +65,12 @@ function AddToAlbumModalContent({
                     overwriteId: album.id,
                   })
                   .then(() => {
-                    albums.refetch().then();
+                    setLoading(loading.filter(id => id !== album.id));
                   });
               }}>
               {album.name}
               {loading.includes(album.id) && (
-                <span className={'text-sm text-stone-400'}>Adding</span>
+                <span className={'ml-1 text-sm text-stone-400'}>Adding</span>
               )}
             </motion.li>
           ))}
