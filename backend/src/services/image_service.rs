@@ -1,29 +1,29 @@
+use exif::{In, Tag};
+use futures::future;
+use image::codecs::jpeg::JpegEncoder;
+use image::{DynamicImage, EncodableLayout, ExtendedColorType, ImageError, ImageReader, RgbImage};
+use itertools::Itertools;
+use sonyflake::Sonyflake;
+use sqlx::types::JsonValue;
 use std::io::Cursor;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+
 use crate::db::KosmosPool;
 use crate::model::file::PreviewStatus;
 use crate::model::image::{ImageFormat, IMAGE_FORMATS};
 use crate::model::operation::{OperationStatus, OperationType};
 use crate::response::error_handling::AppError;
 use crate::state::AppState;
-use futures::{future};
-use itertools::Itertools;
-use sonyflake::Sonyflake;
-use sqlx::types::JsonValue;
-use std::path::{Path, PathBuf};
-use std::sync::Arc;
-use image::{DynamicImage, ImageError};
-use image::imageops::FilterType;
-
 
 #[derive(Debug)]
 pub struct ImageServiceResizeError {
     file_id: i64,
     format: ImageFormat,
-    kind: ImageServiceErrorKind
+    kind: ImageServiceErrorKind,
 }
 
 impl ImageServiceErrorKind {
-
     pub fn into_error(self, file_id: i64, format: ImageFormat) -> ImageServiceResizeError {
         ImageServiceResizeError {
             file_id,
@@ -31,19 +31,17 @@ impl ImageServiceErrorKind {
             kind: self,
         }
     }
-
 }
 
 #[derive(Debug)]
 pub enum ImageServiceErrorKind {
-    ResizeImageFileSaveError {
-        io_error: tokio::io::Error,
-    },
-    ResizeImageSaveError {
-        image_error: ImageError,
-    }
+    ResizeImageFileSaveError { io_error: tokio::io::Error },
+    ResizeImageSaveError { image_error: ImageError },
+    ImageLoadError { io_error: std::io::Error },
+    ImageGuessFormatError { io_error: std::io::Error },
+    ImageDecodeError { image_error: ImageError },
+    ExifReadError { exif_error: exif::Error },
 }
-
 
 #[derive(Clone)]
 pub struct ImageFormatInsert {
@@ -122,6 +120,10 @@ impl ImageService {
             }
         }
 
+        if !failures.is_empty() {
+            tracing::error!("Failed to generate formats {:?}", failures);
+        }
+
         let (ids, formats, file_ids, widths, heights): (
             Vec<i64>,
             Vec<i16>,
@@ -194,10 +196,10 @@ impl ImageService {
 
         println!("Done generating");
 
-        let failed_filed_ids = failures.iter()
+        let failed_filed_ids = failures
+            .iter()
             .map(|error| error.file_id)
             .collect::<Vec<_>>();
-
 
         state
             .file_service
@@ -220,19 +222,41 @@ impl ImageService {
         let original_image_path = Path::new(&upload_location).join(file_id.to_string());
         let image_formats_path = Path::new(&upload_location).join("formats");
 
-        let image = image::open(original_image_path)
-            .expect("test");
+        let image_buff = tokio::fs::read(original_image_path.clone())
+            .await
+            .map_err(|e| ImageServiceResizeError {
+                file_id,
+                format: ImageFormat::Thumbnail,
+                kind: ImageServiceErrorKind::ImageLoadError { io_error: e },
+            })?;
 
-        println!("Loaded image {}", file_id);
+        let mut cursor = Cursor::new(&image_buff);
+
+        // TODO: Fix gif support
+        let image = ImageReader::new(&mut cursor)
+            .with_guessed_format()
+            .map_err(|e| ImageServiceResizeError {
+                file_id,
+                format: ImageFormat::Thumbnail,
+                kind: ImageServiceErrorKind::ImageGuessFormatError { io_error: e },
+            })?
+            .decode()
+            .map_err(|e| ImageServiceResizeError {
+                file_id,
+                format: ImageFormat::Thumbnail,
+                kind: ImageServiceErrorKind::ImageDecodeError { image_error: e },
+            })?;
 
         let mut format_inserts: Vec<ImageFormatInsert> = vec![];
 
         for format in IMAGE_FORMATS {
-            let resize_image = Self::resize_image_and_convert_to_jpg(format, &image);
-
-            let response = Self::save_resized_image(file_id, format, resize_image, &image_formats_path)
-                .await
+            let resize_image = Self::resize_image_and_convert_to_jpg(format, &image, &image_buff)
                 .map_err(|e| e.into_error(file_id, format))?;
+
+            let response =
+                Self::save_resized_image(file_id, format, resize_image, &image_formats_path)
+                    .await
+                    .map_err(|e| e.into_error(file_id, format))?;
 
             format_inserts.push(response)
         }
@@ -242,29 +266,34 @@ impl ImageService {
         Ok(format_inserts)
     }
 
-    async fn save_resized_image(file_id: i64, format: ImageFormat, resized_image: DynamicImage, formats_folder_path: &PathBuf) -> Result<ImageFormatInsert, ImageServiceErrorKind> {
+    async fn save_resized_image(
+        file_id: i64,
+        format: ImageFormat,
+        resized_image: RgbImage,
+        formats_folder_path: &PathBuf,
+    ) -> Result<ImageFormatInsert, ImageServiceErrorKind> {
         let image_format_path =
             Path::new(formats_folder_path).join(Self::make_image_format_name(file_id, format));
 
         let image_format_path = image_format_path.to_str().unwrap();
 
-
         let format_height = resized_image.height();
         let format_width = resized_image.width();
 
-        let mut writer = Vec::with_capacity(resized_image.as_bytes().len());
-        let mut cursor = Cursor::new(&mut writer);
-        resized_image.write_to(&mut cursor, image::ImageFormat::Jpeg)
+        let mut buff = vec![];
+
+        JpegEncoder::new(&mut buff)
+            .encode(
+                resized_image.as_bytes(),
+                format_width,
+                format_height,
+                ExtendedColorType::Rgb8,
+            )
             .map_err(|image_error| ImageServiceErrorKind::ResizeImageSaveError { image_error })?;
 
-        tokio::fs::write(image_format_path, writer)
+        tokio::fs::write(image_format_path, buff)
             .await
-            .map_err(|e| {
-                ImageServiceErrorKind::ResizeImageFileSaveError {
-                    io_error: e,
-                }
-            })?;
-
+            .map_err(|e| ImageServiceErrorKind::ResizeImageFileSaveError { io_error: e })?;
 
         Ok(ImageFormatInsert {
             width: format_width as i32,
@@ -274,11 +303,39 @@ impl ImageService {
         })
     }
 
-    fn resize_image_and_convert_to_jpg(format: ImageFormat, image: &DynamicImage) -> DynamicImage {
-        let format_width = format.width_by_format(format);
-        let aspect_ratio = image.width() as f32 / image.height() as f32;
-        let format_height = (format_width as f32 / aspect_ratio) as u32;
+    fn resize_image_and_convert_to_jpg(
+        format: ImageFormat,
+        image: &DynamicImage,
+        image_buff: &[u8],
+    ) -> Result<RgbImage, ImageServiceErrorKind> {
+        let max_size = format.width_by_format();
 
-        image.resize(format_width, format_height, FilterType::Nearest)
+        let mut cursor = Cursor::new(image_buff);
+
+        let exif_reader = exif::Reader::new();
+        let exif = exif_reader
+            .read_from_container(&mut cursor)
+            .map_err(|e| ImageServiceErrorKind::ExifReadError { exif_error: e })?;
+
+        // Rotate image if exif orientation is not 1
+        let image = match exif.get_field(Tag::Orientation, In::PRIMARY) {
+            Some(orientation) => match orientation.value.get_uint(0) {
+                Some(v @ 1..=8) => match v {
+                    1 => image.clone(),
+                    2 => image.fliph(),
+                    3 => image.rotate180(),
+                    4 => image.fliph().rotate180(),
+                    5 => image.rotate90().fliph(),
+                    6 => image.rotate90(),
+                    7 => image.rotate270().fliph(),
+                    8 => image.rotate270(),
+                    _ => image.clone(),
+                },
+                _ => image.clone(),
+            },
+            None => image.clone(),
+        };
+
+        Ok(image.thumbnail(max_size, max_size).to_rgb8())
     }
 }

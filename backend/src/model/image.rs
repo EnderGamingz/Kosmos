@@ -30,7 +30,7 @@ impl ImageFormat {
         }
     }
 
-    pub fn width_by_format(&self, num: ImageFormat) -> u32 {
+    pub fn width_by_format(&self) -> u32 {
         match self {
             ImageFormat::Thumbnail => 256,
         }
