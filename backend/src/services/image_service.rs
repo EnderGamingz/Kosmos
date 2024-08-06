@@ -1,17 +1,18 @@
-use exif::{In, Tag};
-use futures::future;
-use image::codecs::jpeg::JpegEncoder;
-use image::{DynamicImage, EncodableLayout, ExtendedColorType, ImageError, ImageReader, RgbImage};
-use itertools::Itertools;
-use sonyflake::Sonyflake;
-use sqlx::types::JsonValue;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use exif::{In, Tag};
+use futures::future;
+use image::{DynamicImage, EncodableLayout, ExtendedColorType, ImageError, ImageReader, RgbImage};
+use image::codecs::jpeg::JpegEncoder;
+use itertools::Itertools;
+use sonyflake::Sonyflake;
+use sqlx::types::JsonValue;
+
 use crate::db::KosmosPool;
 use crate::model::file::PreviewStatus;
-use crate::model::image::{ImageFormat, IMAGE_FORMATS};
+use crate::model::image::{IMAGE_FORMATS, ImageFormat};
 use crate::model::operation::{OperationStatus, OperationType};
 use crate::response::error_handling::AppError;
 use crate::state::AppState;
@@ -232,7 +233,6 @@ impl ImageService {
 
         let mut cursor = Cursor::new(&image_buff);
 
-        // TODO: Fix gif support
         let image = ImageReader::new(&mut cursor)
             .with_guessed_format()
             .map_err(|e| ImageServiceResizeError {
@@ -313,13 +313,16 @@ impl ImageService {
         let mut cursor = Cursor::new(image_buff);
 
         let exif_reader = exif::Reader::new();
-        let exif = exif_reader
-            .read_from_container(&mut cursor)
-            .map_err(|e| ImageServiceErrorKind::ExifReadError { exif_error: e })?;
+        let exif_result = exif_reader.read_from_container(&mut cursor);
+        let exif_orientation = if let Ok(exif) = exif_result {
+            exif.get_field(Tag::Orientation, In::PRIMARY).map(|f| f.value.clone())
+        } else {
+            None
+        };
 
         // Rotate image if exif orientation is not 1
-        let image = match exif.get_field(Tag::Orientation, In::PRIMARY) {
-            Some(orientation) => match orientation.value.get_uint(0) {
+        let image = if let Some(orientation) = exif_orientation {
+            match orientation.get_uint(0) {
                 Some(v @ 1..=8) => match v {
                     1 => image.clone(),
                     2 => image.fliph(),
@@ -332,8 +335,9 @@ impl ImageService {
                     _ => image.clone(),
                 },
                 _ => image.clone(),
-            },
-            None => image.clone(),
+            }
+        } else {
+            image.clone()
         };
 
         Ok(image.thumbnail(max_size, max_size).to_rgb8())
