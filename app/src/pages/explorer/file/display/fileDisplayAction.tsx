@@ -13,9 +13,11 @@ import OpenExternally from '@pages/explorer/components/openExternally.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { BASE_URL } from '@lib/env.ts';
+import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 
 const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
   return [
+    <AlbumAction file={file} onClose={onClose} dense />,
     <DownloadSingleAction
       id={file.id}
       name={file.file_name}

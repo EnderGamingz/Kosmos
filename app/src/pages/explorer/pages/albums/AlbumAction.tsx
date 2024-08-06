@@ -124,10 +124,12 @@ export default function AlbumAction({
   file,
   albumId,
   onClose,
+  dense,
 }: {
   file: FileModel;
   albumId?: string;
-  onClose: () => void;
+  onClose?: () => void;
+  dense?: boolean;
 }) {
   const update = useToAlbumMutation(albumId);
   const context = useContext(DisplayContext);
@@ -144,7 +146,7 @@ export default function AlbumAction({
   const handleClick = () => {
     if (albumId) {
       update.mutateAsync({ remove: [file.id], add: [] }).then(() => {
-        onClose();
+        onClose?.();
       });
     } else {
       disclosureOnOpen();
@@ -175,9 +177,9 @@ export default function AlbumAction({
       </Modal>
       <button onClick={handleClick}>
         {albumId ? <MinusCircleIcon /> : <SquaresPlusIcon />}
-        {albumId ? 'Remove from album' : 'Add to album'}
+        {dense ? 'Album' : albumId ? 'Remove from album' : 'Add to album'}
       </button>
-      <hr />
+      {!dense && <hr />}
     </>
   );
 }

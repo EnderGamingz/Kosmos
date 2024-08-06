@@ -7,14 +7,34 @@ import { Modal, ModalContent, ScrollShadow } from '@nextui-org/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import tw from '@utils/classMerge.ts';
 
+const actions = [
+  {
+    name: 'Skip Upload',
+    allName: 'Skip all',
+    action: ResolveAction.Skip,
+  },
+  {
+    name: 'Replace Original',
+    allName: 'Replace all',
+    action: ResolveAction.Replace,
+  },
+  {
+    name: 'Upload unique copy',
+    allName: 'Make all unique',
+    action: ResolveAction.MakeUnique,
+  },
+];
+
 export function ConflictModal({
   initial,
   onAbort,
   onSubmit,
+  disabled,
 }: {
   initial: UploadFile[];
   onAbort: () => void;
   onSubmit: (files: File[]) => void;
+  disabled: boolean;
 }) {
   const [files, setFiles] = useState(initial);
   const [noConflict, setNoConflict] = useState<File[]>([]);
@@ -35,7 +55,14 @@ export function ConflictModal({
   const resolved = files.filter(f => f.resolveAction !== undefined);
 
   const handleSubmit = () => {
-    if (resolved.length !== files.length) return;
+    if (resolved.length !== files.length || disabled) return;
+
+    const skipped = files.filter(f => f.resolveAction === ResolveAction.Skip);
+
+    if (skipped.length) {
+      onAbort();
+      return;
+    }
 
     const modifiedFiles: File[] = [];
 
@@ -58,6 +85,16 @@ export function ConflictModal({
       }
     }
     onSubmit([...modifiedFiles, ...noConflict]);
+  };
+
+  const handleAllResolve = (action: ResolveAction) => {
+    setFiles(prev => {
+      const newFiles = [...prev];
+      for (const file of newFiles) {
+        file.resolveAction = action;
+      }
+      return newFiles;
+    });
   };
 
   return (
@@ -94,10 +131,20 @@ export function ConflictModal({
               ))}
             </ul>
           </ScrollShadow>
-          <div className={'flex justify-end gap-2'}>
+          <div className={'flex justify-between gap-2 pt-5'}>
+            <div className={'flex flex-wrap gap-2'}>
+              {actions.map(a => (
+                <button
+                  key={a.allName}
+                  className={'btn-black btn-sm'}
+                  onClick={() => handleAllResolve(a.action)}>
+                  {a.allName}
+                </button>
+              ))}
+            </div>
             <button
               onClick={handleSubmit}
-              disabled={resolved.length !== files.length}
+              disabled={resolved.length !== files.length || disabled}
               className={'btn-black'}>
               Submit
             </button>
@@ -115,21 +162,6 @@ function FileConflictItem({
   file: UploadFile;
   selectAction: (action: ResolveAction) => void;
 }) {
-  const actions = [
-    {
-      name: 'Skip Upload',
-      action: ResolveAction.Skip,
-    },
-    {
-      name: 'Replace Original',
-      action: ResolveAction.Replace,
-    },
-    {
-      name: 'Upload unique copy',
-      action: ResolveAction.MakeUnique,
-    },
-  ];
-
   return (
     <li
       className={tw(
@@ -150,7 +182,7 @@ function FileConflictItem({
             key={a.name}
             className={tw(a.action === file.resolveAction && 'bg-stone-500/50')}
             onClick={() => selectAction(a.action)}>
-            {a.name}{' '}
+            {a.name}
           </button>
         ))}
       </div>

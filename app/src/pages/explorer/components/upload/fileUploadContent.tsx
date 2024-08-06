@@ -70,7 +70,7 @@ export function FileUploadContent({
       if (!e.target.files.length) return;
 
       setIsTryingInvalidFolderUpload(false);
-      //setFiles([...e.target.files]);
+
       const files = Array.from(e.target.files);
       setSelectForUpload(makeUploadFiles(files, fileNamesRef.current));
     }
@@ -148,7 +148,6 @@ export function FileUploadContent({
 
   useEffect(() => {
     if (!toUpload || !toUpload?.length) return;
-
     handleToUpload(toUpload);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -202,6 +201,7 @@ export function FileUploadContent({
           initial={selectForUpload || []}
           onAbort={() => setSelectForUpload(null)}
           onSubmit={setToUpload}
+          disabled={selectForUpload?.length === toUpload?.length}
         />
         <div
           {...getRootProps()}
@@ -222,6 +222,7 @@ export function FileUploadContent({
         initial={selectForUpload || []}
         onAbort={() => setSelectForUpload(null)}
         onSubmit={setToUpload}
+        disabled={selectForUpload?.length === toUpload?.length}
       />
       <ModalBody>
         <Collapse isOpened={isTryingInvalidFolderUpload}>

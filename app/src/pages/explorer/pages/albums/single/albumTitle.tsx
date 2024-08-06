@@ -105,7 +105,10 @@ export function AlbumTitle({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={'bg-transparent font-light text-stone-500 outline-none'}
+          className={tw(
+            'bg-transparent font-light text-stone-500 outline-none transition-[font-size]',
+            Boolean(dense) && 'text-sm',
+          )}
           defaultValue={album.description}
           title={album.description}
           disabled={disabled}

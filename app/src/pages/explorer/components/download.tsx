@@ -22,8 +22,14 @@ export function DownloadSingleAction({
   const notification = useNotifications(s => s.actions);
   const context: DisplayContextType | undefined = useContext(DisplayContext);
   const folderShareUuid = context?.shareUuid;
+  const isAlbumShare = !!context.viewSettings?.album;
 
-  const downloadUrl = createDownloadUrl(shareUuid, folderShareUuid, id);
+  const downloadUrl = createDownloadUrl(
+    shareUuid || folderShareUuid,
+    folderShareUuid,
+    id,
+    isAlbumShare,
+  );
 
   const downloadAction = useMutation({
     mutationFn: async () => {
