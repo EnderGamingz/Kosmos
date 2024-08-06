@@ -17,7 +17,7 @@ use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
 async fn get_image_format_data(
-    format: i16,
+    format: ImageFormat,
     file_data: &FileModel,
 ) -> Result<(Vec<u8>, [(&str, &str); 1]), AppError> {
     let file_type = FileService::get_file_type(&file_data.mime_type);
@@ -28,8 +28,6 @@ async fn get_image_format_data(
         });
     }
 
-    let image_format_id = ImageFormat::id_by_format(ImageFormat::format_by_id(format));
-
     // Check that the file exists on disk
     let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
 
@@ -39,7 +37,7 @@ async fn get_image_format_data(
     let format_path =
         if file_should_have_formats {
             StdPath::new(&upload_location).join("formats").join(
-                ImageService::make_image_format_name(file_data.id, image_format_id),
+                ImageService::make_image_format_name(file_data.id, format),
             )
         } else {
             StdPath::new(&upload_location).join(file_data.id.to_string())
@@ -78,6 +76,9 @@ pub async fn get_image_by_format(
             error: "File not found".to_string(),
         })?;
 
+    let format = ImageFormat::format_by_id_save(format)?;
+
+
     let (image, headers) = get_image_format_data(format, &file_data).await?;
 
     Ok((headers, image).into_response())
@@ -98,6 +99,7 @@ pub async fn get_share_image_by_format_through_folder(
     }
 
     let share_file_data = get_share_file(&state, Some(file_id)).await?;
+    let format = ImageFormat::format_by_id_save(format)?;
 
     let (image, headers) = get_image_format_data(format, &share_file_data.file).await?;
 
@@ -123,6 +125,7 @@ pub async fn get_share_image_by_format_through_album(
     }
 
     let file = state.file_service.get_file(file_id,None).await?;
+    let format = ImageFormat::format_by_id_save(format)?;
 
 
     let (image, headers) = get_image_format_data(format, &file).await?;
@@ -137,6 +140,7 @@ pub async fn get_share_image_by_format(
 ) -> Result<Response, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), false).await?;
     let share_file_data = get_share_file(&state, share.file_id).await?;
+    let format = ImageFormat::format_by_id_save(format)?;
 
     let (image, headers) = get_image_format_data(format, &share_file_data.file).await?;
 

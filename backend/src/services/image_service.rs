@@ -1,18 +1,48 @@
+use std::io::Cursor;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+
+use exif::{In, Tag};
+use futures::future;
+use image::{DynamicImage, EncodableLayout, ExtendedColorType, ImageError, ImageReader, RgbImage};
+use image::codecs::jpeg::JpegEncoder;
+use itertools::Itertools;
+use sonyflake::Sonyflake;
+use sqlx::types::JsonValue;
+
 use crate::db::KosmosPool;
 use crate::model::file::PreviewStatus;
-use crate::model::image::{ImageFormat, IMAGE_FORMATS};
+use crate::model::image::{IMAGE_FORMATS, ImageFormat};
 use crate::model::operation::{OperationStatus, OperationType};
 use crate::response::error_handling::AppError;
 use crate::state::AppState;
-use futures::future;
-use itertools::Itertools;
-use photon_rs::native::open_image_from_bytes;
-use photon_rs::transform::SamplingFilter;
-use photon_rs::PhotonImage;
-use sonyflake::Sonyflake;
-use sqlx::types::JsonValue;
-use std::path::Path;
-use std::sync::Arc;
+
+#[derive(Debug)]
+pub struct ImageServiceResizeError {
+    file_id: i64,
+    format: ImageFormat,
+    kind: ImageServiceErrorKind,
+}
+
+impl ImageServiceErrorKind {
+    pub fn into_error(self, file_id: i64, format: ImageFormat) -> ImageServiceResizeError {
+        ImageServiceResizeError {
+            file_id,
+            format,
+            kind: self,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum ImageServiceErrorKind {
+    ResizeImageFileSaveError { io_error: tokio::io::Error },
+    ResizeImageSaveError { image_error: ImageError },
+    ImageLoadError { io_error: std::io::Error },
+    ImageGuessFormatError { io_error: std::io::Error },
+    ImageDecodeError { image_error: ImageError },
+    ExifReadError { exif_error: exif::Error },
+}
 
 #[derive(Clone)]
 pub struct ImageFormatInsert {
@@ -33,8 +63,8 @@ impl ImageService {
         ImageService { db_pool, sf }
     }
 
-    pub fn make_image_format_name(id: i64, format: i16) -> String {
-        format!("{}_{}", id, format).as_str().to_string()
+    pub fn make_image_format_name(id: i64, format: ImageFormat) -> String {
+        format!("{}_{}", id, format as i16).as_str().to_string()
     }
 
     pub async fn generate_all_formats(
@@ -89,6 +119,10 @@ impl ImageService {
                     failures.push(id);
                 }
             }
+        }
+
+        if !failures.is_empty() {
+            tracing::error!("Failed to generate formats {:?}", failures);
         }
 
         let (ids, formats, file_ids, widths, heights): (
@@ -163,9 +197,14 @@ impl ImageService {
 
         println!("Done generating");
 
+        let failed_filed_ids = failures
+            .iter()
+            .map(|error| error.file_id)
+            .collect::<Vec<_>>();
+
         state
             .file_service
-            .update_preview_status_for_file_ids(&failures, PreviewStatus::Failed)
+            .update_preview_status_for_file_ids(&failed_filed_ids, PreviewStatus::Failed)
             .await?;
 
         state
@@ -179,33 +218,47 @@ impl ImageService {
     pub async fn generate_image_sizes(
         file_id: i64,
         upload_location: &String,
-    ) -> Result<Vec<ImageFormatInsert>, i64> {
+    ) -> Result<Vec<ImageFormatInsert>, ImageServiceResizeError> {
         println!("Starting with {}", file_id);
         let original_image_path = Path::new(&upload_location).join(file_id.to_string());
-        let original_image_path_str = original_image_path.to_str().unwrap();
-
         let image_formats_path = Path::new(&upload_location).join("formats");
-        let image_formats_path_str = image_formats_path.to_str().unwrap();
 
-        let image_bytes = tokio::fs::read(original_image_path_str)
+        let image_buff = tokio::fs::read(original_image_path.clone())
             .await
-            .map_err(|e| {
-                tracing::error!("Error while reading image file {}: {}", file_id, e);
-                file_id
+            .map_err(|e| ImageServiceResizeError {
+                file_id,
+                format: ImageFormat::Thumbnail,
+                kind: ImageServiceErrorKind::ImageLoadError { io_error: e },
             })?;
 
-        let image = open_image_from_bytes(&*image_bytes).map_err(|e| {
-            tracing::error!("Error while opening image file {}: {}", file_id, e);
-            file_id
-        })?;
-        println!("Loaded image {}", file_id);
+        let mut cursor = Cursor::new(&image_buff);
+
+        let image = ImageReader::new(&mut cursor)
+            .with_guessed_format()
+            .map_err(|e| ImageServiceResizeError {
+                file_id,
+                format: ImageFormat::Thumbnail,
+                kind: ImageServiceErrorKind::ImageGuessFormatError { io_error: e },
+            })?
+            .decode()
+            .map_err(|e| ImageServiceResizeError {
+                file_id,
+                format: ImageFormat::Thumbnail,
+                kind: ImageServiceErrorKind::ImageDecodeError { image_error: e },
+            })?;
 
         let mut format_inserts: Vec<ImageFormatInsert> = vec![];
 
         for format in IMAGE_FORMATS {
-            let res =
-                Self::generate_image_size(file_id, format, &image_formats_path_str, &image).await?;
-            format_inserts.push(res)
+            let resize_image = Self::resize_image_and_convert_to_jpg(format, &image, &image_buff)
+                .map_err(|e| e.into_error(file_id, format))?;
+
+            let response =
+                Self::save_resized_image(file_id, format, resize_image, &image_formats_path)
+                    .await
+                    .map_err(|e| e.into_error(file_id, format))?;
+
+            format_inserts.push(response)
         }
 
         println!("Done with {}", file_id);
@@ -213,44 +266,80 @@ impl ImageService {
         Ok(format_inserts)
     }
 
-    async fn generate_image_size(
+    async fn save_resized_image(
         file_id: i64,
         format: ImageFormat,
-        formats_folder_path: &str,
-        image: &PhotonImage,
-    ) -> Result<ImageFormatInsert, i64> {
-        let format_width = ImageFormat::width_by_format(format);
-
-        let format = format as i16;
-
-        let aspect_ratio = image.get_width() as f32 / image.get_height() as f32;
-        let format_height = (format_width as f32 / aspect_ratio) as i32;
-
-        let resized_image = photon_rs::transform::resize(
-            image,
-            format_width,
-            format_height.try_into().unwrap(),
-            SamplingFilter::Nearest,
-        )
-        .get_bytes_jpeg(100);
-
+        resized_image: RgbImage,
+        formats_folder_path: &PathBuf,
+    ) -> Result<ImageFormatInsert, ImageServiceErrorKind> {
         let image_format_path =
             Path::new(formats_folder_path).join(Self::make_image_format_name(file_id, format));
 
         let image_format_path = image_format_path.to_str().unwrap();
 
-        tokio::fs::write(image_format_path, resized_image)
+        let format_height = resized_image.height();
+        let format_width = resized_image.width();
+
+        let mut buff = vec![];
+
+        JpegEncoder::new(&mut buff)
+            .encode(
+                resized_image.as_bytes(),
+                format_width,
+                format_height,
+                ExtendedColorType::Rgb8,
+            )
+            .map_err(|image_error| ImageServiceErrorKind::ResizeImageSaveError { image_error })?;
+
+        tokio::fs::write(image_format_path, buff)
             .await
-            .map_err(|e| {
-                tracing::error!("Error while saving image: {}", e);
-                file_id
-            })?;
+            .map_err(|e| ImageServiceErrorKind::ResizeImageFileSaveError { io_error: e })?;
 
         Ok(ImageFormatInsert {
             width: format_width as i32,
-            height: format_height,
+            height: format_height as i32,
             file_id,
-            format,
+            format: format as i16,
         })
+    }
+
+    fn resize_image_and_convert_to_jpg(
+        format: ImageFormat,
+        image: &DynamicImage,
+        image_buff: &[u8],
+    ) -> Result<RgbImage, ImageServiceErrorKind> {
+        let max_size = format.width_by_format();
+
+        let mut cursor = Cursor::new(image_buff);
+
+        let exif_reader = exif::Reader::new();
+        let exif_result = exif_reader.read_from_container(&mut cursor);
+        let exif_orientation = if let Ok(exif) = exif_result {
+            exif.get_field(Tag::Orientation, In::PRIMARY).map(|f| f.value.clone())
+        } else {
+            None
+        };
+
+        // Rotate image if exif orientation is not 1
+        let image = if let Some(orientation) = exif_orientation {
+            match orientation.get_uint(0) {
+                Some(v @ 1..=8) => match v {
+                    1 => image.clone(),
+                    2 => image.fliph(),
+                    3 => image.rotate180(),
+                    4 => image.fliph().rotate180(),
+                    5 => image.rotate90().fliph(),
+                    6 => image.rotate90(),
+                    7 => image.rotate270().fliph(),
+                    8 => image.rotate270(),
+                    _ => image.clone(),
+                },
+                _ => image.clone(),
+            }
+        } else {
+            image.clone()
+        };
+
+        Ok(image.thumbnail(max_size, max_size).to_rgb8())
     }
 }

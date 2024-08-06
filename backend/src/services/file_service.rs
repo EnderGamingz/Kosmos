@@ -4,7 +4,7 @@ use sqlx::{Execute, QueryBuilder};
 
 use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
 use crate::model::file::{FileModel, FileType, PreviewStatus};
-use crate::model::image::ImageFormatModel;
+use crate::model::image::{ImageFormat, ImageFormatModel};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{
     GetFilesSortParams, GetRecentFilesParams, SortByFiles, SortOrder,
@@ -263,7 +263,7 @@ impl FileService {
 
     pub async fn update_preview_status_for_file_ids(
         &self,
-        file_ids: &Vec<i64>,
+        file_ids: &[i64],
         preview_status: PreviewStatus,
     ) -> Result<(), AppError> {
         sqlx::query!(
@@ -542,9 +542,12 @@ impl FileService {
         let upload_path = Path::new(&upload_location);
         let formats_folder_path = upload_path.join("formats");
 
-        for format in formats {
+        for format_model in formats {
+
+            let format = ImageFormat::format_by_id_unsafe(format_model.format);
+
             let format_path = formats_folder_path
-                .join(ImageService::make_image_format_name(file_id, format.format));
+                .join(ImageService::make_image_format_name(file_id, format));
 
             // Delete image format from disk
             let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
@@ -552,7 +555,7 @@ impl FileService {
             });
 
             // Delete image format from database
-            let _ = sqlx::query!("DELETE FROM image_formats WHERE id = $1", format.id)
+            let _ = sqlx::query!("DELETE FROM image_formats WHERE id = $1", format_model.id)
                 .execute(&self.db_pool)
                 .await
                 .map_err(|e| {
