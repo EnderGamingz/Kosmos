@@ -2,7 +2,7 @@ use axum::extract::State;
 use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
-
+use crate::model::album::AlbumModelWithShareInfoDTO;
 use crate::model::file::FileModelWithShareInfoDTO;
 use crate::model::folder::FolderModelWithShareInfoDTO;
 use crate::response::error_handling::AppError;
@@ -13,6 +13,7 @@ use crate::state::{AppState, KosmosState};
 pub struct SharedItems {
     files: Vec<FileModelWithShareInfoDTO>,
     folders: Vec<FolderModelWithShareInfoDTO>,
+    albums: Vec<AlbumModelWithShareInfoDTO>
 }
 
 impl SharedItems {
@@ -37,7 +38,14 @@ impl SharedItems {
             .map(FolderModelWithShareInfoDTO::from)
             .collect::<Vec<_>>();
 
-        Ok(SharedItems { files, folders })
+        let albums = state.share_service
+            .get_shared_albums(user_id)
+            .await?
+            .into_iter()
+            .map(AlbumModelWithShareInfoDTO::from)
+            .collect::<Vec<_>>();
+
+        Ok(SharedItems { files, folders, albums })
     }
 }
 

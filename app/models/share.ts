@@ -1,5 +1,6 @@
 import { FileModel } from '@models/file.ts';
 import { FolderModel } from '@models/folder.ts';
+import { AlbumModel } from '@models/album.ts';
 
 export enum ShareType {
   Public,
@@ -36,4 +37,5 @@ export type ShareModel = {
 export type SharedItemsResponse = {
   files: FileModel[];
   folders: FolderModel[];
+  albums: AlbumModel[];
 };

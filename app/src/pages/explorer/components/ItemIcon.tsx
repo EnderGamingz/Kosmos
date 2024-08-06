@@ -7,13 +7,16 @@ import {
   FolderIcon,
   MusicalNoteIcon,
   PhotoIcon,
+  Square2StackIcon,
 } from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
 
+type FileIcon = FileType | 'folder' | 'album';
+
 function getFileIcon(
-  type: FileType | 'folder',
+  type: FileIcon,
   id: string,
   name: string,
   status: undefined | FilePreviewStatus,
@@ -45,6 +48,8 @@ function getFileIcon(
       return <ArchiveBoxIcon />;
     case 'folder':
       return <FolderIcon />;
+    case 'album':
+      return <Square2StackIcon />;
     default:
       return <DocumentIcon />;
   }
@@ -59,7 +64,7 @@ export default function ItemIcon({
   disablePreview,
 }: {
   id: string;
-  type: FileType | 'folder';
+  type: FileIcon;
   name: string;
   status?: FilePreviewStatus;
   dynamic?: boolean;

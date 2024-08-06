@@ -7,8 +7,19 @@ export type AlbumModel = {
   name: string;
   description?: string;
   preview_id?: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ShareAlbumModel = {
+  id: string;
+  name: string;
+  description?: string;
+  preview_id?: string;
+  created_at: string;
+  updated_at: string;
+  share_uuid?: string;
+  share_target_username?: string;
 };
 
 export type AlbumFile = FileModel & {

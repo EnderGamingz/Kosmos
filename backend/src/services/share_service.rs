@@ -3,6 +3,7 @@ use sqlx::types::Uuid;
 use sqlx::{Execute, QueryBuilder};
 
 use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
+use crate::model::album::AlbumModelWithShareInfo;
 use crate::model::file::FileModelWithShareInfo;
 use crate::model::folder::FolderModelWithShareInfo;
 use crate::model::share::{ExtendedShareModel, ShareModel, ShareType};
@@ -161,6 +162,27 @@ impl ShareService {
         .await
         .map_err(|e| {
             tracing::error!("Error getting shared folders: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn get_shared_albums(
+        &self,
+        user_id: &UserId,
+    )  -> Result<Vec<AlbumModelWithShareInfo>, AppError> {
+        sqlx::query_as::<_, AlbumModelWithShareInfo>(
+            "SELECT DISTINCT ON (a.id) a.*, s.uuid as share_uuid, u.username as share_target_username
+                FROM albums a
+                    INNER JOIN public.shares s
+                ON a.id = s.album_id
+                    INNER JOIN public.users u on a.user_id = u.id
+                WHERE s.share_target = $1"
+        )
+        .bind(user_id)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting shared albums: {}", e);
             AppError::InternalError
         })
     }

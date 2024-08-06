@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { SharedItemsResponse } from '@models/share.ts';
-import { DataOperationType, FileModel, ShareFileModel } from '@models/file.ts';
+import { FileModel, ShareFileModel, ShareOperationType } from '@models/file.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { FolderModel, ShareFolderModel } from '@models/folder.ts';
 import {
@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
+import { ShareAlbumModel } from '@models/album.ts';
 
 export default function SharedItems({
   itemsForUser,
@@ -80,7 +81,12 @@ function SharedForMe({ shares }: { shares?: SharedItemsResponse }) {
       {shares?.files.map(share => (
         <ShareForMeItem key={share.id} share={share} type={'file'} />
       ))}
-      {!shares?.files.length && !shares?.folders.length && <EmptyList />}
+      {shares?.albums.map(share => (
+        <ShareForMeItem key={share.id} share={share} type={'album'} />
+      ))}
+      {!shares?.files.length &&
+        !shares?.folders.length &&
+        !shares?.albums.length && <EmptyList />}
     </motion.ul>
   );
 }
@@ -89,11 +95,12 @@ function ShareForMeItem({
   share,
   type,
 }: {
-  share: ShareFileModel | ShareFolderModel;
-  type: DataOperationType;
+  share: ShareFileModel | ShareFolderModel | ShareAlbumModel;
+  type: ShareOperationType;
 }) {
   const navigate = useNavigate();
   const isFile = type === 'file';
+  const isAlbum = type === 'album';
 
   const handleClick = () => {
     navigate(getShareUrl(type, share.share_uuid || '', true));
@@ -101,7 +108,10 @@ function ShareForMeItem({
 
   const itemName = isFile
     ? (share as FileModel).file_name
-    : (share as FolderModel).folder_name;
+    : isAlbum
+      ? (share as ShareAlbumModel).name
+      : (share as FolderModel).folder_name;
+
   return (
     <motion.li
       className={
@@ -112,7 +122,13 @@ function ShareForMeItem({
       <div className={'flex items-center gap-2'}>
         <ItemIcon
           id={share.id}
-          type={isFile ? (share as FileModel).file_type : 'folder'}
+          type={
+            isFile
+              ? (share as FileModel).file_type
+              : isAlbum
+                ? 'album'
+                : 'folder'
+          }
           disablePreview
           name={itemName}
         />
