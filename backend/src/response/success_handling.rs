@@ -37,6 +37,8 @@ impl IntoResponse for AppSuccess {
 
                 if let Some(id) = id {
                     body = id;
+                } else {
+                    body = "Created".to_string();
                 }
             }
             Self::DELETED | Self::UPDATED | Self::MOVED => status_code = StatusCode::ACCEPTED,

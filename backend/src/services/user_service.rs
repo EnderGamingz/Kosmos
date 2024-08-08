@@ -1,14 +1,13 @@
-use serde::{Deserialize, Serialize};
-use sonyflake::Sonyflake;
-use tower_sessions::Session;
-use validator::Validate;
-
 use crate::db::KosmosDbResult;
 use crate::model::role::Role;
 use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
 use crate::KosmosPool;
+use serde::{Deserialize, Serialize};
+use sonyflake::Sonyflake;
+use tower_sessions::Session;
+use validator::Validate;
 
 #[derive(Deserialize)]
 pub struct AccountUpdatePayload {
@@ -254,5 +253,25 @@ impl UserService {
                 AppError::InternalError
             })
             .map(|row| row.storage_limit)
+    }
+
+    pub async fn get_user_from_passkey_credential_id(
+        &self,
+        credential_id: &[u8],
+    ) -> Result<UserModel, AppError> {
+        sqlx::query_as!(
+            UserModel,
+            "SELECT u.* FROM users u
+                    INNER JOIN passkeys p
+                ON u.id = p.user_id
+                WHERE p.credential_id = $1",
+            credential_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching user from passkey credential id: {}", e);
+            AppError::InternalError
+        })
     }
 }

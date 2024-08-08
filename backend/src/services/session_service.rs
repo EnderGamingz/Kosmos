@@ -1,6 +1,7 @@
 use crate::constants::SESSION_USER_ID_KEY;
 use crate::response::error_handling::AppError;
 use tower_sessions::Session;
+use webauthn_rs::prelude::{DiscoverableAuthentication, PasskeyRegistration};
 
 #[derive(Clone)]
 pub struct SessionService;
@@ -73,5 +74,63 @@ impl SessionService {
             Ok(t) => t.is_some(),
             Err(_) => false,
         }
+    }
+
+    pub async fn set_passkey_register(session: &Session, state: PasskeyRegistration, name: String) {
+        session.insert("pass_reg_state", state).await.unwrap();
+        session.insert("pass_reg_name", name).await.unwrap();
+    }
+
+    pub async fn get_passkey_register(
+        session: &Session,
+    ) -> Result<(PasskeyRegistration, String), AppError> {
+        let state = session
+            .get::<PasskeyRegistration>("pass_reg_state")
+            .await
+            .unwrap();
+
+        let name = session.get::<String>("pass_reg_name").await.unwrap();
+
+        match state {
+            None => Err(AppError::BadRequest {
+                error: Some("Passkey registration state not found".to_string()),
+            }),
+            Some(state) => Ok((state, name.unwrap_or("Passkey".to_string()))),
+        }
+    }
+
+    pub async fn clear_passkey_register(session: &Session) {
+        session
+            .remove::<PasskeyRegistration>("pass_reg_state")
+            .await
+            .unwrap();
+        session.remove::<String>("pass_reg_name").await.unwrap();
+    }
+
+    pub async fn set_passkey_authentication(session: &Session, state: DiscoverableAuthentication) {
+        session.insert("pass_auth_state", state).await.unwrap();
+    }
+
+    pub async fn get_passkey_authentication(
+        session: &Session,
+    ) -> Result<DiscoverableAuthentication, AppError> {
+        let state = session
+            .get::<DiscoverableAuthentication>("pass_auth_state")
+            .await
+            .unwrap();
+
+        match state {
+            None => Err(AppError::BadRequest {
+                error: Some("Passkey authentication state not found".to_string()),
+            }),
+            Some(state) => Ok(state),
+        }
+    }
+
+    pub async fn clear_passkey_authentication(session: &Session) {
+        session
+            .remove::<DiscoverableAuthentication>("pass_auth_state")
+            .await
+            .unwrap();
     }
 }

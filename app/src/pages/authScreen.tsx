@@ -53,9 +53,9 @@ export function AuthScreen({
             onSubmit={onSubmit}
             className={tw(
               'mt-10 flex flex-col gap-4',
-              '[&_input]:pl-8 [&_label]:relative [&_svg]:absolute [&_svg]:h-5 [&_svg]:w-5',
-              '[&_svg]:left-2 [&_svg]:top-1/2 [&_svg]:-translate-y-1/2 [&_svg]:text-stone-700',
-              '[&_input]:w-full lg:[&_label]:text-lg',
+              '[&>label>svg]:absolute [&>label>svg]:h-5 [&>label>svg]:w-5 [&_input]:pl-8 [&_label]:relative',
+              '[&>label>svg]:left-2 [&>label>svg]:top-1/2 [&>label>svg]:-translate-y-1/2 [&>label>svg]:text-stone-700',
+              '[&_button]:justify-center [&_input]:w-full lg:[&_label]:text-lg',
             )}>
             {children}
           </form>

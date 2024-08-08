@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
+use sqlx::types::Uuid;
 use sqlx::FromRow;
 
 // Start: User Model
@@ -12,10 +13,10 @@ pub struct UserModel {
     pub email: Option<String>,
     pub storage_limit: i64,
     pub role: i16,
+    pub uuid: Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
-
 
 #[derive(Serialize)]
 pub struct UserModelDTO {

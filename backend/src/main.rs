@@ -21,6 +21,7 @@ mod router;
 mod runtimes;
 mod state;
 mod utils;
+mod webauthn;
 
 #[tokio::main]
 async fn main() {
@@ -71,9 +72,11 @@ async fn main() {
 
     let db = db::init().await;
 
+    let webauthn = webauthn::init();
+
     tracing::info!(name: "bootstrap", "Starting server");
 
-    let state = state::init(&db);
+    let state = state::init(&db, &webauthn);
 
     state.operation_service.startup_prepare().await;
     state.file_service.startup_prepare().await;

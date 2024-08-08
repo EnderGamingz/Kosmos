@@ -23,6 +23,7 @@ import { SearchResponse } from '@models/search.ts';
 import { FavoritesResponse } from '@models/favorites.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumShareResponse } from '@models/album.ts';
+import { PasskeyModel } from '@models/passkey.ts';
 
 export const queryClient = new QueryClient();
 
@@ -307,6 +308,22 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
     retry: false,
   });
 };
+
+export const usePasskeys = () => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/passkey`)
+        .then(res => res.data as PasskeyModel[]),
+    queryKey: ['passkeys'],
+  });
+};
+
+export async function invalidatePasskeys() {
+  return queryClient.invalidateQueries({
+    queryKey: ['passkeys'],
+  });
+}
 
 export async function invalidateFavorites() {
   return queryClient.invalidateQueries({

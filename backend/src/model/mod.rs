@@ -7,3 +7,4 @@ pub mod share;
 pub mod role;
 pub mod usage;
 pub mod album;
+pub mod passkey;

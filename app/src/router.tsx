@@ -2,6 +2,7 @@ import { useUserState } from '@stores/userStore.ts';
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
+import { Role } from '@models/user.ts';
 import Header from '@components/header';
 import Register from '@pages/register.tsx';
 import Login from '@pages/login.tsx';
@@ -22,7 +23,6 @@ import UsageReport from '@pages/usage/report';
 import FileListByType from '@pages/explorer/fileListByType.tsx';
 import HomePage from '@pages/home';
 import AdminPage from '@pages/admin';
-import { Role } from '@models/user.ts';
 import AdminUserList from '@pages/admin/user/list.tsx';
 import AdminUser from '@pages/admin/user/single.tsx';
 import DismissedOverview from '@pages/settings/dismissed';
@@ -96,6 +96,7 @@ export default function Router() {
 
           {/* Public Share */}
           <Route path={'s/:type/:uuid/*'} element={<SharePage />} />
+
           <Route path={'/'} element={<HomePage />} />
         </Routes>
       </main>

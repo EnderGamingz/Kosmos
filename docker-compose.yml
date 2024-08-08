@@ -15,6 +15,9 @@ services:
       - "IMAGE_PROCESSING_THREADS=4"
       - "DEFAULT_STORAGE_LIMIT=10737418240"
       - "ALLOW_REGISTER=true"
+      - "KOSMOS_RP_ID=kosmos"
+      - "KOSMOS_RP_ORIGIN=https://kosmos.setilic.com"
+      - "KOSMOS_RP_NAME=kosmos_rp"
     volumes:
       - ./uploads:/app/uploads
     depends_on:

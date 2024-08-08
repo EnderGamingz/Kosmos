@@ -293,12 +293,41 @@ fn get_album_router() -> KosmosRouter {
         )
 }
 
+fn get_passkey_auth_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/",
+            get(crate::routes::api::v1::auth::passkey::get_passkeys),
+        )
+        .route(
+            "/:passkey_id",
+            delete(crate::routes::api::v1::auth::passkey::delete_passkey),
+        )
+        .route(
+            "/register/start",
+            post(crate::routes::api::v1::auth::passkey::register::register_start),
+        )
+        .route(
+            "/register/complete",
+            post(crate::routes::api::v1::auth::passkey::register::register_complete),
+        )
+        .route(
+            "/authentication/start",
+            post(crate::routes::api::v1::auth::passkey::authenticate::authentication_start),
+        )
+        .route(
+            "/authentication/complete",
+            post(crate::routes::api::v1::auth::passkey::authenticate::authentication_complete),
+        )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
         .route("/login", post(crate::routes::api::v1::auth::login))
         .route("/register", post(crate::routes::api::v1::auth::register))
         .route("/logout", post(crate::routes::api::v1::auth::logout))
+        .nest("/passkey", get_passkey_auth_router())
         .nest("/search", get_search_router())
         .nest("/share", get_share_router())
         .nest("/file", get_file_router())

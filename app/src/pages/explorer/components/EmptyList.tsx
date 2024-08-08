@@ -21,13 +21,14 @@ export default function EmptyList({
     <ConditionalWrapper
       condition={table}
       wrapper={c => (
-        <tfoot>
+        <motion.tfoot layout>
           <tr>
             <td colSpan={5}>{c}</td>
           </tr>
-        </tfoot>
+        </motion.tfoot>
       )}>
       <motion.div
+        layout
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}

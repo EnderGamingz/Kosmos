@@ -1,12 +1,13 @@
 use axum::extract::State;
 use sonyflake::Sonyflake;
-
+use webauthn_rs::Webauthn;
 use crate::db::KosmosPool;
 use crate::services::album_service::AlbumService;
 use crate::services::file_service::FileService;
 use crate::services::folder_service::FolderService;
 use crate::services::image_service::ImageService;
 use crate::services::operation_service::OperationService;
+use crate::services::passkey_service::PasskeyService;
 use crate::services::permission_service::PermissionService;
 use crate::services::search_service::SearchService;
 use crate::services::share_service::ShareService;
@@ -27,10 +28,11 @@ pub struct AppState {
     pub usage_service: UsageService,
     pub search_service: SearchService,
     pub album_service: AlbumService,
+    pub passkey_service: PasskeyService,
     pub sf: Sonyflake,
 }
 
-pub fn init(db: &KosmosPool) -> AppState {
+pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
     let file_service = FileService::new(db.clone());
@@ -42,6 +44,7 @@ pub fn init(db: &KosmosPool) -> AppState {
     let usage_service = UsageService::new(db.clone());
     let search_service = SearchService::new(db.clone());
     let album_service = AlbumService::new(db.clone(), sf.clone());
+    let passkey_service = PasskeyService::new(db.clone(), webauthn.clone());
 
     AppState {
         user_service,
@@ -54,6 +57,7 @@ pub fn init(db: &KosmosPool) -> AppState {
         usage_service,
         search_service,
         album_service,
+        passkey_service,
         sf,
     }
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "UPDATE users SET username = $1, email = $2, full_name = $3 WHERE id = $4 RETURNING *",
+  "query": "SELECT u.* FROM users u\n                    INNER JOIN passkeys p\n                ON u.id = p.user_id\n                WHERE p.credential_id = $1",
   "describe": {
     "columns": [
       {
@@ -56,10 +56,7 @@
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Text",
-        "Text",
-        "Int8"
+        "Bytea"
       ]
     },
     "nullable": [
@@ -75,5 +72,5 @@
       false
     ]
   },
-  "hash": "cd264b067f532f71a26696ea9544bad333a8e0cf4802d2c77a66cdbb67ce1723"
+  "hash": "6e880ebf990a7e46818f4563bd0cbb5e6011c8c075f0dbe63edfd95c907a7f12"
 }

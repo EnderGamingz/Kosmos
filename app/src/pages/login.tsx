@@ -8,6 +8,7 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { AuthScreen } from '@pages/authScreen.tsx';
+import PasskeyLogin from '@components/passkey/login.tsx';
 
 type LoginData = { username: string; password: string };
 
@@ -101,11 +102,30 @@ export default function Login() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className={'btn-black mt-5 lg:text-lg'}
+        className={'btn-black mt-2 lg:text-lg'}
         disabled={isPending}
         type={'submit'}>
         Login
       </motion.button>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.6 }}
+        className={'relative'}>
+        <hr className={'my-2 border-stone-800/30'} />
+        <p
+          className={
+            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-stone-50 px-2 text-sm'
+          }>
+          or
+        </p>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}>
+        <PasskeyLogin />
+      </motion.div>
     </AuthScreen>
   );
 }
