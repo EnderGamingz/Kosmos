@@ -1,9 +1,10 @@
-FROM rust:alpine3.20 as builder
+# Switching from alpine to debian as openssl comilation issues for webauthn
+FROM rust:1.80.1-bookworm as builder
 
 WORKDIR /usr/src
 
 RUN USER=root cargo new kosmos
-RUN apk update && apk add musl-dev pkgconfig libressl-dev
+RUN apt-get update && apt-get install -y pkg-config libssl-dev
 
 
 COPY Cargo.toml /usr/src/kosmos/
@@ -14,21 +15,21 @@ ENV SQLX_OFFLINE=true
 
 WORKDIR /usr/src/kosmos
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN rustup target add x86_64-unknown-linux-gnu
+RUN cargo build --target x86_64-unknown-linux-gnu --release
 
 COPY src /usr/src/kosmos/src/
 
 RUN touch /usr/src/kosmos/src/main.rs
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN cargo build --target x86_64-unknown-linux-gnu --release
 
 
-FROM alpine:3.20.2 AS runtime
-USER root
+FROM debian:bookworm-20240701-slim AS runtime
 
-RUN apk --no-cache add ca-certificates gcompat \
-  && update-ca-certificates \
+RUN apt-get update && apt-get install -y ca-certificates
+RUN rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app/uploads
-COPY --from=builder /usr/src/kosmos/target/x86_64-unknown-linux-musl/release/kosmos /app/kosmos
-RUN chmod +x /app
+
+COPY --from=builder /usr/src/kosmos/target/x86_64-unknown-linux-gnu/release/kosmos /app/kosmos
+
 CMD ["/app/kosmos"]
