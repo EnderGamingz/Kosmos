@@ -17,6 +17,7 @@ import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { ShareAlbumModel } from '@models/album.ts';
+import { Helmet } from 'react-helmet';
 
 export default function SharedItems({
   itemsForUser,
@@ -32,6 +33,8 @@ export default function SharedItems({
 
   return (
     <div className={'relative h-full'}>
+      <Helmet></Helmet>
+
       <div
         className={
           'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'

@@ -31,6 +31,15 @@ import SearchPage from '@pages/explorer/pages/search.tsx';
 import FavoritesPage from '@pages/explorer/pages/favorites.tsx';
 import AlbumsPage from '@pages/explorer/pages/albums/all';
 import AlbumPage from '@pages/explorer/pages/albums/single';
+import { Helmet } from 'react-helmet';
+
+export function DefaultHelmet() {
+  return (
+    <Helmet
+      titleTemplate={'%s | Kosmos'}
+      defaultTitle={'Kosmos - High performance file hosting'}></Helmet>
+  );
+}
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -43,6 +52,7 @@ export default function Router() {
 
   return (
     <BrowserRouter>
+      <DefaultHelmet />
       <Header />
       <main className={'relative flex flex-grow flex-col'}>
         <Routes>

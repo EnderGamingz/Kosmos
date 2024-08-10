@@ -3,6 +3,7 @@ import { HeaderBranding } from '@components/header/headerBranding.tsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import tw from '@utils/classMerge.ts';
+import { Helmet } from 'react-helmet';
 
 export function AuthScreen({
   children,
@@ -27,6 +28,9 @@ export function AuthScreen({
       className={
         'fixed inset-0 isolate z-50 grid flex-grow grid-cols-1 bg-stone-50 md:grid-cols-5'
       }>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
       <div
         className={
           'z-10 col-span-3 flex flex-col gap-5 bg-stone-50 p-10 shadow-[0_10px_10px_10px_rgba(255,255,255,0.3)]'

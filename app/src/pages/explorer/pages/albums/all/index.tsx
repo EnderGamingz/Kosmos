@@ -3,11 +3,15 @@ import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { AlbumItem } from '@pages/explorer/pages/albums/all/albumItem.tsx';
 import { CreateAlbum } from '@pages/explorer/pages/albums/createAlbum.tsx';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import { Helmet } from 'react-helmet';
 
 export default function AlbumsPage() {
   const albums = AlbumQuery.useAlbums();
   return (
     <div>
+      <Helmet>
+        <title>Albums</title>
+      </Helmet>
       <Progress
         aria-label={'Recent Files loading...'}
         isIndeterminate={!albums?.data || albums.isLoading}

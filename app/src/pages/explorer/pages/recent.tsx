@@ -4,6 +4,7 @@ import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
+import { Helmet } from 'react-helmet';
 
 export default function RecentFiles() {
   const files = useRecentFiles();
@@ -13,6 +14,9 @@ export default function RecentFiles() {
 
   return (
     <div className={'relative'}>
+      <Helmet>
+        <title>Recent Files</title>
+      </Helmet>
       <div
         className={
           'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'

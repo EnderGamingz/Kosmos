@@ -17,6 +17,7 @@ import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullsc
 import { AnimatePresence } from 'framer-motion';
 import { DisplayContext } from '@lib/contexts.ts';
 import tw from '@utils/classMerge.ts';
+import { Helmet } from 'react-helmet';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -38,6 +39,11 @@ export default function AlbumPage() {
 
   return (
     <div className={'relative h-full'}>
+      <Helmet>
+        <title>
+          {albumQuery.data ? `${albumQuery.data.album.name}` : 'Album'}
+        </title>
+      </Helmet>
       <div
         ref={container}
         className={
