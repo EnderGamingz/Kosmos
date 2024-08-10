@@ -13,6 +13,7 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { useUserState } from '@stores/userStore.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
@@ -102,6 +103,7 @@ export default function PasskeyRegister() {
     onClose();
     registerMutation.mutate({ name });
   };
+  const user = useUserState(s => s.user);
 
   return (
     <Popover isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -116,6 +118,17 @@ export default function PasskeyRegister() {
       <PopoverContent>
         <div className={'w-full bg-white p-4'}>
           <form onSubmit={handleSubmit} className={'flex gap-2'}>
+            <input
+              type={'text'}
+              value={user?.username}
+              readOnly
+              disabled
+              name={'username'}
+              id={'username'}
+              placeholder={'Username*'}
+              autoComplete={'username'}
+              className={'hidden'}
+            />
             <input
               type={'text'}
               name={'name'}

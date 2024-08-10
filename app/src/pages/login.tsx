@@ -8,7 +8,7 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { AuthScreen } from '@pages/authScreen.tsx';
-import PasskeyLogin from '@components/passkey/login.tsx';
+import usePasskeyLogin from '@components/passkey/login.tsx';
 
 type LoginData = { username: string; password: string };
 
@@ -52,6 +52,8 @@ export default function Login() {
     },
   });
 
+  usePasskeyLogin();
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const { username, password } = event.currentTarget;
@@ -84,6 +86,7 @@ export default function Login() {
           placeholder={'Username'}
           type={'text'}
           name={'username'}
+          autoComplete={'username webauthn'}
         />
       </motion.label>
       <motion.label
@@ -96,6 +99,7 @@ export default function Login() {
           placeholder={'Password'}
           type={'password'}
           name={'password'}
+          autoComplete={'current-password webauthn'}
         />
       </motion.label>
       <motion.button
@@ -107,25 +111,6 @@ export default function Login() {
         type={'submit'}>
         Login
       </motion.button>
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.6 }}
-        className={'relative'}>
-        <hr className={'my-2 border-stone-800/30'} />
-        <p
-          className={
-            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-stone-50 px-2 text-sm'
-          }>
-          or
-        </p>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}>
-        <PasskeyLogin />
-      </motion.div>
     </AuthScreen>
   );
 }

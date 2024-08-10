@@ -1,15 +1,13 @@
 import { Base64 } from 'js-base64';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { useMutation } from '@tanstack/react-query';
-import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { CheckBadgeIcon } from '@heroicons/react/24/outline';
-import { useUserState } from '@stores/userStore.ts';
 import { UserModel } from '@models/user.ts';
+import { useEffect, useRef } from 'react';
+import { useUserState } from '@stores/userStore.ts';
 import { useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const completeFunction = (assertion: any) =>
+export const completePasskeyLoginFunction = (assertion: any) =>
   axios
     .post(BASE_URL + 'auth/passkey/authentication/complete', {
       id: assertion.id,
@@ -36,8 +34,13 @@ const completeFunction = (assertion: any) =>
     })
     .then(res => res.data as UserModel);
 
-const startFunction = () =>
-  axios
+export const startPasskeyLoginFunction = ({
+  onController,
+}: {
+  onController: (controller: AbortController) => void;
+}) => {
+  const controller = new AbortController();
+  const req = axios
     .post(BASE_URL + 'auth/passkey/authentication/start')
     .then(res => res.data)
     .then(credentialRequestOptions => {
@@ -52,48 +55,41 @@ const startFunction = () =>
         },
       );
       return navigator.credentials.get({
-        publicKey: credentialRequestOptions.publicKey,
+        ...credentialRequestOptions,
+        signal: controller.signal,
       });
     })
-    .then(completeFunction);
+    .then(completePasskeyLoginFunction);
 
-export default function PasskeyLogin() {
-  const notifications = useNotifications(s => s.actions);
+  onController(controller);
+  return req;
+};
+
+export default function usePasskeyLogin() {
   const setUser = useUserState(s => s.setUser);
   const navigate = useNavigate();
+  const controller = useRef<AbortController | null>(null);
 
-  const loginMutation = useMutation({
-    mutationFn: async () => {
-      const loginId = notifications.notify({
-        title: 'Passkey Login',
-        severity: Severity.INFO,
-        loading: true,
-        canDismiss: false,
-      });
-      await startFunction()
-        .then(res => {
-          navigate('/home');
-          setUser(res);
-
-          notifications.removeNotification(loginId);
-        })
-        .catch(() =>
-          notifications.updateNotification(loginId, {
-            severity: Severity.ERROR,
-            status: 'Failed',
-            canDismiss: true,
-            timeout: 1000,
-          }),
-        );
-    },
-  });
-  return (
-    <button
-      onClick={() => loginMutation.mutate()}
-      className={'btn-white w-full'}
-      disabled={loginMutation.isPending}>
-      <CheckBadgeIcon />
-      Use Passkey
-    </button>
-  );
+  useEffect(() => {
+    window.PublicKeyCredential.isConditionalMediationAvailable().then(
+      result => {
+        if (result) {
+          if (controller.current !== null) {
+            controller.current.abort(
+              'aborting ongoing passkey login and starting new one',
+            );
+          }
+          startPasskeyLoginFunction({
+            onController: (abortController: AbortController) => {
+              controller.current = abortController;
+            },
+          }).then(res => {
+            setUser(res);
+            navigate('/home');
+          });
+        }
+      },
+    );
+    return () => controller.current?.abort('aborting passkey due to unmount');
+  }, [navigate, setUser]);
 }
