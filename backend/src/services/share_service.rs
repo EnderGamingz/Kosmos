@@ -316,7 +316,7 @@ impl ShareService {
                u.username as share_target_username
             FROM shares s
                  LEFT JOIN users u on s.share_target = u.id
-            WHERE uuid = $1",
+            WHERE s.uuid = $1",
         )
         .bind(
             Uuid::parse_str(share_uuid.as_str()).map_err(|_| AppError::BadRequest {
