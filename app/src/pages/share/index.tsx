@@ -37,7 +37,7 @@ export default function SharePage() {
   return (
     <>
       <SharePageData type={type as DataOperationType} uuid={uuid} />
-      {type !== 'album' && <SharePreferences />}
+      {type === 'folder' && <SharePreferences />}
     </>
   );
 }

@@ -4,6 +4,7 @@ import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { UsageReportByType } from '@pages/usage/report/usageReportByType.tsx';
 import { NoAccess } from '@components/overlay/noAccess.tsx';
 import { UsageReportLargeFiles } from '@pages/usage/report/usageReportLargeFiles.tsx';
+import { Helmet } from 'react-helmet';
 
 export default function UsageReport() {
   const report = useUsageReport();
@@ -24,7 +25,9 @@ export default function UsageReport() {
         className={'text-2xl font-bold text-stone-700'}>
         Usage Report
       </motion.h1>
-
+      <Helmet>
+        <title>Usage Report</title>
+      </Helmet>
       {isLoading && !isError && (
         <div className={'grid flex-grow place-content-center'}>
           <div className={'app-loading-indicator'} />

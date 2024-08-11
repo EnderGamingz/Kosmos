@@ -7,6 +7,7 @@ import { useScrollThreshold } from '@hooks/useScrollDirection.ts';
 import { useRef } from 'react';
 import { FileModel } from '@models/file.ts';
 import { AlbumShareResponse } from '@models/album.ts';
+import { Helmet } from 'react-helmet';
 
 export function AlbumShareDisplay({ uuid }: { uuid: string }) {
   const share = useAccessAlbumShare(uuid);
@@ -25,6 +26,9 @@ function Content({ share, uuid }: { share: AlbumShareResponse; uuid: string }) {
 
   return (
     <div className={'relative h-full'}>
+      <Helmet>
+        <title>{share.album.name ?? 'Shared Album'}</title>
+      </Helmet>
       <div
         ref={container}
         className={

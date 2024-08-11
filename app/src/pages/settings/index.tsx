@@ -2,10 +2,14 @@ import { motion } from 'framer-motion';
 import { NavLink, Outlet } from 'react-router-dom';
 import tw from '@utils/classMerge.ts';
 import { links } from '@pages/settings/links.ts';
+import { Helmet } from 'react-helmet';
 
 export default function Settings() {
   return (
     <div className={'relative flex flex-grow pl-20 md:pl-0'}>
+      <Helmet titleTemplate={'%s | Kosmos Settings'}>
+        <title>Settings</title>
+      </Helmet>
       <motion.aside
         className={tw(
           'border-r border-stone-800/10 py-3 transition-all',

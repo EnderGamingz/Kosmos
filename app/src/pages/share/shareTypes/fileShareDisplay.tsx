@@ -10,6 +10,7 @@ import { useAccessShareFile } from '@lib/query.ts';
 import { AxiosError } from 'axios';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
+import { Helmet } from 'react-helmet';
 
 export function FileShareDisplay({ uuid }: { uuid: string }) {
   const [fullsScreenPreview, setFullScreenPreview] = useState(false);
@@ -25,6 +26,9 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
       className={
         'mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 p-4 md:grid-cols-2 md:gap-10 md:p-10'
       }>
+      <Helmet>
+        <title>{share.data.file_name ?? 'Shared File'}</title>
+      </Helmet>
       <div
         className={tw(
           '-mb-5 h-[300px] flex-grow md:-mr-5 md:mb-0 md:h-[500px] md:min-h-[unset] [&>*]:absolute [&>*]:inset-0 [&>*]:overflow-visible',

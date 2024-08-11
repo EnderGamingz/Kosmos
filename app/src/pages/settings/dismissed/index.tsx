@@ -5,6 +5,7 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTopSmall,
 } from '@components/defaults/transition.ts';
+import { Helmet } from 'react-helmet';
 
 export default function DismissedOverview() {
   const dismissStore = useDismissStore();
@@ -13,6 +14,9 @@ export default function DismissedOverview() {
   return (
     <div className={'space-y-3'}>
       <h1 className={'text-3xl font-bold'}>Dismissed Messages</h1>
+      <Helmet>
+        <title>Dismissed Messages</title>
+      </Helmet>
       <motion.ul
         variants={containerVariant()}
         initial={'hidden'}

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
 export default function FavoritesPage() {
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
@@ -18,6 +19,9 @@ export default function FavoritesPage() {
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
+      <Helmet>
+        <title>Favorites</title>
+      </Helmet>
       <Progress
         aria-label={'Favorites loading...'}
         isIndeterminate={!favorites?.data || favorites.isLoading}

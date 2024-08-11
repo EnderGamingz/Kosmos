@@ -1,5 +1,6 @@
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { Link } from 'react-router-dom';
+import { BuildTagDisplay } from '@pages/settings/appInfo.tsx';
 
 export default function Footer() {
   return (
@@ -11,7 +12,10 @@ export default function Footer() {
         <div className={'flex items-center gap-2'}>
           <ApplicationIcon className={'h-12 w-12'} />
           <div>
-            <h2 className={'text-2xl font-semibold'}>Kosmos</h2>
+            <h2 className={'flex gap-2 text-2xl font-semibold'}>
+              Kosmos
+              <BuildTagDisplay noIcon />
+            </h2>
             <p className={'italic'}>High performance file hosting platform</p>
           </div>
         </div>

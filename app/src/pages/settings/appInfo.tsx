@@ -6,6 +6,7 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import { BUILD_ID, BUILD_TAG } from '@lib/env.ts';
+import { Helmet } from 'react-helmet';
 
 const links = [
   {
@@ -15,9 +16,41 @@ const links = [
   },
 ];
 
+export function BuildIdDisplay() {
+  return (
+    <>
+      {BUILD_ID && (
+        <div
+          title={'Build ID'}
+          className={'flex items-center gap-1 text-sm font-light'}>
+          <FingerPrintIcon className={'h-5 w-5'} />
+          {BUILD_ID}
+        </div>
+      )}
+    </>
+  );
+}
+
+export function BuildTagDisplay({ noIcon }: { noIcon?: boolean }) {
+  return (
+    <>
+      {BUILD_TAG && (
+        <div
+          title={'Build Tag'}
+          className={'flex items-center gap-1 text-sm font-light'}>
+          {!noIcon && <TagIcon className={'h-5 w-5'} />} {BUILD_TAG}
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function AppInfo() {
   return (
     <div className={'space-y-2 p-4 md:p-10'}>
+      <Helmet>
+        <title>Info</title>
+      </Helmet>
       <div className={'flex items-center gap-3 text-stone-700'}>
         <ApplicationIcon className={'h-12 w-12 md:h-16 md:w-16'} />
         <h2 className={'text-2xl font-semibold md:text-5xl'}>Kosmos</h2>
@@ -46,18 +79,8 @@ export default function AppInfo() {
             Setilic
           </Link>
         </p>
-        {BUILD_ID && (
-          <div title={'Build ID'} className={'flex items-center gap-1'}>
-            <FingerPrintIcon className={'h-5 w-5'} />
-            {BUILD_ID}
-          </div>
-        )}
-        {BUILD_TAG && (
-          <div title={'Build Tag'} className={'flex items-center gap-1'}>
-            <TagIcon className={'h-5 w-5'} />
-            {BUILD_TAG}
-          </div>
-        )}
+        <BuildIdDisplay />
+        <BuildTagDisplay />
       </div>
     </div>
   );

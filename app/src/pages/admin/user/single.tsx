@@ -14,6 +14,7 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { FormEvent } from 'react';
+import { Helmet } from 'react-helmet';
 
 export default function AdminUser() {
   const { id } = useParams();
@@ -25,6 +26,9 @@ export default function AdminUser() {
 
   return (
     <div>
+      <Helmet>
+        <title>{data.username} | User</title>
+      </Helmet>
       <div className={'grid grid-cols-2 gap-5'}>
         <UserInfoItem label={'ID'} value={data.id} />
         <UserInfoItem label={'Username'} value={data.username} />

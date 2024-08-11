@@ -13,6 +13,7 @@ import {
 import { FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { Helmet } from 'react-helmet';
 
 function UserItem({ user }: { user: UserModel }) {
   const navigate = useNavigate();
@@ -38,6 +39,9 @@ export default function AdminUserList() {
         <h1 className={'text-2xl font-semibold'}>Users</h1>
         <CreateUserModal />
       </div>
+      <Helmet>
+        <title>Users</title>
+      </Helmet>
       <div className={'flex flex-grow flex-col overflow-x-auto'}>
         <table
           className={

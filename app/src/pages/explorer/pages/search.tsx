@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -31,6 +32,9 @@ export default function SearchPage() {
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
+      <Helmet>
+        <title>"{query}" - Search</title>
+      </Helmet>
       <Progress
         aria-label={'Recent Files loading...'}
         isIndeterminate={!search?.data || search.isLoading}

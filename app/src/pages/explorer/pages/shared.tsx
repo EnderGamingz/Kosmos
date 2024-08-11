@@ -33,8 +33,9 @@ export default function SharedItems({
 
   return (
     <div className={'relative h-full'}>
-      <Helmet></Helmet>
-
+      <Helmet>
+        <title>{itemsForUser ? 'Shared with me' : 'Shared by me'}</title>
+      </Helmet>
       <div
         className={
           'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
