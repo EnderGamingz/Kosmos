@@ -81,14 +81,15 @@ export default function PasskeyRegister() {
             timeout: 1000,
           });
         })
-        .catch(() =>
+        .catch(e => {
           notifications.updateNotification(registerId, {
             severity: Severity.ERROR,
             status: 'Failed',
+            description: e.toString(),
             canDismiss: true,
-            timeout: 1000,
-          }),
-        );
+            timeout: 3000,
+          });
+        });
     },
   });
 
