@@ -8,7 +8,9 @@ export default function NotificationIndicator() {
   const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const notifications = useNotifications(s =>
-    s.notifications.filter(x => x.popup),
+    s.notifications
+      .filter(x => x.popup)
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0)),
   );
 
   useEffect(() => {

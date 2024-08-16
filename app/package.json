@@ -41,6 +41,7 @@
     "tailwind-merge": "^2.4.0",
     "vite-plugin-webfont-dl": "^3.9.4",
     "web-streams-polyfill": "^4.0.0",
+    "workbox-window": "^7.1.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

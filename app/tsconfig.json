@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    /* PWA types */
+    "types": [
+      "vite-plugin-pwa/client"
+    ],
     /* Target */
     "target": "ES2020",
     "useDefineForClassFields": true,

@@ -13,7 +13,12 @@ export default defineConfig({
     webfontDownload(),
     tsconfigPaths(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      workbox: {
+        cleanupOutdatedCaches: false,
+        sourcemap: true,
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+      },
       includeAssets: [
         'img/logo_filled.svg',
         'img/logo_filled_full.svg',

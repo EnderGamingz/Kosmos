@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { ReactNode } from 'react';
 
 export enum Severity {
   INFO,
@@ -15,6 +16,8 @@ export type CreateNotificationPayload = {
   loading?: boolean;
   timeout?: number;
   canDismiss?: boolean;
+  child?: ReactNode;
+  priority?: number;
 };
 
 export type UpdateNotificationPayload = {

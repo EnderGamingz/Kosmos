@@ -5,6 +5,7 @@ import tw from '@utils/classMerge.ts';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { NotificationStatus } from './notificationStatus.tsx';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
+import { Collapse } from 'react-collapse';
 
 const ExpandedNotificationHeight = 56;
 
@@ -69,7 +70,7 @@ export function NotificationItem({
         <div className={'mr-1 flex h-7 w-7'}>
           {getSeverityIcon(data.severity)}
         </div>
-        <div>
+        <div className={'w-full'}>
           <div className={'flex items-center'}>
             <p className={'text-lg font-medium'}>{data.title}</p>
             {data.status && (
@@ -79,6 +80,9 @@ export function NotificationItem({
             )}
           </div>
           <p className={'text-sm font-light'}>{data.description}</p>
+          {data.child && (
+            <Collapse isOpened={!data.loading}>{data.child}</Collapse>
+          )}
         </div>
         {data.canDismiss && (
           <div

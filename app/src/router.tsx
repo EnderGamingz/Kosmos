@@ -32,6 +32,7 @@ import FavoritesPage from '@pages/explorer/pages/favorites.tsx';
 import AlbumsPage from '@pages/explorer/pages/albums/all';
 import AlbumPage from '@pages/explorer/pages/albums/single';
 import { Helmet } from 'react-helmet';
+import { useServiceWorker } from '@hooks/serviceWorker.tsx';
 
 export function DefaultHelmet() {
   return (
@@ -49,6 +50,8 @@ export default function Router() {
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  useServiceWorker();
 
   return (
     <BrowserRouter>
