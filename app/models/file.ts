@@ -121,6 +121,8 @@ export function getFileTypeString(id: number): string {
       return 'Large or Unsupported Image';
     case FileType.Archive:
       return 'Archive';
+    case FileType.Editable:
+      return 'Editable Document';
     default:
       return 'Generic';
   }

@@ -138,7 +138,7 @@ export function EditMarkdownFile({
     onOpen,
     onClose: onDisclosureClose,
   } = useDisclosure();
-  const query = useFileContent(file.id);
+  const query = useFileContent(undefined, file.id);
 
   const handleClose = () => {
     onDisclosureClose();
@@ -212,12 +212,14 @@ export function MarkdownFullscreenView({
 export default function FileMarkdownDisplay({
   file,
   isShared,
+  serveUrl,
 }: {
   file: FileModel;
   isShared: boolean;
+  serveUrl: string;
 }) {
   const [fullscreen, setFullscreen] = useState(false);
-  const query = useFileContent(file.id);
+  const query = useFileContent(serveUrl);
 
   return (
     <>

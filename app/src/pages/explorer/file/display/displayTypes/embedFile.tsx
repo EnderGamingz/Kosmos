@@ -20,7 +20,13 @@ export default function EmbedFile({
   isShared: boolean;
 }) {
   if (FileTypeActions.isMarkdown(file))
-    return <FileMarkdownDisplay file={file} isShared={isShared} />;
+    return (
+      <FileMarkdownDisplay
+        file={file}
+        isShared={isShared}
+        serveUrl={serveUrl}
+      />
+    );
 
   return <FileObjectDisplay file={file} serveUrl={serveUrl} />;
 }
