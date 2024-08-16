@@ -4,7 +4,8 @@ use serde::Serialize;
 use tower_sessions::Session;
 
 use crate::model::album::AlbumModelDTO;
-use crate::model::file::{FileModelDTO, FileType};
+use crate::model::file::FileModelDTO;
+use crate::model::internal::file_type::FileType;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::GetFilesByType;
 use crate::services::session_service::SessionService;

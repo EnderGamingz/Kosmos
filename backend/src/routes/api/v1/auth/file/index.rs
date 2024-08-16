@@ -6,7 +6,8 @@ use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
 
-use crate::model::file::{FileModelDTO, FileType};
+use crate::model::file::FileModelDTO;
+use crate::model::internal::file_type::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::folder::SortByFolders;
@@ -170,7 +171,7 @@ pub async fn get_file_by_type(
     Query(params): Query<GetFilesByType>,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let file_type = FileType::by_id(file_type);
+    let file_type = FileType::new(file_type);
 
     let files = state
         .file_service

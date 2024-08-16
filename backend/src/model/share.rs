@@ -3,22 +3,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
-
-#[repr(i16)]
-#[derive(Clone, Copy, PartialEq)]
-pub enum ShareType {
-    Public = 0,
-    Private = 1,
-}
-
-impl ShareType {
-    pub fn by_id(num: i16) -> ShareType {
-        match num {
-            1 => ShareType::Private,
-            _ => ShareType::Public,
-        }
-    }
-}
+use crate::model::internal::share_type::ShareType;
 
 // Start: Share Model
 #[derive(Clone, FromRow, Debug)]
@@ -29,7 +14,7 @@ pub struct ShareModel {
     pub file_id: Option<i64>,
     pub folder_id: Option<i64>,
     pub album_id: Option<i64>,
-    pub share_type: i16,
+    pub share_type: ShareType,
     pub share_target: Option<UserId>,
     pub access_limit: Option<i32>,
     pub password: Option<String>,
@@ -69,7 +54,7 @@ impl From<ShareModel> for ShareModelDTO {
             file_id: model.file_id.map(|id| id.to_string()),
             folder_id: model.folder_id.map(|id| id.to_string()),
             album_id: model.album_id.map(|id| id.to_string()),
-            share_type: model.share_type,
+            share_type: model.share_type as i16,
             share_target: model.share_target,
             access_limit: model.access_limit,
             password: model.password,

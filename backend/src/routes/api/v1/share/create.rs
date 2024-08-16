@@ -1,4 +1,4 @@
-use crate::model::share::ShareType;
+use crate::model::internal::share_type::ShareType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;

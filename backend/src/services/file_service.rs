@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
 use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
-use crate::model::file::{FileModel, FileType, PreviewStatus};
-use crate::model::image::{ImageFormat, ImageFormatModel};
+use crate::model::file::FileModel;
+use crate::model::image::ImageFormatModel;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{
     GetFilesSortParams, GetRecentFilesParams, SortByFiles, SortOrder,
@@ -12,6 +12,8 @@ use crate::services::session_service::UserId;
 use sqlx::{Execute, QueryBuilder};
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt;
+use crate::model::internal::file_type::FileType;
+use crate::model::internal::preview_status::PreviewStatus;
 
 #[derive(Clone)]
 pub struct FileService {
@@ -546,10 +548,8 @@ impl FileService {
         let formats_folder_path = self.upload_path.join("formats");
 
         for format_model in formats {
-            let format = ImageFormat::format_by_id_unsafe(format_model.format);
-
             let format_path =
-                formats_folder_path.join(ImageService::make_image_format_name(file_id, format));
+                formats_folder_path.join(ImageService::make_image_format_name(file_id, format_model.format));
 
             // Delete image format from disk
             let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
@@ -581,7 +581,7 @@ impl FileService {
         })?;
 
         for file in files {
-            self.permanently_delete_file(file.id, Some(FileType::by_id(file.file_type)))
+            self.permanently_delete_file(file.id, Some(FileType::new(file.file_type)))
                 .await?;
         }
         Ok(())

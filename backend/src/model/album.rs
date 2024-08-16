@@ -1,14 +1,16 @@
-use crate::model::file::{FileModel, FileType};
+use crate::model::file::FileModel;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
+use crate::model::internal::file_type::FileType;
+use crate::services::session_service::UserId;
 
 // Start: Album Model
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct AlbumModel {
     pub id: i64,
-    pub user_id: i64,
+    pub user_id: UserId,
     pub name: String,
     pub description: Option<String>,
     pub preview_id: Option<i64>,
@@ -68,7 +70,6 @@ impl From<AlbumModel> for SharedAlbumModelDTO {
 // End: Shared Album Model
 
 // Start: Album share with share info
-
 #[derive(FromRow)]
 pub struct AlbumModelWithShareInfo {
     pub id: i64,
@@ -107,7 +108,6 @@ impl From<AlbumModelWithShareInfo> for AlbumModelWithShareInfoDTO {
         }
     }
 }
-
 // End: Album share with share info
 
 impl FileModel {

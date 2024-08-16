@@ -63,7 +63,7 @@ pub async fn update_user(
     }
 
     if let Some(new_role) = payload.new_role {
-        let selected_role = Role::by_id(new_role);
+        let selected_role = Role::new(new_role);
         if admin.id == user.id && !selected_role.has_permission(Permission::UpdateUser) {
             return Err(AppError::NotAllowed {
                 error: "Role change is not allowed".to_string(),

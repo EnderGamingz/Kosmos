@@ -8,7 +8,7 @@ pub enum Role {
 }
 
 impl Role {
-    pub fn by_id(num: i16) -> Role {
+    pub fn new(num: i16) -> Role {
         match num {
             1 => Role::Admin,
             _ => Role::User,

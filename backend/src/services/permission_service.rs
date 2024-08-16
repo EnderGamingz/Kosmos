@@ -24,7 +24,7 @@ impl PermissionService {
     ) -> Result<UserModel, AppError> {
         let user_id = SessionService::check_logged_in(&session).await?;
         let user = self.user_service.get_auth_user(user_id).await?;
-        let role = Role::by_id(user.role);
+        let role = Role::new(user.role);
 
         let has_permissions = role.has_permission(permission);
 
@@ -44,7 +44,7 @@ impl PermissionService {
     ) -> Result<UserModel, AppError> {
         let user_id = SessionService::check_logged_in(&session).await?;
         let user = self.user_service.get_auth_user(user_id).await?;
-        let role = Role::by_id(user.role);
+        let role = Role::new(user.role);
 
         let has_permissions = role.has_permissions(permissions);
 

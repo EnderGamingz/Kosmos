@@ -1,80 +1,15 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::{JsonValue, Uuid};
-use sqlx::{FromRow, Type};
-
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type)]
-#[repr(i16)]
-pub enum FileType {
-    Generic = 0,
-    Image = 1,
-    Video = 2,
-    Audio = 3,
-    Document = 4,
-    RawImage = 5,
-    LargeImage = 6,
-    Archive = 7,
-    Editable = 8,
-}
-
-impl From<i16> for FileType {
-    fn from(num: i16) -> Self {
-        Self::by_id(num)
-    }
-}
-
-impl FileType {
-    pub fn by_id(num: i16) -> Self {
-        match num {
-            1 => FileType::Image,
-            2 => FileType::Video,
-            3 => FileType::Audio,
-            4 => FileType::Document,
-            5 => FileType::RawImage,
-            6 => FileType::LargeImage,
-            7 => FileType::Archive,
-            8 => FileType::Editable,
-            _ => FileType::Generic,
-        }
-    }
-
-    pub const VALID_FILE_TYPES_FOR_ALBUM: [FileType; 3] =
-        [FileType::Image, FileType::RawImage, FileType::LargeImage];
-
-    pub const FILE_TYPES_FOR_UPDATE: [FileType; 1] = [FileType::Editable];
-}
-
-impl FileModel {
-    pub fn is_valid_to_edit_content(&self) -> bool {
-        FileType::FILE_TYPES_FOR_UPDATE.contains(&self.file_type)
-    }
-}
-
-#[repr(i16)]
-#[derive(Clone, Copy, PartialEq)]
-pub enum PreviewStatus {
-    Unavailable = 0,
-    Ready = 1,
-    Failed = 2,
-    Processing = 3,
-}
-
-impl PreviewStatus {
-    pub fn by_id(num: i16) -> PreviewStatus {
-        match num {
-            1 => PreviewStatus::Ready,
-            2 => PreviewStatus::Failed,
-            3 => PreviewStatus::Processing,
-            _ => PreviewStatus::Unavailable,
-        }
-    }
-}
+use sqlx::FromRow;
+use crate::model::internal::file_type::FileType;
+use crate::services::session_service::UserId;
 
 // Start: File Model
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct FileModel {
     pub id: i64,
-    pub user_id: i64,
+    pub user_id: UserId,
     pub file_name: String,
     pub file_size: i64,
     pub file_type: FileType,
@@ -86,6 +21,12 @@ pub struct FileModel {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+}
+
+impl FileModel {
+    pub fn is_valid_to_edit_content(&self) -> bool {
+        FileType::FILE_TYPES_FOR_UPDATE.contains(&self.file_type)
+    }
 }
 
 #[derive(Serialize)]
@@ -116,7 +57,7 @@ impl From<FileModel> for FileModelDTO {
             mime_type: model.mime_type,
             metadata: model.metadata,
             parent_folder_id: model.parent_folder_id.map(|v| v.to_string()),
-            preview_status: model.preview_status,
+            preview_status: model.preview_status.map(|v| v as i16),
             favorite: model.favorite,
             created_at: model.created_at,
             updated_at: model.updated_at,
@@ -130,7 +71,7 @@ impl From<FileModel> for FileModelDTO {
 #[derive(FromRow)]
 pub struct FileModelWithShareInfo {
     pub id: i64,
-    pub user_id: i64,
+    pub user_id: UserId,
     pub file_name: String,
     pub file_size: i64,
     pub file_type: i16,
@@ -212,7 +153,7 @@ impl From<FileModel> for ShareFileModelDTO {
             file_type: model.file_type as i16,
             mime_type: model.mime_type,
             metadata: model.metadata,
-            preview_status: model.preview_status,
+            preview_status: model.preview_status.map(|v| v as i16),
             created_at: model.created_at,
             updated_at: model.updated_at,
         }

@@ -1,4 +1,4 @@
-use crate::model::file::FileType;
+use crate::model::internal::file_type::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::{SessionService, UserId};
@@ -99,7 +99,7 @@ async fn delete_folder_with_structure(
                 .file_service
                 .permanently_delete_file(
                     folder.file_ids[i],
-                    Some(FileType::by_id(folder.file_types[i])),
+                    Some(FileType::new(folder.file_types[i])),
                 )
                 .await?;
         }

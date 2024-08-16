@@ -2,13 +2,13 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
 use sqlx::types::Uuid;
-
+use crate::services::session_service::UserId;
 
 // Start: Folder Model
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct FolderModel {
     pub id: i64,
-    pub user_id: i64,
+    pub user_id: UserId,
     pub folder_name: String,
     pub parent_id: Option<i64>,
     pub favorite: bool,
@@ -46,7 +46,7 @@ impl From<FolderModel> for FolderModelDTO {
 #[derive(FromRow)]
 pub struct FolderModelWithShareInfo {
     pub id: i64,
-    pub user_id: i64,
+    pub user_id: UserId,
     pub folder_name: String,
     pub parent_id: Option<i64>,
     pub favorite: bool,
@@ -112,34 +112,32 @@ impl From<FolderModel> for ShareFolderModelDTO {
 // Start: Directory
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct Directory {
-    pub(crate) id: i64,
-    pub(crate) folder_name: String,
-    pub(crate) user_id: i64,
-    pub(crate) path: Vec<String>,
-    pub(crate) files: Vec<i64>,
-    pub(crate) file_names: Vec<String>,
+    pub id: i64,
+    pub folder_name: String,
+    pub user_id: UserId,
+    pub path: Vec<String>,
+    pub files: Vec<i64>,
+    pub file_names: Vec<String>,
 }
-
-
 // End: Directory
 
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct DirectoryWithShare {
-    pub(crate) id: i64,
-    pub(crate) folder_name: String,
-    pub(crate) user_id: i64,
-    pub(crate) parent_id: Option<i64>,
-    pub(crate) path: Vec<String>,
-    pub(crate) share_id: Option<i64>,
-    pub(crate) share_type: Option<i16>,
-    pub(crate) share_target: Option<i64>
+    pub id: i64,
+    pub folder_name: String,
+    pub user_id: UserId,
+    pub parent_id: Option<i64>,
+    pub path: Vec<String>,
+    pub share_id: Option<i64>,
+    pub share_type: Option<i16>,
+    pub share_target: Option<i64>
 }
 
 // Start: Simple Directory
 #[derive(Clone, FromRow, Debug)]
 pub struct SimpleDirectory {
-    pub(crate) id: i64,
-    pub(crate) folder_name: String,
+    pub id: i64,
+    pub folder_name: String,
 }
 
 #[derive(Serialize)]
@@ -160,8 +158,8 @@ impl From<SimpleDirectory> for SimpleDirectoryDTO {
 
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct DeletionDirectory {
-    pub(crate) id: i64,
-    pub(crate) id_path: Vec<i64>,
-    pub(crate) file_ids: Vec<i64>,
-    pub(crate) file_types: Vec<i16>,
+    pub id: i64,
+    pub id_path: Vec<i64>,
+    pub file_ids: Vec<i64>,
+    pub file_types: Vec<i16>,
 }

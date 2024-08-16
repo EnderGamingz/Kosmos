@@ -11,9 +11,10 @@ use sonyflake::Sonyflake;
 use sqlx::types::JsonValue;
 
 use crate::db::KosmosPool;
-use crate::model::file::PreviewStatus;
-use crate::model::image::{IMAGE_FORMATS, ImageFormat};
-use crate::model::operation::{OperationStatus, OperationType};
+use crate::model::internal::preview_status::PreviewStatus;
+use crate::model::internal::image_format::ImageFormat;
+use crate::model::internal::operation_type::OperationType;
+use crate::model::internal::operation_status::OperationStatus;
 use crate::response::error_handling::AppError;
 use crate::state::AppState;
 
@@ -249,7 +250,7 @@ impl ImageService {
 
         let mut format_inserts: Vec<ImageFormatInsert> = vec![];
 
-        for format in IMAGE_FORMATS {
+        for format in ImageFormat::IMAGE_FORMATS {
             let resize_image = Self::resize_image_and_convert_to_jpg(format, &image, &image_buff)
                 .map_err(|e| e.into_error(file_id, format))?;
 

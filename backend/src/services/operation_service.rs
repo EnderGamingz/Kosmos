@@ -1,11 +1,11 @@
 use crate::db::KosmosPool;
-use crate::model::operation::{
-    OperationModel, OperationStatus, OperationType,
-};
+use crate::model::operation::OperationModel;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 use sonyflake::Sonyflake;
 use sqlx::types::JsonValue;
+use crate::model::internal::operation_status::OperationStatus;
+use crate::model::internal::operation_type::OperationType;
 
 #[derive(Clone)]
 pub struct OperationService {

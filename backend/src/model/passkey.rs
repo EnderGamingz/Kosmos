@@ -33,5 +33,4 @@ impl From<PasskeyModel> for PasskeyModelDTO {
         }
     }
 }
-
 // End: Passkey Model

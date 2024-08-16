@@ -1,12 +1,13 @@
-use crate::model::file::{FileModel, FileType, PreviewStatus};
-use crate::model::image::ImageFormat;
-use crate::model::operation::OperationStatus;
+use crate::model::file::FileModel;
+use crate::model::internal::image_format::ImageFormat;
+use crate::model::internal::operation_status::OperationStatus;
 use axum::extract::{Path, State};
 use axum::response::{IntoResponse, Response};
 use std::path::Path as StdPath;
 use std::sync::Arc;
 use tower_sessions::Session;
-
+use crate::model::internal::file_type::FileType;
+use crate::model::internal::preview_status::PreviewStatus;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::share::{
@@ -160,16 +161,15 @@ pub async fn reprocess_images_from_operation(
         .get_operation_for_user_by_id(operation_id, user_id)
         .await?;
 
-    let operation_status = OperationStatus::get_status_by_id(operation.operation_status);
 
-    if operation_status == OperationStatus::Unrecoverable {
+    if operation.operation_status == OperationStatus::Unrecoverable {
         return Err(AppError::BadRequest {
             error: Some("Operation is unrecoverable".to_string()),
         })?;
     }
 
-    if operation_status != OperationStatus::Interrupted
-        && operation_status != OperationStatus::Failed
+    if operation.operation_status != OperationStatus::Interrupted
+        && operation.operation_status != OperationStatus::Failed
     {
         return Err(AppError::BadRequest {
             error: Some("Operation is not in an error state".to_string()),
