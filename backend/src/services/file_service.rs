@@ -1,34 +1,36 @@
-use std::path::{Path, PathBuf};
-
 use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
 use crate::model::file::FileModel;
 use crate::model::image::ImageFormatModel;
+use crate::model::internal::file_type::FileType;
+use crate::model::internal::preview_status::PreviewStatus;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::{
     GetFilesSortParams, GetRecentFilesParams, SortByFiles, SortOrder,
 };
 use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
+use sonyflake::Sonyflake;
 use sqlx::{Execute, QueryBuilder};
+use std::path::{Path, PathBuf};
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt;
-use crate::model::internal::file_type::FileType;
-use crate::model::internal::preview_status::PreviewStatus;
 
 #[derive(Clone)]
 pub struct FileService {
     db_pool: KosmosPool,
     upload_path: PathBuf,
+    sf: Sonyflake,
 }
 
 impl FileService {
-    pub fn new(db_pool: KosmosPool) -> Self {
+    pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
         let upload_location =
             std::env::var("UPLOAD_LOCATION").expect("File service is missing UPLOAD_LOCATION");
         let upload_path = Path::new(&upload_location).to_path_buf();
         FileService {
             db_pool,
             upload_path,
+            sf,
         }
     }
 
@@ -119,6 +121,46 @@ impl FileService {
         .await
         .map_err(|e| {
             tracing::error!("Error getting favorite files for user {}: {}", user_id, e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn create_empty_markdown_file(
+        &self,
+        user_id: UserId,
+        parent_folder_id: Option<i64>,
+        file_name: String,
+    ) -> Result<FileModel, AppError> {
+        let id = self.sf.next_id().map_err(|_| AppError::InternalError)? as i64;
+
+        let mime_type = "text/markdown";
+        let file_type = FileService::get_file_type(mime_type, &file_name);
+        let file_type = file_type.file_type;
+
+        tokio::fs::File::create(self.upload_path.join(id.to_string()))
+            .await
+            .map_err(|e| {
+                tracing::error!("Error creating empty file for user {}: {}", user_id, e);
+                AppError::InternalError
+            })?;
+
+        sqlx::query_as!(
+            FileModel,
+            "INSERT INTO files (id, user_id, parent_folder_id, file_name, file_type, mime_type,file_size)
+             VALUES ($1, $2, $3, $4, $5, $6, 0)
+             RETURNING *",
+            id,
+            user_id,
+            parent_folder_id,
+            file_name,
+            file_type as i16,
+            mime_type
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating empty file for user {}: {}", user_id, e);
+            let _ = tokio::fs::remove_file(self.upload_path.join(id.to_string()));
             AppError::InternalError
         })
     }
@@ -548,8 +590,10 @@ impl FileService {
         let formats_folder_path = self.upload_path.join("formats");
 
         for format_model in formats {
-            let format_path =
-                formats_folder_path.join(ImageService::make_image_format_name(file_id, format_model.format));
+            let format_path = formats_folder_path.join(ImageService::make_image_format_name(
+                file_id,
+                format_model.format,
+            ));
 
             // Delete image format from disk
             let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
@@ -664,7 +708,7 @@ impl FileService {
         if mime_type.starts_with("application/octet-stream") {
             if let Some((_, file_type, new_mime)) = TYPES_BY_EXTENSION
                 .iter()
-                .find(|(extension, _,_)| file_name.ends_with(extension))
+                .find(|(extension, _, _)| file_name.ends_with(extension))
             {
                 return GetFileTypeResponse {
                     file_type: *file_type,

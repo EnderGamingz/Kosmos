@@ -190,6 +190,50 @@ pub async fn get_file_by_type(
 }
 
 #[derive(Deserialize)]
+pub struct CreateMarkdownFilePayload {
+    pub name: String,
+    pub parent_folder_id: Option<String>,
+}
+
+impl CreateMarkdownFilePayload {
+    pub fn get_folder_id(&self) -> Option<i64> {
+        self.parent_folder_id
+            .as_ref()
+            .and_then(|id| id.parse::<i64>().ok())
+    }
+}
+
+pub async fn create_markdown_file(
+    State(state): KosmosState,
+    session: Session,
+    Json(payload): Json<CreateMarkdownFilePayload>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let parent_folder_id = payload.get_folder_id();
+    let file_name = payload.name.trim().to_string();
+    let file_exists = state
+        .file_service
+        .check_file_exists_in_folder(&file_name, parent_folder_id.clone())
+        .await?;
+
+    if file_exists {
+        return Err(AppError::BadRequest {
+            error: Some("File already exists in this folder".to_string()),
+        });
+    }
+
+    let id = state
+        .file_service
+        .create_empty_markdown_file(user_id, parent_folder_id, file_name)
+        .await?
+        .id;
+
+    Ok(AppSuccess::CREATED {
+        id: Some(id.to_string()),
+    })
+}
+
+#[derive(Deserialize)]
 pub struct MoveParams {
     pub folder_id: i64,
 }

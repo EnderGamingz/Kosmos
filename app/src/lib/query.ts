@@ -45,6 +45,12 @@ export async function invalidateFiles() {
   await AlbumQuery.invalidateAlbums();
 }
 
+export async function invalidateFilesInFolder(folder_id?: string) {
+  await queryClient.invalidateQueries({
+    queryKey: ['files', folder_id],
+  });
+}
+
 export async function invalidateFolders() {
   await queryClient.invalidateQueries({
     queryKey: ['folders'],
@@ -309,13 +315,13 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
   });
 };
 
-export const useFileContent = (url?: string, fileId?: string) => {
+export const useFileContent = (fileId: string, url?: string) => {
   return useQuery({
     queryFn: () =>
       axios
         .get(url ?? `${BASE_URL}auth/file/${fileId}/action/Serve`)
         .then(res => res.data.toString()),
-    queryKey: ['file', 'content', url],
+    queryKey: ['file', 'content', fileId],
   });
 };
 

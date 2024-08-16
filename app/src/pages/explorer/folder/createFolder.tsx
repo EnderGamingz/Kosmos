@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -17,12 +17,9 @@ export function CreateFolder({
   onClose: () => void;
 }) {
   const notifications = useNotifications(s => s.actions);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [active, setActive] = useState(false);
-  const [name, setName] = useState('');
 
   const { mutate } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ value }: { value: string }) => {
       const createId = notifications.notify({
         title: 'Create folder',
         severity: Severity.INFO,
@@ -30,7 +27,7 @@ export function CreateFolder({
       });
       await axios
         .post(`${BASE_URL}auth/folder${folder ? `/${folder}` : ''}`, {
-          name,
+          name: value,
         })
         .then(() => {
           notifications.updateNotification(createId, {
@@ -53,41 +50,74 @@ export function CreateFolder({
     },
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    mutate();
-  };
+  return (
+    <ButtonForm
+      label={'Create Folder'}
+      icon={<FolderIcon />}
+      onSubmit={value => mutate({ value })}
+    />
+  );
+}
+
+export function ButtonForm({
+  label,
+  icon,
+  onSubmit,
+  suffix,
+}: {
+  label: string;
+  icon: ReactNode;
+  suffix?: string;
+  onSubmit: (value: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [active, setActive] = useState(false);
+  const [value, setValue] = useState('');
 
   const handleActivate = () => {
     setActive(true);
     inputRef.current?.focus();
   };
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const value = inputRef.current?.value;
+    if (!value) return;
+    onSubmit(value + (suffix || ''));
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <motion.div
         variants={itemTransitionVariantFadeInFromTopSmall}
-        className={'btn-black relative flex items-center py-2'}
+        className={'menu-button relative flex items-center py-2'}
         onClick={handleActivate}>
-        <button disabled={!active || !name} type={'submit'}>
-          {active ? (
-            <CheckIcon className={'h-5 w-5'} />
-          ) : (
-            <FolderIcon className={'h-5 w-5 min-w-5'} />
-          )}
+        <button
+          disabled={!active || !value}
+          type={'submit'}
+          className={'[&>svg]:h-5 [&>svg]:w-5 [&>svg]:min-w-5'}>
+          {active ? <CheckIcon className={'h-5 w-5'} /> : icon}
         </button>
-        <div className={'flex'}>
+        <div className={'relative flex'}>
           <input
             ref={inputRef}
             type={'text'}
-            placeholder={'Folder name'}
-            value={active ? name : 'Create Folder'}
-            onChange={e => setName(e.target.value)}
+            placeholder={'Name'}
+            value={active ? value : label}
+            onChange={e => setValue(e.target.value)}
             className={tw(
               'border-nones w-36 rounded-lg bg-transparent py-0.5 outline-none transition-all',
               !active && 'pointer-events-none',
             )}
           />
+          {suffix && active && (
+            <span
+              className={
+                'pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-xs opacity-50'
+              }>
+              {suffix}
+            </span>
+          )}
         </div>
       </motion.div>
     </form>

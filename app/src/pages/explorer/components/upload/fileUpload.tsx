@@ -39,11 +39,11 @@ export function FileUpload({ onClick }: { onClick: () => void }) {
   return (
     <motion.button
       variants={itemTransitionVariantFadeInFromTopSmall}
-      className={tw('w-full py-3', full ? 'btn-white' : 'btn-black')}
+      className={tw('menu-button w-full py-2')}
       onClick={onClick}>
-      <ArrowUpTrayIcon />
+      <ArrowUpTrayIcon className={'h-5 w-5'} />
       <div className={'flex flex-col text-start'}>
-        Upload Files
+        Upload
         {full && (
           <p className={'w-full text-xs font-medium text-red-400'}>
             Storage limit reached

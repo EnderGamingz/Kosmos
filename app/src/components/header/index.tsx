@@ -5,7 +5,7 @@ import {
   UserPlusIcon,
 } from '@heroicons/react/24/outline';
 import { UserMenu } from './userMenu.tsx';
-import { NewMenu } from './newMenu.tsx';
+import { NewMenu } from './new/newMenu.tsx';
 import { NotificationsMenu } from '@components/header/notificationsMenu.tsx';
 import tw from '@utils/classMerge.ts';
 import { ALLOW_REGISTER } from '@lib/env.ts';

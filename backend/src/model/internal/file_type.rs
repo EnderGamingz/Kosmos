@@ -36,8 +36,14 @@ impl FileType {
         }
     }
 
+    pub fn check_valid_for_empty_file(&self) -> bool {
+        FileType::FILE_TYPES_FOR_EMPTY_FILE.contains(self)
+    }
+
     pub const VALID_FILE_TYPES_FOR_ALBUM: [FileType; 3] =
         [FileType::Image, FileType::RawImage, FileType::LargeImage];
 
     pub const FILE_TYPES_FOR_UPDATE: [FileType; 1] = [FileType::Editable];
+
+    pub const FILE_TYPES_FOR_EMPTY_FILE: [FileType; 1] = [FileType::Editable];
 }

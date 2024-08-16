@@ -51,6 +51,10 @@ fn get_image_router() -> KosmosRouter {
 fn get_file_router() -> KosmosRouter {
     Router::new()
         .route(
+            "/create/markdown",
+            post(crate::routes::api::v1::auth::file::create_markdown_file),
+        )
+        .route(
             "/:file_id",
             delete(crate::routes::api::v1::auth::file::bin::permanently_delete_file)
                 .patch(crate::routes::api::v1::auth::file::rename_file),

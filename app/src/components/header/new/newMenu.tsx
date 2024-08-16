@@ -10,11 +10,12 @@ import {
   FileUpload,
   FileUploadModal,
 } from '@pages/explorer/components/upload/fileUpload.tsx';
-import { CreateFolder } from '@pages/explorer/folder/createFolder';
-import { useExplorerStore } from '@stores/explorerStore';
+import { CreateFolder } from '@pages/explorer/folder/createFolder.tsx';
+import { useExplorerStore } from '@stores/explorerStore.ts';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
+import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);
@@ -39,7 +40,7 @@ export function NewMenu() {
             variants={containerVariant()}
             initial={'hidden'}
             animate={'show'}
-            className={'max-w-52 space-y-2 px-0.5 py-2'}>
+            className={'max-w-52 space-y-1 px-0.5 py-2'}>
             <FileUpload
               onClick={() => {
                 handleClose();
@@ -47,6 +48,7 @@ export function NewMenu() {
               }}
             />
             <CreateFolder onClose={handleClose} folder={currentFolder} />
+            <CreateMarkdownFile folder={currentFolder} onClose={handleClose} />
           </motion.div>
         </PopoverContent>
       </Popover>
