@@ -9,6 +9,7 @@ export enum FileType {
   RawImage,
   LargeImage,
   Archive,
+  Editable,
 }
 
 export class FileTypeActions {
@@ -18,6 +19,35 @@ export class FileTypeActions {
 
   static isVideo(id: number) {
     return [FileType.Video].includes(id);
+  }
+
+  static canOpenExternal(data: FileModel) {
+    return [FileType.Document, FileType.Video].includes(data.file_type);
+  }
+
+  static hasPreview(data: FileModel) {
+    return [FileType.Image, FileType.RawImage].includes(data.file_type);
+  }
+
+  static hasFileEmbedData(data: FileModel) {
+    return [FileType.Document, FileType.Editable].includes(data.file_type);
+  }
+
+  static canEditContent(data: FileModel) {
+    return data.file_type === FileType.Editable;
+  }
+
+  static isMarkdown(data: FileModel) {
+    return this.canEditContent(data) && data.mime_type === 'text/markdown';
+  }
+
+  static shouldDelayPreview(data: FileModel) {
+    return [
+      FileType.Image,
+      FileType.Document,
+      FileType.Audio,
+      FileType.Video,
+    ].includes(data.file_type);
   }
 }
 
@@ -107,12 +137,4 @@ export function isMultiple(data: ContextData): data is Selected {
     (data as Selected).files !== undefined &&
     (data as Selected).folders !== undefined
   );
-}
-
-export function fileHasPreview(data: FileModel) {
-  return [FileType.Image, FileType.RawImage].includes(data.file_type);
-}
-
-export function fileCanOpenExternal(data: FileModel) {
-  return [FileType.Document, FileType.Video].includes(data.file_type);
 }

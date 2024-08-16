@@ -1,12 +1,12 @@
-use axum::extract::{Path, State};
-use tower_sessions::Session;
-use axum::Json;
-use serde::Deserialize;
 use crate::model::file::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
+use axum::extract::{Path, State};
+use axum::Json;
+use serde::Deserialize;
+use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct MultiDeleteRawBody {
@@ -65,7 +65,7 @@ pub async fn multi_delete(
             })?;
         state
             .file_service
-            .permanently_delete_file(file_id, Some(FileType::by_id(file.file_type)))
+            .permanently_delete_file(file_id, Some(file.file_type))
             .await?;
     }
 

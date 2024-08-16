@@ -18,3 +18,4 @@ pub mod admin;
 pub mod favorite;
 pub mod album;
 pub mod passkey;
+pub mod content;

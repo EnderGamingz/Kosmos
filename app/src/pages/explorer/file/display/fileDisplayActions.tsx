@@ -1,4 +1,4 @@
-import { fileCanOpenExternal, FileModel } from '@models/file.ts';
+import { FileModel, FileTypeActions } from '@models/file.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
@@ -14,6 +14,7 @@ import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { BASE_URL } from '@lib/env.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
+import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 
 const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
   return [
@@ -23,7 +24,7 @@ const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
       name={file.file_name}
       shareUuid={shareUuid}
     />,
-    fileCanOpenExternal(file) && (
+    FileTypeActions.canOpenExternal(file) && (
       <OpenExternally
         id={file.id}
         overwriteUrl={
@@ -52,10 +53,17 @@ const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
       <MoveToTrash short id={file.id} name={file.file_name} onClose={onClose} />
     ),
     !shareUuid && <ShareButton id={file.id} type={'file'} onClose={onClose} />,
+    !shareUuid && FileTypeActions.canEditContent(file) && (
+      <EditMarkdownFile
+        file={file}
+        isMarkdown={FileTypeActions.isMarkdown(file)}
+        onClose={onClose}
+      />
+    ),
   ].filter(Boolean) as ReactNode[];
 };
 
-export function FileDisplayAction({
+export function FileDisplayActions({
   file,
   onClose,
   shareUuid,

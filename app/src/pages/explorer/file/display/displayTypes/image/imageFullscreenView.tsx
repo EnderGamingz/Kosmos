@@ -55,7 +55,7 @@ export function ImageFullscreenView({
   );
 }
 
-export function ImageFullscreenToggle({
+export function FullscreenToggle({
   isFullscreen,
   toggle,
   noOffset,

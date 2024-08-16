@@ -9,7 +9,10 @@ use tower_sessions::Session;
 
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::routes::api::v1::share::{AccessShareItemType, get_share_access_for_folder_items, get_share_album_data, get_share_file, is_allowed_to_access_share};
+use crate::routes::api::v1::share::{
+    get_share_access_for_folder_items, get_share_album_data, get_share_file,
+    is_allowed_to_access_share, AccessShareItemType,
+};
 use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
 use crate::services::file_service::FileService;
 use crate::services::image_service::ImageService;
@@ -20,9 +23,9 @@ async fn get_image_format_data(
     format: ImageFormat,
     file_data: &FileModel,
 ) -> Result<(Vec<u8>, [(&str, &str); 1]), AppError> {
-    let file_type = FileService::get_file_type(&file_data.mime_type);
+    let file_type_res = FileService::get_file_type(&file_data.mime_type, &file_data.file_name);
 
-    if file_type != FileType::Image && file_type != FileType::RawImage {
+    if file_type_res.file_type != FileType::Image && file_type_res.file_type != FileType::RawImage {
         return Err(AppError::BadRequest {
             error: Some("File is not an image".to_string()),
         });
@@ -31,17 +34,15 @@ async fn get_image_format_data(
     // Check that the file exists on disk
     let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
 
-    let file_should_have_formats =
-        FileType::by_id(file_data.file_type) != FileType::RawImage;
+    let file_should_have_formats = file_data.file_type != FileType::RawImage;
 
-    let format_path =
-        if file_should_have_formats {
-            StdPath::new(&upload_location).join("formats").join(
-                ImageService::make_image_format_name(file_data.id, format),
-            )
-        } else {
-            StdPath::new(&upload_location).join(file_data.id.to_string())
-        };
+    let format_path = if file_should_have_formats {
+        StdPath::new(&upload_location)
+            .join("formats")
+            .join(ImageService::make_image_format_name(file_data.id, format))
+    } else {
+        StdPath::new(&upload_location).join(file_data.id.to_string())
+    };
 
     if !format_path.exists() {
         return Err(AppError::NotFound {
@@ -78,7 +79,6 @@ pub async fn get_image_by_format(
 
     let format = ImageFormat::format_by_id_save(format)?;
 
-
     let (image, headers) = get_image_format_data(format, &file_data).await?;
 
     Ok((headers, image).into_response())
@@ -90,7 +90,9 @@ pub async fn get_share_image_by_format_through_folder(
     Path((share_uuid, file_id, format)): Path<(String, i64, i16)>,
 ) -> Result<Response, AppError> {
     let share = is_allowed_to_access_share(&state, &session, share_uuid.clone(), false).await?;
-    let can_access_with_share = get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, &share).await?;
+    let can_access_with_share =
+        get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, &share)
+            .await?;
 
     if !can_access_with_share {
         return Err(AppError::NotAllowed {
@@ -124,9 +126,8 @@ pub async fn get_share_image_by_format_through_album(
         })?;
     }
 
-    let file = state.file_service.get_file(file_id,None).await?;
+    let file = state.file_service.get_file(file_id, None).await?;
     let format = ImageFormat::format_by_id_save(format)?;
-
 
     let (image, headers) = get_image_format_data(format, &file).await?;
 

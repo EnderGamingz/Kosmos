@@ -38,6 +38,7 @@ function getFileIcon(
       );
     case FileType.Video:
       return <FilmIcon />;
+    case FileType.Editable:
     case FileType.Document:
       return <DocumentTextIcon />;
     case FileType.Audio:

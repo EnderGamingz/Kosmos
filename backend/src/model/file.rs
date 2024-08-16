@@ -1,10 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
-use sqlx::FromRow;
 use sqlx::types::{JsonValue, Uuid};
+use sqlx::{FromRow, Type};
 
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type)]
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq)]
 pub enum FileType {
     Generic = 0,
     Image = 1,
@@ -14,10 +14,17 @@ pub enum FileType {
     RawImage = 5,
     LargeImage = 6,
     Archive = 7,
+    Editable = 8,
+}
+
+impl From<i16> for FileType {
+    fn from(num: i16) -> Self {
+        Self::by_id(num)
+    }
 }
 
 impl FileType {
-    pub fn by_id(num: i16) -> FileType {
+    pub fn by_id(num: i16) -> Self {
         match num {
             1 => FileType::Image,
             2 => FileType::Video,
@@ -26,8 +33,20 @@ impl FileType {
             5 => FileType::RawImage,
             6 => FileType::LargeImage,
             7 => FileType::Archive,
+            8 => FileType::Editable,
             _ => FileType::Generic,
         }
+    }
+
+    pub const VALID_FILE_TYPES_FOR_ALBUM: [FileType; 3] =
+        [FileType::Image, FileType::RawImage, FileType::LargeImage];
+
+    pub const FILE_TYPES_FOR_UPDATE: [FileType; 1] = [FileType::Editable];
+}
+
+impl FileModel {
+    pub fn is_valid_to_edit_content(&self) -> bool {
+        FileType::FILE_TYPES_FOR_UPDATE.contains(&self.file_type)
     }
 }
 
@@ -58,7 +77,7 @@ pub struct FileModel {
     pub user_id: i64,
     pub file_name: String,
     pub file_size: i64,
-    pub file_type: i16,
+    pub file_type: FileType,
     pub mime_type: String,
     pub metadata: Option<JsonValue>,
     pub parent_folder_id: Option<i64>,
@@ -93,7 +112,7 @@ impl From<FileModel> for FileModelDTO {
             user_id: model.user_id.to_string(),
             file_name: model.file_name,
             file_size: model.file_size,
-            file_type: model.file_type,
+            file_type: model.file_type as i16,
             mime_type: model.mime_type,
             metadata: model.metadata,
             parent_folder_id: model.parent_folder_id.map(|v| v.to_string()),
@@ -190,7 +209,7 @@ impl From<FileModel> for ShareFileModelDTO {
             id: model.id.to_string(),
             file_name: model.file_name,
             file_size: model.file_size,
-            file_type: model.file_type,
+            file_type: model.file_type as i16,
             mime_type: model.mime_type,
             metadata: model.metadata,
             preview_status: model.preview_status,
@@ -200,4 +219,3 @@ impl From<FileModel> for ShareFileModelDTO {
     }
 }
 // End: Share File Model
-

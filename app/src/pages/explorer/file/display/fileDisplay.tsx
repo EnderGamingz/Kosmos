@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
 import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
-import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
+import { FileDisplayActions } from '@pages/explorer/file/display/fileDisplayActions.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
@@ -124,7 +124,7 @@ function FileDisplayContent({
               <FileDisplayFavorite file={file} onUpdate={onUpdate} />
             )}
             <FileDisplayStats file={file} />
-            <FileDisplayAction
+            <FileDisplayActions
               shareUuid={shareUuid}
               file={file}
               onClose={onClose}

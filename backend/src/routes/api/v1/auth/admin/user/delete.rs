@@ -1,10 +1,9 @@
-use axum::extract::{Path, State};
-use tower_sessions::Session;
-use crate::model::file::FileType;
 use crate::model::role::Permission;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::state::KosmosState;
+use axum::extract::{Path, State};
+use tower_sessions::Session;
 
 pub async fn delete_user(
     State(state): KosmosState,
@@ -32,7 +31,7 @@ pub async fn delete_user(
     for file in files {
         state
             .file_service
-            .permanently_delete_file(file.id, Some(FileType::by_id(file.file_type)))
+            .permanently_delete_file(file.id, Some(file.file_type))
             .await?;
     }
 

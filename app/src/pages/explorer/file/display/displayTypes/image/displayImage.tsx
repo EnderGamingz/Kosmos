@@ -2,7 +2,7 @@ import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
 import {
-  ImageFullscreenToggle,
+  FullscreenToggle,
   ImageFullscreenView,
 } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
 import { ImageTooLargePrompt } from '@pages/explorer/file/display/displayTypes/image/imageTooLargePrompt.tsx';
@@ -51,7 +51,7 @@ export function DisplayImage({
       )}
       <div className={'relative overflow-hidden rounded-xl'}>
         {!isTooLarge && isFullScreenAvailable && (
-          <ImageFullscreenToggle
+          <FullscreenToggle
             isFullscreen={fullScreen}
             toggle={toggleFullScreen}
             noOffset={!!share?.shareUuid && !share?.isSharedInFolder}

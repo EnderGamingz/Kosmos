@@ -56,6 +56,10 @@ fn get_file_router() -> KosmosRouter {
                 .patch(crate::routes::api::v1::auth::file::rename_file),
         )
         .route(
+            "/:file_id/content",
+            post(crate::routes::api::v1::auth::content::update::update_file_contents),
+        )
+        .route(
             "/:file_id/albums",
             get(crate::routes::api::v1::auth::album::read::get_albums_for_file),
         )

@@ -111,13 +111,7 @@ impl From<AlbumModelWithShareInfo> for AlbumModelWithShareInfoDTO {
 // End: Album share with share info
 
 impl FileModel {
-    pub fn get_valid_file_types_for_album() -> Vec<FileType> {
-        vec![FileType::Image, FileType::RawImage, FileType::LargeImage]
-    }
-
     pub fn is_valid_for_album(&self) -> bool {
-        let file_type = FileType::by_id(self.file_type);
-
-        Self::get_valid_file_types_for_album().contains(&file_type)
+        FileType::VALID_FILE_TYPES_FOR_ALBUM.contains(&self.file_type)
     }
 }

@@ -1,6 +1,4 @@
-use std::path::Path;
-
-use sqlx::{Execute, QueryBuilder};
+use std::path::{Path, PathBuf};
 
 use crate::db::{KosmosDb, KosmosDbResult, KosmosPool};
 use crate::model::file::{FileModel, FileType, PreviewStatus};
@@ -11,15 +9,25 @@ use crate::routes::api::v1::auth::file::{
 };
 use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
+use sqlx::{Execute, QueryBuilder};
+use tokio::fs::OpenOptions;
+use tokio::io::AsyncWriteExt;
 
 #[derive(Clone)]
 pub struct FileService {
     db_pool: KosmosPool,
+    upload_path: PathBuf,
 }
 
 impl FileService {
     pub fn new(db_pool: KosmosPool) -> Self {
-        FileService { db_pool }
+        let upload_location =
+            std::env::var("UPLOAD_LOCATION").expect("File service is missing UPLOAD_LOCATION");
+        let upload_path = Path::new(&upload_location).to_path_buf();
+        FileService {
+            db_pool,
+            upload_path,
+        }
     }
 
     fn files_search_query(
@@ -493,14 +501,11 @@ impl FileService {
         file_id: i64,
         file_type: Option<FileType>,
     ) -> Result<(), AppError> {
-        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
-        let upload_path = Path::new(&upload_location);
-
         if let Some(FileType::Image) = file_type {
             self.delete_formats_from_file_id(file_id).await?;
         }
 
-        tokio::fs::remove_file(upload_path.join(file_id.to_string()))
+        tokio::fs::remove_file(self.upload_path.join(file_id.to_string()))
             .await
             .map_err(|e| {
                 tracing::error!("Error deleting file {} from storage: {}", file_id, e);
@@ -538,16 +543,13 @@ impl FileService {
             return Ok(());
         }
 
-        let upload_location = std::env::var("UPLOAD_LOCATION").unwrap();
-        let upload_path = Path::new(&upload_location);
-        let formats_folder_path = upload_path.join("formats");
+        let formats_folder_path = self.upload_path.join("formats");
 
         for format_model in formats {
-
             let format = ImageFormat::format_by_id_unsafe(format_model.format);
 
-            let format_path = formats_folder_path
-                .join(ImageService::make_image_format_name(file_id, format));
+            let format_path =
+                formats_folder_path.join(ImageService::make_image_format_name(file_id, format));
 
             // Delete image format from disk
             let _ = tokio::fs::remove_file(&format_path).await.map_err(|e| {
@@ -600,59 +602,40 @@ impl FileService {
         Ok(())
     }
 
-    pub fn get_file_type(mime_type: &str) -> FileType {
-        const TYPES: [(&'static str, FileType); 44] = [
-            ("image/gif", FileType::Image),
-            ("image/jpeg", FileType::Image),
-            ("image/png", FileType::Image),
-            ("image/x-icon", FileType::Image),
-            ("image/svg+xml", FileType::RawImage),
-            ("image/webp", FileType::RawImage),
-            ("application/postscript", FileType::LargeImage),
-            ("video/mp4", FileType::Video),
-            ("video/webm", FileType::Video),
-            ("video/ogg", FileType::Video),
-            ("video/quicktime", FileType::Video),
-            ("audio/mpeg", FileType::Audio),
-            ("audio/ogg", FileType::Audio),
-            ("audio/wav", FileType::Audio),
-            ("audio/webm", FileType::Audio),
-            ("audio/flac", FileType::Audio),
-            ("audio/opus", FileType::Audio),
-            ("text/css", FileType::Document),
-            ("text/html", FileType::Document),
-            ("text/javascript", FileType::Document),
-            ("text/plain", FileType::Document),
-            ("text/xml", FileType::Document),
-            ("application/json", FileType::Document),
-            ("application/pdf", FileType::Document),
-            ("text/markdown", FileType::Document),
-            ("text/x-python", FileType::Document),
-            ("text/x-rust", FileType::Document),
-            ("text/x-c", FileType::Document),
-            ("text/x-java", FileType::Document),
-            ("text/x-kotlin", FileType::Document),
-            ("text/x-ruby", FileType::Document),
-            ("text/x-swift", FileType::Document),
-            ("application/x-zip-compressed", FileType::Archive),
-            ("application/x-tar-compressed", FileType::Archive),
-            ("application/x-rar-compressed", FileType::Archive),
-            ("application/x-7z-compressed", FileType::Archive),
-            ("application/zip", FileType::Archive),
-            ("application/tar", FileType::Archive),
-            ("application/rar", FileType::Archive),
-            ("application-7z", FileType::Archive),
-            ("application/x-bzip", FileType::Archive),
-            ("application/x-bzip2", FileType::Archive),
-            ("application/x-gzip", FileType::Archive),
-            ("application/x-lzma", FileType::Archive),
-        ];
+    pub async fn update_file_size(&self, file_id: i64, size: i64) -> Result<(), AppError> {
+        sqlx::query!(
+            "UPDATE files SET file_size = $1 WHERE id = $2",
+            size,
+            file_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error while updating file size: {}", e);
+            AppError::InternalError
+        })?;
+        Ok(())
+    }
 
-        TYPES
-            .iter()
-            .find(|(mime, _)| mime == &mime_type)
-            .map(|(_, file_type)| *file_type)
-            .unwrap_or(FileType::Generic)
+    pub async fn update_file_content(&self, file_id: i64, content: String) -> Result<(), AppError> {
+        let file_path = self.upload_path.join(file_id.to_string());
+        let mut file = OpenOptions::new()
+            .write(true)
+            .open(file_path)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error while updating file content: {}", e);
+                AppError::InternalError
+            })?;
+
+        file.write_all(content.as_bytes()).await.map_err(|e| {
+            tracing::error!("Error while updating file content: {}", e);
+            AppError::InternalError
+        })?;
+
+        self.update_file_size(file_id, content.len() as i64).await?;
+
+        Ok(())
     }
 
     pub async fn startup_prepare(&self) {
@@ -670,3 +653,90 @@ impl FileService {
         tracing::info!("Prepared files for startup");
     }
 }
+
+pub struct GetFileTypeResponse {
+    pub file_type: FileType,
+    pub normalized_mime_type: String,
+}
+
+impl FileService {
+    pub fn get_file_type(mime_type: &str, file_name: &str) -> GetFileTypeResponse {
+        if mime_type.starts_with("application/octet-stream") {
+            if let Some((_, file_type, new_mime)) = TYPES_BY_EXTENSION
+                .iter()
+                .find(|(extension, _,_)| file_name.ends_with(extension))
+            {
+                return GetFileTypeResponse {
+                    file_type: *file_type,
+                    normalized_mime_type: new_mime.to_string(),
+                };
+            }
+        }
+
+        let file_type = TYPES_BY_MIME
+            .iter()
+            .find(|(mime, _)| mime == &mime_type)
+            .map_or(&FileType::Generic, |(_, file_type)| file_type);
+
+        GetFileTypeResponse {
+            file_type: *file_type,
+            normalized_mime_type: mime_type.to_string(),
+        }
+    }
+}
+
+const TYPES_BY_EXTENSION: [(&'static str, FileType, &'static str); 5] = [
+    (".md", FileType::Editable, "text/markdown"),
+    (".markdown", FileType::Editable, "text/markdown"),
+    (".mdown", FileType::Editable, "text/markdown"),
+    (".markdn", FileType::Editable, "text/markdown"),
+    (".txt", FileType::Editable, "text/plain"),
+];
+
+const TYPES_BY_MIME: [(&'static str, FileType); 45] = [
+    ("image/gif", FileType::Image),
+    ("image/jpeg", FileType::Image),
+    ("image/png", FileType::Image),
+    ("image/x-icon", FileType::Image),
+    ("image/svg+xml", FileType::RawImage),
+    ("image/webp", FileType::RawImage),
+    ("application/postscript", FileType::LargeImage),
+    ("video/mp4", FileType::Video),
+    ("video/webm", FileType::Video),
+    ("video/ogg", FileType::Video),
+    ("video/quicktime", FileType::Video),
+    ("audio/mpeg", FileType::Audio),
+    ("audio/ogg", FileType::Audio),
+    ("audio/wav", FileType::Audio),
+    ("audio/webm", FileType::Audio),
+    ("audio/flac", FileType::Audio),
+    ("audio/opus", FileType::Audio),
+    ("text/markdown", FileType::Editable),
+    ("text/css", FileType::Editable),
+    ("text/html", FileType::Editable),
+    ("text/javascript", FileType::Editable),
+    ("text/plain", FileType::Editable),
+    ("text/xml", FileType::Editable),
+    ("application/json", FileType::Document),
+    ("application/pdf", FileType::Document),
+    ("text/markdown", FileType::Document),
+    ("text/x-python", FileType::Document),
+    ("text/x-rust", FileType::Document),
+    ("text/x-c", FileType::Document),
+    ("text/x-java", FileType::Document),
+    ("text/x-kotlin", FileType::Document),
+    ("text/x-ruby", FileType::Document),
+    ("text/x-swift", FileType::Document),
+    ("application/x-zip-compressed", FileType::Archive),
+    ("application/x-tar-compressed", FileType::Archive),
+    ("application/x-rar-compressed", FileType::Archive),
+    ("application/x-7z-compressed", FileType::Archive),
+    ("application/zip", FileType::Archive),
+    ("application/tar", FileType::Archive),
+    ("application/rar", FileType::Archive),
+    ("application-7z", FileType::Archive),
+    ("application/x-bzip", FileType::Archive),
+    ("application/x-bzip2", FileType::Archive),
+    ("application/x-gzip", FileType::Archive),
+    ("application/x-lzma", FileType::Archive),
+];

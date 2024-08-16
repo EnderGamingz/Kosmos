@@ -5,12 +5,13 @@ import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fi
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
-import { FileDisplayAction } from '@pages/explorer/file/display/fileDisplayAction.tsx';
+import { FileDisplayActions } from '@pages/explorer/file/display/fileDisplayActions.tsx';
 import { useAccessShareFile } from '@lib/query.ts';
 import { AxiosError } from 'axios';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
 import { Helmet } from 'react-helmet';
+import { truncateString } from '@utils/truncate.ts';
 
 export function FileShareDisplay({ uuid }: { uuid: string }) {
   const [fullsScreenPreview, setFullScreenPreview] = useState(false);
@@ -27,7 +28,7 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
         'mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 p-4 md:grid-cols-2 md:gap-10 md:p-10'
       }>
       <Helmet>
-        <title>{share.data.file_name ?? 'Shared File'}</title>
+        <title>{truncateString(share.data.file_name) ?? 'Shared File'}</title>
       </Helmet>
       <div
         className={tw(
@@ -47,7 +48,7 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
         <div className={'mt-2 px-1'}>
           <FileDisplayFooter file={share.data as FileModel} />
         </div>
-        <FileDisplayAction
+        <FileDisplayActions
           left
           file={share.data as FileModel}
           shareUuid={uuid}

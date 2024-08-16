@@ -46,6 +46,22 @@
     --background-end-rgb: 255, 255, 255;
     --bg-start: rgb(var(--background-start-rgb));
 
+
+    --markdown-bg: #ffffff;
+    --markdown-fg: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /*      --foreground-rgb: 255, 255, 255;
+                --background-start-rgb: 13, 17, 23;
+                --background-end-rgb: 21, 24, 28;
+                --bg-start: rgb(var(--background-end-rgb));
+                */
+
+        --markdown-bg: #0d1117;
+        --markdown-fg: #ffffff;
+    }
 }
 
 .body-bg {

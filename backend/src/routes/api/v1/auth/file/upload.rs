@@ -133,7 +133,7 @@ pub async fn upload_file(
 
         let id = state.sf.next_id().map_err(|_| AppError::InternalError)? as i64;
         let ct = field.content_type().unwrap().to_string();
-        let mut file_type = FileService::get_file_type(&ct);
+        let mut file_type_res = FileService::get_file_type(&ct, &file_name);
 
         let exists = state
             .file_service
@@ -159,9 +159,9 @@ pub async fn upload_file(
                     })?;
                 }
 
-                if file_type == FileType::Image {
+                if file_type_res.file_type == FileType::Image {
                     if len > FILE_SIZE_LIMIT {
-                        file_type = FileType::LargeImage;
+                        file_type_res.file_type = FileType::LargeImage;
                     }
                 }
 
@@ -172,13 +172,13 @@ pub async fn upload_file(
                         id,
                         file_name,
                         len as i64,
-                        file_type,
-                        ct,
+                        file_type_res.file_type,
+                        file_type_res.normalized_mime_type,
                         relative_parent_folder,
                     )
                     .await?;
 
-                if file_type == FileType::Image {
+                if file_type_res.file_type == FileType::Image {
                     pending_image_formats.push(id);
                 }
             }

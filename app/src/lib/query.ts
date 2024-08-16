@@ -309,6 +309,20 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
   });
 };
 
+export const useFileContent = (fileId: string) => {
+  return useQuery({
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/file/${fileId}/action/Serve`)
+        .then(res => res.data.toString()),
+    queryKey: ['file', 'content', fileId],
+  });
+};
+
+export const setFileContent = (fileId: string, content: string) => {
+  return queryClient.setQueryData(['file', 'content', fileId], content);
+};
+
 export const usePasskeys = () => {
   return useQuery({
     queryFn: () =>

@@ -1,4 +1,4 @@
-import { fileHasPreview, FileModel, normalizeFileType } from '@models/file.ts';
+import { FileModel, FileTypeActions, normalizeFileType } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useShallow } from 'zustand/react/shallow';
@@ -46,7 +46,8 @@ export default function GridFileItem({
   );
 
   const isSelected = selected?.includes(file.id);
-  const isDynamic = dynamic && fileHasPreview(file);
+  const fileHasPreview = FileTypeActions.hasPreview(file);
+  const isDynamic = dynamic && fileHasPreview;
 
   const isDefaultDisplay = details === DetailType.Default;
   const isCompact = details === DetailType.Compact;
@@ -153,14 +154,14 @@ export default function GridFileItem({
           className={tw(
             'relative h-32',
             isDefaultDisplay && 'm-1.5 mb-0',
-            fileHasPreview(file)
+            fileHasPreview
               ? 'rounded-lg [&_.img-container]:h-32 [&_img]:aspect-auto [&_img]:h-[inherit] [&_img]:w-full'
               : isCompact
                 ? '[&>div]:p-0 [&_svg]:h-12 [&_svg]:w-12'
                 : '[&>div]:p-0 [&_svg]:h-14 [&_svg]:w-14',
             isDynamic ? 'h-auto [&_.img-container]:h-auto [&_img]:h-auto' : '',
           )}>
-          {fileHasPreview(file) ? (
+          {fileHasPreview ? (
             <ItemIcon
               id={file.id}
               name={file.file_name}

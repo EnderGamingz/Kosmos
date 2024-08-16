@@ -1,12 +1,11 @@
-use crate::model::file::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use crate::utils::auth;
 use axum::extract::State;
 use axum::Json;
 use tower_sessions::Session;
-use crate::utils::auth;
 
 #[derive(serde::Deserialize)]
 pub struct DeleteSelfUserRequest {
@@ -37,7 +36,7 @@ pub async fn delete_self(
     for file in files {
         state
             .file_service
-            .permanently_delete_file(file.id, Some(FileType::by_id(file.file_type)))
+            .permanently_delete_file(file.id, Some(file.file_type))
             .await?;
     }
 

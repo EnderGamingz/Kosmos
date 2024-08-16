@@ -1,4 +1,3 @@
-use crate::model::file::FileType;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
@@ -122,7 +121,7 @@ pub async fn permanently_delete_file(
 
     state
         .file_service
-        .permanently_delete_file(file.id, Some(FileType::by_id(file.file_type)))
+        .permanently_delete_file(file.id, Some(file.file_type))
         .await?;
 
     Ok(AppSuccess::DELETED)

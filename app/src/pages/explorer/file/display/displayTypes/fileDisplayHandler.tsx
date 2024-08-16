@@ -84,12 +84,7 @@ export function FileDisplayHandler({
 
   const initialLoadingState = () => {
     if (shareUuid && !isSharedInFolder) return;
-    return [
-      FileType.Image,
-      FileType.Document,
-      FileType.Audio,
-      FileType.Video,
-    ].includes(file.file_type);
+    return FileTypeActions.shouldDelayPreview(file);
   };
 
   // This artificial hold state is to prevent flicker in the preview
@@ -132,8 +127,10 @@ export function FileDisplayHandler({
     );
   }
 
-  if (file.file_type === FileType.Document && !previewOnHold) {
-    return <EmbedFile file={file} serveUrl={highResUrl} />;
+  if (FileTypeActions.hasFileEmbedData(file) && !previewOnHold) {
+    return (
+      <EmbedFile file={file} serveUrl={highResUrl} isShared={!!shareUuid} />
+    );
   }
 
   return (

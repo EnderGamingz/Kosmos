@@ -4,7 +4,7 @@ use serde::Serialize;
 use tower_sessions::Session;
 
 use crate::model::album::AlbumModelDTO;
-use crate::model::file::{FileModel, FileModelDTO};
+use crate::model::file::{FileModelDTO, FileType};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::GetFilesByType;
 use crate::services::session_service::SessionService;
@@ -114,11 +114,11 @@ pub async fn get_available_files(
     Query(params): Query<GetFilesByType>,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let file_types = FileModel::get_valid_file_types_for_album();
+    let file_types = FileType::VALID_FILE_TYPES_FOR_ALBUM;
 
     let files = state
         .file_service
-        .get_files_by_file_type(user_id, file_types, params.get_limit(), params.get_page())
+        .get_files_by_file_type(user_id, Vec::from(file_types), params.get_limit(), params.get_page())
         .await?
         .into_iter()
         .map(FileModelDTO::from)
