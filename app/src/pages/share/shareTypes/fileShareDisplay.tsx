@@ -32,7 +32,7 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
       </Helmet>
       <div
         className={tw(
-          '-mb-5 h-[300px] flex-grow md:-mr-5 md:mb-0 md:h-[500px] md:min-h-[unset] [&>*]:absolute [&>*]:inset-0 [&>*]:overflow-visible',
+          '-mb-5 h-[300px] flex-grow overflow-hidden md:-mr-5 md:mb-0 md:h-[500px] md:min-h-[unset] [&>*]:absolute [&>*]:inset-0 [&>*]:overflow-visible',
           fullsScreenPreview ? 'z-20' : 'relative z-0',
         )}>
         <FileDisplayHandler
