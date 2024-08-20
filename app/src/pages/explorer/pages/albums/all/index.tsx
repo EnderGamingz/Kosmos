@@ -16,10 +16,13 @@ export default function AlbumsPage() {
         aria-label={'Recent Files loading...'}
         isIndeterminate={!albums?.data || albums.isLoading}
         value={100}
-        className={'absolute left-0 top-0 h-1 opacity-50'}
+        className={'absolute left-0 top-0 z-10 h-1 opacity-50'}
         color={'default'}
       />
-      <div className={'space-y-5 p-5'}>
+      <div
+        className={
+          'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5'
+        }>
         <div className={'flex items-center justify-between'}>
           <h1 className={'text-3xl font-light'}>Albums</h1>
           <CreateAlbum />
