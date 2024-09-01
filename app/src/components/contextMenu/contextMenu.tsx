@@ -24,6 +24,7 @@ import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import SetAlbumPreview from '@pages/explorer/pages/albums/setAlbumPrevíew.tsx';
+import { FolderColorChange } from '@components/contextMenu/ColorChange.tsx';
 
 export default function ContextMenu({
   children,
@@ -137,7 +138,13 @@ export function ContextMenuContent({
   } else if (isFolderModel(data)) {
     return (
       <>
-        <ContextMenuTitle type={'folder'} title={data.folder_name} />
+        <ContextMenuTitle type={'folder'} title={data.folder_name}>
+          <FolderColorChange
+            folderId={data.id}
+            parent={data.parent_id}
+            color={data.color}
+          />
+        </ContextMenuTitle>
         <MultiDownload
           files={[]}
           folders={[data.id]}

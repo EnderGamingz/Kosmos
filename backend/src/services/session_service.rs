@@ -43,7 +43,7 @@ impl SessionService {
         let id = SessionService::get_user_id(session).await;
         match id {
             Some(user) => Ok(user),
-            None => return Err(AppError::NotLoggedIn)?,
+            None => Err(AppError::NotLoggedIn)?,
         }
     }
 

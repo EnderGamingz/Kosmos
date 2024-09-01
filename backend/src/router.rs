@@ -22,6 +22,7 @@ fn get_folder_router() -> KosmosRouter {
                 .delete(crate::routes::api::v1::auth::folder::delete::delete_folder)
                 .patch(crate::routes::api::v1::auth::folder::rename_folder),
         )
+        .route("/:folder_id/color", patch(crate::routes::api::v1::auth::folder::update::recolor_folder))
         .route(
             "/all",
             get(crate::routes::api::v1::auth::folder::get_folders),

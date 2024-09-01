@@ -12,6 +12,7 @@ pub struct FolderModel {
     pub folder_name: String,
     pub parent_id: Option<i64>,
     pub favorite: bool,
+    pub color: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -23,6 +24,7 @@ pub struct FolderModelDTO {
     pub folder_name: String,
     pub parent_id: Option<String>,
     pub favorite: bool,
+    pub color: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -35,6 +37,7 @@ impl From<FolderModel> for FolderModelDTO {
             folder_name: model.folder_name,
             parent_id: model.parent_id.map(|id| id.to_string()),
             favorite: model.favorite,
+            color: model.color,
             created_at: model.created_at,
             updated_at: model.updated_at,
         }
@@ -50,6 +53,7 @@ pub struct FolderModelWithShareInfo {
     pub folder_name: String,
     pub parent_id: Option<i64>,
     pub favorite: bool,
+    pub color: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub share_uuid: Uuid,
@@ -63,6 +67,7 @@ pub struct FolderModelWithShareInfoDTO {
     pub folder_name: String,
     pub parent_id: Option<String>,
     pub favorite: bool,
+    pub color: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub share_uuid: String,
@@ -77,6 +82,7 @@ impl From<FolderModelWithShareInfo> for FolderModelWithShareInfoDTO {
             folder_name: model.folder_name,
             parent_id: model.parent_id.map(|id| id.to_string()),
             favorite: model.favorite,
+            color: model.color,
             created_at: model.created_at,
             updated_at: model.updated_at,
             share_uuid: model.share_uuid.to_string(),
@@ -91,6 +97,7 @@ impl From<FolderModelWithShareInfo> for FolderModelWithShareInfoDTO {
 pub struct ShareFolderModelDTO {
     pub id: String,
     pub folder_name: String,
+    pub color: Option<String>,
     pub parent_id: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -101,6 +108,7 @@ impl From<FolderModel> for ShareFolderModelDTO {
         ShareFolderModelDTO {
             id: model.id.to_string(),
             folder_name: model.folder_name,
+            color: model.color,
             parent_id: model.parent_id.map(|id| id.to_string()),
             created_at: model.created_at,
             updated_at: model.updated_at,

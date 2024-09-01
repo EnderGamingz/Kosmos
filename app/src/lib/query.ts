@@ -63,6 +63,12 @@ export async function invalidateFolders() {
   });
 }
 
+export async function invalidateFolder(id?: string) {
+  await queryClient.invalidateQueries({
+    queryKey: ['folders', id],
+  });
+}
+
 export const useSearch = (query: string) => {
   return useQuery({
     queryFn: () =>

@@ -63,6 +63,7 @@ export default function ItemIcon({
   status,
   dynamic,
   disablePreview,
+  color,
 }: {
   id: string;
   type: FileIcon;
@@ -70,6 +71,7 @@ export default function ItemIcon({
   status?: FilePreviewStatus;
   dynamic?: boolean;
   disablePreview?: boolean;
+  color?: string;
 }) {
   return (
     <motion.div
@@ -77,7 +79,10 @@ export default function ItemIcon({
       className={tw(
         'icon-container pointer-events-none',
         'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',
-      )}>
+      )}
+      style={{
+        color,
+      }}>
       {getFileIcon(type, id, name, status, dynamic, disablePreview)}
     </motion.div>
   );

@@ -10,12 +10,12 @@ pub async fn init() -> KosmosPool {
 
     tracing::info!(name: "bootstrap", "Connecting to database at {}...", db_url);
 
-    let db = PgPool::connect(&*db_url).await.unwrap();
+    let db = PgPool::connect(&*db_url).await.expect("Database connection failed");
 
     tracing::info!(name: "bootstrap", "Database connection established");
 
     tracing::info!(name: "bootstrap", "Migrating database...");
-    sqlx::migrate!().run(&db).await.unwrap();
+    sqlx::migrate!().run(&db).await.expect("Database migration failed");
 
     tracing::info!(name: "bootstrap", "Database migration complete");
     db

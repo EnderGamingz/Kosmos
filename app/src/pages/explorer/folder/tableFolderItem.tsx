@@ -127,6 +127,7 @@ export function TableFolderItem({
               id={folder.id}
               name={folder.folder_name}
               type={'folder'}
+              color={folder.color}
             />
             <span
               className={

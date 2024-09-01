@@ -5,6 +5,7 @@ import {
   FolderIcon,
   Square2StackIcon,
 } from '@heroicons/react/24/outline';
+import { ReactNode } from 'react';
 
 const iconMap = {
   folder: <FolderIcon />,
@@ -16,9 +17,11 @@ const iconMap = {
 export function ContextMenuTitle({
   title,
   type,
+  children,
 }: {
   title: string;
   type: ContextOperationType | 'album';
+  children?: ReactNode;
 }) {
   function renderIcon() {
     return iconMap[type as keyof typeof iconMap] || iconMap.default;
@@ -37,6 +40,7 @@ export function ContextMenuTitle({
         )}>
         {renderIcon()}
         {title}
+        {children && <div className={'ml-auto'}>{children}</div>}
       </span>
     </div>
   );

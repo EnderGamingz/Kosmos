@@ -7,6 +7,7 @@ export type FolderModel = {
   folder_name: string;
   parent_id?: string;
   favorite: boolean;
+  color?: string;
   created_at: string;
   updated_at: string;
 };
@@ -15,6 +16,7 @@ export type ShareFolderModel = {
   id: string;
   folder_name: string;
   parent_id?: string;
+  color?: string;
   created_at: string;
   updated_at: string;
   share_uuid?: string;

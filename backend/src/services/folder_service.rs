@@ -180,6 +180,26 @@ impl FolderService {
         Ok(())
     }
 
+    pub async fn update_folder_color(
+        &self,
+        user_id:UserId,
+        file_id: i64,
+        color: Option<&String>
+    ) -> Result<KosmosDbResult, AppError> {
+        sqlx::query!(
+            "UPDATE folder SET color = $1 WHERE id = $2 AND user_id = $3",
+            color,
+            file_id,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating folder color: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn create_folder(
         &self,
         user_id: UserId,
