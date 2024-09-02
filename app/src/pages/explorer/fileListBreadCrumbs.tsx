@@ -30,6 +30,7 @@ export function FileListBreadCrumbs({
           last={i === crumbs.length - 1}
           key={`crumb-${item.id}`}
           name={item.folder_name}
+          color={item.color}
           href={
             firstHome && i === 0
               ? firstHome

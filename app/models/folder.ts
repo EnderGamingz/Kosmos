@@ -39,6 +39,7 @@ export type FolderShareResponse = {
 export type SimpleDirectory = {
   id: string;
   folder_name: string;
+  color?: string;
 };
 
 export function isFolderModel(data: ContextData): data is FolderModel {

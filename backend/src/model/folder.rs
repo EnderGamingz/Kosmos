@@ -146,12 +146,14 @@ pub struct DirectoryWithShare {
 pub struct SimpleDirectory {
     pub id: i64,
     pub folder_name: String,
+    pub color: Option<String>
 }
 
 #[derive(Serialize)]
 pub struct SimpleDirectoryDTO {
     pub id: String,
     pub folder_name: String,
+    pub color: Option<String>
 }
 
 impl From<SimpleDirectory> for SimpleDirectoryDTO {
@@ -159,6 +161,7 @@ impl From<SimpleDirectory> for SimpleDirectoryDTO {
         SimpleDirectoryDTO {
             id: model.id.to_string(),
             folder_name: model.folder_name,
+            color: model.color
         }
     }
 }

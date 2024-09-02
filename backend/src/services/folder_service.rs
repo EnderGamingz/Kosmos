@@ -405,6 +405,7 @@ impl FolderService {
             "WITH RECURSIVE directories AS (
                     SELECT f.id,
                            f.folder_name,
+                           f.color,
                            f.parent_id,
                            ARRAY [f.id]::BIGINT[] AS path
                     FROM folder f
@@ -426,6 +427,7 @@ impl FolderService {
             " UNION ALL
                     SELECT f.id,
                            f.folder_name,
+                           f.color,
                            f.parent_id,
                            d.path || f.id
                     FROM folder f
@@ -439,7 +441,7 @@ impl FolderService {
         }
 
         query.push(
-            " ) SELECT id, folder_name
+            " ) SELECT id, folder_name, color
                 FROM directories
                 ORDER BY array_length(path, 1) DESC",
         );
@@ -453,17 +455,18 @@ impl FolderService {
         user_id: Option<UserId>,
         stop: Option<i64>,
     ) -> Result<Vec<SimpleDirectory>, AppError> {
-        let string = Self::parent_directories_query(folder_id, user_id, stop);
-        let children_res = sqlx::query_as::<_, SimpleDirectory>(&*string)
-            .bind(folder_id)
-            .bind(user_id)
-            .bind(stop)
-            .fetch_all(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error getting parent directories: {}", e);
-                AppError::InternalError
-            })?;
+        let children_res = sqlx::query_as::<_, SimpleDirectory>(&Self::parent_directories_query(
+            folder_id, user_id, stop,
+        ))
+        .bind(folder_id)
+        .bind(user_id)
+        .bind(stop)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting parent directories: {}", e);
+            AppError::InternalError
+        })?;
 
         Ok(children_res)
     }
@@ -561,13 +564,13 @@ impl FolderService {
             GROUP BY d.folder_name, d.user_id, d.id, d.path, d.parent_id, share_id, share_type,share_target
             ORDER BY d.path",
         )
-        .bind(folder_id)
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting upwards folder structure: {}", e);
-            AppError::InternalError
-        })?;
+            .bind(folder_id)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting upwards folder structure: {}", e);
+                AppError::InternalError
+            })?;
 
         Ok(folder_res)
     }
