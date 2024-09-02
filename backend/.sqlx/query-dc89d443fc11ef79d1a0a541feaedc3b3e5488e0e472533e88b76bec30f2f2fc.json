@@ -37,6 +37,11 @@
         "ordinal": 6,
         "name": "favorite",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "color",
+        "type_info": "Varchar"
       }
     ],
     "parameters": {
@@ -51,7 +56,8 @@
       false,
       false,
       true,
-      false
+      false,
+      true
     ]
   },
   "hash": "dc89d443fc11ef79d1a0a541feaedc3b3e5488e0e472533e88b76bec30f2f2fc"
