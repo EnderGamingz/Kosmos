@@ -53,16 +53,18 @@ impl FileService {
         query.push(" AND parent_folder_id IS NOT DISTINCT FROM ");
         query.push_bind(parent_folder_id);
 
+        query.push(" ORDER BY CASE WHEN favorite = true THEN 0 ELSE 1 END, ");
+
         let sort_by = search.get_sort_by();
 
         if sort_by == &SortByFiles::Name {
-            query.push(" ORDER BY LOWER(file_name)");
+            query.push(" LOWER(file_name)");
         } else if sort_by == &SortByFiles::FileSize {
-            query.push(" ORDER BY file_size");
+            query.push(" file_size");
         } else if sort_by == &SortByFiles::CreatedAt {
-            query.push(" ORDER BY created_at");
+            query.push(" created_at");
         } else if sort_by == &SortByFiles::UpdatedAt {
-            query.push(" ORDER BY updated_at");
+            query.push(" updated_at");
         }
 
         let search_order = search.get_sort_order();

@@ -34,14 +34,16 @@ impl FolderService {
         query.push(" AND parent_id IS NOT DISTINCT FROM ");
         query.push_bind(parent_id);
 
+        query.push(" ORDER BY CASE WHEN favorite = true THEN 0 ELSE 1 END, ");
+
         let sort_by = search.get_sort_by();
 
         if sort_by == &SortByFolders::Name {
-            query.push(" ORDER BY LOWER(folder_name)");
+            query.push(" LOWER(folder_name)");
         } else if sort_by == &SortByFolders::CreatedAt {
-            query.push(" ORDER BY created_at");
+            query.push(" created_at");
         } else if sort_by == &SortByFolders::UpdatedAt {
-            query.push(" ORDER BY updated_at");
+            query.push(" updated_at");
         }
 
         let search_order = search.get_sort_order();
@@ -67,7 +69,11 @@ impl FolderService {
         parent_id: Option<i64>,
         search: GetFilesSortParams<SortByFolders>,
     ) -> Result<Vec<FolderModel>, AppError> {
-        sqlx::query_as::<_, FolderModel>(&*Self::folder_search_query(user_id, parent_id, &search))
+        let sql = Self::folder_search_query(user_id, parent_id, &search);
+
+        tracing::debug!("SQL: {}", sql);
+
+        sqlx::query_as::<_, FolderModel>(&sql)
             .bind(user_id)
             .bind(parent_id)
             .bind(search.get_limit())
@@ -182,9 +188,9 @@ impl FolderService {
 
     pub async fn update_folder_color(
         &self,
-        user_id:UserId,
+        user_id: UserId,
         file_id: i64,
-        color: Option<&String>
+        color: Option<&String>,
     ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
             "UPDATE folder SET color = $1 WHERE id = $2 AND user_id = $3",
