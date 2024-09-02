@@ -14,6 +14,7 @@
     "@internationalized/date": "^3.5.5",
     "@nextui-org/react": "^2.4.6",
     "@tanstack/react-query": "^5.51.23",
+    "@uiw/react-color": "^2.3.0",
     "@uiw/react-markdown-editor": "^6.1.2",
     "@uiw/react-textarea-code-editor": "^3.0.2",
     "axios": "^1.7.3",
