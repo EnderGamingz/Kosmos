@@ -4,14 +4,14 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from '@nextui-org/react';
-import { BackspaceIcon, EyeDropperIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
-import tw from '@utils/classMerge.ts';
+import { BackspaceIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolder } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { hexToHsva, hsvaToHex, ShadeSlider, Wheel } from '@uiw/react-color';
 
 const definedColors = [
   '#f44336',
@@ -66,7 +66,7 @@ export function FolderColorChange({
             canDismiss: true,
             timeout: 1000,
           });
-          if (remove) setSelected('lightgray');
+          if (remove) setSelected('');
           invalidateFolder(parent).then();
           onClose();
         })
@@ -85,10 +85,14 @@ export function FolderColorChange({
 
   const handleClick = (color: string) => () => {
     setSelected(color);
-    recolorAction.mutate({
-      override: color,
-    });
   };
+
+  useEffect(() => {
+    if (!isOpen && color !== selected && selected !== '') {
+      recolorAction.mutate({});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   return (
     <>
@@ -119,37 +123,31 @@ export function FolderColorChange({
                 />
               ))}
             </div>
-            <div className={'mt-4'}>
-              <div className={'flex items-center gap-1'}>
-                <label
-                  htmlFor={'custom-color'}
-                  className={tw(
-                    'flex flex-grow cursor-pointer items-center gap-1 px-2 py-1.5 text-sm',
-                    'rounded-md bg-stone-200 transition-colors hover:bg-stone-300',
-                    'outline outline-1',
-                  )}
-                  style={{
-                    outlineColor: selected || color || 'lightgray',
-                  }}>
-                  <EyeDropperIcon className={'h-4 w-4'} />
-                  Custom
-                </label>
-                {(color || selected) && (
-                  <button
-                    onClick={() => recolorAction.mutate({ remove: true })}
-                    className={'rounded-md bg-stone-200 px-2 py-1.5'}>
-                    <BackspaceIcon className={'h-5 w-5'} />
-                  </button>
-                )}
-              </div>
-              <input
-                id={'custom-color'}
-                type={'color'}
-                className={'sr-only'}
-                defaultValue={selected || color || 'lightgray'}
-                onChange={e => setSelected(e.target.value)}
-                onBlur={() => recolorAction.mutate({})}
+            <div className={'mt-4 grid gap-2'}>
+              <Wheel
+                width={150}
+                height={150}
+                color={selected || color || '#ffffff'}
+                onChange={color => setSelected(color.hex)}
               />
+              <ShadeSlider
+                className={'overflow-hidden rounded-md'}
+                hsva={hexToHsva(selected || color || '#ffffff')}
+                onChange={newShade => {
+                  const hsva = hexToHsva(selected || color || 'lightgray');
+                  setSelected(hsvaToHex({ ...hsva, v: newShade.v }));
+                }}
+              />
+              {(color || selected) && (
+                <button
+                  onClick={() => recolorAction.mutate({ remove: true })}
+                  className={
+                    'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300'
+                  }>
+                  <BackspaceIcon className={'h-5 w-5'} />
+                  Remove
+                </button>
+              )}
             </div>
           </div>
         </PopoverContent>

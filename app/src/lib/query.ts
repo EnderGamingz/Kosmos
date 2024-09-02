@@ -64,6 +64,12 @@ export async function invalidateFolders() {
 }
 
 export async function invalidateFolder(id?: string) {
+  if (!id) {
+    await queryClient.invalidateQueries({
+      queryKey: ['folders'],
+    });
+    return;
+  }
   await queryClient.invalidateQueries({
     queryKey: ['folders', id],
   });

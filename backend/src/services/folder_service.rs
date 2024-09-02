@@ -34,14 +34,16 @@ impl FolderService {
         query.push(" AND parent_id IS NOT DISTINCT FROM ");
         query.push_bind(parent_id);
 
+        query.push(" ORDER BY CASE WHEN favorite = true THEN 0 ELSE 1 END, ");
+
         let sort_by = search.get_sort_by();
 
         if sort_by == &SortByFolders::Name {
-            query.push(" ORDER BY LOWER(folder_name)");
+            query.push(" LOWER(folder_name)");
         } else if sort_by == &SortByFolders::CreatedAt {
-            query.push(" ORDER BY created_at");
+            query.push(" created_at");
         } else if sort_by == &SortByFolders::UpdatedAt {
-            query.push(" ORDER BY updated_at");
+            query.push(" updated_at");
         }
 
         let search_order = search.get_sort_order();
@@ -67,7 +69,11 @@ impl FolderService {
         parent_id: Option<i64>,
         search: GetFilesSortParams<SortByFolders>,
     ) -> Result<Vec<FolderModel>, AppError> {
-        sqlx::query_as::<_, FolderModel>(&*Self::folder_search_query(user_id, parent_id, &search))
+        let sql = Self::folder_search_query(user_id, parent_id, &search);
+
+        tracing::debug!("SQL: {}", sql);
+
+        sqlx::query_as::<_, FolderModel>(&sql)
             .bind(user_id)
             .bind(parent_id)
             .bind(search.get_limit())
@@ -182,9 +188,9 @@ impl FolderService {
 
     pub async fn update_folder_color(
         &self,
-        user_id:UserId,
+        user_id: UserId,
         file_id: i64,
-        color: Option<&String>
+        color: Option<&String>,
     ) -> Result<KosmosDbResult, AppError> {
         sqlx::query!(
             "UPDATE folder SET color = $1 WHERE id = $2 AND user_id = $3",
@@ -399,6 +405,7 @@ impl FolderService {
             "WITH RECURSIVE directories AS (
                     SELECT f.id,
                            f.folder_name,
+                           f.color,
                            f.parent_id,
                            ARRAY [f.id]::BIGINT[] AS path
                     FROM folder f
@@ -420,6 +427,7 @@ impl FolderService {
             " UNION ALL
                     SELECT f.id,
                            f.folder_name,
+                           f.color,
                            f.parent_id,
                            d.path || f.id
                     FROM folder f
@@ -433,7 +441,7 @@ impl FolderService {
         }
 
         query.push(
-            " ) SELECT id, folder_name
+            " ) SELECT id, folder_name, color
                 FROM directories
                 ORDER BY array_length(path, 1) DESC",
         );
@@ -447,17 +455,18 @@ impl FolderService {
         user_id: Option<UserId>,
         stop: Option<i64>,
     ) -> Result<Vec<SimpleDirectory>, AppError> {
-        let string = Self::parent_directories_query(folder_id, user_id, stop);
-        let children_res = sqlx::query_as::<_, SimpleDirectory>(&*string)
-            .bind(folder_id)
-            .bind(user_id)
-            .bind(stop)
-            .fetch_all(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error getting parent directories: {}", e);
-                AppError::InternalError
-            })?;
+        let children_res = sqlx::query_as::<_, SimpleDirectory>(&Self::parent_directories_query(
+            folder_id, user_id, stop,
+        ))
+        .bind(folder_id)
+        .bind(user_id)
+        .bind(stop)
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error getting parent directories: {}", e);
+            AppError::InternalError
+        })?;
 
         Ok(children_res)
     }
@@ -555,13 +564,13 @@ impl FolderService {
             GROUP BY d.folder_name, d.user_id, d.id, d.path, d.parent_id, share_id, share_type,share_target
             ORDER BY d.path",
         )
-        .bind(folder_id)
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error getting upwards folder structure: {}", e);
-            AppError::InternalError
-        })?;
+            .bind(folder_id)
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting upwards folder structure: {}", e);
+                AppError::InternalError
+            })?;
 
         Ok(folder_res)
     }

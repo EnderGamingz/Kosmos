@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
+import { hexToRGB } from '@utils/color.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (
@@ -16,12 +17,14 @@ export function BreadCrumbItem({
   name,
   href,
   last,
+  color,
   onMouseEnter,
   onMouseLeave,
 }: {
   name: ReactNode;
   href?: string;
   last?: boolean;
+  color?: string;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }) {
@@ -41,8 +44,12 @@ export function BreadCrumbItem({
         wrapper={c => (
           <Link
             className={
-              'rounded-md px-1 transition-colors hover:bg-stone-500/10'
+              'rounded-md px-1 transition-colors hover:!bg-stone-500/10'
             }
+            style={{
+              backgroundColor:
+                color && `rgba(${hexToRGB(color).join(',')}, 0.1)`,
+            }}
             to={href!}>
             {c}
           </Link>
