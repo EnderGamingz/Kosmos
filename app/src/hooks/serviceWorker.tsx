@@ -1,6 +1,7 @@
 import { registerSW } from 'virtual:pwa-register';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import tw from '@utils/classMerge.ts';
 
 export function useServiceWorker() {
   const notifications = useNotifications(s => s.actions);
@@ -32,16 +33,16 @@ export function useServiceWorker() {
               updateSW().then(() => {
                 notifications.updateNotification(updateId, {
                   severity: Severity.SUCCESS,
-                  loading: false,
+                  description: 'The app will reload shortly',
                   status: 'Updated',
-                  canDismiss: true,
-                  timeout: 2000,
                 });
               });
             }}
-            className={
-              'menu-button mt-2 w-full bg-stone-200 py-0.5 hover:bg-stone-500 hover:text-stone-100'
-            }>
+            className={tw(
+              'my-1 flex w-full items-center gap-4 rounded-lg px-4 py-1 shadow-md',
+              'bg-stone-900 text-stone-50 transition-colors hover:bg-stone-600 hover:text-stone-100',
+              'outline outline-1 outline-stone-400/20',
+            )}>
             <ArrowPathIcon className={'h-4 w-4'} />
             Update now
           </button>
