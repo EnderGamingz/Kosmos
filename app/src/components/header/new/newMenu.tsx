@@ -16,6 +16,8 @@ import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
+import { ClockIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);
@@ -41,12 +43,23 @@ export function NewMenu() {
             initial={'hidden'}
             animate={'show'}
             className={'max-w-52 space-y-1 px-0.5 py-2'}>
-            <FileUpload
-              onClick={() => {
-                handleClose();
-                uploadDisclosure.onOpen();
-              }}
-            />
+            <div className={'flex items-center gap-2'}>
+              <div className={'flex-1'}>
+                <FileUpload
+                  onClick={() => {
+                    handleClose();
+                    uploadDisclosure.onOpen();
+                  }}
+                />
+              </div>
+              <Link
+                title={'Quick Share'}
+                to={'/home/quick'}
+                onClick={handleClose}
+                className={'menu-button py-2'}>
+                <ClockIcon className={'h-5 w-5'} />
+              </Link>
+            </div>
             <CreateFolder onClose={handleClose} folder={currentFolder} />
             <CreateMarkdownFile folder={currentFolder} onClose={handleClose} />
           </motion.div>

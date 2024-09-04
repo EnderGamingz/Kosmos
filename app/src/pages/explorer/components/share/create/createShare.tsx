@@ -25,10 +25,26 @@ export function CreateShare({
   dataType,
   id,
   onDone,
+  quick,
+  onCreate,
+  disabled,
+  createButtonText = 'Create',
 }: {
   dataType: ShareOperationType;
-  id: string;
-  onDone: () => void;
+  id?: string;
+  onDone?: () => void;
+  quick?: boolean;
+  onCreate?: ({
+    password,
+    expiresAt,
+    limit,
+  }: {
+    password: string;
+    expiresAt: DateValue | undefined;
+    limit: number | undefined;
+  }) => void;
+  disabled?: boolean;
+  createButtonText?: string;
 }) {
   const notifications = useNotifications(s => s.actions);
   const [type, setType] = useState<ShareType>(ShareType.Public);
@@ -40,6 +56,13 @@ export function CreateShare({
 
   const createAction = useMutation({
     mutationFn: async () => {
+      if (disabled) return;
+
+      if (onCreate) {
+        onCreate({ password, expiresAt, limit });
+        return;
+      }
+
       const createId = notifications.notify({
         title: 'Share',
         canDismiss: false,
@@ -60,7 +83,7 @@ export function CreateShare({
         )
         .then(() => {
           invalidateShares().then();
-          onDone();
+          onDone?.();
 
           notifications.updateNotification(createId, {
             severity: Severity.SUCCESS,
@@ -87,24 +110,28 @@ export function CreateShare({
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.2 }}
       className={'flex flex-col gap-2 overflow-hidden p-1'}>
-      <h2 className={'text-lg font-medium'}>
-        Create {getShareTypeString(type)} share
-      </h2>
-      <div
-        className={tw(
-          'grid grid-cols-1 rounded-xl bg-stone-200/50 p-1 sm:grid-cols-2',
-        )}>
-        <TypeButton
-          type={ShareType.Public}
-          selected={type === ShareType.Public}
-          onSelect={() => setType(ShareType.Public)}
-        />
-        <TypeButton
-          type={ShareType.Private}
-          selected={type === ShareType.Private}
-          onSelect={() => setType(ShareType.Private)}
-        />
-      </div>
+      {quick && (
+        <h2 className={'text-lg font-medium'}>
+          Create {getShareTypeString(type)} share
+        </h2>
+      )}
+      {!quick && (
+        <div
+          className={tw(
+            'grid grid-cols-1 rounded-xl bg-stone-200/50 p-1 sm:grid-cols-2',
+          )}>
+          <TypeButton
+            type={ShareType.Public}
+            selected={type === ShareType.Public}
+            onSelect={() => setType(ShareType.Public)}
+          />
+          <TypeButton
+            type={ShareType.Private}
+            selected={type === ShareType.Private}
+            onSelect={() => setType(ShareType.Private)}
+          />
+        </div>
+      )}
       <div
         className={tw(
           'grid [&>div]:overflow-hidden [&>div]:rounded-xl [&>div]:bg-stone-200/50 [&>div]:p-2',
@@ -262,13 +289,14 @@ export function CreateShare({
 
         <button
           disabled={
+            disabled ||
             createAction.isPending ||
             (type === ShareType.Private && !privateUsername)
           }
           className={'btn-black w-full justify-center'}
           onClick={() => createAction.mutate()}>
           <CheckIcon />
-          Create
+          {createButtonText}
         </button>
       </div>
     </motion.div>

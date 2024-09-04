@@ -330,6 +330,11 @@ fn get_passkey_auth_router() -> KosmosRouter {
         )
 }
 
+fn get_quick_share_router() -> KosmosRouter {
+    Router::new()
+
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -345,6 +350,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/download", get_download_router())
         .nest("/multi", get_multi_router())
         .nest("/album", get_album_router())
+        .nest("/quick", get_quick_share_router())
         .nest("/operation", get_operation_router())
         .nest("/user", get_user_router())
         .nest("/admin", get_admin_router())
