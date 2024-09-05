@@ -49,7 +49,10 @@ export function Features() {
 
 function Feature({ icon: Icon, label, description }: Feature) {
   return (
-    <div className={'space-y-2 rounded-xl bg-stone-100 p-4'}>
+    <div
+      className={
+        'space-y-2 rounded-xl bg-stone-200/60 p-4 shadow-md outline outline-1 outline-stone-600/20'
+      }>
       <div className={'flex items-center gap-2 text-stone-900'}>
         <div
           className={'rounded-full bg-stone-200 p-2 [&_svg]:h-8 [&_svg]:w-8'}>

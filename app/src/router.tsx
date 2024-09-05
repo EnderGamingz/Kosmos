@@ -33,6 +33,7 @@ import AlbumsPage from '@pages/explorer/pages/albums/all';
 import AlbumPage from '@pages/explorer/pages/albums/single';
 import { Helmet } from 'react-helmet';
 import { useServiceWorker } from '@hooks/serviceWorker.tsx';
+import QuickSharePage from '@pages/explorer/pages/quick';
 
 export function DefaultHelmet() {
   return (
@@ -64,6 +65,7 @@ export default function Router() {
           <Route
             path={'home'}
             element={<AccessWrapper el={<Dashboard />} page={'Dashboard'} />}>
+            <Route path={'quick'} element={<QuickSharePage />} />
             <Route path={'files/:fileType'} element={<FileListByType />} />
             <Route path={'album'} element={<AlbumsPage />} />
             <Route path={'album/:albumId'} element={<AlbumPage />} />
