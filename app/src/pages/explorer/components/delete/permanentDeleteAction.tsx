@@ -2,6 +2,7 @@ import {
   invalidateData,
   invalidateFiles,
   invalidateFolders,
+  invalidateShares,
   invalidateUsage,
 } from '@lib/query.ts';
 import { DataOperationType } from '@models/file.ts';
@@ -116,6 +117,7 @@ export function MultiPermanentDelete({
 
           if (deleteData.files.length) invalidateFiles().then();
           if (deleteData.folders.length) invalidateFolders().then();
+          invalidateShares().then();
 
           invalidateUsage().then();
           setSelectedNone();

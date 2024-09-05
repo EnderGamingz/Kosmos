@@ -2,6 +2,7 @@ use axum::extract::State;
 use sonyflake::Sonyflake;
 use webauthn_rs::Webauthn;
 use crate::db::KosmosPool;
+use crate::response::error_handling::AppError;
 use crate::services::album_service::AlbumService;
 use crate::services::file_service::FileService;
 use crate::services::folder_service::FolderService;
@@ -30,6 +31,18 @@ pub struct AppState {
     pub album_service: AlbumService,
     pub passkey_service: PasskeyService,
     pub sf: Sonyflake,
+}
+
+impl AppState {
+    pub fn get_safe_id(&self) -> Result<i64, AppError> {
+        self.sf
+            .next_id()
+            .map(|id| id as i64)
+            .map_err(|e| {
+                tracing::error!("Error getting next id: {}", e);
+                AppError::InternalError
+            })
+    }
 }
 
 pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {

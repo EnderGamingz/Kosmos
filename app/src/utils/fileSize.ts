@@ -1,6 +1,11 @@
 import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
 
-export const useByteFormatter = () => {
+export type BytesFormatter = {
+  useSI: boolean;
+  formatBytes: (bytes: number, precision?: number) => string;
+};
+
+export const useByteFormatter: () => BytesFormatter = () => {
   const useSI = usePreferenceStore(s => s.unit.type === Unit.SI);
 
   return {

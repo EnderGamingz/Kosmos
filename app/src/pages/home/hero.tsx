@@ -3,6 +3,7 @@ import tw from '@utils/classMerge.ts';
 import { Link } from 'react-router-dom';
 import {
   ArrowRightEndOnRectangleIcon,
+  ClockIcon,
   HomeIcon,
 } from '@heroicons/react/24/outline';
 import { ALLOW_REGISTER } from '@lib/env.ts';
@@ -59,14 +60,24 @@ export function Hero() {
             transition={{ delay: 0.6, duration: 0.5 }}
             className={'mx-auto mt-auto flex flex-col gap-5 sm:flex-row'}>
             {user ? (
-              <Link
-                to={'/home'}
-                className={tw(
-                  'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
-                  'text-lg transition-colors hover:bg-stone-300 sm:text-2xl ',
-                )}>
-                <HomeIcon className={'h-8 w-8'} /> Dashboard
-              </Link>
+              <>
+                <Link
+                  to={'/home'}
+                  className={tw(
+                    'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
+                    'text-lg transition-colors hover:bg-stone-300 sm:text-2xl ',
+                  )}>
+                  <HomeIcon className={'h-8 w-8'} /> Dashboard
+                </Link>
+                <Link
+                  to={'/home/quick'}
+                  className={tw(
+                    'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
+                    'text-lg transition-colors hover:bg-stone-300 sm:text-2xl ',
+                  )}>
+                  <ClockIcon className={'h-8 w-8'} /> Quick Share
+                </Link>
+              </>
             ) : (
               <Link
                 to={'/auth/login'}

@@ -1,6 +1,7 @@
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { Link } from 'react-router-dom';
 import { BuildTagDisplay } from '@pages/settings/appInfo.tsx';
+import { HeartIcon } from '@heroicons/react/24/outline';
 
 export default function Footer() {
   return (
@@ -20,7 +21,7 @@ export default function Footer() {
           </div>
         </div>
         <div>
-          Made with ❤️ by{' '}
+          Made with <HeartIcon className={'inline h-5 w-5'} />️ by{' '}
           <Link
             to={'https://setilic.com'}
             target={'_blank'}
