@@ -40,7 +40,7 @@ export function NewMenu() {
             </FileUploadContent>
           </button>
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
           <motion.div
             variants={containerVariant()}
             initial={'hidden'}

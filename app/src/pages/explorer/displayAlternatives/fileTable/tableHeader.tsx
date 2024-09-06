@@ -22,7 +22,10 @@ export function TableHeader({
 
   return (
     <thead>
-      <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
+      <tr
+        className={
+          '[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700 dark:[&_th]:text-stone-300'
+        }>
         {!context.viewSettings?.noSelect && (
           <th>
             <SelectAllCheckBox files={files} folders={folders} />

@@ -20,6 +20,7 @@ import { motion } from 'framer-motion';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DisplayContext } from '@lib/contexts.ts';
+import tw from '@utils/classMerge.ts';
 
 function AddToAlbumModalContent({
   onClose,
@@ -45,9 +46,10 @@ function AddToAlbumModalContent({
       </ModalHeader>
       <ModalBody className={'min-h-32'}>
         <ul
-          className={
-            '[&_li:not(.added):hover]:bg-indigo-100 [&_li:not(.added)]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors'
-          }>
+          className={tw(
+            '[&_li:not(.added):hover]:bg-indigo-100 [&_li:not(.added)]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
+            'dark:[&_li:not(.added):hover]:bg-indigo-700/50',
+          )}>
           {albums.data?.available.map(album => (
             <motion.li
               layout
@@ -108,11 +110,7 @@ function AddToAlbumModalContent({
         </ul>
       </ModalBody>
       <ModalFooter className={'justify-between'}>
-        <button
-          onClick={onClose}
-          className={
-            'rounded-md px-3 py-1 text-slate-600 outline outline-1 outline-slate-600'
-          }>
+        <button onClick={onClose} className={'btn-white'}>
           Cancel
         </button>
       </ModalFooter>
@@ -163,7 +161,7 @@ export default function AlbumAction({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         placement={'auto'}>
-        <ModalContent>
+        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
           <AddToAlbumModalContent
             file={file}
             onClose={() => {
@@ -179,7 +177,7 @@ export default function AlbumAction({
         {albumId ? <MinusCircleIcon /> : <SquaresPlusIcon />}
         {dense ? 'Album' : albumId ? 'Remove from album' : 'Add to album'}
       </button>
-      {!dense && <hr />}
+      {!dense && <hr className={'border-stone-300 dark:border-stone-500'} />}
     </>
   );
 }

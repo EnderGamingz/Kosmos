@@ -18,6 +18,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import tw from '@utils/classMerge.ts';
 
 export function RenameModalContent({
   renameData,
@@ -91,9 +92,10 @@ export function RenameModalContent({
           Rename {renameData.type}
           <Tooltip content={renameData.name}>
             <p
-              className={
-                'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-slate-200 px-1'
-              }>
+              className={tw(
+                'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1',
+                'dark:bg-stone-700',
+              )}>
               {renameData.name}
             </p>
           </Tooltip>
@@ -111,25 +113,18 @@ export function RenameModalContent({
             onChange={handleChange}
             onFocus={handleFocus}
             className={
-              'overflow-ellipsis rounded-md border border-slate-400 p-2'
+              'overflow-ellipsis rounded-md border border-stone-400 p-2'
             }
           />
         </ModalBody>
         <ModalFooter className={'justify-between'}>
-          <button
-            type={'button'}
-            onClick={onClose}
-            className={
-              'rounded-md px-3 py-1 text-slate-600 outline outline-1 outline-slate-600'
-            }>
+          <button type={'button'} onClick={onClose} className={'btn-white'}>
             Cancel
           </button>
           <button
             type={'submit'}
             disabled={inputName === renameData.name || renameAction.isPending}
-            className={
-              'rounded-md bg-indigo-300 px-3 py-1 transition-all disabled:opacity-70 disabled:grayscale'
-            }>
+            className={'btn-black'}>
             {renameAction.isPending ? 'Renaming' : 'Rename'}
           </button>
         </ModalFooter>

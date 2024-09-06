@@ -54,6 +54,7 @@ export default function ContextMenu({
           '[&_button>svg]:h-5 [&_button]:flex [&_button]:items-center [&_button]:gap-2 [&_button]:text-left',
           '[&_button:hover]:bg-stone-100 [&_button:hover]:text-stone-900 [&_button]:px-3 [&_button]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',
+          'bg-stone-50 dark:bg-stone-800 dark:[&_button:hover]:bg-stone-600/50 dark:[&_button:hover]:text-stone-100',
         )}
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}

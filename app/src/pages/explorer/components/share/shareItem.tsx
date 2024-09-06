@@ -102,7 +102,10 @@ export function ShareItem({
         <div className={'mr-auto sm:mr-[unset]'}>
           <DeleteShare id={share.id} />
         </div>
-        <div className={'flex items-center gap-1 text-xs text-stone-500/90'}>
+        <div
+          className={
+            'flex items-center gap-1 text-xs text-stone-500/90 dark:text-stone-400'
+          }>
           {share.share_target_username ? (
             <Tooltip content={share.share_target_username}>
               <p className={'max-w-[100px] truncate'}>

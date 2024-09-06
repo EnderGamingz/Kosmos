@@ -48,7 +48,9 @@ export function MoveToTrash({
         onClose?.();
         trashAction.mutate();
       }}
-      className={'text-red-500 hover:!text-red-800'}>
+      className={
+        'text-red-500 hover:!text-red-800 dark:text-red-300 dark:hover:!text-red-300'
+      }>
       <ArchiveBoxXMarkIcon />
       {short ? 'Trash' : 'Move to Trash'}
     </button>

@@ -12,6 +12,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { Helmet } from 'react-helmet';
+import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 
 export default function BinPage() {
   const { data: usageData } = useUsageStats();
@@ -44,16 +45,12 @@ export default function BinPage() {
       />
       <div className={'flex items-center justify-between px-5 pt-5'}>
         <div>
-          <motion.h1
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className={'text-3xl font-semibold text-stone-800'}>
-            Trash bin
-          </motion.h1>
+          <SubPageTitle>Trash bin</SubPageTitle>
           <motion.p
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}>
+            transition={{ delay: 0.2 }}
+            className={'text-stone-800 dark:text-stone-400'}>
             {usageData?.bin !== undefined ? binUsage : 'Loading...'}
           </motion.p>
         </div>

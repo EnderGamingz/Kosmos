@@ -119,6 +119,7 @@ export function CreateShare({
         <div
           className={tw(
             'grid grid-cols-1 rounded-xl bg-stone-200/50 p-1 sm:grid-cols-2',
+            'dark:bg-stone-700/50 dark:text-stone-300',
           )}>
           <TypeButton
             type={ShareType.Public}
@@ -137,6 +138,7 @@ export function CreateShare({
           'grid [&>div]:overflow-hidden [&>div]:rounded-xl [&>div]:bg-stone-200/50 [&>div]:p-2',
           'gap-2 [&_input]:mt-1 [&_input]:w-full [&_input]:py-1.5 [&_label]:text-sm [&_svg]:w-4',
           '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-stone-600',
+          'dark:[&>div]:bg-stone-700/50 dark:[&_label]:text-stone-300',
         )}>
         <div className={'!p-0'}>
           <Collapse isOpened={type === ShareType.Private}>
@@ -254,7 +256,7 @@ export function CreateShare({
             Access limit
             {limit && <div className={'ml-auto text-sm'}>Active</div>}
           </label>
-          <p className={'text-xs text-stone-600'}>
+          <p className={'text-xs text-stone-600 dark:text-stone-400'}>
             Every access like download and preview counts as one.
           </p>
           <input

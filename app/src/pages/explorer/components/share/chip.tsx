@@ -18,7 +18,8 @@ export function Chip({
         'flex items-center gap-1 outline outline-1 outline-stone-800/20',
         'transition-colors [&_svg]:h-3 [&_svg]:w-3',
         onClick ? 'cursor-pointer' : 'cursor-default',
-        Boolean(selected) && 'bg-stone-800/20',
+        'dark:bg-stone-800/60 dark:text-stone-100',
+        Boolean(selected) && 'bg-stone-600 text-stone-100 dark:bg-stone-500',
       )}>
       {content}
     </div>

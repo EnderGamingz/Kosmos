@@ -75,16 +75,34 @@ export type UnitType = {
   setType: (type: Unit) => void;
 };
 
+export enum Theme {
+  Light,
+  Dark,
+}
+
+export type ThemeType = {
+  type: Theme;
+  setType: (type: Theme) => void;
+};
+
 export type PreferenceState = {
   loading: LoadingType;
   imageOnly: DisplayType;
   mixed: DisplayType;
   unit: UnitType;
+  theme: ThemeType;
 };
 
 export const usePreferenceStore = create<PreferenceState>()(
   persist(
     (set, get) => ({
+      theme: {
+        type: Theme.Light,
+        setType: (type: Theme) =>
+          set({
+            theme: { ...get().theme, type },
+          }),
+      },
       unit: {
         type: Unit.SI,
         setType: (type: Unit) =>

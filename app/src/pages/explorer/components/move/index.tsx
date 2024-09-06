@@ -40,7 +40,7 @@ export function MoveAction({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         placement={'auto'}>
-        <ModalContent>
+        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
           <MoveModalContent
             moveData={{ type, id, name }}
             multiData={multiData}

@@ -23,7 +23,9 @@ export function AlbumItem({ album }: { album: AlbumModel }) {
 
   return (
     <li className={'flex items-center justify-between'}>
-      <div onClick={handleClick} className={'w-full text-xl text-stone-700'}>
+      <div
+        onClick={handleClick}
+        className={'w-full text-xl text-stone-700 dark:text-stone-300'}>
         <AlbumCover album={album} loading={loading} />
         <div className={'flex flex-col'}>
           <motion.p

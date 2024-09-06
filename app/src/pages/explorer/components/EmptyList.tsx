@@ -43,7 +43,7 @@ export default function EmptyList({
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className={'text-center text-stone-600'}>
+          className={'text-center text-stone-600 dark:text-stone-400'}>
           {message ?? 'No items'}
         </motion.p>
         <motion.div

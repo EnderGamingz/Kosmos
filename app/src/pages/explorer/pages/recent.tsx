@@ -1,10 +1,10 @@
 import { useRecentFiles } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { Progress } from '@nextui-org/react';
-import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { Helmet } from 'react-helmet';
+import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 
 export default function RecentFiles() {
   const files = useRecentFiles();
@@ -29,13 +29,7 @@ export default function RecentFiles() {
           color={'default'}
         />
         <div className={'px-5 pt-5'}>
-          <motion.h1
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className={'text-3xl font-semibold text-stone-800'}>
-            Recent Files
-          </motion.h1>
+          <SubPageTitle>Recent Files</SubPageTitle>
         </div>
         <div>
           <ExplorerDataDisplay

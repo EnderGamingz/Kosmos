@@ -10,7 +10,9 @@ export function StaticNotificationItem({ data }: { data: Notification }) {
     <motion.div
       layout
       variants={itemTransitionVariant}
-      className={'relative w-full text-stone-800 transition-colors'}>
+      className={
+        'relative w-full text-stone-800 transition-colors dark:text-stone-300'
+      }>
       <div className={'flex items-center'}>
         <div className={'mr-1 mt-1 flex h-5 w-5'}>
           {getSeverityIcon(data.severity)}

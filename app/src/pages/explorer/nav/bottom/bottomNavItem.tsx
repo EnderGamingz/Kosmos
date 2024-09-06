@@ -29,7 +29,7 @@ export function BottomNavItem({
           tw(
             'grid cursor-pointer place-items-center px-2 py-2',
             'rounded-xl transition-colors hover:bg-stone-500/20',
-            isActive && !!link.href && 'bg-stone-300/50',
+            isActive && !!link.href && 'bg-stone-300/50 dark:bg-stone-700/40',
           )
         }>
         <div className={'h-5 w-5'}>{link.icon}</div>
@@ -56,7 +56,7 @@ function BottomNavPopoverWrapper({
       <PopoverTrigger>
         <div>{children}</div>
       </PopoverTrigger>
-      <PopoverContent className={'bg-stone-100'}>
+      <PopoverContent className={'bg-stone-100 dark:bg-stone-800'}>
         <div
           className={'grid gap-1 py-1'}
           style={{

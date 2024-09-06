@@ -18,6 +18,7 @@ export function FileDisplayFooter({
         className={tw(
           'flex flex-col items-center justify-between gap-2 sm:flex-row',
           'text-xs text-stone-500',
+          'dark:text-stone-400',
         )}>
         <motion.p
           initial={{ opacity: 0, x: -20 }}

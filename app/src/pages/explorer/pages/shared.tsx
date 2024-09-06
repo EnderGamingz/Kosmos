@@ -18,6 +18,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { ShareAlbumModel } from '@models/album.ts';
 import { Helmet } from 'react-helmet';
+import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 
 export default function SharedItems({
   itemsForUser,
@@ -48,14 +49,9 @@ export default function SharedItems({
           color={'default'}
         />
         <div className={'px-5 pt-5'}>
-          <motion.h1
-            key={itemsForUser ? 'shared-with-me' : 'shared-by-me'}
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className={'text-3xl font-semibold text-stone-800'}>
+          <SubPageTitle>
             Shared Items {itemsForUser ? 'with me' : 'by me'}
-          </motion.h1>
+          </SubPageTitle>
         </div>
         {itemsForUser ? (
           <SharedForMe shares={items.data} />

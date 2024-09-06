@@ -11,6 +11,7 @@ export default {
   theme: {
     extend: {},
   },
+  darkMode: 'selector',
   plugins: [
     nextui({
       themes: {

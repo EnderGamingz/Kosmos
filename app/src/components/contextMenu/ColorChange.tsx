@@ -95,63 +95,62 @@ export function FolderColorChange({
   }, [isOpen]);
 
   return (
-    <>
-      <Popover
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement={'right-start'}
-        offset={20}>
-        <PopoverTrigger>
-          <button
-            className={'h-4 w-4 !rounded-full !p-0 shadow-md transition-colors'}
-            style={{
-              backgroundColor: selected || color || 'lightgray',
-            }}
-          />
-        </PopoverTrigger>
-        <PopoverContent className={'rounded-md p-3'}>
-          <div className={'max-w-40'}>
-            <div className={'flex flex-wrap gap-2'}>
-              {definedColors.map(color => (
-                <button
-                  onClick={handleClick(color)}
-                  key={color}
-                  className={'h-5 w-5 !rounded-full !p-0 shadow-md'}
-                  style={{
-                    backgroundColor: color,
-                  }}
-                />
-              ))}
-            </div>
-            <div className={'mt-4 grid gap-2'}>
-              <Wheel
-                width={150}
-                height={150}
-                color={selected || color || '#ffffff'}
-                onChange={color => setSelected(color.hex)}
-              />
-              <ShadeSlider
-                className={'overflow-hidden rounded-md'}
-                hsva={hexToHsva(selected || color || '#ffffff')}
-                onChange={newShade => {
-                  const hsva = hexToHsva(selected || color || 'lightgray');
-                  setSelected(hsvaToHex({ ...hsva, v: newShade.v }));
+    <Popover
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      placement={'left-start'}
+      offset={20}>
+      <PopoverTrigger>
+        <button
+          className={'h-4 w-4 !rounded-full !p-0 shadow-md transition-colors'}
+          style={{
+            backgroundColor: selected || color || 'lightgray',
+          }}
+        />
+      </PopoverTrigger>
+      <PopoverContent
+        className={'rounded-md bg-stone-50 p-3 dark:bg-stone-800'}>
+        <div className={'max-w-40'}>
+          <div className={'flex flex-wrap gap-2'}>
+            {definedColors.map(color => (
+              <button
+                onClick={handleClick(color)}
+                key={color}
+                className={'h-5 w-5 !rounded-full !p-0 shadow-md'}
+                style={{
+                  backgroundColor: color,
                 }}
               />
-              {(color || selected) && (
-                <button
-                  onClick={() => recolorAction.mutate({ remove: true })}
-                  className={
-                    'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300'
-                  }>
-                  <BackspaceIcon className={'h-5 w-5'} />
-                  Remove
-                </button>
-              )}
-            </div>
+            ))}
           </div>
-        </PopoverContent>
-      </Popover>
-    </>
+          <div className={'mt-4 grid gap-2'}>
+            <Wheel
+              width={150}
+              height={150}
+              color={selected || color || '#ffffff'}
+              onChange={color => setSelected(color.hex)}
+            />
+            <ShadeSlider
+              className={'overflow-hidden rounded-md'}
+              hsva={hexToHsva(selected || color || '#ffffff')}
+              onChange={newShade => {
+                const hsva = hexToHsva(selected || color || 'lightgray');
+                setSelected(hsvaToHex({ ...hsva, v: newShade.v }));
+              }}
+            />
+            {(color || selected) && (
+              <button
+                onClick={() => recolorAction.mutate({ remove: true })}
+                className={
+                  'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300'
+                }>
+                <BackspaceIcon className={'h-5 w-5'} />
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

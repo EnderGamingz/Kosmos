@@ -33,7 +33,7 @@ export function BreadCrumbItem({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className={
-        'flex items-center gap-2 text-stone-800 [&_svg]:h-5 [&_svg]:w-5'
+        'flex items-center gap-2 text-stone-800 dark:text-stone-200 [&_svg]:h-5 [&_svg]:w-5'
       }
       initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
@@ -44,11 +44,11 @@ export function BreadCrumbItem({
         wrapper={c => (
           <Link
             className={
-              'rounded-md px-1 transition-colors hover:!bg-stone-500/10'
+              'rounded-md px-1 transition-colors hover:!bg-stone-500/10 dark:hover:!bg-stone-700/60'
             }
             style={{
               backgroundColor:
-                color && `rgba(${hexToRGB(color).join(',')}, 0.1)`,
+                color && `rgba(${hexToRGB(color).join(',')}, 0.2)`,
             }}
             to={href!}>
             {c}

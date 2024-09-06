@@ -114,7 +114,7 @@ export function NotificationsMenu() {
           </Badge>
         </button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
         <div
           className={tw(
             'min-w-[200px]',
@@ -123,7 +123,9 @@ export function NotificationsMenu() {
           )}>
           <div>
             <h2
-              className={'mt-2 text-left text-base font-light text-stone-800'}>
+              className={
+                'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
+              }>
               Notifications
             </h2>
             <ScrollShadow
@@ -145,7 +147,7 @@ export function NotificationsMenu() {
               ) : (
                 <p
                   className={
-                    'self-center justify-self-center font-light text-stone-400'
+                    'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
                   }>
                   No notifications
                 </p>
@@ -154,7 +156,9 @@ export function NotificationsMenu() {
           </div>
           <div>
             <h2
-              className={'mt-2 text-left text-base font-light text-stone-800'}>
+              className={
+                'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
+              }>
               Operations
             </h2>
             <ScrollShadow
@@ -173,7 +177,7 @@ export function NotificationsMenu() {
               ) : (
                 <p
                   className={
-                    'self-center justify-self-center font-light text-stone-400'
+                    'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
                   }>
                   No operations
                 </p>
@@ -205,7 +209,10 @@ function OperationItem({ data }: { data: OperationModel }) {
   return (
     <motion.div variants={itemTransitionVariant}>
       <div className={'flex items-center justify-between gap-5'}>
-        <p className={'text-base font-medium text-stone-800'}>
+        <p
+          className={
+            'text-base font-medium text-stone-800 dark:text-stone-300'
+          }>
           {getOperationTypeString(data.operation_type)}
         </p>
         <Tooltip content={getOperationStatusString(data.operation_status)}>
@@ -224,7 +231,7 @@ function OperationItem({ data }: { data: OperationModel }) {
         {canRetry && !retry.isSuccess && (
           <button
             disabled={retry.isPending}
-            className={'text-xs text-stone-800 underline'}
+            className={'text-xs text-stone-800 underline dark:text-stone-300'}
             onClick={() => {
               retry.mutate();
             }}>

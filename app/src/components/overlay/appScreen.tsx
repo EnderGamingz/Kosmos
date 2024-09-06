@@ -12,7 +12,7 @@ export default function AppScreen({
   return (
     <div
       className={
-        'body-bg absolute inset-0 z-20 p-10 text-stone-700 ' +
+        'body-bg absolute inset-0 z-20 p-10 text-stone-700 dark:text-stone-300/80 ' +
         'flex flex-col items-center justify-center gap-2'
       }>
       <div className={'flex flex-col items-center gap-4'}>
@@ -22,7 +22,11 @@ export default function AppScreen({
         </span>
       </div>
       {loading && (
-        <div className={'app-loading-indicator !border-t-stone-700'} />
+        <div
+          className={
+            'app-loading-indicator !border-t-stone-700 dark:!border-t-stone-300'
+          }
+        />
       )}
     </div>
   );

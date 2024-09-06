@@ -8,6 +8,32 @@ import {
 } from '@heroicons/react/24/outline';
 import { ALLOW_REGISTER } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
+import { ReactNode } from 'react';
+
+function HeroLink({
+  to,
+  icon,
+  children,
+  className = '',
+}: {
+  to: string;
+  icon: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className={tw(
+        'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
+        'text-lg transition-colors hover:bg-stone-300 sm:text-2xl dark:bg-stone-300 dark:text-stone-800 dark:hover:bg-stone-400',
+        className,
+      )}>
+      {icon}
+      {children}
+    </Link>
+  );
+}
 
 export function Hero() {
   const user = useUserState(s => s.user);
@@ -41,7 +67,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
             className={
-              'text-5xl font-black text-stone-50 sm:text-6xl lg:text-7xl'
+              'text-5xl font-black text-stone-50 sm:text-6xl lg:text-7xl dark:text-stone-200'
             }>
             {user
               ? `Welcome back ${user.full_name ?? user.username}!`
@@ -51,7 +77,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className={'text-xl text-stone-100 md:text-3xl lg:text-4xl'}>
+            className={
+              'text-xl text-stone-100 md:text-3xl lg:text-4xl dark:text-stone-300'
+            }>
             Kosmos - Your high-performance file hosting platform
           </motion.p>
           <motion.div
@@ -61,42 +89,31 @@ export function Hero() {
             className={'mx-auto mt-auto flex flex-col gap-5 sm:flex-row'}>
             {user ? (
               <>
-                <Link
+                <HeroLink
                   to={'/home'}
-                  className={tw(
-                    'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
-                    'text-lg transition-colors hover:bg-stone-300 sm:text-2xl ',
-                  )}>
-                  <HomeIcon className={'h-8 w-8'} /> Dashboard
-                </Link>
-                <Link
+                  icon={<HomeIcon className={'h-8 w-8'} />}>
+                  Dashboard
+                </HeroLink>
+
+                <HeroLink
                   to={'/home/quick'}
-                  className={tw(
-                    'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
-                    'text-lg transition-colors hover:bg-stone-300 sm:text-2xl ',
-                  )}>
-                  <ClockIcon className={'h-8 w-8'} /> Quick Share
-                </Link>
+                  icon={<ClockIcon className={'h-8 w-8'} />}>
+                  Quick Share
+                </HeroLink>
               </>
             ) : (
-              <Link
+              <HeroLink
                 to={'/auth/login'}
-                className={tw(
-                  'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
-                  'text-lg transition-colors hover:bg-stone-300 sm:text-2xl ',
-                )}>
-                <ArrowRightEndOnRectangleIcon className={'h-8 w-8'} /> Login
-              </Link>
+                icon={<ArrowRightEndOnRectangleIcon className={'h-8 w-8'} />}>
+                Login
+              </HeroLink>
             )}
             {ALLOW_REGISTER && !user && (
-              <Link
+              <HeroLink
                 to={'/auth/register'}
-                className={tw(
-                  'flex items-center gap-2 rounded-full bg-stone-600 px-6 py-2 font-medium text-stone-50 sm:px-10 sm:py-4',
-                  'text-lg transition-colors hover:bg-stone-800 sm:text-2xl ',
-                )}>
-                <ArrowRightEndOnRectangleIcon className={'h-8 w-8'} /> Register
-              </Link>
+                icon={<ArrowRightEndOnRectangleIcon className={'h-8 w-8'} />}>
+                Register
+              </HeroLink>
             )}
           </motion.div>
         </div>

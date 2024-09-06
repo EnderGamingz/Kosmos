@@ -2,6 +2,7 @@ import ExplorerPreferences from '@pages/settings/preferences/explorerPreference.
 import { UnitPreferences } from '@pages/settings/preferences/unitPreferences.tsx';
 import tw from '@utils/classMerge.ts';
 import { Helmet } from 'react-helmet';
+import { ThemePreferences } from '@pages/settings/preferences/themePreferences.tsx';
 
 export default function Preferences({ inPopup }: { inPopup?: boolean }) {
   return (
@@ -13,6 +14,7 @@ export default function Preferences({ inPopup }: { inPopup?: boolean }) {
         <title>Preferences</title>
       </Helmet>
       <UnitPreferences inPopup={inPopup} />
+      <ThemePreferences inPopup={inPopup} />
       <ExplorerPreferences inPopup={inPopup} />
     </div>
   );

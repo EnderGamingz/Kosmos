@@ -12,16 +12,13 @@ export default function Settings() {
       </Helmet>
       <motion.aside
         className={tw(
-          'border-r border-stone-800/10 py-3 transition-all',
+          'border-r border-stone-800/10 py-3 transition-width',
           'absolute left-0 top-0 h-full w-20 px-2 md:h-[unset]',
           'flex flex-col md:relative md:w-[unset] md:px-4',
-          '[&_a]:gap-0 [&_a]:transition-all [&_p]:w-0 [&_p]:overflow-hidden',
+          '[&_a]:gap-0 [&_p]:w-0 [&_p]:overflow-hidden',
           'md:[&_a]:gap-3 md:[&_p]:w-full md:[&_p]:overflow-visible',
         )}>
-        <h2
-          className={
-            'pb-0 text-[0] font-light transition-all md:pb-1 md:text-lg'
-          }>
+        <h2 className={'pb-0 text-[0] font-light md:pb-1 md:text-lg'}>
           Settings
         </h2>
         <hr

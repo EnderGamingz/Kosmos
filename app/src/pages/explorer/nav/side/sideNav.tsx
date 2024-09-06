@@ -36,6 +36,7 @@ export function SideNav({ admin }: { admin?: boolean }) {
       className={tw(
         'body-bg flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
         'overflow-hidden transition-all md:h-[initial]',
+        'dark:border-stone-300/10',
       )}>
       <div className={'flex flex-col gap-2 p-3'}>
         {links.map(link => (
@@ -45,17 +46,21 @@ export function SideNav({ admin }: { admin?: boolean }) {
       <div className={'mt-auto grid gap-2 border-t border-stone-800/10 p-5'}>
         <Link
           to={'/usage/report'}
-          className={
-            'flex items-center gap-2 rounded-lg px-2 py-1 font-light hover:bg-stone-800/10'
-          }>
+          className={tw(
+            'flex items-center gap-2 rounded-lg px-2 py-1 font-light',
+            'hover:bg-stone-800/10 dark:hover:bg-stone-300/10',
+          )}>
           <CloudIcon className={'h-5 w-5'} />
           Account Storage
           <ArrowTopRightOnSquareIcon className={'h-3 w-3'} />
         </Link>
         <UsageIndicator data={usage.data} loading={usage.isLoading} />
-        <div className={'text-sm text-stone-800 md:text-base'}>
+        <div
+          className={'text-sm text-stone-800 md:text-base dark:text-stone-300'}>
           {useFormatBytes(total)}{' '}
-          <span className={'text-stone-400'}>of {useFormatBytes(limit)}</span>
+          <span className={'text-stone-400 dark:text-stone-500'}>
+            of {useFormatBytes(limit)}
+          </span>
         </div>
       </div>
     </motion.aside>

@@ -35,12 +35,12 @@ export function ContextMenuTitle({
       <span
         title={title}
         className={tw(
-          'flex items-center gap-1 whitespace-nowrap text-sm font-light text-stone-800',
+          'flex items-center gap-2 whitespace-nowrap text-sm font-light text-stone-800 dark:text-stone-300',
           '[&_>svg]:h-4 [&_>svg]:min-w-4',
         )}>
-        {renderIcon()}
+        {children}
         {title}
-        {children && <div className={'ml-auto'}>{children}</div>}
+        <div className={'ml-auto min-w-4'}>{renderIcon()}</div>
       </span>
     </div>
   );

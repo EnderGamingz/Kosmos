@@ -9,7 +9,9 @@ function ActiveBar({ percent }: { percent: number }) {
     <motion.div
       initial={{ width: '0%' }}
       animate={{ width: `${percent}%` }}
-      className={'active h-full rounded-full bg-indigo-400 transition-width'}
+      className={
+        'active h-full rounded-full bg-indigo-400 transition-width dark:bg-indigo-600'
+      }
       style={{ width: percent + '%' }}
     />
   );
@@ -20,7 +22,9 @@ function BinBar({ percent }: { percent: number }) {
     <motion.div
       initial={{ width: '0%' }}
       animate={{ width: `${percent}%` }}
-      className={'bin h-full rounded-full bg-amber-500 transition-width'}
+      className={
+        'bin h-full rounded-full bg-amber-500 transition-width dark:bg-amber-600'
+      }
       style={{ width: percent + '%' }}
     />
   );
@@ -32,7 +36,7 @@ export function AvailableBar({ percent }: { percent: number }) {
       initial={{ width: '0%' }}
       animate={{ width: `${percent}%` }}
       className={
-        'remaining h-full rounded-full bg-stone-700/20 transition-width'
+        'remaining h-full rounded-full bg-stone-700/20 transition-width dark:bg-stone-500'
       }
       style={{ width: percent + '%' }}
     />
@@ -62,7 +66,7 @@ export function UsageIndicator({
     <div className={tw(small ? 'h-1' : large ? 'h-5' : 'h-2')}>
       <div
         className={tw(
-          'flex h-full w-full items-center gap-[1px]',
+          'flex h-full w-full items-center gap-[4px]',
           warningLimit && '[&>.active]:bg-yellow-500',
           alertLimit && '[&>.active]:bg-red-500',
         )}>
