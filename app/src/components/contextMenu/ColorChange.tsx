@@ -4,7 +4,7 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from '@nextui-org/react';
-import { BackspaceIcon } from '@heroicons/react/24/outline';
+import { BackspaceIcon, SwatchIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -27,6 +27,17 @@ const definedColors = [
   '#ff9800',
   '#795548',
 ];
+
+export function ColorDisplay({ color }: { color: string }) {
+  return (
+    <div
+      className={'h-3.5 w-3.5 !rounded-full !p-0 shadow-md transition-colors'}
+      style={{
+        backgroundColor: color,
+      }}
+    />
+  );
+}
 
 export function FolderColorChange({
   folderId,
@@ -101,12 +112,9 @@ export function FolderColorChange({
       placement={'left-start'}
       offset={20}>
       <PopoverTrigger>
-        <button
-          className={'h-4 w-4 !rounded-full !p-0 shadow-md transition-colors'}
-          style={{
-            backgroundColor: selected || color || 'lightgray',
-          }}
-        />
+        <button>
+          <SwatchIcon /> Folder Color
+        </button>
       </PopoverTrigger>
       <PopoverContent
         className={'rounded-md bg-stone-50 p-3 dark:bg-stone-800'}>

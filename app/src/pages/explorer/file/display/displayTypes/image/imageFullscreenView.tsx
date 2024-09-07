@@ -30,11 +30,13 @@ export function ImageFullscreenView({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={'fixed inset-0 z-[100] bg-white p-10'}>
+            className={
+              'fixed inset-0 z-[100] bg-stone-50 p-10 dark:bg-stone-900'
+            }>
             <motion.img
               onDoubleClick={onDoubleClick}
               className={
-                'h-full w-full rounded-xl object-contain drop-shadow-lg'
+                'h-full w-full rounded-lg rounded-xl object-contain drop-shadow-lg'
               }
               layoutId={`image-${file.id}`}
               src={src}

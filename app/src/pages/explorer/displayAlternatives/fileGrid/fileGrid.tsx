@@ -45,6 +45,7 @@ function Footer(props: {
             'w-full cursor-default select-none border-none text-sm text-stone-500/50',
             'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
             'flex gap-5 pb-28 pt-4',
+            'dark:text-stone-400',
           )}>
           <div>
             {props.folderModels.length} Folders <br />

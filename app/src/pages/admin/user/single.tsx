@@ -101,7 +101,10 @@ function UserInfoItem({
   value: string | number | undefined;
 }) {
   return (
-    <div className={'space-y-2 rounded-xl bg-stone-300 p-2 text-stone-700'}>
+    <div
+      className={
+        'space-y-2 rounded-xl bg-stone-300 p-2 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
+      }>
       <p className={'text-lg'}>{label}</p>
       <span>{value ?? 'N/A'}</span>
     </div>

@@ -24,7 +24,10 @@ import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import SetAlbumPreview from '@pages/explorer/pages/albums/setAlbumPrevíew.tsx';
-import { FolderColorChange } from '@components/contextMenu/ColorChange.tsx';
+import {
+  ColorDisplay,
+  FolderColorChange,
+} from '@components/contextMenu/ColorChange.tsx';
 
 export default function ContextMenu({
   children,
@@ -140,11 +143,7 @@ export function ContextMenuContent({
     return (
       <>
         <ContextMenuTitle type={'folder'} title={data.folder_name}>
-          <FolderColorChange
-            folderId={data.id}
-            parent={data.parent_id}
-            color={data.color}
-          />
+          <ColorDisplay color={data.color || 'lightgray'} />
         </ContextMenuTitle>
         <MultiDownload
           files={[]}
@@ -158,6 +157,11 @@ export function ContextMenuContent({
           id={data.id}
           name={data.folder_name}
           onClose={onClose}
+        />
+        <FolderColorChange
+          folderId={data.id}
+          parent={data.parent_id}
+          color={data.color}
         />
         <MoveAction
           type={'folder'}

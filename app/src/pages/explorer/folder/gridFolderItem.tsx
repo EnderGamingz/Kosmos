@@ -115,9 +115,9 @@ export default function GridFolderItem({
         }}
         className={tw(
           'flex items-center',
-          'rounded-lg bg-stone-400/40',
+          'rounded-lg bg-stone-400/40 dark:bg-stone-700/40',
           'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg',
-          isSelected && 'bg-indigo-100',
+          isSelected && 'bg-indigo-100 dark:bg-indigo-800',
           isShift && 'cursor-pointer',
           context.select.rangeStart === index && 'bg-indigo-50',
         )}>
@@ -162,7 +162,9 @@ export default function GridFolderItem({
             context.handleContext({ x: e.clientX, y: e.clientY }, folder);
           }}
           className={'cursor-pointer p-2'}>
-          <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+          <EllipsisVerticalIcon
+            className={'h-6 w-6 text-stone-700 dark:text-stone-300'}
+          />
         </button>
       </motion.div>
     </motion.div>

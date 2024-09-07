@@ -79,6 +79,7 @@ export default function ItemIcon({
       className={tw(
         'icon-container pointer-events-none',
         'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',
+        'dark:shadow-inherit-dark dark:text-stone-300',
       )}
       style={{
         color,

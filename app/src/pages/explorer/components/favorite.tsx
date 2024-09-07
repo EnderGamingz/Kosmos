@@ -68,9 +68,11 @@ export default function Favorite({
         className={tw(
           'h-6 w-6 transition-all',
           active
-            ? 'fill-amber-400 stroke-amber-400'
-            : 'fill-transparent stroke-stone-400',
-          white && !active ? 'fill-stone-50/60 stroke-stone-300' : '',
+            ? 'fill-amber-400 stroke-amber-400 dark:fill-amber-500 dark:stroke-amber-500'
+            : 'fill-transparent stroke-stone-400 dark:stroke-stone-300',
+          white && !active
+            ? 'fill-stone-50/60 stroke-stone-300 dark:fill-stone-600/60'
+            : '',
         )}
       />
       {!iconOnly && 'Favorite'}

@@ -19,7 +19,9 @@ function UserItem({ user }: { user: UserModel }) {
   const navigate = useNavigate();
   return (
     <tr
-      className={'cursor-pointer transition-colors hover:bg-stone-200'}
+      className={
+        'cursor-pointer transition-colors hover:bg-stone-200 dark:hover:bg-stone-700'
+      }
       onClick={() => navigate(`/admin/user/${user.id}`)}>
       <td>{user.username}</td>
       <td>{user.full_name}</td>

@@ -24,7 +24,7 @@ export function ThemePreferences({ inPopup }: { inPopup?: boolean }) {
     <section className={'space-y-3'}>
       <h2 className={'text-xl font-semibold'}>Application Theme</h2>
       <motion.div
-        variants={containerVariant(0.04, 0.1)}
+        variants={containerVariant(0.04, 0.2)}
         initial={'hidden'}
         animate={'show'}
         className={'flex flex-col gap-3 sm:flex-row'}>

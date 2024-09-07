@@ -93,6 +93,7 @@ export function DangerSettings() {
       className={tw(
         '!mt-12 space-y-3 rounded-xl bg-red-500/5 p-4',
         'text-red-950 outline outline-1 outline-red-700/50',
+        'dark:bg-red-400/20 dark:text-red-200',
       )}>
       <h2 className={'text-xl font-bold'}>Danger Zone</h2>
       <DeleteAccount />

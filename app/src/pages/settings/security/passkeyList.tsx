@@ -8,6 +8,7 @@ import { BASE_URL } from '@lib/env.ts';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
+import tw from '@utils/classMerge.ts';
 
 export default function PasskeyList() {
   const notifications = useNotifications(s => s.actions);
@@ -48,17 +49,24 @@ export default function PasskeyList() {
       <h2 className={'text-xl font-bold'}>
         Added Passkeys{' '}
         {!!passkeys.data?.length && (
-          <span className={'ml-1 text-sm font-normal text-stone-500'}>
+          <span
+            className={
+              'ml-1 text-sm font-normal text-stone-500 dark:text-stone-400'
+            }>
             ({passkeys.data?.length})
           </span>
         )}
       </h2>
-      <motion.ul className={'max-w-md rounded-xl bg-stone-200/50 p-2'}>
+      <motion.ul
+        className={
+          'max-w-md rounded-xl bg-stone-200/50 p-2 dark:bg-stone-700/50'
+        }>
         {!passkeys.data?.length && (
           <EmptyList noIcon message={'No passkeys added'} />
         )}
-        {passkeys.data?.map(item => (
+        {passkeys.data?.map((item, i) => (
           <PasskeyItem
+            last={i === passkeys.data?.length - 1}
             key={item.id}
             passkey={item}
             onDelete={() => deleteAction.mutate({ id: item.id })}
@@ -75,16 +83,19 @@ export default function PasskeyList() {
 function PasskeyItem({
   passkey,
   onDelete,
+  last = false,
 }: {
   passkey: PasskeyModel;
   onDelete?: () => void;
+  last?: boolean;
 }) {
   return (
     <motion.li
       layout
-      className={
-        'flex items-center justify-between gap-2 border-b-1 border-stone-300 p-2'
-      }>
+      className={tw(
+        'flex items-center justify-between gap-2 border-b-1 border-stone-300 p-2 dark:border-stone-600',
+        last && 'border-transparent dark:border-transparent',
+      )}>
       <span>{passkey.name}</span>
       <TrashIcon
         className={'h-5 w-5 cursor-pointer text-red-500'}

@@ -27,6 +27,12 @@
     .input {
         @apply rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20
         dark:bg-stone-300/20 dark:outline-stone-700
+        dark:placeholder:text-stone-500
+    }
+
+    .input option {
+        @apply bg-stone-50 text-stone-700
+        dark:bg-stone-700 dark:text-stone-300
     }
 
     .header-login-btn {

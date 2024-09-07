@@ -61,6 +61,7 @@ export function UserInformation() {
           'grid grid-cols-1 gap-2 md:grid-cols-2',
           '[&_input]:input [&_input]:w-full',
           '[&_label]:p-1 [&_label]:text-sm [&_label]:font-medium [&_label]:text-stone-800',
+          'dark:[&_label]:text-stone-200',
         )}>
         <div>
           <label htmlFor={'username'}>Username</label>

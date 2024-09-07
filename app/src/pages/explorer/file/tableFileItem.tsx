@@ -119,9 +119,9 @@ export function TableFileItem({
       }}
       className={tw(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
-        isSelected && 'bg-indigo-100',
+        isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
         isShift && 'cursor-pointer',
-        context.select.rangeStart === i && 'bg-indigo-50',
+        context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
       )}>
       {!context.viewSettings?.noSelect && (
         <motion.th /*layoutId={`check-${file.id}`}*/>

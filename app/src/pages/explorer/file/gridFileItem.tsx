@@ -93,9 +93,11 @@ export default function GridFileItem({
       className={tw(
         'group relative rounded-lg outline outline-2 ',
         'outline-transparent transition-[outline-color]',
-        Boolean(isSelected) && 'bg-indigo-100/50 outline-indigo-300',
+        Boolean(isSelected) &&
+          'bg-indigo-100/50 outline-indigo-300 dark:bg-indigo-900/50',
         isShift && 'cursor-pointer',
-        context.select.rangeStart === index && 'bg-indigo-50',
+        context.select.rangeStart === index &&
+          'bg-indigo-50 dark:bg-indigo-900/50',
       )}>
       <motion.div
         drag={
@@ -182,7 +184,7 @@ export default function GridFileItem({
               <div
                 key={`size-${file.id}`}
                 className={
-                  'absolute right-1.5 top-1.5 z-30 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs'
+                  'absolute right-1.5 top-1.5 z-30 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs dark:bg-stone-700'
                 }>
                 <p>{formattedSize}</p>
               </div>
@@ -231,7 +233,7 @@ export default function GridFileItem({
                     }}
                     className={'cursor-pointer'}>
                     <EllipsisVerticalIcon
-                      className={'h-6 w-6 text-stone-700'}
+                      className={'h-6 w-6 text-stone-700 dark:text-stone-300'}
                     />
                   </button>
                 )}
@@ -239,7 +241,7 @@ export default function GridFileItem({
               <p
                 key={`updated-${file.updated_at}`}
                 className={
-                  'whitespace-nowrap text-xs font-light text-stone-500'
+                  'whitespace-nowrap text-xs font-light text-stone-500 dark:text-stone-400'
                 }>
                 <ClockIcon className={'inline h-3.5 w-3.5'} />{' '}
                 {formatDistanceToNow(file.updated_at)} ago

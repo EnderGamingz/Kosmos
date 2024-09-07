@@ -53,7 +53,12 @@ export default function AppInfo() {
       </Helmet>
       <div className={'flex items-center gap-3 text-stone-700'}>
         <ApplicationIcon className={'h-12 w-12 md:h-16 md:w-16'} />
-        <h2 className={'text-2xl font-semibold md:text-5xl'}>Kosmos</h2>
+        <h2
+          className={
+            'text-2xl font-semibold text-stone-700 md:text-5xl dark:text-stone-300'
+          }>
+          Kosmos
+        </h2>
       </div>
       <p className={'italic'}>High performance file hosting platform</p>
       <ul className={'py-5'}>
@@ -65,14 +70,17 @@ export default function AppInfo() {
               to={link.href}
               target={'_blank'}
               className={
-                'w-0 flex-grow truncate text-stone-600 hover:underline'
+                'w-0 flex-grow truncate text-stone-600 hover:underline dark:text-stone-300'
               }>
               {link.href}
             </Link>
           </li>
         ))}
       </ul>
-      <div className={'flex flex-wrap items-center gap-5 text-stone-500'}>
+      <div
+        className={
+          'flex flex-wrap items-center gap-5 text-stone-500 dark:text-stone-400'
+        }>
         <p>
           © {new Date().getFullYear()}{' '}
           <Link to={'https://setilic.com'} target={'_blank'}>

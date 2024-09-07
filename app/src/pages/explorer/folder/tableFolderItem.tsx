@@ -78,9 +78,9 @@ export function TableFolderItem({
       className={tw(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
         'hover:bg-stone-500/10 hover:shadow-sm',
-        isSelected && 'bg-indigo-100',
+        isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
         isShift && 'cursor-pointer',
-        context.select.rangeStart === i && 'bg-indigo-50',
+        context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
       )}>
       {!context.viewSettings?.noSelect && (
         <th>
