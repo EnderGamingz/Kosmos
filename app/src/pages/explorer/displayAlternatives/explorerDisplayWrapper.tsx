@@ -152,7 +152,8 @@ export function ExplorerDisplayWrapper({
         id={'display'}
         className={'h-full flex-grow overflow-x-auto'}
         onContextMenu={e => {
-          handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
+          if (viewSettings?.isCreateAllowed)
+            handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
         }}>
         {children}
       </div>

@@ -67,6 +67,7 @@ export default function FileList() {
         folders={folders.data?.folders || []}
         viewSettings={{
           paged: true,
+          isCreateAllowed: true,
           hasNextPage: files.hasNextPage,
           onLoadNextPage: async () => {
             if (files.isFetching) return;

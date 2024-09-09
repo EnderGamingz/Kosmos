@@ -50,6 +50,7 @@ export type ViewSettings = {
   binView?: boolean;
   noSelect?: boolean;
   noDisplay?: boolean;
+  isCreateAllowed?: boolean;
   album?: {
     onFileClick?: (file: FileModel) => void;
     data?: AlbumModel;
