@@ -19,6 +19,7 @@ import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { ShareAlbumModel } from '@models/album.ts';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
+import tw from '@utils/classMerge.ts';
 
 export default function SharedItems({
   itemsForUser,
@@ -114,9 +115,10 @@ function ShareForMeItem({
 
   return (
     <motion.li
-      className={
-        'grid cursor-pointer items-center rounded-xl bg-stone-300/30 p-1 pr-3 transition-colors hover:bg-stone-400/50 sm:flex sm:gap-2'
-      }
+      className={tw(
+        'grid cursor-pointer items-center rounded-xl bg-stone-300/30 p-1 pr-3 transition-colors hover:bg-stone-400/50 sm:flex sm:gap-2',
+        'dark:bg-stone-700/30 dark:hover:bg-stone-700/60',
+      )}
       onClick={handleClick}
       variants={itemTransitionVariant}>
       <div className={'flex items-center gap-2'}>
@@ -132,7 +134,8 @@ function ShareForMeItem({
           disablePreview
           name={itemName}
         />
-        <div className={'flex w-full text-stone-700 sm:grid'}>
+        <div
+          className={'flex w-full text-stone-700 sm:grid dark:text-stone-300'}>
           <p className={'w-0 flex-grow truncate sm:w-full'}>{itemName}</p>
           <span className={'hidden text-xs text-stone-500 sm:flex'}>
             {share.share_uuid}
