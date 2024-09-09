@@ -33,11 +33,15 @@ export function FileUploadContent({
   onClose,
   isInHeader,
   children,
+  className = '',
+  disabled,
 }: {
   folder?: string;
   onClose?: () => void;
   isInHeader?: boolean;
   children?: ReactNode;
+  className?: string;
+  disabled?: boolean;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const notification = useNotifications(s => s.actions);
@@ -194,6 +198,10 @@ export function FileUploadContent({
     noKeyboard: isInHeader,
   });
 
+  if (disabled) {
+    return <>{children}</>;
+  }
+
   if (isInHeader && children) {
     return (
       <>
@@ -206,8 +214,9 @@ export function FileUploadContent({
         <div
           {...getRootProps()}
           className={tw(
-            'flex items-center gap-1 rounded-lg p-2 outline-dashed outline-2 outline-transparent transition-background',
+            'rounded-lg outline-dashed outline-2 outline-transparent transition-all !duration-150',
             isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
+            className,
           )}>
           <input {...getInputProps()} />
           {children}

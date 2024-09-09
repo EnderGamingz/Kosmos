@@ -18,6 +18,7 @@ import {
   ViewSettings,
 } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
+import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 
 export type Vec2 = { x: number; y: number };
 
@@ -48,6 +49,7 @@ export function ExplorerDisplayWrapper({
     selectFile,
     selectFolder,
     selectNone,
+    currentFolder,
     selectedFileIndex,
     setDisplayHeight,
   } = useExplorerStore(
@@ -57,6 +59,7 @@ export function ExplorerDisplayWrapper({
       selectFile: s.selectedResources.selectFile,
       selectFolder: s.selectedResources.selectFolder,
       selectNone: s.selectedResources.selectNone,
+      currentFolder: s.current.folder,
       selectedFileIndex: s.current.selectedFileIndex,
       setDisplayHeight: s.display.setHeight,
     })),
@@ -155,7 +158,13 @@ export function ExplorerDisplayWrapper({
           if (viewSettings?.isCreateAllowed)
             handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
         }}>
-        {children}
+        <FileUploadContent
+          disabled={!viewSettings?.isCreateAllowed}
+          folder={currentFolder}
+          isInHeader
+          className={'h-full'}>
+          {children}
+        </FileUploadContent>
       </div>
       <FileDisplay
         onSelect={selectFile}

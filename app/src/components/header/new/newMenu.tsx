@@ -34,7 +34,10 @@ export function NewMenu() {
       <Popover isOpen={open} onOpenChange={setOpen} placement={'bottom'}>
         <PopoverTrigger>
           <button>
-            <FileUploadContent folder={currentFolder} isInHeader={true}>
+            <FileUploadContent
+              folder={currentFolder}
+              isInHeader={true}
+              className={'flex items-center gap-1 p-2'}>
               <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
               <span className={'text-md text-md hidden sm:inline'}>New</span>
             </FileUploadContent>
