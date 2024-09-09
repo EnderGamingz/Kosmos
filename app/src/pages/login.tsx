@@ -117,10 +117,10 @@ export default function Login() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.6 }}
         className={'relative'}>
-        <hr className={'my-2 border-stone-800/30'} />
+        <hr className={'my-2 border-stone-800/30 dark:border-stone-300/50'} />
         <p
           className={
-            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-stone-50 px-2 text-sm'
+            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-stone-50 px-2 text-sm dark:bg-stone-900'
           }>
           or
         </p>

@@ -1,4 +1,5 @@
 import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
+import { Theme, usePreferenceStore } from '@stores/preferenceStore.ts';
 
 const ApplicationIcon = (
   props: DetailedHTMLProps<
@@ -6,9 +7,11 @@ const ApplicationIcon = (
     HTMLImageElement
   >,
 ) => {
-  return (
-    <img {...props} src={'/img/logo_outline_full.svg'} alt={'Kosmos Logo'} />
-  );
+  const darkMode = usePreferenceStore(s => s.theme.type === Theme.Dark);
+  const logoSrc = darkMode
+    ? '/img/logo_outline_full_white.svg'
+    : '/img/logo_outline_full.svg';
+  return <img {...props} src={logoSrc} alt={'Kosmos Logo'} />;
 };
 
 export default ApplicationIcon;

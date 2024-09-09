@@ -11,7 +11,7 @@ export default function BottomNav() {
   return (
     <aside
       className={
-        'h-[80px] overflow-hidden bg-stone-100 shadow-[0_-5px_10px_0_rgba(0,0,0,0.1)]'
+        'h-[80px] overflow-hidden bg-stone-100 shadow-[0_-5px_10px_0_rgba(0,0,0,0.1)] dark:bg-stone-800'
       }>
       <div className={'grid grid-cols-4 gap-2 p-2'}>
         {links.map(link => (

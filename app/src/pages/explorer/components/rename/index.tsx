@@ -33,7 +33,7 @@ export function RenameAction({
         backdrop={'blur'}
         isOpen={isOpen}
         onOpenChange={onOpenChange}>
-        <ModalContent>
+        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
           <RenameModalContent
             renameData={{ type, id, name }}
             onClose={() => {

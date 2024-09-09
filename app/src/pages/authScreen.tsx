@@ -26,14 +26,14 @@ export function AuthScreen({
   return (
     <div
       className={
-        'fixed inset-0 isolate z-50 grid flex-grow grid-cols-1 bg-stone-50 md:grid-cols-5'
+        'fixed inset-0 isolate z-50 grid flex-grow grid-cols-1 bg-stone-50 md:grid-cols-5 dark:bg-stone-900'
       }>
       <Helmet>
         <title>{title}</title>
       </Helmet>
       <div
         className={
-          'z-10 col-span-3 flex flex-col gap-5 bg-stone-50 p-10 shadow-[0_10px_10px_10px_rgba(255,255,255,0.3)]'
+          'z-10 col-span-3 flex flex-col gap-5 bg-stone-50 p-10 shadow-[0_10px_10px_10px_rgba(255,255,255,0.3)] dark:bg-stone-900 dark:shadow-[0_10px_10px_10px_rgba(0,0,0,0.3)]'
         }>
         <div className={'flex'}>
           <HeaderBranding />
@@ -60,6 +60,7 @@ export function AuthScreen({
               '[&>label>svg]:absolute [&>label>svg]:h-5 [&>label>svg]:w-5 [&_input]:pl-8 [&_label]:relative',
               '[&>label>svg]:left-2 [&>label>svg]:top-1/2 [&>label>svg]:-translate-y-1/2 [&>label>svg]:text-stone-700',
               '[&_button]:justify-center [&_input]:w-full lg:[&_label]:text-lg',
+              'dark:[&>label>svg]:text-stone-300',
             )}>
             {children}
           </form>

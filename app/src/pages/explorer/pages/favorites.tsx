@@ -1,10 +1,10 @@
 import { useFavorites } from '@lib/query.ts';
 import { Progress } from '@nextui-org/react';
-import { motion } from 'framer-motion';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 
 export default function FavoritesPage() {
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
@@ -30,14 +30,7 @@ export default function FavoritesPage() {
         color={'default'}
       />
       <div className={'flex items-center justify-between px-5 pt-5'}>
-        <div>
-          <motion.h1
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className={'text-3xl font-semibold text-stone-800'}>
-            Favorites
-          </motion.h1>
-        </div>
+        <SubPageTitle>Favorites</SubPageTitle>
       </div>
       <ExplorerDataDisplay
         isLoading={favorites.isLoading}

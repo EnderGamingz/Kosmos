@@ -71,7 +71,9 @@ export function PermanentDeleteAction({
         deleteAction.mutate();
       }}
       type={'button'}
-      className={'text-red-500 hover:!text-red-800'}>
+      className={
+        'text-red-500 hover:!text-red-800 dark:text-red-300 dark:hover:!text-red-300'
+      }>
       <TrashIcon />
       {short ? 'Delete' : 'Delete Permanently'}
     </button>

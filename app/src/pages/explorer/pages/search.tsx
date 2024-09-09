@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -43,19 +44,13 @@ export default function SearchPage() {
         color={'default'}
       />
       <div className={'px-5 pt-5'}>
-        <motion.h1
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className={'text-3xl font-semibold text-stone-800'}>
-          Search Results
-        </motion.h1>
+        <SubPageTitle>Search Results</SubPageTitle>
 
         <motion.p
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className={'text-stone-600'}>
+          className={'text-stone-600 dark:text-stone-400'}>
           {search.data
             ? `Found ${search.data?.files.length} file${search.data?.files.length === 1 ? '' : 's'} and ${search.data?.folders.length} folder${search.data?.folders.length === 1 ? '' : 's'} for "${query}"`
             : search.isLoading

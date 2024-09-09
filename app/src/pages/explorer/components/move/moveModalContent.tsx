@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { ContextOperationType } from '@models/file.ts';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
+import tw from '@utils/classMerge.ts';
 
 export type MoveData = {
   id?: string;
@@ -63,7 +64,7 @@ export function MoveModalContent({
             <Tooltip content={moveData.name}>
               <p
                 className={
-                  'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-slate-200 px-1'
+                  'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1 dark:bg-stone-700'
                 }>
                 {moveData.name}
               </p>
@@ -72,7 +73,7 @@ export function MoveModalContent({
         </h2>
         <div
           className={
-            'flex justify-between gap-1 text-sm font-normal text-slate-600'
+            'flex justify-between gap-1 text-sm font-normal text-stone-600'
           }>
           <div>
             Moving to <ArrowRightIcon className={'inline h-3 w-3'} />{' '}
@@ -91,9 +92,10 @@ export function MoveModalContent({
       </ModalHeader>
       <ModalBody className={'min-h-32'}>
         <ul
-          className={
-            '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors'
-          }>
+          className={tw(
+            '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
+            'dark:[&_li:hover]:bg-indigo-700/50 dark:[&_li]:text-stone-100',
+          )}>
           {data?.folder && (
             <motion.li onClick={handleChangeFolder(data?.folder?.parent_id)}>
               ..
@@ -121,19 +123,13 @@ export function MoveModalContent({
         </ul>
       </ModalBody>
       <ModalFooter className={'justify-between'}>
-        <button
-          onClick={onClose}
-          className={
-            'rounded-md px-3 py-1 text-slate-600 outline outline-1 outline-slate-600'
-          }>
+        <button onClick={onClose} className={'btn-white'}>
           Cancel
         </button>
         <button
           disabled={selectedFolder === parent || moveAction.isPending}
           onClick={() => moveAction.mutate()}
-          className={
-            'rounded-md bg-indigo-300 px-3 py-1 transition-all disabled:opacity-70 disabled:grayscale'
-          }>
+          className={'btn-black'}>
           {moveAction.isPending ? 'Moving' : 'Move here'}
         </button>
       </ModalFooter>

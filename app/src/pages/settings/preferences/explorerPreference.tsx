@@ -26,7 +26,7 @@ export default function ExplorerPreferences({
     <section className={'space-y-3'}>
       <h2 className={'text-xl font-semibold'}>File Explorer Style</h2>
       <motion.div
-        variants={containerVariant()}
+        variants={containerVariant(0.04, 0.25)}
         initial={'hidden'}
         animate={'show'}
         className={tw(
@@ -53,10 +53,11 @@ export function Preference({
     <motion.div
       variants={itemTransitionVariantFadeInFromTop}
       className={tw(
-        'w-full rounded-xl bg-stone-400/10 p-3 shadow transition-colors',
+        'w-full rounded-xl bg-stone-400/10 p-3 shadow',
         'outline outline-1 outline-transparent',
         open && 'shadow-md outline-stone-500/20',
         Boolean(small) && 'p-2 shadow-none',
+        'dark:bg-stone-600/10 dark:outline-stone-300/20',
       )}>
       <div
         onClick={() => setOpen(prev => !prev)}
@@ -65,6 +66,7 @@ export function Preference({
           className={tw(
             'flex items-center gap-3 text-stone-600 [&_svg]:h-8 [&_svg]:w-8',
             Boolean(small) && 'gap-2 [&_svg]:h-6 [&_svg]:w-6',
+            'dark:text-stone-300',
           )}>
           {item.icon}
           <div>
@@ -163,6 +165,7 @@ export function PreferenceSelection({
         'isolate rounded-lg bg-stone-500/10 hover:bg-stone-500/20',
         'transition-colors [&_svg]:h-6 [&_svg]:w-6',
         Boolean(small) && 'gap-2 p-2 text-sm [&_svg]:h-4 [&_svg]:w-4',
+        'dark:text-stone-300 dark:hover:bg-stone-300/20',
       )}>
       {item.icon}
       <div className={'text-start'}>

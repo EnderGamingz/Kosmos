@@ -39,12 +39,20 @@ export default function StorageLimitBanner() {
           }}
           className={tw(
             'm-4 shrink-0 overflow-hidden rounded-xl outline outline-1',
-            percentages.warningLimit && 'bg-yellow-100/40 outline-yellow-600',
-            percentages.alertLimit && 'bg-red-100/40 outline-red-600',
+            percentages.warningLimit &&
+              'bg-yellow-100/40 outline-yellow-600 dark:bg-yellow-900/40',
+            percentages.alertLimit &&
+              'bg-red-100/40 outline-red-600 dark:bg-red-900/40',
           )}>
           <div className={'space-y-2 p-4 '}>
             <h2 className={'text-xl'}>
-              You have <strong>{percentages.remainingPercentage}%</strong>{' '}
+              You have{' '}
+              <strong>
+                {percentages.remainingPercentage > 0
+                  ? percentages.remainingPercentage
+                  : 0}
+                %
+              </strong>{' '}
               storage left
             </h2>
             <p>

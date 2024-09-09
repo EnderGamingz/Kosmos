@@ -43,7 +43,8 @@ export function UserMenu() {
           className={tw(
             'rounded-lg p-2 text-stone-700 hover:bg-stone-700/5',
             'flex items-center gap-2 rounded-full p-1 sm:rounded-lg',
-            'outline-none transition-all',
+            'outline-none',
+            'dark:text-stone-300 dark:hover:bg-stone-300/20',
           )}>
           <div
             className={
@@ -66,11 +67,13 @@ export function UserMenu() {
           </div>
         </button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
         <div className={'space-y-2 px-1 py-1.5'}>
-          <div className={'text-stone-700'}>
+          <div className={'mb-1 text-stone-700 dark:text-stone-300'}>
             <p className={'font-semibold'}>Welcome back</p>
-            <p className={'font-light text-stone-600'}>{user.user?.username}</p>
+            <p className={'font-light text-stone-600 dark:text-stone-400'}>
+              {user.user?.username}
+            </p>
           </div>
           <UserMenuUsage onClick={handleClose} />
           <Divider className={'mb-1 mt-2'} />
@@ -92,9 +95,10 @@ export function UserMenu() {
               Settings
             </Link>
             <div
-              className={
-                'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50'
-              }
+              className={tw(
+                'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50',
+                'dark:bg-red-800/30 dark:text-red-300 dark:hover:bg-red-800/50',
+              )}
               onClick={() => logoutAction.mutate()}>
               <ArrowRightStartOnRectangleIcon className={'h-5 w-5'} />
               Logout

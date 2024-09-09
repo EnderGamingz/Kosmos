@@ -4,6 +4,7 @@ import { AlbumItem } from '@pages/explorer/pages/albums/all/albumItem.tsx';
 import { CreateAlbum } from '@pages/explorer/pages/albums/createAlbum.tsx';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { Helmet } from 'react-helmet';
+import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 
 export default function AlbumsPage() {
   const albums = AlbumQuery.useAlbums();
@@ -24,7 +25,7 @@ export default function AlbumsPage() {
           'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5'
         }>
         <div className={'flex items-center justify-between'}>
-          <h1 className={'text-3xl font-light'}>Albums</h1>
+          <SubPageTitle>Albums</SubPageTitle>
           <CreateAlbum />
         </div>
         <ul

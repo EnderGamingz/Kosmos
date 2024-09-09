@@ -113,7 +113,9 @@ function FileDisplayContent({
               'z-10 flex w-full flex-col space-y-5 transition-all',
               'whitespace-nowrap rounded-xl bg-gray-50 p-3 md:p-6',
               'max-sm:min-h-1/2 outline outline-2 -outline-offset-2 outline-transparent',
-              isSelected && '-outline-offset-4 outline-blue-500',
+              'dark:bg-stone-900 dark:outline-stone-400/20',
+              isSelected &&
+                '-outline-offset-4 outline-blue-500 dark:outline-blue-400',
             )}>
             <DisplayHeader
               file={file}

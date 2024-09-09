@@ -60,7 +60,5 @@ export function isAlbumFile(data: ContextData): data is AlbumFile {
 }
 
 export function isValidFileForAlbum(file: FileModel) {
-  return [FileType.Image, FileType.RawImage, FileType.LargeImage].includes(
-    file.file_type,
-  );
+  return [FileType.Image, FileType.RawImage].includes(file.file_type);
 }

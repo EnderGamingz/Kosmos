@@ -24,7 +24,10 @@ import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import SetAlbumPreview from '@pages/explorer/pages/albums/setAlbumPrevíew.tsx';
-import { FolderColorChange } from '@components/contextMenu/ColorChange.tsx';
+import {
+  ColorDisplay,
+  FolderColorChange,
+} from '@components/contextMenu/ColorChange.tsx';
 
 export default function ContextMenu({
   children,
@@ -54,6 +57,7 @@ export default function ContextMenu({
           '[&_button>svg]:h-5 [&_button]:flex [&_button]:items-center [&_button]:gap-2 [&_button]:text-left',
           '[&_button:hover]:bg-stone-100 [&_button:hover]:text-stone-900 [&_button]:px-3 [&_button]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',
+          'bg-stone-50 dark:bg-stone-800 dark:[&_button:hover]:bg-stone-600/50 dark:[&_button:hover]:text-stone-100',
         )}
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -139,11 +143,7 @@ export function ContextMenuContent({
     return (
       <>
         <ContextMenuTitle type={'folder'} title={data.folder_name}>
-          <FolderColorChange
-            folderId={data.id}
-            parent={data.parent_id}
-            color={data.color}
-          />
+          <ColorDisplay color={data.color || 'lightgray'} />
         </ContextMenuTitle>
         <MultiDownload
           files={[]}
@@ -157,6 +157,11 @@ export function ContextMenuContent({
           id={data.id}
           name={data.folder_name}
           onClose={onClose}
+        />
+        <FolderColorChange
+          folderId={data.id}
+          parent={data.parent_id}
+          color={data.color}
         />
         <MoveAction
           type={'folder'}

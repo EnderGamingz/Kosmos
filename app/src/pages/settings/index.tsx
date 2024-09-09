@@ -12,21 +12,19 @@ export default function Settings() {
       </Helmet>
       <motion.aside
         className={tw(
-          'border-r border-stone-800/10 py-3 transition-all',
+          'border-r border-stone-800/10 py-3 transition-width',
           'absolute left-0 top-0 h-full w-20 px-2 md:h-[unset]',
           'flex flex-col md:relative md:w-[unset] md:px-4',
-          '[&_a]:gap-0 [&_a]:transition-all [&_p]:w-0 [&_p]:overflow-hidden',
+          '[&_a]:gap-0 [&_p]:w-0 [&_p]:overflow-hidden',
           'md:[&_a]:gap-3 md:[&_p]:w-full md:[&_p]:overflow-visible',
+          'dark:border-stone-300/10 dark:text-stone-300',
         )}>
-        <h2
-          className={
-            'pb-0 text-[0] font-light transition-all md:pb-1 md:text-lg'
-          }>
+        <h2 className={'pb-0 text-[0] font-light md:pb-1 md:text-lg'}>
           Settings
         </h2>
         <hr
           className={
-            'my-1 border-stone-800/10 px-1 opacity-0 transition-opacity md:opacity-100'
+            'my-1 border-stone-800/10 px-1 opacity-0 transition-opacity md:opacity-100 dark:border-stone-300/10'
           }
         />
         {links.map(link => (
@@ -38,9 +36,9 @@ export default function Settings() {
             className={({ isActive }) =>
               tw(
                 'flex items-center rounded-lg p-2 text-stone-700 transition-all',
-                'px-4 text-lg hover:bg-stone-700/5',
+                'px-4 text-lg hover:bg-stone-700/5 dark:text-stone-300 dark:hover:bg-stone-300/10',
                 !!link.bottom && 'mt-auto',
-                isActive && 'bg-stone-700/5',
+                isActive && 'bg-stone-700/5 dark:bg-stone-300/5',
               )
             }>
             <link.icon className={'h-8 w-8'} />

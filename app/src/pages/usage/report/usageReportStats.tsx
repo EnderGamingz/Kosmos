@@ -26,7 +26,7 @@ export function UsageReportStats({
   return (
     <section>
       <div className={'flex flex-col gap-1'}>
-        <span className={'ml-auto text-xs text-stone-500'}>
+        <span className={'ml-auto text-xs text-stone-500 dark:text-stone-400'}>
           {useFormatBytes(usage.total)}, Total: {useFormatBytes(usage.limit)}
         </span>
         <UsageIndicator
@@ -90,6 +90,7 @@ function UsageReportItem({
       className={tw(
         'flex items-center gap-2 rounded-lg bg-stone-300/20 px-4 py-2 text-stone-800',
         'outline outline-1 outline-stone-800/30',
+        'dark:bg-stone-800/20 dark:text-stone-300 dark:outline-stone-400/30',
       )}>
       <div className={'[&_svg]:h-7 [&_svg]:w-7'}>{icon}</div>
       <div>

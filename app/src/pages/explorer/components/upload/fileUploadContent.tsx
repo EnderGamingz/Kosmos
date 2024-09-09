@@ -206,7 +206,7 @@ export function FileUploadContent({
         <div
           {...getRootProps()}
           className={tw(
-            'flex items-center gap-1 rounded-lg p-2 outline-dashed outline-2 outline-transparent transition-all',
+            'flex items-center gap-1 rounded-lg p-2 outline-dashed outline-2 outline-transparent transition-background',
             isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
           )}>
           <input {...getInputProps()} />
@@ -270,11 +270,7 @@ export function FileUploadContent({
       </ModalBody>
       <ModalFooter
         className={'flex flex-col-reverse justify-between gap-3 sm:flex-row'}>
-        <button
-          onClick={onClose}
-          className={
-            'rounded-md px-3 py-1 text-slate-600 outline outline-1 outline-slate-600'
-          }>
+        <button onClick={onClose} className={'btn-white'}>
           Cancel
         </button>
         <div className={'flex flex-col gap-1 sm:flex-row'}>

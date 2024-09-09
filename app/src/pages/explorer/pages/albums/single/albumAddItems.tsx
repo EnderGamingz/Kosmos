@@ -45,6 +45,7 @@ function AlbumAddItemsContent({
   };
 
   const files = AlbumQuery.useInfiniteAvailableFiles();
+
   return (
     <div className={'flex h-full select-none flex-col p-10'}>
       <div
@@ -95,7 +96,7 @@ export function AlbumAddItems({
         Add Items
       </button>
       <Modal size={'full'} isOpen={isOpen} onOpenChange={onClose}>
-        <ModalContent>
+        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
           <AlbumAddItemsContent
             addTo={id}
             initialFiles={added}

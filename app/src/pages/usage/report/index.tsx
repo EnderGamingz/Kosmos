@@ -18,16 +18,16 @@ export default function UsageReport() {
       className={
         'mx-auto flex w-full max-w-5xl flex-grow flex-col space-y-6 p-5 md:p-10'
       }>
+      <Helmet>
+        <title>Usage Report</title>
+      </Helmet>
       <motion.h1
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.2, delay: 0.1 }}
-        className={'text-2xl font-bold text-stone-700'}>
+        className={'text-2xl font-bold text-stone-700 dark:text-stone-300'}>
         Usage Report
       </motion.h1>
-      <Helmet>
-        <title>Usage Report</title>
-      </Helmet>
       {isLoading && !isError && (
         <div className={'grid flex-grow place-content-center'}>
           <div className={'app-loading-indicator'} />

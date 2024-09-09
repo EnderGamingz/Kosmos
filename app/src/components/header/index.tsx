@@ -19,20 +19,22 @@ export default function Header() {
   const location = useLocation();
   const user = useUserState(s => s.user);
 
-  const isLoginPage =
+  const isAuthPage =
     location.pathname.includes('login') ||
     location.pathname.includes('register');
+
   return (
     <header
       className={
-        'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5'
+        'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5 dark:border-stone-300/10'
       }>
-      {!isLoginPage && <HeaderBranding user={user} />}
+      {!isAuthPage && <HeaderBranding user={user} />}
       {user && <SearchBar />}
       <div
         className={tw(
-          'rounded-lg bg-stone-700/5 px-2 py-1 text-stone-700',
-          'flex items-center gap-2 rounded-lg transition-all',
+          'rounded-lg bg-stone-700/5 px-2 py-1',
+          'flex items-center gap-2 rounded-lg',
+          'dark:bg-stone-700/30',
           !user && 'ml-auto',
         )}>
         {user ? (
@@ -51,7 +53,7 @@ export default function Header() {
               <Link
                 to={'/auth/register'}
                 className={
-                  'header-login-btn bg-stone-700/80 text-stone-200 hover:bg-stone-700'
+                  'header-login-btn bg-stone-700/80 text-stone-200 hover:bg-stone-700 dark:bg-stone-300/20 dark:text-stone-300'
                 }>
                 <UserPlusIcon /> Register
               </Link>

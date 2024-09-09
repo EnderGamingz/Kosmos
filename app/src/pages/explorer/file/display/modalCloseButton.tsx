@@ -14,6 +14,7 @@ export function ModalCloseButton({ onClick }: { onClick: () => void }) {
         'flex w-full items-center justify-center gap-2 rounded-lg px-4 py-1 ',
         'text-stone-600 transition-colors hover:bg-stone-200',
         'outline outline-1 outline-stone-400/20',
+        'dark:text-stone-400 dark:hover:bg-stone-700/20',
       )}>
       <XMarkIcon className={'h-4 w-4'} /> Close
     </motion.button>

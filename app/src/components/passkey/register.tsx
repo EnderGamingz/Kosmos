@@ -85,7 +85,7 @@ export default function PasskeyRegister() {
           notifications.updateNotification(registerId, {
             severity: Severity.ERROR,
             status: 'Failed',
-            description: e.toString(),
+            description: e.response?.data?.error || 'Error',
             canDismiss: true,
             timeout: 3000,
           });
@@ -107,7 +107,7 @@ export default function PasskeyRegister() {
   const user = useUserState(s => s.user);
 
   return (
-    <Popover isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Popover isOpen={isOpen} onOpenChange={onOpenChange} placement={'bottom'}>
       <PopoverTrigger>
         <button
           className={'btn-black btn-sm'}
@@ -116,8 +116,8 @@ export default function PasskeyRegister() {
           Create Passkey
         </button>
       </PopoverTrigger>
-      <PopoverContent>
-        <div className={'w-full bg-white p-4'}>
+      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
+        <div className={'w-full p-4'}>
           <form onSubmit={handleSubmit} className={'flex gap-2'}>
             <input
               type={'text'}

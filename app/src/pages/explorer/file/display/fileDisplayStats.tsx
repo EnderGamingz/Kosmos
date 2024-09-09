@@ -23,6 +23,7 @@ export function FileDisplayStats({ file }: { file: FileModel }) {
         '[&>*]:flex [&>*]:flex-1 [&>*]:items-center [&>*]:gap-2 [&_svg]:h-4 [&_svg]:w-4',
         '[&>*]:rounded-full [&>*]:bg-stone-200/70 [&>*]:px-3 [&>*]:py-1',
         '[&>*]:text-sm [&>*]:outline [&>*]:outline-1 [&>*]:outline-stone-600/20',
+        'dark:[&>*]:bg-stone-700 dark:[&>*]:text-stone-100 dark:[&>*]:outline-stone-500/20',
       )}>
       <motion.div variants={itemTransitionVariantFadeInFromTop}>
         <InformationCircleIcon />

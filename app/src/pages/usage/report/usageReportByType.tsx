@@ -16,7 +16,7 @@ export function UsageReportByType({ types }: { types: FileTypeSum[] }) {
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.2, delay: 0.4 }}
-        className={'text-xl font-semibold text-stone-700'}>
+        className={'text-xl font-semibold text-stone-700 dark:text-stone-300'}>
         Storage used by type
       </motion.h2>
       <motion.div
@@ -45,6 +45,7 @@ function FileTypeUsageItem({ type }: { type: FileTypeSum }) {
         'overflow-hidden rounded-xl bg-stone-300/40 p-2 text-stone-700',
         'cursor-pointer transition-colors hover:bg-stone-400/40',
         'outline outline-1 outline-stone-400/20',
+        'dark:bg-stone-600/40 dark:text-stone-300 dark:hover:bg-stone-700/40',
       )}>
       <p
         title={fileTypeString}

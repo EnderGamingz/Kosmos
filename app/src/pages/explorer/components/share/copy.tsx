@@ -32,7 +32,7 @@ export function Copy({
       }
       className={tw(
         chip
-          ? 'rounded-full bg-stone-500/20 px-2 py-0.5 text-xs transition-colors hover:bg-stone-500/50'
+          ? 'rounded-full bg-stone-500/20 px-2 py-0.5 text-xs transition-colors hover:bg-stone-500/50 dark:bg-stone-300/30'
           : 'btn-white',
       )}>
       {children || 'Copy Link'}

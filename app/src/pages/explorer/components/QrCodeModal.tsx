@@ -17,11 +17,13 @@ export default function QrCodeModal({
     <Popover>
       <PopoverTrigger>
         <button className={tw(button && 'btn-white')}>
-          <QrCodeIcon className={'h-5 w-5 text-stone-700'} />
+          <QrCodeIcon
+            className={'h-5 w-5 text-stone-700 dark:text-stone-300'}
+          />
           {children}
         </button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className={'bg-white'}>
         <div className={'w-full bg-white p-4'}>
           <QRCode value={value} />
         </div>

@@ -9,6 +9,7 @@
         hover:bg-stone-800 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
         disabled:cursor-default disabled:opacity-50
         disabled:hover:bg-stone-700
+        dark:bg-stone-300 dark:text-stone-700 dark:hover:bg-stone-200
     }
 
     .btn-white {
@@ -16,6 +17,7 @@
         rounded-xl bg-transparent outline-1 outline outline-stone-900 px-4
         py-2 text-stone-900 shadow-sm transition-colors
         hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
+        dark:outline-stone-100 dark:text-stone-100 dark:hover:bg-stone-700
     }
 
     .btn-sm {
@@ -24,16 +26,25 @@
 
     .input {
         @apply rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20
+        dark:bg-stone-300/20 dark:outline-stone-700
+        dark:placeholder:text-stone-500
+    }
+
+    .input option {
+        @apply bg-stone-50 text-stone-700
+        dark:bg-stone-700 dark:text-stone-300
     }
 
     .header-login-btn {
         @apply flex items-center gap-2 rounded-lg hover:bg-stone-700/5 px-2 py-1 sm:px-4 sm:py-2
         text-stone-700 transition-all [&_svg]:h-5 [&_svg]:w-5
+        dark:hover:bg-stone-300/20 dark:text-stone-300
     }
 
     .menu-button {
         @apply flex cursor-pointer items-center gap-2 rounded-md bg-stone-700/5 p-2 text-stone-700
         transition-colors hover:bg-stone-700/10
+        dark:bg-stone-300/5 dark:text-stone-300
     }
 }
 
@@ -49,18 +60,22 @@
 
     --markdown-bg: #ffffff;
     --markdown-fg: #000000;
+    --markdown-bg-dark: #0d1117;
+    --markdown-fg-dark: #ffffff;
 }
 
+/* Apply new variables if wrapper has dark class */
+:root:has(.app-wrapper.dark) {
+    --foreground-rgb: 245, 245, 244;
+    --background-start-rgb: 23, 20, 18;
+    --background-end-rgb: 15, 14, 13;
+}
+
+/* Make markdown editor and preview blend in as they are hardcoded with preferred color scheme */
 @media (prefers-color-scheme: dark) {
     :root {
-        /*      --foreground-rgb: 255, 255, 255;
-                --background-start-rgb: 13, 17, 23;
-                --background-end-rgb: 21, 24, 28;
-                --bg-start: rgb(var(--background-end-rgb));
-                */
-
-        --markdown-bg: #0d1117;
-        --markdown-fg: #ffffff;
+        --markdown-bg: var(--markdown-bg-dark);
+        --markdown-fg: var(--markdown-fg-dark);
     }
 }
 
@@ -70,7 +85,8 @@
             rgb(var(--background-start-rgb)),
             rgb(var(--background-end-rgb))
     );
-    background-color: rgb(var(--background-start-rgb))
+    background-color: rgb(var(--background-start-rgb));
+    transition: background-color 150ms ease-in-out;
 }
 
 * {
@@ -93,6 +109,7 @@ body {
             transparent,
             rgb(var(--background-end-rgb))
     ) var(--bg-start);
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
 
 

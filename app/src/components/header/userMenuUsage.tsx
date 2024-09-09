@@ -12,7 +12,7 @@ export function UserMenuUsage({ onClick }: { onClick?: () => void }) {
   return (
     <Link
       to={'/usage/report'}
-      className={'space-y-1 text-stone-800'}
+      className={'space-y-1 text-stone-800 dark:text-stone-300'}
       onClick={onClick}>
       <p className={'flex items-center gap-2'}>
         <CloudIcon className={'h-4 w-4'} />
