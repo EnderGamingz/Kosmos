@@ -8,6 +8,7 @@ export type ContextData =
   | FileModel
   | FolderModel
   | Selected
+  | 'fileWindow'
   | undefined;
 
 export type ContextMenuType = {

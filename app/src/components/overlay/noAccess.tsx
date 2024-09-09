@@ -31,6 +31,7 @@ export function NoAccess({
       className={tw(
         'body-bg absolute inset-0 z-20 !m-0 p-10 text-stone-700',
         'flex flex-col items-center justify-center gap-2',
+        'dark:text-stone-300',
       )}>
       <motion.button
         initial={{ opacity: 0, x: 20 }}
@@ -45,7 +46,9 @@ export function NoAccess({
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
-          className={'rounded-full bg-stone-500 p-5 text-stone-200'}>
+          className={
+            'rounded-full bg-stone-500 p-5 text-stone-200 dark:bg-stone-700/50'
+          }>
           {loading ? (
             <div
               className={'app-loading-indicator h-12 w-12 !border-t-stone-200'}

@@ -114,6 +114,7 @@ export function TableFileItem({
         if (isShift) context.select.setRange(i);
       }}
       onContextMenu={e => {
+        e.stopPropagation();
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}

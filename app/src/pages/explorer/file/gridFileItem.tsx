@@ -87,6 +87,7 @@ export default function GridFileItem({
     <div
       id={file.id}
       onContextMenu={e => {
+        e.stopPropagation();
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}

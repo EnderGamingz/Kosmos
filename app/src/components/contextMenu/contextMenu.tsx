@@ -28,6 +28,12 @@ import {
   ColorDisplay,
   FolderColorChange,
 } from '@components/contextMenu/ColorChange.tsx';
+import { isFileWindow } from '@utils/contextDataParse.ts';
+import { FileUploadButtonControlled } from '@pages/explorer/components/upload/fileUpload.tsx';
+import { CreateFolder } from '@pages/explorer/folder/createFolder.tsx';
+import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
+import { Link } from 'react-router-dom';
+import { ClockIcon } from '@heroicons/react/24/outline';
 
 export default function ContextMenu({
   children,
@@ -55,9 +61,9 @@ export default function ContextMenu({
         className={tw(
           'absolute z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',
           '[&_button>svg]:h-5 [&_button]:flex [&_button]:items-center [&_button]:gap-2 [&_button]:text-left',
-          '[&_button:hover]:bg-stone-100 [&_button:hover]:text-stone-900 [&_button]:px-3 [&_button]:py-1.5',
+          '[&_button:not(.no-pre):hover]:bg-stone-100 [&_button:not(.no-pre):hover]:text-stone-900 [&_button:not(.no-pre)]:px-3 [&_button:not(.no-pre)]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',
-          'bg-stone-50 dark:bg-stone-800 dark:[&_button:hover]:bg-stone-600/50 dark:[&_button:hover]:text-stone-100',
+          'bg-stone-50 dark:bg-stone-800 dark:[&_button:not(.no-pre):hover]:bg-stone-600/50 dark:[&_button:not(.no-pre):hover]:text-stone-100',
         )}
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -210,6 +216,23 @@ export function ContextMenuContent({
           deleteData={{ folders: data.folders, files: data.files }}
           onClose={onClose}
         />
+      </>
+    );
+  } else if (isFileWindow(data)) {
+    return (
+      <>
+        <ContextMenuTitle type={'create'} title={'New'} />
+        <FileUploadButtonControlled onClose={onClose} />
+        <Link
+          title={'Quick Share'}
+          to={'/home/quick'}
+          onClick={onClose}
+          className={'menu-button py-2'}>
+          <ClockIcon className={'h-5 w-5'} />
+          Quick Share
+        </Link>
+        <CreateFolder onClose={onClose} folder={currentFolder} />
+        <CreateMarkdownFile onClose={onClose} folder={currentFolder} />
       </>
     );
   }

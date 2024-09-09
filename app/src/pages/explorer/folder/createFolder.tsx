@@ -95,7 +95,7 @@ export function ButtonForm({
         <button
           disabled={!active || !value}
           type={'submit'}
-          className={'[&>svg]:h-5 [&>svg]:w-5 [&>svg]:min-w-5'}>
+          className={'no-pre [&>svg]:h-5 [&>svg]:w-5 [&>svg]:min-w-5'}>
           {active ? <CheckIcon className={'h-5 w-5'} /> : icon}
         </button>
         <div className={'relative flex'}>

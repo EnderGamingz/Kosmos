@@ -74,6 +74,7 @@ export default function GridFolderItem({
       layout
       variants={index < transitionStop ? itemTransitionVariant : undefined}
       onContextMenu={e => {
+        e.stopPropagation();
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}

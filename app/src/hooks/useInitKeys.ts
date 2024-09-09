@@ -35,4 +35,8 @@ export function useInitializeKeys() {
       window.removeEventListener('focus', handleKeyUpAndFocus);
     };
   }, [updateKeys]);
+
+  useEffect(() => {
+    window.addEventListener('contextmenu', e => e.preventDefault());
+  }, []);
 }

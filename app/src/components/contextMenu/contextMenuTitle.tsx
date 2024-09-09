@@ -4,6 +4,7 @@ import {
   DocumentIcon,
   FolderIcon,
   Square2StackIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 
@@ -11,6 +12,7 @@ const iconMap = {
   folder: <FolderIcon />,
   multi: <Square2StackIcon />,
   album: <Square2StackIcon />,
+  create: <PlusIcon />,
   default: <DocumentIcon />,
 };
 
@@ -20,7 +22,7 @@ export function ContextMenuTitle({
   children,
 }: {
   title: string;
-  type: ContextOperationType | 'album';
+  type: ContextOperationType | 'album' | 'create';
   children?: ReactNode;
 }) {
   function renderIcon() {
