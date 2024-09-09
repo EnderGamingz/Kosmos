@@ -1,3 +1,4 @@
+use crate::constants::MAX_QUICK_SHARE_FILES;
 use crate::model::internal::file_type::FileType;
 use crate::model::internal::preview_status::PreviewStatus;
 use crate::response::error_handling::AppError;
@@ -14,11 +15,11 @@ use crate::state::KosmosState;
 use crate::utils::auth;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Multipart, Path, Query, State};
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::Arc;
-use chrono::{DateTime, Utc};
 use tower_sessions::Session;
 
 #[derive(Deserialize)]
@@ -95,7 +96,16 @@ pub async fn upload_file(
         None
     };
 
+    let mut files_allowed_to_upload = if params.is_quick_share() {
+        MAX_QUICK_SHARE_FILES
+    } else {
+        -1
+    };
+
     while let Ok(Some(field)) = multipart.next_field().await {
+        if files_allowed_to_upload == 0 {
+            continue;
+        }
         let file_name_from_field = if let Some(file_name) = field.file_name() {
             if file_name.len() > 255 {
                 return Err(AppError::BadRequest {
@@ -185,6 +195,10 @@ pub async fn upload_file(
                 return Err(AppError::InternalError);
             }
         };
+
+        if files_allowed_to_upload > 0 {
+            files_allowed_to_upload -= 1;
+        }
     }
 
     let share = if let Some(dest) = quick_share_destination {
