@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::{JsonValue, Uuid};
 use sqlx::FromRow;
+use ts_rs::TS;
 use crate::model::internal::file_type::FileType;
 use crate::services::session_service::UserId;
 
@@ -29,7 +30,8 @@ impl FileModel {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct FileModelDTO {
     pub id: String,
     pub user_id: String,
@@ -87,7 +89,8 @@ pub struct FileModelWithShareInfo {
     pub share_target_username: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct FileModelWithShareInfoDTO {
     pub id: String,
     pub user_id: String,
@@ -131,7 +134,8 @@ impl From<FileModelWithShareInfo> for FileModelWithShareInfoDTO {
 // End: File Model With Share Info
 
 // Start: Share File Model
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ShareFileModelDTO {
     pub id: String,
     pub file_name: String,

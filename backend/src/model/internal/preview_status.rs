@@ -1,8 +1,10 @@
 use serde::Serialize;
 use sqlx::Type;
+use ts_rs::TS;
 
 #[repr(i16)]
-#[derive(Clone, Debug, Copy, PartialEq, Type, Serialize)]
+#[derive(Clone, Debug, Copy, PartialEq, Type, Serialize, TS)]
+#[ts(export)]
 pub enum PreviewStatus {
     Unavailable = 0,
     Ready = 1,

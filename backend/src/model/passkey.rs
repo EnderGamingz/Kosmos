@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
-
+use ts_rs::TS;
 use crate::services::session_service::UserId;
 
 // Start: Passkey Model
@@ -15,7 +15,8 @@ pub struct PasskeyModel {
     pub created_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct PasskeyModelDTO {
     pub id: String,
     pub user_id: String,

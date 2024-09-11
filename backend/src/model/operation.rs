@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::JsonValue;
 use sqlx::FromRow;
+use ts_rs::TS;
 use crate::model::internal::operation_status::OperationStatus;
 use crate::model::internal::operation_type::OperationType;
 
@@ -19,7 +20,8 @@ pub struct OperationModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct OperationModelDTO {
     pub id: String,
     pub user_id: String,

@@ -3,6 +3,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
+use ts_rs::TS;
 use crate::model::internal::share_type::ShareType;
 
 // Start: Share Model
@@ -25,7 +26,8 @@ pub struct ShareModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ShareModelDTO {
     pub id: String,
     pub uuid: String,
@@ -87,7 +89,8 @@ pub struct ExtendedShareModel {
     pub share_target_username: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ExtendedShareModelDTO {
     pub id: String,
     pub uuid: String,

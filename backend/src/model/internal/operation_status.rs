@@ -1,8 +1,10 @@
 use serde::Serialize;
 use sqlx::Type;
+use ts_rs::TS;
 
 #[repr(i16)]
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Type)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Type, TS)]
+#[ts(export)]
 pub enum OperationStatus {
     Pending = 0,
     Success = 1,
