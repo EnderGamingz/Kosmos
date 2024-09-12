@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { ContextOperationType, FileModel, Selected } from '@models/file.ts';
-import { FolderModel } from '@models/folder.ts';
+import { ContextOperationType, Selected } from '@models/file.ts';
 import { AlbumFile } from '@models/album.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export type ContextData =
   | AlbumFile
-  | FileModel
-  | FolderModel
+  | FileModelDTO
+  | FolderModelDTO
   | Selected
   | 'fileWindow'
   | undefined;

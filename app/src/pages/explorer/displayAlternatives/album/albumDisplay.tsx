@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import { FileModel } from '@models/file.ts';
 import { PreviewImage } from '@components/Image.tsx';
 import tw from '@utils/classMerge.ts';
 import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper.tsx';
-import { AlbumFile, AlbumModel } from '@models/album.ts';
+import { AlbumFile } from '@models/album.ts';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function AlbumDisplay() {
   const { overwriteDisplay, viewSettings } = useContext(DisplayContext);
@@ -82,10 +83,10 @@ function AlbumDisplayItem({
   handleContext,
   onClick,
 }: {
-  file: FileModel;
-  album?: AlbumModel;
-  handleContext: (pos: Vec2, file: FileModel) => void;
-  onClick?: (file: FileModel) => void;
+  file: FileModelDTO;
+  album?: AlbumModelDTO;
+  handleContext: (pos: Vec2, file: FileModelDTO) => void;
+  onClick?: (file: FileModelDTO) => void;
 }) {
   return (
     <div

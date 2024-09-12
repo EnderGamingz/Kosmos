@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { PhotoIcon } from '@heroicons/react/24/outline';
-import { AlbumModel } from '@models/album.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 const useUpdateAlbumPreview = (albumId: string, fileId: string) => {
   const notifications = useNotifications(s => s.actions);
@@ -50,7 +50,7 @@ export default function SetAlbumPreview({
   fileId,
   onClose,
 }: {
-  album: AlbumModel;
+  album: AlbumModelDTO;
   fileId: string;
   onClose: () => void;
 }) {

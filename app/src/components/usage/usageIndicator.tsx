@@ -1,8 +1,8 @@
 import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
-import { UsageStats } from '@models/usage.ts';
 import { getPercentageStats } from '@components/usage/getPercentage.ts';
+import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 
 function ActiveBar({ percent }: { percent: number }) {
   return (
@@ -49,7 +49,7 @@ export function UsageIndicator({
   small,
   large,
 }: {
-  data?: UsageStats;
+  data?: DiskUsageStats;
   loading?: boolean;
   small?: boolean;
   large?: boolean;

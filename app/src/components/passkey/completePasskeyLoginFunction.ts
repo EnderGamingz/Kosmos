@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Base64 } from 'js-base64';
-import { UserModel } from '@models/user.ts';
+import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const completePasskeyLoginFunction = (assertion: any) =>
@@ -29,4 +29,4 @@ export const completePasskeyLoginFunction = (assertion: any) =>
         ),
       },
     })
-    .then(res => res.data as UserModel);
+    .then(res => res.data as UserModelDTO);

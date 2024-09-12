@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { UserModel } from '@models/user.ts';
-import { UsageStats } from '@models/usage.ts';
 import { queryClient } from '@lib/query.ts';
+import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 
 export type AdminUserUpdate = {
   username?: string;
@@ -20,7 +20,7 @@ export class AdminQuery {
       queryFn: () =>
         axios
           .get(`${BASE_URL}auth/admin/user`)
-          .then(res => res.data as UserModel[]),
+          .then(res => res.data as UserModelDTO[]),
       queryKey: ['admin', 'user'],
     });
   };
@@ -42,7 +42,7 @@ export class AdminQuery {
       queryFn: () =>
         axios
           .get(`${BASE_URL}auth/admin/user/${id}`)
-          .then(res => res.data as UserModel),
+          .then(res => res.data as UserModelDTO),
       queryKey: ['admin', 'user', id],
     });
   };
@@ -58,7 +58,7 @@ export class AdminQuery {
         password,
         storage_limit: limit,
       })
-      .then(res => res.data as UserModel);
+      .then(res => res.data as UserModelDTO);
   };
 
   public static deleteUserFn = async (id: string) => {
@@ -76,7 +76,7 @@ export class AdminQuery {
       queryFn: () =>
         axios
           .get(`${BASE_URL}auth/admin/user/${id}/usage`)
-          .then(res => res.data as UsageStats),
+          .then(res => res.data as DiskUsageStats),
       queryKey: ['admin', 'user', id, 'usage'],
     });
   };

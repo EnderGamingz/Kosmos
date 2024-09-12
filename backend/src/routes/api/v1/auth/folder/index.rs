@@ -4,6 +4,7 @@ use axum::Json;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
+use ts_rs::TS;
 use validator::Validate;
 
 use crate::model::folder::{FolderModelDTO, SimpleDirectoryDTO};
@@ -20,7 +21,8 @@ pub enum SortByFolders {
     UpdatedAt,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize,TS)]
+#[ts(export)]
 pub struct FolderResponse {
     folder: Option<FolderModelDTO>,
     folders: Vec<FolderModelDTO>,

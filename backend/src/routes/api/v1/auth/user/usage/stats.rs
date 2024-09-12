@@ -2,15 +2,21 @@ use serde::Serialize;
 use axum::extract::State;
 use tower_sessions::Session;
 use axum::Json;
+use ts_rs::TS;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
 
-#[derive(Serialize)]
+#[derive(Serialize,TS)]
+#[ts(export)]
 pub struct DiskUsageStats {
+    #[ts(type = "number")]
     pub active: i64,
+    #[ts(type = "number")]
     pub bin: i64,
+    #[ts(type = "number")]
     pub total: i64,
+    #[ts(type = "number")]
     pub limit: i64,
 }
 

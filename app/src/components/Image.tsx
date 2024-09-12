@@ -19,7 +19,7 @@ export function PreviewImage({
 }: {
   id: string;
   alt: string;
-  status?: FilePreviewStatus;
+  status?: FilePreviewStatus | null;
   type?: FileType;
   dynamic?: boolean;
 }) {

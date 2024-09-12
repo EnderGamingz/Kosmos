@@ -1,4 +1,4 @@
-import { FileModel, getFileTypeString } from '@models/file.ts';
+import { getFileTypeString } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import {
   containerVariant,
@@ -10,8 +10,9 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
-export function FileDisplayStats({ file }: { file: FileModel }) {
+export function FileDisplayStats({ file }: { file: FileModelDTO }) {
   return (
     <motion.div
       variants={containerVariant(0.06, 0.1)}

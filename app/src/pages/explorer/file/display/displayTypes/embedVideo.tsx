@@ -1,11 +1,11 @@
-import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function EmbedVideo({
   file,
   serveUrl,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   serveUrl: string;
 }) {
   return (

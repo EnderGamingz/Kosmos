@@ -1,14 +1,7 @@
 import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL, IS_DEVELOPMENT } from './env.ts';
-import { FolderResponse, FolderShareResponse } from '@models/folder.ts';
-import {
-  ContextOperationType,
-  FileModel,
-  ShareFileModel,
-  ShareOperationType,
-} from '@models/file.ts';
-import { OperationModel } from '@models/operation.ts';
+import { ContextOperationType, ShareOperationType } from '@models/file.ts';
 import {
   canFolderBeSorted,
   getQuerySortString,
@@ -16,14 +9,21 @@ import {
   SortParams,
   SortParamsForQuery,
 } from '@models/sort.ts';
-import { SharedItemsResponse, ShareModel } from '@models/share.ts';
-import { UsageReport, UsageStats } from '@models/usage.ts';
 import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
-import { SearchResponse } from '@models/search.ts';
-import { FavoritesResponse } from '@models/favorites.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumShareResponse } from '@models/album.ts';
-import { PasskeyModel } from '@models/passkey.ts';
+import { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
+import { DiskUsageReport } from '@bindings/DiskUsageReport.ts';
+import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
+import { SharedItems } from '@bindings/SharedItems.ts';
+import { ExplorerSearchDTO } from '@bindings/ExplorerSearchDTO.ts';
+import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
+import { FavoritesResponse } from '@bindings/FavoritesResponse.ts';
+import { FolderShareData } from '@bindings/FolderShareData.ts';
+import { FolderResponse } from '@bindings/FolderResponse.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
 
 export const queryClient = new QueryClient();
 
@@ -82,7 +82,7 @@ export const useSearch = (query: string) => {
         .get(`${BASE_URL}auth/search`, {
           params: { q: query },
         })
-        .then(res => res.data as SearchResponse),
+        .then(res => res.data as ExplorerSearchDTO),
     enabled: !!query,
     queryKey: ['search', query],
   });
@@ -113,23 +113,6 @@ export const useFolders = (parent_id?: string, sort?: SortParams) => {
   });
 };
 
-export const useFiles = (parent_id?: string, sort?: SortParams) => {
-  return useQuery({
-    queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/file/all${parent_id ? `/${parent_id}` : ''}`, {
-          params: {
-            sort_by: getQuerySortString(sort?.sort_by),
-            sort_order: getSortOrderString(sort?.sort_order),
-            limit: sort?.limit,
-            offset: sort?.offset,
-          },
-        })
-        .then(res => res.data as FileModel[]),
-    queryKey: ['files', parent_id, sort],
-  });
-};
-
 export const useFilesInfinite = (
   parent_id?: string,
   sort?: SortParams,
@@ -146,7 +129,7 @@ export const useFilesInfinite = (
             page: pageParam,
           },
         })
-        .then(res => res.data as FileModel[]),
+        .then(res => res.data as FileModelDTO[]),
     queryKey: ['files', parent_id, sort],
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
@@ -171,7 +154,7 @@ export const useFileByTypeInfinite = (fileType: number, limit: number) => {
             page: pageParam,
           },
         })
-        .then(res => res.data as FileModel[]),
+        .then(res => res.data as FileModelDTO[]),
     queryKey: ['files', 'type', fileType],
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
@@ -195,7 +178,7 @@ export const useRecentFiles = (limit?: number) => {
             limit: limit,
           },
         })
-        .then(res => res.data as FileModel[]),
+        .then(res => res.data as FileModelDTO[]),
     queryKey: ['files', 'recent'],
   });
 };
@@ -205,7 +188,7 @@ export const useDeletedFiles = () => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/file/all/deleted`)
-        .then(res => res.data as FileModel[]),
+        .then(res => res.data as FileModelDTO[]),
     queryKey: ['files', 'deleted'],
   });
 };
@@ -225,14 +208,14 @@ export const useUsageStats = () => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/user/usage/stats`)
-        .then(res => res.data as UsageStats),
+        .then(res => res.data as DiskUsageStats),
     queryKey: ['usage', 'stats'],
     placeholderData: {
       active: 0,
       bin: 0,
       total: 0,
       limit: FALLBACK_STORAGE_LIMIT,
-    } satisfies UsageStats,
+    } satisfies DiskUsageStats,
     refetchOnWindowFocus: false,
   });
 };
@@ -242,7 +225,7 @@ export const useUsageReport = () => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/user/usage/report`)
-        .then(res => res.data as UsageReport),
+        .then(res => res.data as DiskUsageReport),
     queryKey: ['usage', 'report'],
     refetchOnWindowFocus: false,
   });
@@ -253,12 +236,12 @@ export const useOperations = (onUnauthorized?: () => void) => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/operation/all`)
-        .then(res => res.data as OperationModel[])
+        .then(res => res.data as OperationModelDTO[])
         .catch(e => {
           if (e.response?.status === 401) {
             onUnauthorized?.();
           }
-          return [] as OperationModel[];
+          return [] as OperationModelDTO[];
         }),
     queryKey: ['operations'],
     // 20 seconds
@@ -274,7 +257,7 @@ export const useSharedItems = (forUser?: boolean) => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/share/all${userSpecificEndpoint}`)
-        .then(res => res.data as SharedItemsResponse),
+        .then(res => res.data as SharedItems),
     queryKey: ['share', 'items', userSpecificEndpoint],
   });
 };
@@ -284,7 +267,7 @@ export const useUserShareData = (id: string, type: ShareOperationType) => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/share/${type}/${id}`)
-        .then(res => res.data as ShareModel[]),
+        .then(res => res.data as ExtendedShareModelDTO[]),
     queryKey: ['share', id, type],
   });
 };
@@ -294,7 +277,7 @@ export const useAccessShareFile = (uuid: string) => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}s/file/${uuid}`)
-        .then(res => res.data as ShareFileModel),
+        .then(res => res.data as ShareFileModelDTO),
     queryKey: ['share-access', uuid],
     refetchOnWindowFocus: false,
     retry: false,
@@ -320,7 +303,7 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
         .get(
           `${BASE_URL}s/folder/${uuid}${folderId ? `/Folder/${folderId}` : ''}`,
         )
-        .then(res => res.data as FolderShareResponse),
+        .then(res => res.data as FolderShareData),
     queryKey: ['share-access', uuid, folderId],
     refetchOnWindowFocus: false,
     retry: false,
@@ -346,7 +329,7 @@ export const usePasskeys = () => {
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/passkey`)
-        .then(res => res.data as PasskeyModel[]),
+        .then(res => res.data as PasskeyModelDTO[]),
     queryKey: ['passkeys'],
   });
 };

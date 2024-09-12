@@ -1,5 +1,5 @@
 import { AdminQuery } from '@lib/queries/adminQuery.ts';
-import { roleToString, UserModel } from '@models/user.ts';
+import { roleToString } from '@models/user.ts';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -14,8 +14,9 @@ import { FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { Helmet } from 'react-helmet';
+import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
-function UserItem({ user }: { user: UserModel }) {
+function UserItem({ user }: { user: UserModelDTO }) {
   const navigate = useNavigate();
   return (
     <tr

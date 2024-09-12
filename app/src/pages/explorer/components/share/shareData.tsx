@@ -1,8 +1,8 @@
-import { ShareModel } from '@models/share.ts';
 import { ShareOperationType } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import { ShareItem } from '@pages/explorer/components/share/shareItem.tsx';
 import { containerVariant } from '@components/defaults/transition.ts';
+import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 
 const renderMessage = (message: string) => (
   <p className={'text-center text-stone-600'}>{message}</p>
@@ -13,7 +13,7 @@ export function ShareData({
   type,
   loading,
 }: {
-  shares?: ShareModel[];
+  shares?: ExtendedShareModelDTO[];
   type: ShareOperationType;
   loading?: boolean;
 }) {

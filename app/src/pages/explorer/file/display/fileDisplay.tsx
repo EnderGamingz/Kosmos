@@ -1,7 +1,6 @@
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { FileModel } from '@models/file.ts';
 import tw from '@utils/classMerge.ts';
 import { useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
@@ -12,6 +11,7 @@ import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.
 import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { FileDisplayFavorite } from '@pages/explorer/file/display/fileDisplayFavorite.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function FileDisplay({
   fileIndex,
@@ -69,7 +69,7 @@ function FileDisplayContent({
   onUpdate,
   shareUuid,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   onClose: () => void;
   onSelect: (id: string) => void;
   isSelected: boolean;

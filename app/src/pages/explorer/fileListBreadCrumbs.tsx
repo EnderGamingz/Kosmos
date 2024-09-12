@@ -1,14 +1,14 @@
-import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
 import { HomeIcon } from '@heroicons/react/24/outline';
+import { SimpleDirectoryDTO } from '@bindings/SimpleDirectoryDTO.ts';
 
 export function FileListBreadCrumbs({
   crumbs,
   firstHome,
   shareUuid,
 }: {
-  crumbs: SimpleDirectory[];
+  crumbs: SimpleDirectoryDTO[];
   firstHome?: string;
   shareUuid?: string;
 }) {

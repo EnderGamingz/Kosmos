@@ -24,7 +24,7 @@ export function BreadCrumbItem({
   name: ReactNode;
   href?: string;
   last?: boolean;
-  color?: string;
+  color?: string | null;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }) {
@@ -47,8 +47,9 @@ export function BreadCrumbItem({
               'rounded-md px-1 transition-colors hover:!bg-stone-500/10 dark:hover:!bg-stone-700/60'
             }
             style={{
-              backgroundColor:
-                color && `rgba(${hexToRGB(color).join(',')}, 0.2)`,
+              backgroundColor: color
+                ? `rgba(${hexToRGB(color).join(',')}, 0.2)`
+                : undefined,
             }}
             to={href!}>
             {c}

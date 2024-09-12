@@ -1,34 +1,16 @@
-import { FileModel, FileType, ShareFileModel } from './file';
+import { FileType } from './file';
 import { ContextData } from '@hooks/useContextMenu.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
 
-export type AlbumModel = {
-  id: string;
-  user_id: string;
-  name: string;
-  description?: string;
-  preview_id?: string;
-  created_at: string;
-  updated_at: string;
-};
-
-export type ShareAlbumModel = {
-  id: string;
-  name: string;
-  description?: string;
-  preview_id?: string;
-  created_at: string;
-  updated_at: string;
-  share_uuid?: string;
-  share_target_username?: string;
-};
-
-export type AlbumFile = FileModel & {
-  album: AlbumModel;
+export type AlbumFile = FileModelDTO & {
+  album: AlbumModelDTO;
 };
 
 export type AlbumResponse = {
-  album: AlbumModel;
-  files: FileModel[];
+  album: AlbumModelDTO;
+  files: FileModelDTO[];
 };
 
 export type CreateAlbumPayload = {
@@ -43,13 +25,13 @@ export type UpdateAlbumPayload = {
 };
 
 export type AvailableAlbumsForFileResponse = {
-  added: AlbumModel[];
-  available: AlbumModel[];
+  added: AlbumModelDTO[];
+  available: AlbumModelDTO[];
 };
 
 export type AlbumShareResponse = {
-  album: AlbumModel;
-  files: ShareFileModel[];
+  album: AlbumModelDTO;
+  files: ShareFileModelDTO[];
 };
 
 export function isAlbumFile(data: ContextData): data is AlbumFile {
@@ -59,6 +41,6 @@ export function isAlbumFile(data: ContextData): data is AlbumFile {
   );
 }
 
-export function isValidFileForAlbum(file: FileModel) {
+export function isValidFileForAlbum(file: FileModelDTO) {
   return [FileType.Image, FileType.RawImage].includes(file.file_type);
 }

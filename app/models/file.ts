@@ -1,4 +1,5 @@
 import { ContextData } from '@hooks/useContextMenu.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export enum FileType {
   Generic,
@@ -21,27 +22,27 @@ export class FileTypeActions {
     return [FileType.Video].includes(id);
   }
 
-  static canOpenExternal(data: FileModel) {
+  static canOpenExternal(data: FileModelDTO) {
     return [FileType.Document, FileType.Video].includes(data.file_type);
   }
 
-  static hasPreview(data: FileModel) {
+  static hasPreview(data: FileModelDTO) {
     return [FileType.Image, FileType.RawImage].includes(data.file_type);
   }
 
-  static hasFileEmbedData(data: FileModel) {
+  static hasFileEmbedData(data: FileModelDTO) {
     return [FileType.Document, FileType.Editable].includes(data.file_type);
   }
 
-  static canEditContent(data: FileModel) {
+  static canEditContent(data: FileModelDTO) {
     return data.file_type === FileType.Editable;
   }
 
-  static isMarkdown(data: FileModel) {
+  static isMarkdown(data: FileModelDTO) {
     return this.canEditContent(data) && data.mime_type === 'text/markdown';
   }
 
-  static shouldDelayPreview(data: FileModel) {
+  static shouldDelayPreview(data: FileModelDTO) {
     return [
       FileType.Image,
       FileType.Document,
@@ -57,36 +58,6 @@ export enum FilePreviewStatus {
   Failed,
   Processing,
 }
-
-export type FileModel = {
-  id: string;
-  user_id: string;
-  file_name: string;
-  file_size: number;
-  file_type: FileType;
-  mime_type: string;
-  metadata?: never;
-  parent_folder_id?: string;
-  preview_status?: FilePreviewStatus;
-  favorite: boolean;
-  created_at: string;
-  updated_at: string;
-  deleted_at?: string;
-};
-
-export type ShareFileModel = {
-  id: string;
-  file_name: string;
-  file_size: number;
-  file_type: FileType;
-  mime_type: string;
-  metadata?: never;
-  preview_status?: FilePreviewStatus;
-  created_at: string;
-  updated_at: string;
-  share_uuid?: string;
-  share_target_username?: string;
-};
 
 export type DataOperationType = 'file' | 'folder';
 export type ContextOperationType = DataOperationType | 'multi';
@@ -128,8 +99,8 @@ export function getFileTypeString(id: number): string {
   }
 }
 
-export function isFileModel(data: ContextData): data is FileModel {
-  return (data as FileModel).file_name !== undefined;
+export function isFileModel(data: ContextData): data is FileModelDTO {
+  return (data as FileModelDTO).file_name !== undefined;
 }
 
 export type Selected = { files: string[]; folders: string[] };

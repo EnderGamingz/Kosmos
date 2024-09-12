@@ -1,14 +1,14 @@
-import { FileModel } from '@models/file.ts';
-import { FolderModel } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { Checkbox } from '@nextui-org/react';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export function SelectAllCheckBox({
   files,
   folders,
 }: {
-  files: FileModel[];
-  folders: FolderModel[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
 }) {
   const {
     selectedFolders,

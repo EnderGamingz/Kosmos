@@ -1,13 +1,13 @@
-import { AlbumModel } from '@models/album.ts';
 import { motion } from 'framer-motion';
 import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 export default function AlbumCover({
   album,
   loading,
   shareUuid,
 }: {
-  album: AlbumModel;
+  album: AlbumModelDTO;
   loading?: boolean;
   shareUuid?: string;
 }) {
@@ -36,7 +36,7 @@ function AlbumCoverImage({
   album,
   shareUuid,
 }: {
-  album: AlbumModel;
+  album: AlbumModelDTO;
   shareUuid?: string;
 }) {
   const previewUrl = createPreviewUrl(

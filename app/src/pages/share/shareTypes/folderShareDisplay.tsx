@@ -1,6 +1,4 @@
-import { FolderModel } from '@models/folder.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { FileModel } from '@models/file.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useAccessShareFolder } from '@lib/query.ts';
@@ -10,6 +8,8 @@ import { useEffect } from 'react';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
 import { Helmet } from 'react-helmet';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export function FolderShareDisplay({ uuid }: { uuid: string }) {
   return (
@@ -26,7 +26,8 @@ function Display({ uuid }: { uuid: string }) {
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
 
   useEffect(() => {
-    if (share.data) setFilesInScope(share.data.files as FileModel[]);
+    if (share.data)
+      setFilesInScope(share.data.files as unknown as FileModelDTO[]);
   }, [setFilesInScope, share.data]);
 
   if (share.isLoading)
@@ -46,8 +47,8 @@ function Display({ uuid }: { uuid: string }) {
       />
       <ExplorerDataDisplay
         isLoading={false}
-        files={(share.data.files as FileModel[]) || []}
-        folders={(share.data.folders as FolderModel[]) || []}
+        files={(share.data.files as unknown as FileModelDTO[]) || []}
+        folders={(share.data.folders as FolderModelDTO[]) || []}
         shareUuid={uuid}
       />
     </>

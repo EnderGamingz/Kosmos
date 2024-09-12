@@ -1,5 +1,4 @@
-import { FolderModel } from '@models/folder.ts';
-import { FileModel, FileType } from '@models/file.ts';
+import { FileType } from '@models/file.ts';
 import { FileTableLoading } from '@pages/explorer/displayAlternatives/fileTable/fileTableLoading.tsx';
 import { FileTable } from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 import { ExplorerDisplayWrapper } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper.tsx';
@@ -15,7 +14,9 @@ import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx'
 import { useSearchState } from '@stores/searchStore.ts';
 import objectHash from 'object-hash';
 import AlbumDisplay from '@pages/explorer/displayAlternatives/album/albumDisplay.tsx';
-import { AlbumModel } from '@models/album.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 function getLoadingComponent(id: ExplorerLoading) {
   switch (id) {
@@ -52,8 +53,8 @@ export type ViewSettings = {
   noDisplay?: boolean;
   isCreateAllowed?: boolean;
   album?: {
-    onFileClick?: (file: FileModel) => void;
-    data?: AlbumModel;
+    onFileClick?: (file: FileModelDTO) => void;
+    data?: AlbumModelDTO;
   };
 };
 
@@ -72,8 +73,8 @@ export default function ExplorerDataDisplay({
   overwriteDisplay,
 }: {
   isLoading: boolean;
-  files: FileModel[];
-  folders: FolderModel[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
   shareUuid?: string;
   viewSettings?: ViewSettings;
   overwriteDisplay?: OverwriteDisplay;

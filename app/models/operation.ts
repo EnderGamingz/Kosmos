@@ -47,14 +47,3 @@ export function getOperationStatusString(status: OperationStatus | number) {
 export function normalizeOperationStatus(id: number): OperationStatus {
   return id in OperationStatus ? id : OperationStatus.Pending;
 }
-
-export type OperationModel = {
-  id: string;
-  user_id: string;
-  operation_type: number;
-  operation_status: number;
-  metadata?: never;
-  started_at: string;
-  ended_at?: string;
-  updated_at: string;
-};
