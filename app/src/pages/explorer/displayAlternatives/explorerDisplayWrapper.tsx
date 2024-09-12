@@ -1,5 +1,4 @@
-import { DataOperationType, FileModel, Selected } from '@models/file.ts';
-import { FolderModel } from '@models/folder.ts';
+import { DataOperationType, Selected } from '@models/file.ts';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
@@ -19,6 +18,8 @@ import {
 } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export type Vec2 = { x: number; y: number };
 
@@ -30,8 +31,8 @@ export function ExplorerDisplayWrapper({
   viewSettings,
   overwriteDisplay,
 }: {
-  files: FileModel[];
-  folders: FolderModel[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
   children: ReactNode;
   shareUuid?: string;
   viewSettings?: ViewSettings;

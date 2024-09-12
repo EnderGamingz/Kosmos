@@ -1,11 +1,11 @@
-import { AlbumModel } from '@models/album.ts';
 import { useNavigate } from 'react-router-dom';
 import AlbumCover from '@pages/explorer/pages/albums/albumCover.tsx';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
-export function AlbumItem({ album }: { album: AlbumModel }) {
+export function AlbumItem({ album }: { album: AlbumModelDTO }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 

@@ -1,9 +1,7 @@
 use std::collections::HashSet;
-use ts_rs::TS;
 
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq, TS)]
-#[ts(export)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum Role {
     User = 0,
     Admin = 1,
@@ -47,8 +45,7 @@ impl Role {
 }
 
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq, Hash, Eq, TS)]
-#[ts(export)]
+#[derive(Clone, Copy, PartialEq, Hash, Eq)]
 pub enum Permission {
     CreateUser,
     ReadUser,

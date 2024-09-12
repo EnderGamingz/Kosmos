@@ -1,4 +1,3 @@
-import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
 import {
@@ -8,6 +7,7 @@ import {
 import { ImageTooLargePrompt } from '@pages/explorer/file/display/displayTypes/image/imageTooLargePrompt.tsx';
 
 import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function DisplayImage({
   file,
@@ -17,7 +17,7 @@ export function DisplayImage({
   highRes,
   share,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   fullScreen?: boolean;
   onFullScreen?: (b: boolean) => void;
   lowRes?: string;

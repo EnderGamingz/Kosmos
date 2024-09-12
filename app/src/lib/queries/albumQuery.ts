@@ -3,11 +3,11 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import {
-  AlbumModel,
   AlbumResponse,
   AvailableAlbumsForFileResponse,
 } from '@models/album.ts';
-import { FileModel } from '@models/file.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export class AlbumQuery {
   private static getAlbumData = (id: string) =>
@@ -20,7 +20,7 @@ export class AlbumQuery {
       queryFn: () =>
         axios
           .get(`${BASE_URL}auth/album`)
-          .then(res => res.data as AlbumModel[]),
+          .then(res => res.data as AlbumModelDTO[]),
       queryKey: ['album'],
     });
   };
@@ -44,7 +44,7 @@ export class AlbumQuery {
               page: pageParam,
             },
           })
-          .then(res => res.data as FileModel[]),
+          .then(res => res.data as FileModelDTO[]),
       queryKey: ['files', 'album', 'available'],
       initialPageParam: 0,
       getNextPageParam: (lastPage, _allPages, lastPageParam) => {

@@ -1,4 +1,3 @@
-import { FileModel } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Portal } from 'react-portal';
 import tw from '@utils/classMerge.ts';
@@ -6,6 +5,7 @@ import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
 } from '@heroicons/react/24/outline';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function ImageFullscreenView({
   open,
@@ -19,7 +19,7 @@ export function ImageFullscreenView({
   tooLarge: boolean;
   onDoubleClick: () => void;
   src: string;
-  file: FileModel;
+  file: FileModelDTO;
   noOffset?: boolean;
 }) {
   return (
@@ -36,7 +36,7 @@ export function ImageFullscreenView({
             <motion.img
               onDoubleClick={onDoubleClick}
               className={
-                'h-full w-full rounded-lg rounded-xl object-contain drop-shadow-lg'
+                'h-full w-full rounded-xl object-contain drop-shadow-lg'
               }
               layoutId={`image-${file.id}`}
               src={src}

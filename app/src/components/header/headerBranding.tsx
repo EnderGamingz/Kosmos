@@ -1,9 +1,9 @@
-import { UserModel } from '@models/user.ts';
 import { Link } from 'react-router-dom';
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { motion } from 'framer-motion';
+import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
-export function HeaderBranding({ user }: { user?: UserModel }) {
+export function HeaderBranding({ user }: { user?: UserModelDTO }) {
   return (
     <motion.div className={'min-w-max'} layoutId={'header-branding'}>
       <Link

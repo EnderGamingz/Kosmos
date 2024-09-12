@@ -8,20 +8,21 @@ import tw from '@utils/classMerge.ts';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { useFormatBytes } from '@utils/fileSize.ts';
-import { UsageReport, UsageStats } from '@models/usage.ts';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import {
   CircleStackIcon,
   DocumentIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { DiskUsageReport } from '@bindings/DiskUsageReport.ts';
+import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 
 export function UsageReportStats({
   report,
   usage,
 }: {
-  report?: UsageReport;
-  usage: UsageStats;
+  report?: DiskUsageReport;
+  usage: DiskUsageStats;
 }) {
   return (
     <section>

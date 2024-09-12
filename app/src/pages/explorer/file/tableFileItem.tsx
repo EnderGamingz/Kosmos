@@ -1,4 +1,4 @@
-import { FileModel, normalizeFileType } from '@models/file.ts';
+import { normalizeFileType } from '@models/file.ts';
 import tw from '@utils/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -23,6 +23,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
@@ -69,7 +70,7 @@ export function TableFileItem({
 }: {
   i: number;
   fileIndex: number;
-  file: FileModel;
+  file: FileModelDTO;
   selected: string[];
   onSelect: (id: string) => void;
   outerDisabled?: boolean;

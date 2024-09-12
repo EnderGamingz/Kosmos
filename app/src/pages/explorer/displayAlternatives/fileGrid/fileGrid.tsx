@@ -9,8 +9,6 @@ import { FileGridSort } from '@pages/explorer/displayAlternatives/fileGrid/fileG
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
-import { FileModel } from '@models/file.ts';
-import { FolderModel } from '@models/folder.ts';
 import { containerVariant } from '@components/defaults/transition.ts';
 import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';
 import {
@@ -29,10 +27,12 @@ import {
   FILE_GRID_ROW_HEIGHT_COMPACT,
   FILE_GRID_ROW_HEIGHT_DEFAULT,
 } from '@lib/constants.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 function Footer(props: {
-  fileModels: FileModel[];
-  folderModels: FolderModel[];
+  fileModels: FileModelDTO[];
+  folderModels: FolderModelDTO[];
   totalFileSize: string;
 }) {
   return (
@@ -60,7 +60,7 @@ function Footer(props: {
 
 function FolderGrid(props: {
   control: boolean;
-  folderModels: FolderModel[];
+  folderModels: FolderModelDTO[];
   onSelect: (id: string) => void;
   selected: string[];
   outerDisabled?: boolean;
@@ -286,7 +286,7 @@ function Row({ index, data }: { index: number; data: VirtualGridRowData }) {
 }
 
 export type VirtualGridRowData = {
-  rows: FileModel[][];
+  rows: FileModelDTO[][];
   onSelectFile: (id: string) => void;
   selectedFiles: string[];
   columnCount: number;
@@ -306,14 +306,14 @@ function VirtualFileGrid({
   totalFileSize,
   isControl,
 }: {
-  files: FileModel[];
+  files: FileModelDTO[];
   folderLength: number;
   selectFile: (id: string) => void;
   selectedFiles: string[];
   details: DetailType;
   selectFolder: (id: string) => void;
   selectedFolders: string[];
-  folders: FolderModel[];
+  folders: FolderModelDTO[];
   totalFileSize: string;
   isControl: boolean;
 }) {

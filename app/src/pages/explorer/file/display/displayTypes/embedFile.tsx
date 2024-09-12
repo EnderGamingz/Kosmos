@@ -1,4 +1,4 @@
-import { FileModel, FileTypeActions } from '@models/file.ts';
+import { FileTypeActions } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import FileMarkdownDisplay from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 import { ReactNode, useState } from 'react';
@@ -9,13 +9,14 @@ import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
 } from '@heroicons/react/24/outline';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function EmbedFile({
   file,
   serveUrl,
   isShared,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   serveUrl: string;
   isShared: boolean;
 }) {
@@ -72,7 +73,7 @@ function FileObjectDisplay({
   file,
   serveUrl,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   serveUrl: string;
 }) {
   const [fullscreen, setFullscreen] = useState(false);

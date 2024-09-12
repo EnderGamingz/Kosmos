@@ -1,13 +1,13 @@
-import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import { Checkbox } from '@nextui-org/react';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function DisplayHeader({
   file,
   selected,
   onSelect,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   selected?: boolean;
   onSelect?: (id: string) => void;
 }) {

@@ -2,6 +2,7 @@ use axum::extract::State;
 use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
+use ts_rs::TS;
 use crate::model::album::AlbumModelWithShareInfoDTO;
 use crate::model::file::FileModelWithShareInfoDTO;
 use crate::model::folder::FolderModelWithShareInfoDTO;
@@ -9,7 +10,8 @@ use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct SharedItems {
     files: Vec<FileModelWithShareInfoDTO>,
     folders: Vec<FolderModelWithShareInfoDTO>,

@@ -11,6 +11,7 @@ use axum::extract::{Path, State};
 use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
+use ts_rs::TS;
 
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
@@ -128,7 +129,8 @@ pub async fn access_album_share(
     Ok(Json(album))
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct FolderShareData {
     folder: ShareFolderModelDTO,
     folders: Vec<ShareFolderModelDTO>,

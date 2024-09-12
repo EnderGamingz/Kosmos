@@ -1,16 +1,16 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
-import { SimpleDirectory } from '@models/folder.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useSearchState } from '@stores/searchStore.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.tsx';
+import { SimpleDirectoryDTO } from '@bindings/SimpleDirectoryDTO.ts';
 
 export default function FileList() {
-  const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectory[]>([]);
+  const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectoryDTO[]>([]);
 
   const { setCurrentFolder, setFilesInScope, setSelectedNone } =
     useExplorerStore(

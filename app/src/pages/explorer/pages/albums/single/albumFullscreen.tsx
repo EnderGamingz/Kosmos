@@ -1,15 +1,15 @@
 import { createServeUrl } from '@lib/file.ts';
 import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
-import { FileModel } from '@models/file.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import tw from '@utils/classMerge.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function AlbumFullscreen({
   file,
   onClose,
   shareUuid,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   onClose: () => void;
   shareUuid?: string;
 }) {

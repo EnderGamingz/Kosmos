@@ -1,4 +1,3 @@
-import { FileModel } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { invalidateFiles, setFileContent, useFileContent } from '@lib/query.ts';
 import remarkGfm from 'remark-gfm';
@@ -29,6 +28,7 @@ import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/imag
 import { Portal } from 'react-portal';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { truncateString } from '@utils/truncate.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 function MarkdownEditorContent({
   file,
@@ -36,7 +36,7 @@ function MarkdownEditorContent({
   onClose,
   isMarkdown,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   initialData: string;
   onClose: () => void;
   isMarkdown: boolean;
@@ -128,7 +128,7 @@ export function EditMarkdownFile({
   isMarkdown,
   onClose,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   isMarkdown: boolean;
   onClose?: () => void;
 }) {
@@ -214,7 +214,7 @@ export default function FileMarkdownDisplay({
   isShared,
   serveUrl,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   isShared: boolean;
   serveUrl: string;
 }) {

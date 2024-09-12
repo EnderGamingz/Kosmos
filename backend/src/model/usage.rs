@@ -13,7 +13,9 @@ pub struct UsageSumData {
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct UsageSumDataDTO {
+    #[ts(type = "number")]
     pub sum: i64,
+    #[ts(type = "number")]
     pub count: i64,
 }
 
@@ -46,7 +48,9 @@ pub struct FileTypeSumData {
 #[ts(export)]
 pub struct FileTypeSumDataDTO {
     pub file_type: i16,
+    #[ts(type = "number")]
     pub sum: i64,
+    #[ts(type = "number")]
     pub count: i64,
 }
 

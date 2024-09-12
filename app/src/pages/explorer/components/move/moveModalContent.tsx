@@ -32,10 +32,10 @@ export function MoveModalContent({
 }: {
   moveData: MoveData;
   multiData?: MultiMoveData;
-  parent?: string;
+  parent?: string | null;
   onClose: () => void;
 }) {
-  const [selectedFolder, setSelectedFolder] = useState(parent);
+  const [selectedFolder, setSelectedFolder] = useState(parent || undefined);
   const { data, isLoading } = useFolders(selectedFolder);
 
   const handleChangeFolder = (id?: string) => () => {
@@ -97,7 +97,10 @@ export function MoveModalContent({
             'dark:[&_li:hover]:bg-indigo-700/50 dark:[&_li]:text-stone-100',
           )}>
           {data?.folder && (
-            <motion.li onClick={handleChangeFolder(data?.folder?.parent_id)}>
+            <motion.li
+              onClick={handleChangeFolder(
+                data?.folder?.parent_id || undefined,
+              )}>
               ..
             </motion.li>
           )}

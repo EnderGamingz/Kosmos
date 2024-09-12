@@ -1,4 +1,3 @@
-import { FileModel } from '@models/file.ts';
 import {
   ArrowTopRightOnSquareIcon,
   CheckIcon,
@@ -21,13 +20,14 @@ import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DisplayContext } from '@lib/contexts.ts';
 import tw from '@utils/classMerge.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 function AddToAlbumModalContent({
   onClose,
   file,
 }: {
   onClose: () => void;
-  file: FileModel;
+  file: FileModelDTO;
 }) {
   const [loading, setLoading] = useState<string[]>([]);
   const albums = AlbumQuery.useAvailableAlbums(file.id);
@@ -124,7 +124,7 @@ export default function AlbumAction({
   onClose,
   dense,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   albumId?: string;
   onClose?: () => void;
   dense?: boolean;

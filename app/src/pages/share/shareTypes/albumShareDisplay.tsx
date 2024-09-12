@@ -5,9 +5,9 @@ import { ShareError } from '@pages/share/shareError.tsx';
 import { AlbumPageContent } from '@pages/explorer/pages/albums/single';
 import { useScrollThreshold } from '@hooks/useScrollDirection.ts';
 import { useRef } from 'react';
-import { FileModel } from '@models/file.ts';
 import { AlbumShareResponse } from '@models/album.ts';
 import { Helmet } from 'react-helmet';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function AlbumShareDisplay({ uuid }: { uuid: string }) {
   const share = useAccessAlbumShare(uuid);
@@ -37,7 +37,7 @@ function Content({ share, uuid }: { share: AlbumShareResponse; uuid: string }) {
         {share && (
           <AlbumPageContent
             album={share.album}
-            files={share.files as FileModel[]}
+            files={share.files as unknown as FileModelDTO[]}
             scrolling={scrolling}
             shareUuid={uuid}
           />

@@ -1,4 +1,3 @@
-import { FileTypeSum } from '@models/usage.ts';
 import { getFileTypeString } from '@models/file.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import tw from '@utils/classMerge.ts';
@@ -8,8 +7,9 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTopSmall,
 } from '@components/defaults/transition.ts';
+import { FileTypeSumDataDTO } from '@bindings/FileTypeSumDataDTO.ts';
 
-export function UsageReportByType({ types }: { types: FileTypeSum[] }) {
+export function UsageReportByType({ types }: { types: FileTypeSumDataDTO[] }) {
   return (
     <section className={'space-y-2'}>
       <motion.h2
@@ -34,7 +34,7 @@ export function UsageReportByType({ types }: { types: FileTypeSum[] }) {
   );
 }
 
-function FileTypeUsageItem({ type }: { type: FileTypeSum }) {
+function FileTypeUsageItem({ type }: { type: FileTypeSumDataDTO }) {
   const fileTypeString = getFileTypeString(type.file_type);
   const navigate = useNavigate();
   return (

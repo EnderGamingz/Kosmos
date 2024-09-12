@@ -1,11 +1,9 @@
 use serde::Serialize;
 use sqlx::Type;
-use ts_rs::TS;
 use crate::response::error_handling::AppError;
 
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type, TS)]
-#[ts(export)]
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type)]
 pub enum ImageFormat {
     Thumbnail = 0,
 }

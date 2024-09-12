@@ -1,9 +1,4 @@
-import {
-  FileModel,
-  FileType,
-  FileTypeActions,
-  getFileTypeString,
-} from '@models/file.ts';
+import { FileType, FileTypeActions, getFileTypeString } from '@models/file.ts';
 import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
@@ -13,6 +8,7 @@ import { DisplayContext } from '@lib/contexts.ts';
 import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
 import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
 import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function FileTypeDisplay({
   id,
@@ -74,7 +70,7 @@ export function FileDisplayHandler({
   onFullScreen,
   shareUuid,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   fullScreen: boolean;
   onFullScreen: (b: boolean) => void;
   shareUuid?: string;

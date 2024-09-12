@@ -8,8 +8,6 @@ import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumAddItems } from '@pages/explorer/pages/albums/single/albumAddItems.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useScrollThreshold } from '@hooks/useScrollDirection.ts';
-import { FileModel } from '@models/file.ts';
-import { AlbumModel } from '@models/album.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlider.tsx';
@@ -18,6 +16,8 @@ import { AnimatePresence } from 'framer-motion';
 import { DisplayContext } from '@lib/contexts.ts';
 import tw from '@utils/classMerge.ts';
 import { Helmet } from 'react-helmet';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -77,12 +77,12 @@ export function AlbumPageContent({
   scrolling,
   shareUuid,
 }: {
-  album: AlbumModel;
-  files: FileModel[];
+  album: AlbumModelDTO;
+  files: FileModelDTO[];
   scrolling: boolean;
   shareUuid?: string;
 }) {
-  const [selected, setSelected] = useState<FileModel | undefined>(undefined);
+  const [selected, setSelected] = useState<FileModelDTO | undefined>(undefined);
   const [size, setSize] = useState(getInitialGridSize());
   const fileIds = useMemo(() => files.map(file => file.id), [files]);
 
@@ -144,7 +144,7 @@ export function AlbumPageContent({
           viewSettings={{
             album: {
               data: album,
-              onFileClick: (file: FileModel) => {
+              onFileClick: (file: FileModelDTO) => {
                 setSelected(file);
               },
             },

@@ -1,4 +1,4 @@
-import { getShareTypeString, ShareModel } from '@models/share.ts';
+import { getShareTypeString } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTop } from '@components/defaults/transition.ts';
 import tw from '@utils/classMerge.ts';
@@ -14,6 +14,7 @@ import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeI
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
+import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
@@ -34,7 +35,7 @@ export function ShareItem({
   share,
   type,
 }: {
-  share: ShareModel;
+  share: ExtendedShareModelDTO;
   type: ShareOperationType;
 }) {
   const notifications = useNotifications(s => s.actions);

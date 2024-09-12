@@ -36,6 +36,7 @@ pub struct FileModelDTO {
     pub id: String,
     pub user_id: String,
     pub file_name: String,
+    #[ts(type = "number")]
     pub file_size: i64,
     pub file_type: i16,
     pub mime_type: String,
@@ -95,6 +96,7 @@ pub struct FileModelWithShareInfoDTO {
     pub id: String,
     pub user_id: String,
     pub file_name: String,
+    #[ts(type = "number")]
     pub file_size: i64,
     pub file_type: i16,
     pub mime_type: String,

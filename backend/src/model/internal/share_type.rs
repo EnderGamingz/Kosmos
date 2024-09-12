@@ -1,10 +1,8 @@
 use serde::Serialize;
 use sqlx::Type;
-use ts_rs::TS;
 
 #[repr(i16)]
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Type, TS)]
-#[ts(export)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Type)]
 pub enum ShareType {
     Public = 0,
     Private = 1,

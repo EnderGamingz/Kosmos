@@ -16,7 +16,7 @@ export function MoveAction({
   type: ContextOperationType;
   id?: string;
   name?: string;
-  current_parent?: string;
+  current_parent?: string | null;
   onClose?: () => void;
   multiData?: {
     files: string[];

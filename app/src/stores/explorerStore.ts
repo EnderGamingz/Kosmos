@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { FileModel, ShareOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export type SelectedResources = {
   selectedFolders: string[];
@@ -16,8 +17,8 @@ export type ExplorerState = {
     selectedFileIndex?: number;
     selectCurrentFile: (current?: number) => void;
     selectCurrentFolder: (current?: string) => void;
-    filesInScope: FileModel[];
-    setFilesInScope: (current: FileModel[]) => void;
+    filesInScope: FileModelDTO[];
+    setFilesInScope: (current: FileModelDTO[]) => void;
   };
   share: {
     shareElementId?: string;
@@ -55,7 +56,7 @@ export const useExplorerStore = create<ExplorerState>(set => ({
       }));
     },
     filesInScope: [],
-    setFilesInScope: (current: FileModel[]) => {
+    setFilesInScope: (current: FileModelDTO[]) => {
       set(prev => ({
         current: {
           ...prev.current,

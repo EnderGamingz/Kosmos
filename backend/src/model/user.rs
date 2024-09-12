@@ -26,6 +26,7 @@ pub struct UserModelDTO {
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
+    #[ts(type = "number")]
     pub storage_limit: i64,
     pub role: i16,
     pub created_at: DateTime<Utc>,

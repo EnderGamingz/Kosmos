@@ -13,12 +13,13 @@ import {
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { FixedSizeList, FixedSizeListProps } from 'react-window';
 import { FILE_TABLE_ITEM_HEIGHT } from '@lib/constants.ts';
-import { FileModel, isFileModel } from '@models/file.ts';
-import { FolderModel } from '@models/folder.ts';
+import { isFileModel } from '@models/file.ts';
 import { TableFolderItem } from '@pages/explorer/folder/tableFolderItem.tsx';
 import { TableFileItem } from '@pages/explorer/file/tableFileItem.tsx';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 const VirtualTableContext = createContext<{
   top: number;
@@ -125,8 +126,8 @@ function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
 }
 
 export type VirtualTableItemData = {
-  folders: FolderModel[];
-  files: FileModel[];
+  folders: FolderModelDTO[];
+  files: FileModelDTO[];
   totalFolder: number;
   onSelectFile: (id: string) => void;
   onSelectFolder: (id: string) => void;

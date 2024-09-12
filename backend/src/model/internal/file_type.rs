@@ -1,10 +1,8 @@
 use serde::Serialize;
 use sqlx::Type;
-use ts_rs::TS;
 
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type, TS)]
-#[ts(export)]
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type)]
 pub enum FileType {
     Generic = 0,
     Image = 1,
