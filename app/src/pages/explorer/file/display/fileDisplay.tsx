@@ -2,7 +2,7 @@ import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import tw from '@utils/classMerge.ts';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
 import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
@@ -12,6 +12,7 @@ import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { FileDisplayFavorite } from '@pages/explorer/file/display/fileDisplayFavorite.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { neutralizeBack, reviveBack } from '@utils/history.ts';
 
 export default function FileDisplay({
   fileIndex,
@@ -33,7 +34,10 @@ export default function FileDisplay({
   );
   const sort = useSearchState(s => s.sort);
   const currentFolder = useExplorerStore(s => s.current.folder);
-  const close = () => () => setFile(undefined);
+  const close = () => () => {
+    reviveBack();
+    setFile(undefined);
+  };
 
   const file = useMemo(() => {
     if (fileIndex === undefined) return undefined;
@@ -77,6 +81,11 @@ function FileDisplayContent({
   shareUuid?: string;
 }) {
   const [fullsScreenPreview, setFullsScreenPreview] = useState(false);
+
+  useEffect(() => {
+    neutralizeBack(onClose);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
