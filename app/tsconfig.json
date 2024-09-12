@@ -34,7 +34,7 @@
       "@pages/*": ["./src/pages/*"],
       "@utils/*": ["./src/utils/*"],
       "@public": ["./public"],
-      "@bindings/*": ["../backend/bindings/*"],
+      "@bindings/*": ["./bindings/*"],
     }
   },
   "include": ["src"],

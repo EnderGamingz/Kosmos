@@ -45,8 +45,8 @@ export function FolderColorChange({
   color,
 }: {
   folderId: string;
-  parent?: string;
-  color?: string;
+  parent?: string | null;
+  color?: string | null;
 }) {
   const { isOpen, onOpenChange, onClose } = useDisclosure();
   const [selected, setSelected] = useState('');
