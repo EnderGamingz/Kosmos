@@ -20,6 +20,7 @@ services:
       - "KOSMOS_RP_NAME=kosmos_rp"
     volumes:
       - ./uploads:/app/uploads
+      - ./backup:/app/backup
     depends_on:
       - kosmos_db
 
