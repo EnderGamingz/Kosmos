@@ -39,7 +39,7 @@ WORKDIR /app
 
 # Install utilities
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates gnupg2 curl
+    ca-certificates gnupg2 curl pv
 
 # PostgreSQL repository
 RUN sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list'

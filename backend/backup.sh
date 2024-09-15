@@ -59,7 +59,7 @@ fi
 # Archive the database dump and uploads folder
 echo "Archiving database dump and uploads folder..."
 
-if tar -czf "$ARCHIVE_FILE" "$UPLOAD_LOCATION" "$DB_DUMP_FILE"; then
+if tar cf - "$UPLOAD_LOCATION" "$DB_DUMP_FILE" -P | pv -s "$(du -sb "$UPLOAD_LOCATION" | awk '{print $1}')" | gzip > "$ARCHIVE_FILE"; then
   echo "Archive created successfully: $ARCHIVE_FILE"
 else
   echo "Error creating archive!" >&2
