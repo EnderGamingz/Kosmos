@@ -29,7 +29,7 @@ RUN touch /usr/src/kosmos/src/main.rs
 RUN cargo build --release --target x86_64-unknown-linux-gnu
 
 # Strip the binary
-RUN strip target/x86_64-unknown-linux-gnu/release/KOSMOS
+RUN strip target/x86_64-unknown-linux-gnu/release/kosmos
 
 FROM debian:bookworm-20240701-slim AS runtime
 
