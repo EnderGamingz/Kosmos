@@ -1,6 +1,6 @@
 services:
   kosmos_app:
-    image: registry.setilic.com/setilic/kosmos/app:0.1.1
+    image: registry.setilic.com/setilic/kosmos/app:latest
     ports:
       - "3000:3000"
 
@@ -20,6 +20,7 @@ services:
       - "KOSMOS_RP_NAME=kosmos_rp"
     volumes:
       - ./uploads:/app/uploads
+      - ./backup:/app/backup
     depends_on:
       - kosmos_db
 
