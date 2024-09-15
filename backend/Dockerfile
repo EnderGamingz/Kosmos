@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y pkg-config libssl-dev
 COPY Cargo.toml Cargo.lock /usr/src/kosmos/
 COPY .sqlx /usr/src/kosmos/.sqlx
 COPY migrations /usr/src/kosmos/migrations
+COPY backup.sh /usr/src/kosmos/backup.sh
+COPY restore.sh /usr/src/kosmos/restore.sh
 
 ENV SQLX_OFFLINE=true
 
@@ -33,6 +35,8 @@ RUN strip target/x86_64-unknown-linux-gnu/release/kosmos
 
 FROM debian:bookworm-20240701-slim AS runtime
 
+WORKDIR /app
+
 # Install utilities
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates gnupg2 curl
@@ -48,7 +52,10 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 
 # Create directories and copy binary
 RUN mkdir -p /app/uploads
-COPY --from=builder /usr/src/kosmos/target/x86_64-unknown-linux-gnu/release/kosmos /app/kosmos
+COPY --from=builder /usr/src/kosmos/target/x86_64-unknown-linux-gnu/release/kosmos /app
+COPY --from=builder /usr/src/kosmos/backup.sh /app
+COPY --from=builder /usr/src/kosmos/restore.sh /app
 
-# Command to run your app
+RUN cd /app && chmod +x backup.sh restore.sh
+
 CMD ["/app/kosmos"]
