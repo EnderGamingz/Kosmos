@@ -26,13 +26,19 @@ export function FileDisplayStats({ file }: { file: FileModelDTO }) {
         '[&>*]:text-sm [&>*]:outline [&>*]:outline-1 [&>*]:outline-stone-600/20',
         'dark:[&>*]:bg-stone-700 dark:[&>*]:text-stone-100 dark:[&>*]:outline-stone-500/20',
       )}>
-      <motion.div variants={itemTransitionVariantFadeInFromTop}>
+      <motion.div
+        layoutId={'fileType-display'}
+        variants={itemTransitionVariantFadeInFromTop}>
         <InformationCircleIcon />
-        {getFileTypeString(file.file_type)}
+        <motion.span layoutId={'fileType-display-text'}>
+          {getFileTypeString(file.file_type)}
+        </motion.span>
       </motion.div>
-      <motion.div variants={itemTransitionVariantFadeInFromTop}>
+      <motion.div
+        layoutId={'fileSize-display'}
+        variants={itemTransitionVariantFadeInFromTop}>
         <CircleStackIcon />
-        <motion.span layoutId={`size-${file.id}`}>
+        <motion.span layoutId={'fileSize-display-text'}>
           {useFormatBytes(file.file_size)}
         </motion.span>
       </motion.div>

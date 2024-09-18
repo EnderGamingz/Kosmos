@@ -12,7 +12,7 @@ export function DisplayHeader({
   onSelect?: (id: string) => void;
 }) {
   return (
-    <div className={'flex items-center gap-2'}>
+    <motion.div className={'flex items-center gap-2'}>
       {selected !== undefined && (
         <motion.div layoutId={`check-${file.id}`}>
           <Checkbox
@@ -29,6 +29,6 @@ export function DisplayHeader({
         }>
         {file.file_name}
       </motion.p>
-    </div>
+    </motion.div>
   );
 }

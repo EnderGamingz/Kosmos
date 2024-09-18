@@ -17,7 +17,6 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTopSmall,
 } from '@components/defaults/transition.ts';
-import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
@@ -33,14 +32,9 @@ export function NewMenu() {
     <>
       <Popover isOpen={open} onOpenChange={setOpen} placement={'bottom'}>
         <PopoverTrigger>
-          <button>
-            <FileUploadContent
-              folder={currentFolder}
-              isInHeader={true}
-              className={'flex items-center gap-1 p-2'}>
-              <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
-              <span className={'text-md text-md hidden sm:inline'}>New</span>
-            </FileUploadContent>
+          <button className={'flex items-center gap-1 p-2'}>
+            <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
+            <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>
         </PopoverTrigger>
         <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>

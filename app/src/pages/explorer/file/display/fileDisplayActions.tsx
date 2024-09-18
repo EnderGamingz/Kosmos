@@ -82,6 +82,7 @@ export function FileDisplayActions({
   const items = actions(file, onClose, shareUuid);
   return (
     <motion.div
+      layoutId={'file-actions-display'}
       variants={containerVariant(0.08, 0.2)}
       initial={'hidden'}
       animate={'show'}

@@ -10,9 +10,9 @@ import { FileDisplayActions } from '@pages/explorer/file/display/fileDisplayActi
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { FileDisplayFavorite } from '@pages/explorer/file/display/fileDisplayFavorite.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { neutralizeBack, reviveBack } from '@utils/history.ts';
+import { neutralizeBack, reviveBack } from '@utils/registers/history.ts';
+import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
 
 export default function FileDisplay({
   fileIndex,
@@ -25,27 +25,57 @@ export default function FileDisplay({
   selected: string[];
   shareUuid?: string;
 }) {
-  const [update, setUpdate] = useState(0);
-  const { setFile, filesInScope } = useExplorerStore(
+  const [scopedIndex, setScopedIndex] = useState(fileIndex ?? -1);
+  // const [update, setUpdate] = useState(0);
+  const { setFile, currentFolder, filesInScope } = useExplorerStore(
     useShallow(s => ({
       setFile: s.current.selectCurrentFile,
+      currentFolder: s.current.folder,
       filesInScope: s.current.filesInScope,
     })),
   );
+
   const sort = useSearchState(s => s.sort);
-  const currentFolder = useExplorerStore(s => s.current.folder);
+
   const close = () => () => {
     reviveBack();
+    setScopedIndex(-1);
     setFile(undefined);
   };
 
+  useArrowKeys({
+    left: () =>
+      setScopedIndex(prev => {
+        if (prev - 1 < 0) {
+          return -1;
+        }
+        return prev - 1;
+      }),
+    right: () =>
+      setScopedIndex(prev => {
+        if (prev + 1 > filesInScope.length) {
+          return filesInScope.length;
+        }
+        return prev + 1;
+      }),
+    deps: [filesInScope.length],
+  });
+
+  useEffect(() => {
+    setScopedIndex(fileIndex ?? -1);
+  }, [fileIndex]);
+
+  useEffect(() => {
+    setScopedIndex(-1);
+  }, [currentFolder]);
+
   const file = useMemo(() => {
-    if (fileIndex === undefined) return undefined;
-    if (filesInScope?.[fileIndex] === undefined) return undefined;
-    return filesInScope[fileIndex];
+    if (scopedIndex === -1) return undefined;
+    if (filesInScope?.[scopedIndex] === undefined) return undefined;
+    return filesInScope[scopedIndex];
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFolder, fileIndex, sort, update]);
+  }, [currentFolder, scopedIndex, sort /** update **/]);
 
   const isSelected = selected.includes(file?.id || '');
 
@@ -57,7 +87,7 @@ export default function FileDisplay({
           isSelected={isSelected}
           onSelect={onSelect}
           onClose={close()}
-          onUpdate={() => setUpdate(prev => prev + 1)}
+          // onUpdate={() => setUpdate(prev => prev + 1)}
           shareUuid={shareUuid}
         />
       )}
@@ -70,14 +100,14 @@ function FileDisplayContent({
   onClose,
   onSelect,
   isSelected,
-  onUpdate,
+  // onUpdate,
   shareUuid,
 }: {
   file: FileModelDTO;
   onClose: () => void;
   onSelect: (id: string) => void;
   isSelected: boolean;
-  onUpdate: () => void;
+  // onUpdate: () => void;
   shareUuid?: string;
 }) {
   const [fullsScreenPreview, setFullsScreenPreview] = useState(false);
@@ -131,9 +161,12 @@ function FileDisplayContent({
               selected={isSelected}
               onSelect={onSelect}
             />
-            {!shareUuid && (
-              <FileDisplayFavorite file={file} onUpdate={onUpdate} />
-            )}
+            {/**
+             * Disabled for now as the favorite changes the file order
+             * and file display currently relies on scope index which changes
+             !shareUuid && (
+             <FileDisplayFavorite file={file} onUpdate={onUpdate} />
+             )**/}
             <FileDisplayStats file={file} />
             <FileDisplayActions
               shareUuid={shareUuid}
