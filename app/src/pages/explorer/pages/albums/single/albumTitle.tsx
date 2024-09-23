@@ -4,7 +4,7 @@ import { AlbumModel, UpdateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { FormEvent, ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import tw from '@utils/classMerge.ts';
 
@@ -44,7 +44,7 @@ const useAlbumUpdateMutation = () => {
 export function AlbumTitle({
   album,
   children,
-  dense,
+  dense = false,
   disabled,
 }: {
   album: AlbumModel;
@@ -77,7 +77,7 @@ export function AlbumTitle({
     <div
       className={tw(
         'flex flex-grow flex-col gap-5 transition-all',
-        Boolean(dense) && 'gap-1',
+        dense && 'gap-1',
       )}>
       <form
         className={'flex-grow'}
@@ -104,7 +104,7 @@ export function AlbumTitle({
         <motion.input
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.1 }}
           className={tw(
             'bg-transparent font-light text-stone-500 outline-none transition-[font-size]',
             Boolean(dense) && 'text-sm',
@@ -120,13 +120,16 @@ export function AlbumTitle({
           Update
         </button>
       </form>
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className={'flex items-center gap-4'}>
-        {children}
-      </motion.div>
+      <AnimatePresence>
+        {!dense && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
+            className={'flex items-center gap-4'}>
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

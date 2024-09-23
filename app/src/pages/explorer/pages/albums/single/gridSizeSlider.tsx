@@ -6,10 +6,8 @@ export function GridSizeSlider({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className={'!mt-5 w-full min-w-24'}>
-      <label
-        htmlFor={'size-slider'}
-        className={'text-sm font-light text-stone-600'}>
+    <div className={'!mt-5 w-full min-w-24 text-stone-600 dark:text-stone-300'}>
+      <label htmlFor={'size-slider'} className={'text-sm font-light'}>
         Grid Size
       </label>
       <input
@@ -22,10 +20,7 @@ export function GridSizeSlider({
         step={1}
         onChange={e => onChange(parseInt(e.target.value))}
       />
-      <div
-        className={
-          'row mx-1 mt-1 flex justify-between text-sm font-light text-stone-600'
-        }>
+      <div className={'row mx-1 mt-1 flex justify-between text-sm font-light'}>
         <span>1</span>
         <span>2</span>
         <span>3</span>

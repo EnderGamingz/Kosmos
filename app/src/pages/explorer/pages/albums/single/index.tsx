@@ -102,23 +102,18 @@ export function AlbumPageContent({
           resetDrag: () => {},
         },
       }}>
-      <div className={'max-h-[200px] min-h-[200px]'} />
+      <div aria-hidden className={'max-h-[200px] min-h-[200px]'} />
       <div
         className={tw(
-          'absolute left-5 right-5 top-5 z-40 !mt-0 flex items-start gap-5 rounded-xl transition-all',
-          scrolling && 'left-1 right-1 top-1',
-        )}
-        style={{
-          backdropFilter: scrolling ? 'blur(15px)' : 'none',
-          WebkitBackdropFilter: scrolling ? 'blur(15px)' : 'none',
-          background: scrolling ? 'rgba(255, 255, 255, 0.7)' : 'none',
-          padding: scrolling ? '10px' : '0',
-        }}>
+          'absolute left-5 right-5 top-5 z-40 !mt-0 flex items-start gap-5 rounded-b-xl transition-all',
+          scrolling &&
+            'left-0 right-0 top-0 bg-stone-50/70 p-2 backdrop-blur-lg dark:bg-stone-900/70',
+        )}>
         <div
-          className={'min-w-[100px] transition-all'}
+          className={'min-w-[60px] transition-all'}
           style={{
-            height: scrolling ? 100 : 200,
-            width: scrolling ? 100 : 200,
+            height: scrolling ? 60 : 200,
+            width: scrolling ? 60 : 200,
           }}>
           <AlbumCover album={album} shareUuid={shareUuid} />
         </div>

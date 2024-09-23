@@ -55,7 +55,7 @@ export function AlbumDelete({
   return (
     <button
       className={
-        'menu-button w-full bg-red-200/30 text-red-700 hover:bg-red-200/50'
+        'menu-button w-full bg-red-200/30 text-red-700 hover:bg-red-200/50 dark:bg-red-800/30 dark:text-red-500 dark:hover:bg-red-800/50'
       }
       disabled={deleteAction.isPending}
       onClick={() => deleteAction.mutate()}>

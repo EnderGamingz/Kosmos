@@ -16,12 +16,14 @@ export function DisplayImage({
   lowRes,
   highRes,
   share,
+  onlyImage,
 }: {
   file: FileModel;
   fullScreen?: boolean;
   onFullScreen?: (b: boolean) => void;
   lowRes?: string;
   highRes: string;
+  onlyImage?: boolean;
   share?: {
     shareUuid?: string;
     isSharedInFolder?: boolean;
@@ -36,6 +38,33 @@ export function DisplayImage({
   };
 
   const isFullScreenAvailable = fullScreen !== undefined;
+
+  const img = (
+    <motion.img
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
+      exit={{ opacity: 0, scale: 0 }}
+      onDoubleClick={toggleFullScreen}
+      className={tw(
+        'h-full w-full rounded-xl bg-center bg-no-repeat transition-colors',
+        isTooLarge && 'scale blur-sm grayscale-[50%]',
+        fullScreen
+          ? 'bg-contain object-contain drop-shadow-lg'
+          : 'bg-cover object-cover shadow-lg',
+      )}
+      layout
+      layoutId={`image-${file.id}`}
+      src={isTooLarge ? lowRes : highRes}
+      style={{
+        // Image background serves as a low-quality placeholder
+        // until the high-resolution image is downloaded
+        backgroundImage: lowRes && `url(${lowRes})`,
+      }}
+      alt={file.file_name}
+    />
+  );
+
+  if (onlyImage) return img;
 
   return (
     <>
@@ -67,28 +96,7 @@ export function DisplayImage({
             'outline outline-1 -outline-offset-1 outline-stone-500',
           )}
         />
-        <motion.img
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
-          exit={{ opacity: 0, scale: 0 }}
-          onDoubleClick={toggleFullScreen}
-          className={tw(
-            'h-full w-full rounded-xl bg-center bg-no-repeat transition-colors',
-            isTooLarge && 'scale blur-sm grayscale-[50%]',
-            fullScreen
-              ? 'bg-contain object-contain drop-shadow-lg'
-              : 'bg-cover object-cover shadow-lg',
-          )}
-          layout
-          layoutId={`image-${file.id}`}
-          src={isTooLarge ? lowRes : highRes}
-          style={{
-            // Image background serves as a low-quality placeholder
-            // until the high-resolution image is downloaded
-            backgroundImage: lowRes && `url(${lowRes})`,
-          }}
-          alt={file.file_name}
-        />
+        {img}
         {file.file_size > IMAGE_LOAD_SIZE_THRESHOLD && (
           <ImageTooLargePrompt
             threshold={IMAGE_LOAD_SIZE_THRESHOLD}
