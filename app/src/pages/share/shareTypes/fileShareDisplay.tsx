@@ -1,4 +1,3 @@
-import { FileModel } from '@models/file.ts';
 import { useState } from 'react';
 import tw from '@utils/classMerge.ts';
 import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
@@ -12,6 +11,7 @@ import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
 import { Helmet } from 'react-helmet';
 import { truncateString } from '@utils/truncate.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function FileShareDisplay({ uuid }: { uuid: string }) {
   const [fullsScreenPreview, setFullScreenPreview] = useState(false);
@@ -21,6 +21,8 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
     return <ShareMessage text={`Loading file share...`} loading={true} />;
   if (!share.data)
     return <ShareError type={'file'} error={share.error as AxiosError} />;
+
+  const file = share.data as unknown as FileModelDTO;
 
   return (
     <div
@@ -36,23 +38,19 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
           fullsScreenPreview ? 'z-20' : 'relative z-0',
         )}>
         <FileDisplayHandler
-          file={share.data as FileModel}
+          file={file}
           shareUuid={uuid}
           fullScreen={fullsScreenPreview}
           onFullScreen={setFullScreenPreview}
         />
       </div>
       <div className={'mt-5 space-y-2 md:mt-0'}>
-        <DisplayHeader file={share.data as FileModel} />
-        <FileDisplayStats file={share.data as FileModel} />
+        <DisplayHeader file={file} />
+        <FileDisplayStats file={file} />
         <div className={'mt-2 px-1'}>
-          <FileDisplayFooter file={share.data as FileModel} />
+          <FileDisplayFooter file={file} />
         </div>
-        <FileDisplayActions
-          left
-          file={share.data as FileModel}
-          shareUuid={uuid}
-        />
+        <FileDisplayActions left file={file} shareUuid={uuid} />
       </div>
     </div>
   );

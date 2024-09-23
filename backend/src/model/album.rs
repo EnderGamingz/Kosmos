@@ -3,6 +3,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
+use ts_rs::TS;
 use crate::model::internal::file_type::FileType;
 use crate::services::session_service::UserId;
 
@@ -18,7 +19,8 @@ pub struct AlbumModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct AlbumModelDTO {
     pub id: String,
     pub user_id: String,
@@ -45,7 +47,8 @@ impl From<AlbumModel> for AlbumModelDTO {
 // End: Album Model
 
 // Start: Shared Album Model
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct SharedAlbumModelDTO {
     pub id: String,
     pub name: String,
@@ -82,7 +85,8 @@ pub struct AlbumModelWithShareInfo {
     pub share_target_username: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct AlbumModelWithShareInfoDTO {
     pub id: String,
     pub name: String,

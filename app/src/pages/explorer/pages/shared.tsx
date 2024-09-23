@@ -4,10 +4,8 @@ import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { SharedItemsResponse } from '@models/share.ts';
-import { FileModel, ShareFileModel, ShareOperationType } from '@models/file.ts';
+import { ShareOperationType } from '@models/file.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { FolderModel, ShareFolderModel } from '@models/folder.ts';
 import {
   containerVariant,
   itemTransitionVariant,
@@ -16,10 +14,16 @@ import { useNavigate } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
-import { ShareAlbumModel } from '@models/album.ts';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import tw from '@utils/classMerge.ts';
+import { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FileModelWithShareInfoDTO } from '@bindings/FileModelWithShareInfoDTO.ts';
+import { FolderModelWithShareInfoDTO } from '@bindings/FolderModelWithShareInfoDTO.ts';
+import { AlbumModelWithShareInfoDTO } from '@bindings/AlbumModelWithShareInfoDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
 
 export default function SharedItems({
   itemsForUser,
@@ -30,7 +34,9 @@ export default function SharedItems({
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
 
   useEffect(() => {
-    setFilesInScope((items.data as SharedItemsResponse)?.files || []);
+    setFilesInScope(
+      ((items.data as SharedItemsDTO)?.files as FileModelDTO[]) || [],
+    );
   }, [items, setFilesInScope]);
 
   return (
@@ -59,8 +65,8 @@ export default function SharedItems({
         ) : (
           <ExplorerDataDisplay
             isLoading={items.isLoading}
-            files={items.data?.files || []}
-            folders={items.data?.folders || []}
+            files={(items.data?.files as FileModelDTO[]) || []}
+            folders={(items.data?.folders as FolderModelDTO[]) || []}
             viewSettings={{ limitedView: true }}
           />
         )}
@@ -69,7 +75,7 @@ export default function SharedItems({
   );
 }
 
-function SharedForMe({ shares }: { shares?: SharedItemsResponse }) {
+function SharedForMe({ shares }: { shares?: SharedItemsDTO }) {
   return (
     <motion.ul
       className={'space-y-2 p-5'}
@@ -96,7 +102,10 @@ function ShareForMeItem({
   share,
   type,
 }: {
-  share: ShareFileModel | ShareFolderModel | ShareAlbumModel;
+  share:
+    | FileModelWithShareInfoDTO
+    | FolderModelWithShareInfoDTO
+    | AlbumModelWithShareInfoDTO;
   type: ShareOperationType;
 }) {
   const navigate = useNavigate();
@@ -108,10 +117,10 @@ function ShareForMeItem({
   };
 
   const itemName = isFile
-    ? (share as FileModel).file_name
+    ? (share as FileModelDTO).file_name
     : isAlbum
-      ? (share as ShareAlbumModel).name
-      : (share as FolderModel).folder_name;
+      ? (share as SharedAlbumModelDTO).name
+      : (share as FolderModelDTO).folder_name;
 
   return (
     <motion.li
@@ -126,7 +135,7 @@ function ShareForMeItem({
           id={share.id}
           type={
             isFile
-              ? (share as FileModel).file_type
+              ? (share as FileModelDTO).file_type
               : isAlbum
                 ? 'album'
                 : 'folder'

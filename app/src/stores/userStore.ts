@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { UserModel } from '@models/user.ts';
+import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 export type UserState = {
-  user?: UserModel;
+  user?: UserModelDTO;
   error?: string;
   fetchUser: () => void;
-  setUser: (user: UserModel) => void;
+  setUser: (user: UserModelDTO) => void;
   logout: () => void;
   initialized: boolean;
 };
@@ -34,7 +34,7 @@ export const useUserState = create<UserState>(set => ({
 
     if (user) set({ user });
   },
-  setUser: (data: UserModel) => {
+  setUser: (data: UserModelDTO) => {
     set({ user: data, initialized: true, error: undefined });
   },
   logout: () => {

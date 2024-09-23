@@ -1,19 +1,20 @@
 import { createContext } from 'react';
 import { ContextData } from '@hooks/useContextMenu.ts';
-import { FolderModel } from '@models/folder.ts';
-import { DataOperationType, FileModel } from '@models/file.ts';
+import { DataOperationType } from '@models/file.ts';
 import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper';
 import {
   OverwriteDisplay,
   ViewSettings,
 } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export type DisplayContextType = {
   viewSettings?: ViewSettings;
   overwriteDisplay?: OverwriteDisplay;
   handleContext: (pos: Vec2, data?: ContextData) => void;
-  files: FileModel[];
-  folders: FolderModel[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
   select: {
     rangeStart?: number;
     setRange: (index: number) => void;

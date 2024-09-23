@@ -1,4 +1,4 @@
-import { FileModel, FileTypeActions } from '@models/file.ts';
+import { FileTypeActions } from '@models/file.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
@@ -15,8 +15,13 @@ import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { BASE_URL } from '@lib/env.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
-const actions = (file: FileModel, onClose?: () => void, shareUuid?: string) => {
+const actions = (
+  file: FileModelDTO,
+  onClose?: () => void,
+  shareUuid?: string,
+) => {
   return [
     <AlbumAction file={file} onClose={onClose} dense />,
     <DownloadSingleAction
@@ -69,7 +74,7 @@ export function FileDisplayActions({
   shareUuid,
   left,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   onClose?: () => void;
   shareUuid?: string;
   left?: boolean;
@@ -77,6 +82,7 @@ export function FileDisplayActions({
   const items = actions(file, onClose, shareUuid);
   return (
     <motion.div
+      layoutId={'file-actions-display'}
       variants={containerVariant(0.08, 0.2)}
       initial={'hidden'}
       animate={'show'}

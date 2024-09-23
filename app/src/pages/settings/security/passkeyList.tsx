@@ -1,6 +1,5 @@
 import { invalidatePasskeys, usePasskeys } from '@lib/query.ts';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
-import { PasskeyModel } from '@models/passkey.ts';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
@@ -9,6 +8,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
 import tw from '@utils/classMerge.ts';
+import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
 
 export default function PasskeyList() {
   const notifications = useNotifications(s => s.actions);
@@ -85,7 +85,7 @@ function PasskeyItem({
   onDelete,
   last = false,
 }: {
-  passkey: PasskeyModel;
+  passkey: PasskeyModelDTO;
   onDelete?: () => void;
   last?: boolean;
 }) {

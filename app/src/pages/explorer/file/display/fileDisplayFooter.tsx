@@ -1,14 +1,14 @@
-import { FileModel } from '@models/file.ts';
 import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function FileDisplayFooter({
   file,
   onClose,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   onClose?: () => void;
 }) {
   return (

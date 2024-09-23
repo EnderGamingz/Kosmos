@@ -1,9 +1,9 @@
-import { UsageStats } from '@models/usage.ts';
+import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 
 const calculatePercentage = (value: number = 0, limit: number): number =>
   Math.min(100, Math.max(0, Math.floor((value / limit) * 100)));
 
-export function getPercentageStats(data?: UsageStats, isLoaded?: boolean) {
+export function getPercentageStats(data?: DiskUsageStats, isLoaded?: boolean) {
   const limit = data?.limit || 1;
 
   const percentageActive = calculatePercentage(data?.active, limit);

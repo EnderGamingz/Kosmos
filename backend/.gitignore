@@ -1,5 +1,8 @@
 /target
 .env
 .idea
+/backup
 
 *.zip
+*.tar.gz
+backup_*

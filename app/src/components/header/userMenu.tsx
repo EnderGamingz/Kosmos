@@ -41,10 +41,9 @@ export function UserMenu() {
       <PopoverTrigger>
         <button
           className={tw(
-            'rounded-lg p-2 text-stone-700 hover:bg-stone-700/5',
-            'flex items-center gap-2 rounded-full p-1 sm:rounded-lg',
-            'outline-none',
-            'dark:text-stone-300 dark:hover:bg-stone-300/20',
+            'rounded-lg p-2 text-stone-700',
+            'sm: flex items-center gap-2 rounded-full p-1',
+            'outline-none dark:text-stone-300',
           )}>
           <div
             className={

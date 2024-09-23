@@ -1,4 +1,3 @@
-import { AlbumModel } from '@models/album.ts';
 import {
   Popover,
   PopoverContent,
@@ -10,12 +9,13 @@ import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { AlbumDelete } from '@pages/explorer/pages/albums/single/menu/albumDelete.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 export function AlbumMenu({
   album,
   children,
 }: {
-  album: AlbumModel;
+  album: AlbumModelDTO;
   children?: ReactNode;
 }) {
   const { isOpen, onOpenChange, onClose } = useDisclosure();

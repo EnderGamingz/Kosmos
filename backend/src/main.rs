@@ -37,7 +37,7 @@ async fn main() {
         .with_file(false)
         .with_line_number(false)
         .compact()
-        .with_max_level(tracing::Level::DEBUG)
+        .with_max_level(tracing::Level::INFO)
         .init();
 
     tracing::info!(name: "bootstrap", "Starting bootstrap process");

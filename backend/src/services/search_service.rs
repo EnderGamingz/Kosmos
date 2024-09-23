@@ -4,6 +4,7 @@ use crate::model::folder::{FolderModel, FolderModelDTO};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::UserId;
 use serde::Serialize;
+use ts_rs::TS;
 
 #[derive(Clone)]
 pub struct SearchService {
@@ -15,7 +16,8 @@ pub struct ExplorerSearchResponse {
     pub folders: Vec<FolderModel>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ExplorerSearchDTO {
     pub files: Vec<FileModelDTO>,
     pub folders: Vec<FolderModelDTO>,

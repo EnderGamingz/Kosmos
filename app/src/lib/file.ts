@@ -17,7 +17,7 @@ export const createDownloadUrl = (
 export const createServeUrl = (
   shareUuid?: string,
   isSharedInFolder?: boolean,
-  fileId?: string,
+  fileId?: string | null,
   isSharedAlbum?: boolean,
 ) => {
   if (!shareUuid) return `${BASE_URL}auth/file/${fileId}/action/Serve`;
@@ -31,7 +31,7 @@ export const createServeUrl = (
 export const createPreviewUrl = (
   shareUuid?: string,
   isSharedInFolder?: boolean,
-  fileId?: string,
+  fileId?: string | null,
   isSharedAlbum?: boolean,
 ) => {
   if (!shareUuid) return `${BASE_URL}auth/file/image/${fileId}/0`;

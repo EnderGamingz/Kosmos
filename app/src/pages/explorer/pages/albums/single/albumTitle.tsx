@@ -1,12 +1,13 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { AlbumModel, UpdateAlbumPayload } from '@models/album.ts';
+import { UpdateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { FormEvent, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import tw from '@utils/classMerge.ts';
+import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 const useAlbumUpdateMutation = () => {
   const notifications = useNotifications(s => s.actions);
@@ -47,7 +48,7 @@ export function AlbumTitle({
   dense = false,
   disabled,
 }: {
-  album: AlbumModel;
+  album: AlbumModelDTO;
   children?: ReactNode;
   dense?: boolean;
   disabled?: boolean;
@@ -109,8 +110,8 @@ export function AlbumTitle({
             'bg-transparent font-light text-stone-500 outline-none transition-[font-size]',
             Boolean(dense) && 'text-sm',
           )}
-          defaultValue={album.description}
-          title={album.description}
+          defaultValue={album.description || ''}
+          title={album.description || ''}
           disabled={disabled}
           placeholder={!disabled ? 'Album description' : ''}
           name={'description'}

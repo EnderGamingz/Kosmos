@@ -1,4 +1,4 @@
-import { FileModel, getFileTypeString } from '@models/file.ts';
+import { getFileTypeString } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import {
   containerVariant,
@@ -10,8 +10,9 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
-export function FileDisplayStats({ file }: { file: FileModel }) {
+export function FileDisplayStats({ file }: { file: FileModelDTO }) {
   return (
     <motion.div
       variants={containerVariant(0.06, 0.1)}
@@ -25,13 +26,19 @@ export function FileDisplayStats({ file }: { file: FileModel }) {
         '[&>*]:text-sm [&>*]:outline [&>*]:outline-1 [&>*]:outline-stone-600/20',
         'dark:[&>*]:bg-stone-700 dark:[&>*]:text-stone-100 dark:[&>*]:outline-stone-500/20',
       )}>
-      <motion.div variants={itemTransitionVariantFadeInFromTop}>
+      <motion.div
+        layoutId={'fileType-display'}
+        variants={itemTransitionVariantFadeInFromTop}>
         <InformationCircleIcon />
-        {getFileTypeString(file.file_type)}
+        <motion.span layoutId={'fileType-display-text'}>
+          {getFileTypeString(file.file_type)}
+        </motion.span>
       </motion.div>
-      <motion.div variants={itemTransitionVariantFadeInFromTop}>
+      <motion.div
+        layoutId={'fileSize-display'}
+        variants={itemTransitionVariantFadeInFromTop}>
         <CircleStackIcon />
-        <motion.span layoutId={`size-${file.id}`}>
+        <motion.span layoutId={'fileSize-display-text'}>
           {useFormatBytes(file.file_size)}
         </motion.span>
       </motion.div>

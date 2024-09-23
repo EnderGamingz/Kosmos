@@ -1,11 +1,11 @@
-import { FileModel } from '@models/file.ts';
-import { FolderModel } from '@models/folder.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 type SelectionResult = { files: string[]; folders: string[] };
 
 export function prepareSelectRange(
-  files: FileModel[],
-  folders: FolderModel[],
+  files: FileModelDTO[],
+  folders: FolderModelDTO[],
   start: number,
   end: number,
 ): SelectionResult {

@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
+use ts_rs::TS;
 
 // Start: User Model
 #[derive(Clone, FromRow, Debug, Serialize)]
@@ -18,12 +19,14 @@ pub struct UserModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct UserModelDTO {
     pub id: String,
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
+    #[ts(type = "number")]
     pub storage_limit: i64,
     pub role: i16,
     pub created_at: DateTime<Utc>,

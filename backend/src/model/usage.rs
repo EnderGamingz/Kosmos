@@ -1,7 +1,8 @@
 use bigdecimal::ToPrimitive;
 use serde::Serialize;
-use sqlx::FromRow;
 use sqlx::types::BigDecimal;
+use sqlx::FromRow;
+use ts_rs::TS;
 
 #[derive(FromRow)]
 pub struct UsageSumData {
@@ -9,9 +10,12 @@ pub struct UsageSumData {
     pub count: Option<i64>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct UsageSumDataDTO {
+    #[ts(type = "number")]
     pub sum: i64,
+    #[ts(type = "number")]
     pub count: i64,
 }
 
@@ -40,10 +44,13 @@ pub struct FileTypeSumData {
     pub count: Option<i64>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct FileTypeSumDataDTO {
     pub file_type: i16,
+    #[ts(type = "number")]
     pub sum: i64,
+    #[ts(type = "number")]
     pub count: i64,
 }
 

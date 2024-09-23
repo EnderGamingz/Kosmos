@@ -19,7 +19,6 @@ import { BellIcon } from '@heroicons/react/24/outline';
 import {
   getOperationStatusString,
   getOperationTypeString,
-  OperationModel,
   OperationStatus,
   OperationType,
 } from '@models/operation.ts';
@@ -35,6 +34,7 @@ import objectHash from 'object-hash';
 import { useUserState } from '@stores/userStore.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { StaticNotificationItem } from '@components/notifications/staticNotificationItem.tsx';
+import { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
 
 export function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
@@ -190,7 +190,7 @@ export function NotificationsMenu() {
   );
 }
 
-function OperationItem({ data }: { data: OperationModel }) {
+function OperationItem({ data }: { data: OperationModelDTO }) {
   const retry = useMutation({
     mutationFn: () =>
       axios.post(`${BASE_URL}auth/file/image/retry/operation/${data.id}`),

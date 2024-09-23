@@ -2,18 +2,18 @@ import { useSearchState } from '@stores/searchStore.ts';
 import { SortBy } from '@models/sort.ts';
 
 import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
-import { FolderModel } from '@models/folder.ts';
-import { FileModel } from '@models/file.ts';
 import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export function TableHeader({
   files,
   folders,
 }: {
-  files: FileModel[];
-  folders: FolderModel[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
 }) {
   const currentSort = useSearchState(s => s.sort);
   const context = useContext(DisplayContext);

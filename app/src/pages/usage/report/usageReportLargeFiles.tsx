@@ -1,10 +1,10 @@
-import { FileModel } from '@models/file.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
-export function UsageReportLargeFiles({ files }: { files: FileModel[] }) {
+export function UsageReportLargeFiles({ files }: { files: FileModelDTO[] }) {
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
 
   useEffect(() => {

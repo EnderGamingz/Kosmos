@@ -1,4 +1,3 @@
-import { FolderModel } from '@models/folder.ts';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useContext, useState } from 'react';
@@ -17,6 +16,7 @@ import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export default function GridFolderItem({
   index,
@@ -26,7 +26,7 @@ export default function GridFolderItem({
   outerDisabled,
 }: {
   index: number;
-  folder: FolderModel;
+  folder: FolderModelDTO;
   selected: string[];
   onSelect: (id: string) => void;
   outerDisabled?: boolean;

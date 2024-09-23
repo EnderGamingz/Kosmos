@@ -1,18 +1,18 @@
-import { FileModel } from '@models/file.ts';
 import { motion } from 'framer-motion';
 import { Checkbox } from '@nextui-org/react';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function DisplayHeader({
   file,
   selected,
   onSelect,
 }: {
-  file: FileModel;
+  file: FileModelDTO;
   selected?: boolean;
   onSelect?: (id: string) => void;
 }) {
   return (
-    <div className={'flex items-center gap-2'}>
+    <motion.div className={'flex items-center gap-2'}>
       {selected !== undefined && (
         <motion.div layoutId={`check-${file.id}`}>
           <Checkbox
@@ -29,6 +29,6 @@ export function DisplayHeader({
         }>
         {file.file_name}
       </motion.p>
-    </div>
+    </motion.div>
   );
 }

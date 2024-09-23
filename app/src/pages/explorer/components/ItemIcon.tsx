@@ -19,7 +19,7 @@ function getFileIcon(
   type: FileIcon,
   id: string,
   name: string,
-  status: undefined | FilePreviewStatus,
+  status?: FilePreviewStatus | null,
   dynamic?: boolean,
   disablePreview?: boolean,
 ) {
@@ -68,10 +68,10 @@ export default function ItemIcon({
   id: string;
   type: FileIcon;
   name: string;
-  status?: FilePreviewStatus;
+  status?: FilePreviewStatus | null;
   dynamic?: boolean;
   disablePreview?: boolean;
-  color?: string;
+  color?: string | null;
 }) {
   return (
     <motion.div
@@ -82,7 +82,7 @@ export default function ItemIcon({
         'dark:shadow-inherit-dark dark:text-stone-300',
       )}
       style={{
-        color,
+        color: color || undefined,
       }}>
       {getFileIcon(type, id, name, status, dynamic, disablePreview)}
     </motion.div>

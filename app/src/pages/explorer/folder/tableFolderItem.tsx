@@ -1,4 +1,3 @@
-import { FolderModel } from '@models/folder.ts';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -15,6 +14,7 @@ import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export function TableFolderItem({
   i,
@@ -24,7 +24,7 @@ export function TableFolderItem({
   outerDisabled,
 }: {
   i: number;
-  folder: FolderModel;
+  folder: FolderModelDTO;
   selected: string[];
   onSelect: (id: string) => void;
   outerDisabled?: boolean;

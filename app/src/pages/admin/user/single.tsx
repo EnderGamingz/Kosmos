@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { AdminQuery, AdminUserUpdate } from '@lib/queries/adminQuery.ts';
-import { Role, roleToString, UserModel } from '@models/user.ts';
+import { Role, roleToString } from '@models/user.ts';
 import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
@@ -15,6 +15,7 @@ import {
 } from '@nextui-org/react';
 import { FormEvent } from 'react';
 import { Helmet } from 'react-helmet';
+import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 export default function AdminUser() {
   const { id } = useParams();
@@ -47,7 +48,7 @@ export default function AdminUser() {
   );
 }
 
-function AdminDeleteUser({ user }: { user: UserModel }) {
+function AdminDeleteUser({ user }: { user: UserModelDTO }) {
   const notification = useNotifications(s => s.actions);
   const navigate = useNavigate();
 
@@ -98,7 +99,7 @@ function UserInfoItem({
   value,
 }: {
   label: string;
-  value: string | number | undefined;
+  value: string | number | null;
 }) {
   return (
     <div
@@ -111,7 +112,7 @@ function UserInfoItem({
   );
 }
 
-export function AdminUpdateUserModal({ user }: { user: UserModel }) {
+export function AdminUpdateUserModal({ user }: { user: UserModelDTO }) {
   const notification = useNotifications(s => s.actions);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
@@ -207,7 +208,7 @@ export function AdminUpdateUserModal({ user }: { user: UserModel }) {
                 name={'full_name'}
                 id={'full_name'}
                 placeholder={'Full name'}
-                defaultValue={user.full_name}
+                defaultValue={user.full_name ?? ''}
               />
               <input
                 className={'input'}
@@ -215,7 +216,7 @@ export function AdminUpdateUserModal({ user }: { user: UserModel }) {
                 name={'email'}
                 id={'email'}
                 placeholder={'Email'}
-                defaultValue={user.email}
+                defaultValue={user.email ?? ''}
               />
               <select
                 className={'input'}

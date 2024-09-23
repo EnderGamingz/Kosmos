@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
 use sqlx::types::Uuid;
+use ts_rs::TS;
 use crate::services::session_service::UserId;
 
 // Start: Folder Model
@@ -17,7 +18,8 @@ pub struct FolderModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct FolderModelDTO {
     pub id: String,
     pub user_id: String,
@@ -60,7 +62,8 @@ pub struct FolderModelWithShareInfo {
     pub share_target_username: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct FolderModelWithShareInfoDTO {
     pub id: String,
     pub user_id: String,
@@ -93,7 +96,8 @@ impl From<FolderModelWithShareInfo> for FolderModelWithShareInfoDTO {
 // End: Folder Model With Share Info
 
 // Start: Share Folder Model
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ShareFolderModelDTO {
     pub id: String,
     pub folder_name: String,
@@ -149,7 +153,8 @@ pub struct SimpleDirectory {
     pub color: Option<String>
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct SimpleDirectoryDTO {
     pub id: String,
     pub folder_name: String,

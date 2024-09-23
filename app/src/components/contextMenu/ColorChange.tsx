@@ -45,8 +45,8 @@ export function FolderColorChange({
   color,
 }: {
   folderId: string;
-  parent?: string;
-  color?: string;
+  parent?: string | null;
+  color?: string | null;
 }) {
   const { isOpen, onOpenChange, onClose } = useDisclosure();
   const [selected, setSelected] = useState('');
@@ -150,7 +150,7 @@ export function FolderColorChange({
               <button
                 onClick={() => recolorAction.mutate({ remove: true })}
                 className={
-                  'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300'
+                  'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
                 }>
                 <BackspaceIcon className={'h-5 w-5'} />
                 Remove

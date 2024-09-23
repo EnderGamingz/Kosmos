@@ -1,4 +1,4 @@
-import { FileModel, FileTypeActions, normalizeFileType } from '@models/file.ts';
+import { FileTypeActions, normalizeFileType } from '@models/file.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useShallow } from 'zustand/react/shallow';
@@ -17,6 +17,7 @@ import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function GridFileItem({
   index,
@@ -30,7 +31,7 @@ export default function GridFileItem({
 }: {
   index: number;
   fileIndex: number;
-  file: FileModel;
+  file: FileModelDTO;
   selected?: string[];
   onSelect?: (id: string) => void;
   dynamic?: boolean;

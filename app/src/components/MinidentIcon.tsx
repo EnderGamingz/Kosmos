@@ -8,6 +8,7 @@ type Props = {
   [key: string]: unknown;
 };
 
+// noinspection SpellCheckingInspection
 const MinidenticonImg = ({
   username,
   saturation = 50,
