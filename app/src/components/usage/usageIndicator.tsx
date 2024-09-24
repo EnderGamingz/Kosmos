@@ -66,7 +66,7 @@ export function UsageIndicator({
     <div className={tw(small ? 'h-1' : large ? 'h-5' : 'h-2')}>
       <div
         className={tw(
-          'flex h-full w-full items-center gap-[4px]',
+          'flex h-full w-full items-center gap-[2px]',
           warningLimit && '[&>.active]:bg-yellow-500',
           alertLimit && '[&>.active]:bg-red-500',
         )}>
