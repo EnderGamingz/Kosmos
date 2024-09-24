@@ -62,17 +62,30 @@ export function Hero() {
           className={
             'z-10 flex flex-grow flex-col gap-10 text-center sm:gap-12'
           }>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className={
-              'text-5xl font-black text-stone-50 sm:text-6xl lg:text-7xl dark:text-stone-200'
-            }>
-            {user
-              ? `Welcome back ${user.full_name ?? user.username}!`
-              : 'Explore Infinite Possibilities'}
-          </motion.h1>
+          <div>
+            {user && (
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className={
+                  'text-2xl font-bold text-stone-200/80 sm:text-2xl lg:text-3xl dark:text-stone-300/80'
+                }>
+                Welcome back
+              </motion.p>
+            )}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className={
+                'text-5xl font-black text-stone-50 sm:text-6xl lg:text-7xl dark:text-stone-200'
+              }>
+              {user
+                ? (user.full_name ?? user.username)
+                : 'Explore Infinite Possibilities'}
+            </motion.h1>
+          </div>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
