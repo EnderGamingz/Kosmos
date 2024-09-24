@@ -1,7 +1,7 @@
-import { useUserState } from '@stores/userStore.ts';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
-import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
+import {useUserState} from '@stores/userStore.ts';
+import {useNavigate} from 'react-router-dom';
+import {useEffect, useRef} from 'react';
+import {startPasskeyLoginFunction} from '@components/passkey/startPasskeyLoginFunction.ts';
 
 export function useConditionalPasskeyLogin() {
   const setUser = useUserState(s => s.setUser);
@@ -9,6 +9,7 @@ export function useConditionalPasskeyLogin() {
   const controller = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (typeof window.PublicKeyCredential.isConditionalMediationAvailable !== 'function') return;
     window.PublicKeyCredential.isConditionalMediationAvailable().then(
       result => {
         if (result) {
