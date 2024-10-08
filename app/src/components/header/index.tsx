@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { UserMenu } from './userMenu.tsx';
 import { NewMenu } from './new/newMenu.tsx';
-import { NotificationsMenu } from '@components/header/notificationsMenu.tsx';
+import { NotificationsMenu } from '@components/header/notifications/notificationsMenu.tsx';
 import tw from '@utils/classMerge.ts';
 import { ALLOW_REGISTER } from '@lib/env.ts';
 import { HeaderBranding } from '@components/header/headerBranding.tsx';

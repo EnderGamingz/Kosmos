@@ -33,7 +33,9 @@ export function QuickShareResult({
         }>
         <h2 className={'text-3xl font-normal'}>Quick Share created!</h2>
         <span
-          className={'mt-1 flex items-center gap-1 text-xs text-stone-600/50'}>
+          className={
+            'mt-1 flex items-center gap-1 text-xs text-stone-600/50 dark:text-stone-400'
+          }>
           <FingerPrintIcon className={'h-4 w-4'} /> {uuid}
         </span>
         <div

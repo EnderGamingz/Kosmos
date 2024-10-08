@@ -42,12 +42,12 @@ export function UserMenu() {
         <button
           className={tw(
             'rounded-lg p-2 text-stone-700',
-            'sm: flex items-center gap-2 rounded-full p-1',
+            ' flex items-center gap-2 rounded-full sm:p-1',
             'outline-none dark:text-stone-300',
           )}>
           <div
             className={
-              'h-9 w-9 overflow-hidden rounded-full bg-stone-50 sm:ml-1'
+              'h-6 w-6 overflow-hidden rounded-full bg-stone-50 sm:ml-1 sm:h-8 sm:w-8'
             }>
             <MinidentIcon
               username={user.user?.username || ''}

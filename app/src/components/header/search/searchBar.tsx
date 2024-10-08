@@ -30,7 +30,7 @@ export function SearchPopup() {
           <MagnifyingGlassIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
         </button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
         <div className={'p-2'}>
           <SearchForm onClose={searchDisclosure.onClose} />
         </div>

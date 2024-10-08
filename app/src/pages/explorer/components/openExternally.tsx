@@ -1,18 +1,25 @@
-import { BASE_URL } from '@lib/env.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { createServeUrl } from '@lib/file.ts';
+import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { useContext } from 'react';
 
 export default function OpenExternally({
   id,
-  overwriteUrl,
+  shareUuid,
 }: {
   id: string;
-  overwriteUrl?: string;
+  shareUuid?: string;
 }) {
-  const openInNew = () =>
-    window.open(
-      overwriteUrl || `${BASE_URL}auth/file/${id}/action/Serve`,
-      '_blank',
-    );
+  const context: DisplayContextType | undefined = useContext(DisplayContext);
+  const folderShareUuid = context?.shareUuid;
+  const url = createServeUrl(
+    shareUuid || folderShareUuid,
+    !!folderShareUuid,
+    id,
+    false,
+  );
+
+  const openInNew = () => window.open(url, '_blank');
 
   return (
     <button onClick={openInNew}>

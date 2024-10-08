@@ -12,7 +12,6 @@ import tw from '@utils/classMerge.ts';
 import OpenExternally from '@pages/explorer/components/openExternally.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
-import { BASE_URL } from '@lib/env.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -30,12 +29,7 @@ const actions = (
       shareUuid={shareUuid}
     />,
     FileTypeActions.canOpenExternal(file) && (
-      <OpenExternally
-        id={file.id}
-        overwriteUrl={
-          shareUuid && `${BASE_URL}s/file/${shareUuid}/action/Serve`
-        }
-      />
+      <OpenExternally id={file.id} shareUuid={shareUuid} />
     ),
     !shareUuid && (
       <RenameAction

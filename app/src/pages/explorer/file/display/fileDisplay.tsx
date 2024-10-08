@@ -38,7 +38,6 @@ export default function FileDisplay({
   const sort = useSearchState(s => s.sort);
 
   const close = () => () => {
-    reviveBack();
     setScopedIndex(-1);
     setFile(undefined);
   };
@@ -114,6 +113,7 @@ function FileDisplayContent({
 
   useEffect(() => {
     neutralizeBack(onClose);
+    return () => reviveBack();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
