@@ -62,12 +62,20 @@ export default function GridFolderItem({
 
   const handleFolderClick = () => {
     if (isControl || isShift || disabled) return;
+    if (context.viewSettings?.handleOverwrites?.onFolderClick) {
+      context.viewSettings?.handleOverwrites?.onFolderClick(
+        folder.id.toString(),
+      );
+      return;
+    }
     navigate(
       context.shareUuid
         ? `/s/folder/${context.shareUuid}/${folder.id.toString()}`
         : `/home/folder/${folder.id.toString()}`,
     );
   };
+
+  const selectDisabled = context.viewSettings?.selectDisable?.folders;
 
   return (
     <motion.div
@@ -81,7 +89,8 @@ export default function GridFolderItem({
       className={'group w-full cursor-pointer'}>
       <motion.div
         onClick={() => {
-          if (isControl && !context.viewSettings?.noSelect) onSelect(folder.id);
+          if (isControl && !context.viewSettings?.noSelect && !selectDisabled)
+            onSelect(folder.id);
           else if (isShift && !context.viewSettings?.noSelect)
             context.select.setRange(index);
           else handleFolderClick();
@@ -133,7 +142,7 @@ export default function GridFolderItem({
               <Checkbox
                 className={'h-5 w-5 p-0'}
                 isSelected={isSelected}
-                onValueChange={() => onSelect(folder.id)}
+                onValueChange={() => !selectDisabled && onSelect(folder.id)}
               />
             </div>
           )}

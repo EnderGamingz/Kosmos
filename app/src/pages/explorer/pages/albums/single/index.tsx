@@ -154,6 +154,7 @@ export function AlbumPageContent({
           files={files}
           folders={[]}
           viewSettings={{
+            scrollControlMissing: true,
             noDisplay: true,
             album: {
               data: album,

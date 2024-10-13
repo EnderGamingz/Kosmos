@@ -96,8 +96,10 @@ export function ExplorerDisplayWrapper({
     if (start !== undefined && end !== undefined) {
       selectNone();
       const toSelect = prepareSelectRange(files, folders, start, end);
-      toSelect.folders.forEach(selectFolder);
-      toSelect.files.forEach(selectFile);
+      if (!viewSettings?.selectDisable?.folders)
+        toSelect.folders.forEach(selectFolder);
+      if (!viewSettings?.selectDisable?.files)
+        toSelect.files.forEach(selectFile);
       setRangeStart(undefined);
     }
   };
@@ -126,6 +128,8 @@ export function ExplorerDisplayWrapper({
       window.removeEventListener('resize', handleHeight);
     };
   }, [setDisplayHeight, displayRef]);
+
+  console.log(viewSettings?.scrollControlMissing);
 
   return (
     <DisplayContext.Provider
@@ -167,7 +171,7 @@ export function ExplorerDisplayWrapper({
           {children}
         </FileUploadContent>
       </div>
-      {!viewSettings.noDisplay && (
+      {!viewSettings?.noDisplay && (
         <FileDisplay
           onSelect={selectFile}
           fileIndex={selectedFileIndex}

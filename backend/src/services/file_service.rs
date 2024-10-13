@@ -9,6 +9,7 @@ use crate::routes::api::v1::auth::file::{
 };
 use crate::services::image_service::ImageService;
 use crate::services::session_service::UserId;
+use itertools::Itertools;
 use sonyflake::Sonyflake;
 use sqlx::{Execute, QueryBuilder};
 use std::path::{Path, PathBuf};
@@ -50,10 +51,23 @@ impl FileService {
             query.push(" AND deleted_at IS NULL");
         }
 
+        if search.album_files.unwrap_or(false) {
+            query.push(" AND file_type = ANY('{");
+            query.push(
+                FileType::VALID_FILE_TYPES_FOR_ALBUM
+                    .into_iter()
+                    .map(|v| v as i16)
+                    .join(",")
+                    .to_string(),
+            );
+
+            query.push("}')");
+        }
+
         query.push(" AND parent_folder_id IS NOT DISTINCT FROM ");
         query.push_bind(parent_folder_id);
 
-        query.push(" ORDER BY CASE WHEN favorite = true THEN 0 ELSE 1 END, ");
+        query.push(" ORDER BY CASE WHEN favorite = true THEN 0 ELSE 1 END,");
 
         let sort_by = search.get_sort_by();
 
@@ -91,12 +105,14 @@ impl FileService {
         with_deleted: bool,
         search: GetFilesSortParams<SortByFiles>,
     ) -> Result<Vec<FileModel>, AppError> {
-        sqlx::query_as::<_, FileModel>(&*Self::files_search_query(
+        let string = Self::files_search_query(
             user_id,
             parent_folder_id,
             with_deleted,
             &search,
-        ))
+        );
+        log::info!("{}",&string);
+        sqlx::query_as::<_, FileModel>(&string)
         .bind(user_id)
         .bind(parent_folder_id)
         .bind(search.get_limit())
@@ -235,7 +251,7 @@ impl FileService {
         file_id: i64,
         user_id: Option<UserId>,
     ) -> Result<FileModel, AppError> {
-        let file = sqlx::query_as::<_, FileModel>(&*Self::get_file_query(file_id, user_id))
+        let file = sqlx::query_as::<_, FileModel>(&Self::get_file_query(file_id, user_id))
             .bind(file_id)
             .bind(user_id)
             .fetch_optional(&self.db_pool)
@@ -731,7 +747,7 @@ impl FileService {
     }
 }
 
-const TYPES_BY_EXTENSION: [(&'static str, FileType, &'static str); 5] = [
+const TYPES_BY_EXTENSION: [(&str, FileType, &str); 5] = [
     (".md", FileType::Editable, "text/markdown"),
     (".markdown", FileType::Editable, "text/markdown"),
     (".mdown", FileType::Editable, "text/markdown"),
@@ -739,7 +755,7 @@ const TYPES_BY_EXTENSION: [(&'static str, FileType, &'static str); 5] = [
     (".txt", FileType::Editable, "text/plain"),
 ];
 
-const TYPES_BY_MIME: [(&'static str, FileType); 45] = [
+const TYPES_BY_MIME: [(&str, FileType); 45] = [
     ("image/gif", FileType::Image),
     ("image/jpeg", FileType::Image),
     ("image/png", FileType::Image),

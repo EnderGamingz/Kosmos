@@ -7,19 +7,32 @@ export function FileListBreadCrumbs({
   crumbs,
   firstHome,
   shareUuid,
+  clickOverwrite,
 }: {
   crumbs: SimpleDirectoryDTO[];
   firstHome?: string;
   shareUuid?: string;
+  clickOverwrite?: (id?: string) => void;
 }) {
   const setDragDestination = useExplorerStore(s => s.dragMove.setDestination);
+
+  function getLink(i: number, id: string) {
+    if (clickOverwrite) return undefined;
+    if (firstHome && i === 0) return firstHome;
+    if (shareUuid) {
+      return `/s/folder/${shareUuid}/${id}`;
+    } else {
+      return `/home/folder/${id}`;
+    }
+  }
 
   return (
     <BreadCrumbs>
       {!firstHome && (
         <BreadCrumbItem
           name={<HomeIcon />}
-          href={'/home'}
+          href={!clickOverwrite ? '/home' : undefined}
+          onClick={() => clickOverwrite?.(undefined)}
           last={!crumbs.length}
           onMouseEnter={() => setDragDestination(' ')}
           onMouseLeave={() => setDragDestination()}
@@ -31,15 +44,10 @@ export function FileListBreadCrumbs({
           key={`crumb-${item.id}`}
           name={item.folder_name}
           color={item.color}
-          href={
-            firstHome && i === 0
-              ? firstHome
-              : shareUuid
-                ? `/s/folder/${shareUuid}/${item.id}`
-                : `/home/folder/${item.id}`
-          }
+          href={getLink(i, item.id)}
           onMouseEnter={() => setDragDestination(item.id)}
           onMouseLeave={() => setDragDestination()}
+          onClick={() => clickOverwrite?.(item.id)}
         />
       ))}
     </BreadCrumbs>

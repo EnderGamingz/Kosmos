@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
+import { createPreviewUrl } from '@lib/file.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 export default function AlbumCover({
@@ -45,22 +45,13 @@ function AlbumCoverImage({
     album.preview_id,
     !!shareUuid,
   );
-  const serveUrl = createServeUrl(
-    shareUuid,
-    false,
-    album.preview_id,
-    !!shareUuid,
-  );
   return (
     <img
       className={
         'absolute inset-0 h-full w-full rounded-lg bg-cover bg-center bg-no-repeat object-cover'
       }
-      src={serveUrl}
+      src={previewUrl}
       alt={album.name}
-      style={{
-        backgroundImage: `url(${previewUrl})`,
-      }}
     />
   );
 }

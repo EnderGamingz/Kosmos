@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useSearchState } from '@stores/searchStore.ts';
@@ -7,11 +7,9 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDis
 import { useShallow } from 'zustand/react/shallow';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.tsx';
-import { SimpleDirectoryDTO } from '@bindings/SimpleDirectoryDTO.ts';
+import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 
 export default function FileList() {
-  const [breadCrumbs, setBreadCrumbs] = useState<SimpleDirectoryDTO[]>([]);
-
   const { setCurrentFolder, setFilesInScope, setSelectedNone } =
     useExplorerStore(
       useShallow(s => ({
@@ -41,14 +39,7 @@ export default function FileList() {
 
   const folders = useFolders(folder, sort);
 
-  useEffect(() => {
-    if (!folders.data) return;
-    if (!folders.data.structure) {
-      setBreadCrumbs([]);
-    } else if (folders.data.structure.length > 0) {
-      setBreadCrumbs(folders.data.structure);
-    }
-  }, [folders.data]);
+  const breadCrumbs = useFolderBreadCrumbs(folders.data);
 
   const isLoading = files.isLoading || folders.isLoading;
 

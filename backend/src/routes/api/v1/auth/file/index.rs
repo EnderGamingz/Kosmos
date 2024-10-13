@@ -36,6 +36,7 @@ pub struct GetFilesSortParams<SortBy> {
     pub sort_by: Option<SortBy>,
     pub limit: Option<i64>,
     pub page: Option<i64>,
+    pub album_files: Option<bool>,
 }
 
 impl GetFilesSortParams<SortByFiles> {
@@ -213,7 +214,7 @@ pub async fn create_markdown_file(
     let file_name = payload.name.trim().to_string();
     let file_exists = state
         .file_service
-        .check_file_exists_in_folder(&file_name, parent_folder_id.clone())
+        .check_file_exists_in_folder(&file_name, parent_folder_id)
         .await?;
 
     if file_exists {
@@ -258,11 +259,10 @@ pub async fn move_file(
         })?;
 
     if let Some(move_to_folder) = move_to_folder {
-        if !state
+        if state
             .folder_service
             .check_folder_exists_by_id(move_to_folder, user_id)
-            .await?
-            .is_some()
+            .await?.is_none()
         {
             return Err(AppError::NotFound {
                 error: "Folder not found".to_string(),

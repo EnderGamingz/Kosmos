@@ -20,6 +20,7 @@ export function BreadCrumbItem({
   color,
   onMouseEnter,
   onMouseLeave,
+  onClick,
 }: {
   name: ReactNode;
   href?: string;
@@ -27,11 +28,13 @@ export function BreadCrumbItem({
   color?: string | null;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  onClick?: () => void;
 }) {
   return (
     <motion.div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onClick={onClick}
       className={
         'flex items-center gap-2 text-stone-800 dark:text-stone-200 [&_svg]:h-5 [&_svg]:w-5'
       }
