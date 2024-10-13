@@ -19,6 +19,7 @@ export type SortParams = {
   sort_by?: SortBy;
   limit?: number;
   offset?: number;
+  album_files?: boolean;
 };
 
 export type SortParamsForQuery = {

@@ -58,6 +58,12 @@ export function TableFolderItem({
 
   const handleFolderClick = () => {
     if (isControl || isShift) return;
+    if (context.viewSettings?.handleOverwrites?.onFolderClick) {
+      context.viewSettings?.handleOverwrites?.onFolderClick(
+        folder.id.toString(),
+      );
+      return;
+    }
     navigate(
       context.shareUuid
         ? `/s/folder/${context.shareUuid}/${folder.id.toString()}`
@@ -65,10 +71,12 @@ export function TableFolderItem({
     );
   };
 
+  const selectDisabled = context.viewSettings?.selectDisable?.folders;
+
   return (
     <tr
       onClick={() => {
-        if (isControl) onSelect(folder.id);
+        if (isControl && !selectDisabled) onSelect(folder.id);
         if (isShift) context.select.setRange(i);
       }}
       onContextMenu={e => {
@@ -87,7 +95,7 @@ export function TableFolderItem({
         <th>
           <Checkbox
             isSelected={isSelected}
-            onValueChange={() => onSelect(folder.id)}
+            onValueChange={() => !selectDisabled && onSelect(folder.id)}
           />
         </th>
       )}

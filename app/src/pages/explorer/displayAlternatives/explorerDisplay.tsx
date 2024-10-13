@@ -52,6 +52,13 @@ export type ViewSettings = {
   noSelect?: boolean;
   noDisplay?: boolean;
   isCreateAllowed?: boolean;
+  selectDisable?: {
+    files?: boolean;
+    folders?: boolean;
+  };
+  handleOverwrites?: {
+    onFolderClick?: (id: string) => void;
+  };
   album?: {
     onFileClick?: (index: number) => void;
     data?: AlbumModelDTO;

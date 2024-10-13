@@ -1,8 +1,8 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::Type;
 
 #[repr(i16)]
-#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type)]
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Type, Deserialize)]
 pub enum FileType {
     Generic = 0,
     Image = 1,

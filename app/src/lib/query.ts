@@ -127,6 +127,7 @@ export const useFilesInfinite = (
             sort_order: getSortOrderString(sort?.sort_order),
             limit: limit,
             page: pageParam,
+            album_files: sort?.album_files,
           },
         })
         .then(res => res.data as FileModelDTO[]),
