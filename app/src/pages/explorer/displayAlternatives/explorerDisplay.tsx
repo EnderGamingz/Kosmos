@@ -53,7 +53,7 @@ export type ViewSettings = {
   noDisplay?: boolean;
   isCreateAllowed?: boolean;
   album?: {
-    onFileClick?: (file: FileModelDTO) => void;
+    onFileClick?: (index: number) => void;
     data?: AlbumModelDTO;
   };
 };

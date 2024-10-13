@@ -63,12 +63,12 @@ function Content({
   return (
     <ResponsiveMasonry columnsCountBreakPoints={breakPoints}>
       <Masonry gutter={'0.75rem'}>
-        {files.map(file => (
+        {files.map((file, i) => (
           <AlbumDisplayItem
             key={file.id}
             file={file}
             handleContext={handleContext}
-            onClick={viewSettings?.album?.onFileClick}
+            onClick={() => viewSettings?.album?.onFileClick?.(i)}
             album={viewSettings?.album?.data}
           />
         ))}
@@ -86,11 +86,11 @@ function AlbumDisplayItem({
   file: FileModelDTO;
   album?: AlbumModelDTO;
   handleContext: (pos: Vec2, file: FileModelDTO) => void;
-  onClick?: (file: FileModelDTO) => void;
+  onClick?: () => void;
 }) {
   return (
     <div
-      onClick={() => onClick?.(file)}
+      onClick={onClick}
       onContextMenu={e => {
         e.preventDefault();
         handleContext({ x: e.clientX, y: e.clientY }, {

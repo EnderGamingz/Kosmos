@@ -167,12 +167,14 @@ export function ExplorerDisplayWrapper({
           {children}
         </FileUploadContent>
       </div>
-      <FileDisplay
-        onSelect={selectFile}
-        fileIndex={selectedFileIndex}
-        selected={selectedFiles}
-        shareUuid={shareUuid}
-      />
+      {!viewSettings.noDisplay && (
+        <FileDisplay
+          onSelect={selectFile}
+          fileIndex={selectedFileIndex}
+          selected={selectedFiles}
+          shareUuid={shareUuid}
+        />
+      )}
       {!shareUuid && <ShareModal />}
       {!viewSettings?.scrollControlMissing && (
         <AnimatePresence>

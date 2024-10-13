@@ -18,6 +18,8 @@ import tw from '@utils/classMerge.ts';
 import { Helmet } from 'react-helmet';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { getInitialGridSize } from '@utils/grid.ts';
+import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -61,16 +63,6 @@ export default function AlbumPage() {
   );
 }
 
-const getInitialGridSize = (): number => {
-  if (window.innerWidth < 768) return 1;
-  if (window.innerWidth < 1024) return 2;
-  if (window.innerWidth < 1280) return 3;
-  if (window.innerWidth < 1536) return 4;
-  if (window.innerWidth < 1920) return 5;
-  if (window.innerWidth < 2560) return 6;
-  return 7;
-};
-
 export function AlbumPageContent({
   album,
   files,
@@ -82,9 +74,34 @@ export function AlbumPageContent({
   scrolling: boolean;
   shareUuid?: string;
 }) {
-  const [selected, setSelected] = useState<FileModelDTO | undefined>(undefined);
+  const [selected, setSelected] = useState<number>(-1);
   const [size, setSize] = useState(getInitialGridSize());
   const fileIds = useMemo(() => files.map(file => file.id), [files]);
+
+  useArrowKeys({
+    left: () =>
+      setSelected(prev => {
+        if (prev - 1 < 0) {
+          return -1;
+        }
+        return prev - 1;
+      }),
+    right: () =>
+      setSelected(prev => {
+        if (prev + 1 > files.length) {
+          return files.length;
+        }
+        return prev + 1;
+      }),
+    deps: [files.length],
+  });
+
+  const file = useMemo(() => {
+    if (files.length === 0) return undefined;
+    if (selected === -1 || selected > files.length - 1 || selected < 0)
+      return undefined;
+    return files.at(selected) as FileModelDTO;
+  }, [files, selected]);
 
   return (
     <DisplayContext.Provider
@@ -137,11 +154,10 @@ export function AlbumPageContent({
           files={files}
           folders={[]}
           viewSettings={{
+            noDisplay: true,
             album: {
               data: album,
-              onFileClick: (file: FileModelDTO) => {
-                setSelected(file);
-              },
+              onFileClick: setSelected,
             },
           }}
           shareUuid={shareUuid}
@@ -152,10 +168,10 @@ export function AlbumPageContent({
         />
       </div>
       <AnimatePresence>
-        {selected && (
+        {file && (
           <AlbumFullscreen
-            file={selected}
-            onClose={() => setSelected(undefined)}
+            file={file}
+            onClose={() => setSelected(-1)}
             shareUuid={shareUuid}
           />
         )}
