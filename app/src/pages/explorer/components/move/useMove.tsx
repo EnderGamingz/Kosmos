@@ -21,8 +21,8 @@ export function useMove(
   function getMoveFn() {
     if (multiData) {
       return axios.put(`${BASE_URL}auth/multi`, {
-        files: multiData.files,
-        folders: multiData.folders,
+        files: multiData.files.map(file => file.id),
+        folders: multiData.folders.map(folder => folder.id),
         target_folder: selectedFolder?.trim() || undefined,
       });
     } else {
@@ -54,8 +54,8 @@ export function useMove(
           });
 
           const itemsMoved = [
-            ...(multiData?.files || []),
-            ...(multiData?.folders || []),
+            ...(multiData?.files.map(file => file.id) || []),
+            ...(multiData?.folders.map(folder => folder.id) || []),
           ];
           if (moveData.id) itemsMoved.push(moveData.id);
 

@@ -22,7 +22,12 @@ const actions = (
   shareUuid?: string,
 ) => {
   return [
-    <AlbumAction file={file} onClose={onClose} dense />,
+    <AlbumAction
+      files={[file]}
+      onClose={onClose}
+      dense
+      shareUuid={shareUuid}
+    />,
     <DownloadSingleAction
       id={file.id}
       name={file.file_name}

@@ -6,6 +6,8 @@ import { useContext, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
 import { DisplayContext } from '@lib/contexts.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export function MultiDownload({
   files,
@@ -13,8 +15,8 @@ export function MultiDownload({
   isContextAction,
   onClose,
 }: {
-  files: string[];
-  folders: string[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
   isContextAction?: boolean;
   onClose?: () => void;
 }) {
@@ -56,8 +58,8 @@ export function MultiDownload({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            files: files,
-            folders: folders,
+            files: files.map(file => file.id),
+            folders: folders.map(folder => folder.id),
           }),
         },
       );

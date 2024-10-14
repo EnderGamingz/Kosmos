@@ -111,7 +111,6 @@ impl FileService {
             with_deleted,
             &search,
         );
-        log::info!("{}",&string);
         sqlx::query_as::<_, FileModel>(&string)
         .bind(user_id)
         .bind(parent_folder_id)

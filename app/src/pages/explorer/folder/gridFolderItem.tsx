@@ -28,7 +28,7 @@ export default function GridFolderItem({
   index: number;
   folder: FolderModelDTO;
   selected: string[];
-  onSelect: (id: string) => void;
+  onSelect: (folder: FolderModelDTO) => void;
   outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
@@ -90,7 +90,7 @@ export default function GridFolderItem({
       <motion.div
         onClick={() => {
           if (isControl && !context.viewSettings?.noSelect && !selectDisabled)
-            onSelect(folder.id);
+            onSelect(folder);
           else if (isShift && !context.viewSettings?.noSelect)
             context.select.setRange(index);
           else handleFolderClick();
@@ -142,7 +142,7 @@ export default function GridFolderItem({
               <Checkbox
                 className={'h-5 w-5 p-0'}
                 isSelected={isSelected}
-                onValueChange={() => !selectDisabled && onSelect(folder.id)}
+                onValueChange={() => !selectDisabled && onSelect(folder)}
               />
             </div>
           )}

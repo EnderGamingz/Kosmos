@@ -16,6 +16,8 @@ import { useContext, useState } from 'react';
 import tw from '@utils/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { DisplayContext } from '@lib/contexts.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -84,7 +86,7 @@ export function MultiPermanentDelete({
   deleteData,
   onClose,
 }: {
-  deleteData: { folders: string[]; files: string[] };
+  deleteData: { folders: FolderModelDTO[]; files: FileModelDTO[] };
   onClose: () => void;
 }) {
   const shift = useKeyStore(s => s.keys.shift);
@@ -105,8 +107,8 @@ export function MultiPermanentDelete({
       await axios
         .delete(`${BASE_URL}auth/multi`, {
           data: {
-            folders: deleteData.folders,
-            files: deleteData.files,
+            folders: deleteData.folders.map(folder => folder.id),
+            files: deleteData.files.map(file => file.id),
           },
         })
         .then(async () => {

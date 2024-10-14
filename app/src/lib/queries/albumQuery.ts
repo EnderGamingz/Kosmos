@@ -58,13 +58,15 @@ export class AlbumQuery {
     });
   };
 
-  public static useAvailableAlbums = (fileId: string) => {
+  public static useAvailableAlbums = (fileIds: string[]) => {
     return useQuery({
       queryFn: () =>
         axios
-          .get(`${BASE_URL}auth/album/for/${fileId}`)
+          .post(`${BASE_URL}auth/album/for`, {
+            files: fileIds,
+          })
           .then(res => res.data as AvailableAlbumsForFileResponse),
-      queryKey: ['album', 'available', fileId],
+      queryKey: ['album', 'available'],
     });
   };
 

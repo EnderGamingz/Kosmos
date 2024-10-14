@@ -24,13 +24,13 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 function AddToAlbumModalContent({
   onClose,
-  file,
+  files,
 }: {
   onClose: () => void;
-  file: FileModelDTO;
+  files: FileModelDTO[];
 }) {
   const [loading, setLoading] = useState<string[]>([]);
-  const albums = AlbumQuery.useAvailableAlbums(file.id);
+  const albums = AlbumQuery.useAvailableAlbums(files.map(file => file.id));
 
   const update = useToAlbumMutation();
 
@@ -62,7 +62,7 @@ function AddToAlbumModalContent({
                 setLoading([...loading, album.id]);
                 update
                   .mutateAsync({
-                    add: [file.id],
+                    add: files.map(file => file.id),
                     remove: [],
                     overwriteId: album.id,
                   })
@@ -119,15 +119,17 @@ function AddToAlbumModalContent({
 }
 
 export default function AlbumAction({
-  file,
+  files,
   albumId,
   onClose,
   dense,
+  shareUuid,
 }: {
-  file: FileModelDTO;
+  files: FileModelDTO[];
   albumId?: string;
   onClose?: () => void;
   dense?: boolean;
+  shareUuid?: string;
 }) {
   const update = useToAlbumMutation(albumId);
   const context = useContext(DisplayContext);
@@ -139,19 +141,24 @@ export default function AlbumAction({
     onClose: disclosureOnClose,
   } = useDisclosure();
 
-  if (context.shareUuid) return null;
+  if (context.shareUuid || shareUuid || !files.length) return null;
 
   const handleClick = () => {
-    if (albumId) {
-      update.mutateAsync({ remove: [file.id], add: [] }).then(() => {
-        onClose?.();
-      });
+    if (albumId && files.length === 1) {
+      update
+        .mutateAsync({ remove: files.map(file => file.id), add: [] })
+        .then(() => {
+          onClose?.();
+        });
     } else {
       disclosureOnOpen();
     }
   };
 
-  if (!isValidFileForAlbum(file)) return null;
+  const fileValidState = files.map(isValidFileForAlbum);
+  console.log(fileValidState);
+
+  if (!fileValidState.every(x => x)) return null;
 
   return (
     <>
@@ -163,7 +170,7 @@ export default function AlbumAction({
         placement={'auto'}>
         <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
           <AddToAlbumModalContent
-            file={file}
+            files={files}
             onClose={() => {
               disclosureOnClose();
               setTimeout(() => {

@@ -9,16 +9,13 @@ export function DisplayHeader({
 }: {
   file: FileModelDTO;
   selected?: boolean;
-  onSelect?: (id: string) => void;
+  onSelect?: (file: FileModelDTO) => void;
 }) {
   return (
     <motion.div className={'flex items-center gap-2'}>
       {selected !== undefined && (
         <motion.div layoutId={`check-${file.id}`}>
-          <Checkbox
-            isSelected={selected}
-            onChange={() => onSelect?.(file.id)}
-          />
+          <Checkbox isSelected={selected} onChange={() => onSelect?.(file)} />
         </motion.div>
       )}
       <motion.p

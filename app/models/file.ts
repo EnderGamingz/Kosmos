@@ -1,5 +1,6 @@
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export enum FileType {
   Generic,
@@ -103,7 +104,7 @@ export function isFileModel(data: ContextData): data is FileModelDTO {
   return (data as FileModelDTO).file_name !== undefined;
 }
 
-export type Selected = { files: string[]; folders: string[] };
+export type Selected = { files: FileModelDTO[]; folders: FolderModelDTO[] };
 
 export function isMultiple(data: ContextData): data is Selected {
   return (

@@ -61,11 +61,12 @@ function Footer(props: {
 function FolderGrid(props: {
   control: boolean;
   folderModels: FolderModelDTO[];
-  onSelect: (id: string) => void;
-  selected: string[];
+  onSelect: (folder: FolderModelDTO) => void;
+  selected: FolderModelDTO[];
   outerDisabled?: boolean;
 }) {
   if (!props.folderModels.length) return null;
+  const selectedIds = props.selected.map(folder => folder.id);
   return (
     <motion.div
       variants={containerVariant()}
@@ -83,7 +84,7 @@ function FolderGrid(props: {
           folder={folder}
           index={i}
           onSelect={props.onSelect}
-          selected={props.selected}
+          selected={selectedIds}
           outerDisabled={props.outerDisabled}
         />
       ))}
@@ -173,7 +174,7 @@ export default function FileGrid({
                     index={folders.length + i}
                     fileIndex={i}
                     onSelect={selectFile}
-                    selected={selectedFiles}
+                    selected={selectedFiles.map(file => file.id)}
                     dynamic={dynamic}
                     details={details}
                   />
@@ -276,7 +277,7 @@ function Row({ index, data }: { index: number; data: VirtualGridRowData }) {
           index={index * columnCount + j + folderLength}
           fileIndex={index * columnCount + j}
           onSelect={onSelectFile}
-          selected={selectedFiles}
+          selected={selectedFiles.map(file => file.id)}
           details={details}
           outerDisabled
         />
@@ -287,8 +288,8 @@ function Row({ index, data }: { index: number; data: VirtualGridRowData }) {
 
 export type VirtualGridRowData = {
   rows: FileModelDTO[][];
-  onSelectFile: (id: string) => void;
-  selectedFiles: string[];
+  onSelectFile: (file: FileModelDTO) => void;
+  selectedFiles: FileModelDTO[];
   columnCount: number;
   details: DetailType;
   folderLength: number;
@@ -308,11 +309,11 @@ function VirtualFileGrid({
 }: {
   files: FileModelDTO[];
   folderLength: number;
-  selectFile: (id: string) => void;
-  selectedFiles: string[];
+  selectFile: (file: FileModelDTO) => void;
+  selectedFiles: FileModelDTO[];
   details: DetailType;
-  selectFolder: (id: string) => void;
-  selectedFolders: string[];
+  selectFolder: (folder: FolderModelDTO) => void;
+  selectedFolders: FolderModelDTO[];
   folders: FolderModelDTO[];
   totalFileSize: string;
   isControl: boolean;
