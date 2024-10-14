@@ -129,8 +129,6 @@ export function ExplorerDisplayWrapper({
     };
   }, [setDisplayHeight, displayRef]);
 
-  console.log(viewSettings?.scrollControlMissing);
-
   return (
     <DisplayContext.Provider
       value={{
@@ -149,7 +147,7 @@ export function ExplorerDisplayWrapper({
         // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
       }}>
-      {!viewSettings?.scrollControlMissing && (
+      {!viewSettings?.scrollControlMissing && !viewSettings?.noActions && (
         <MultipleActionButton
           someSelected={isSomeSelected}
           handleClick={handleContext}

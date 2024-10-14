@@ -64,11 +64,11 @@ export default function AlbumPage() {
 }
 
 export function AlbumPageContent({
-  album,
-  files,
-  scrolling,
-  shareUuid,
-}: {
+                                   album,
+                                   files,
+                                   scrolling,
+                                   shareUuid,
+                                 }: {
   album: AlbumModelDTO;
   files: FileModelDTO[];
   scrolling: boolean;
@@ -107,16 +107,20 @@ export function AlbumPageContent({
     <DisplayContext.Provider
       value={{
         shareUuid,
-        handleContext: () => {},
+        handleContext: () => {
+        },
         files,
         folders: [],
         select: {
           rangeStart: 0,
-          setRange: () => {},
+          setRange: () => {
+          },
         },
         dragMove: {
-          setDrag: () => {},
-          resetDrag: () => {},
+          setDrag: () => {
+          },
+          resetDrag: () => {
+          },
         },
       }}>
       <div aria-hidden className={'max-h-[200px] min-h-[200px]'} />
@@ -124,7 +128,7 @@ export function AlbumPageContent({
         className={tw(
           'absolute left-5 right-5 top-5 z-40 !mt-0 flex items-start gap-5 rounded-b-xl transition-all',
           scrolling &&
-            'left-0 right-0 top-0 bg-stone-50/70 p-2 backdrop-blur-lg dark:bg-stone-900/70',
+          'left-0 right-0 top-0 bg-stone-50/70 p-2 backdrop-blur-lg dark:bg-stone-900/70',
         )}>
         <div
           className={'min-w-[60px] transition-all'}
@@ -154,7 +158,7 @@ export function AlbumPageContent({
           files={files}
           folders={[]}
           viewSettings={{
-            scrollControlMissing: true,
+            noActions: true,
             noDisplay: true,
             album: {
               data: album,
