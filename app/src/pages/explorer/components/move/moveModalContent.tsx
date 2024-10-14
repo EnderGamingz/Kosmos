@@ -12,6 +12,8 @@ import { ContextOperationType } from '@models/file.ts';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import tw from '@utils/classMerge.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export type MoveData = {
   id?: string;
@@ -20,8 +22,8 @@ export type MoveData = {
 };
 
 export type MultiMoveData = {
-  files: string[];
-  folders: string[];
+  files: FileModelDTO[];
+  folders: FolderModelDTO[];
 };
 
 export function MoveModalContent({
@@ -108,7 +110,7 @@ export function MoveModalContent({
             // Prevent folders from being able to be moved into themselves
             .filter(x => {
               const isSingleParent = x.id !== moveData.id;
-              const isMultiParent = !multiData?.folders.includes(x.id);
+              const isMultiParent = !multiData?.folders.includes(x);
 
               return isSingleParent && isMultiParent;
             })

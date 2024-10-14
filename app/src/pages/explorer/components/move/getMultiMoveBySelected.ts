@@ -11,7 +11,7 @@ export function getMultiMoveBySelected(
     return undefined;
 
   return {
-    files: selectedResources.selectedFiles,
-    folders: selectedResources.selectedFolders,
+    files: selectedResources.selectedFiles.map(file => file.id),
+    folders: selectedResources.selectedFolders.map(folder => folder.id),
   };
 }

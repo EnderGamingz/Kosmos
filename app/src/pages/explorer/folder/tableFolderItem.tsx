@@ -26,7 +26,7 @@ export function TableFolderItem({
   i: number;
   folder: FolderModelDTO;
   selected: string[];
-  onSelect: (id: string) => void;
+  onSelect: (folder: FolderModelDTO) => void;
   outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
@@ -76,7 +76,7 @@ export function TableFolderItem({
   return (
     <tr
       onClick={() => {
-        if (isControl && !selectDisabled) onSelect(folder.id);
+        if (isControl && !selectDisabled) onSelect(folder);
         if (isShift) context.select.setRange(i);
       }}
       onContextMenu={e => {
@@ -95,7 +95,7 @@ export function TableFolderItem({
         <th>
           <Checkbox
             isSelected={isSelected}
-            onValueChange={() => !selectDisabled && onSelect(folder.id)}
+            onValueChange={() => !selectDisabled && onSelect(folder)}
           />
         </th>
       )}

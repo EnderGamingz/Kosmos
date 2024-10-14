@@ -4,6 +4,8 @@ import { ContextOperationType } from '@models/file.ts';
 import { FolderOpenIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export function MoveAction({
   type,
@@ -19,8 +21,8 @@ export function MoveAction({
   current_parent?: string | null;
   onClose?: () => void;
   multiData?: {
-    files: string[];
-    folders: string[];
+    files: FileModelDTO[];
+    folders: FolderModelDTO[];
   };
 }) {
   const {

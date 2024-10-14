@@ -20,7 +20,7 @@ export function MultipleActionButton({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -5 }}
           className={tw(
-            'absolute right-2 top-2 flex items-center gap-1 rounded-full bg-stone-400/50',
+            'absolute right-2 top-1 flex items-center gap-1 rounded-full bg-stone-400/50',
             'transition-all hover:bg-stone-400/80 hover:text-stone-800 hover:shadow-sm',
             'px-2 py-1 pr-4 backdrop-blur-lg',
           )}>

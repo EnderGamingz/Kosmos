@@ -10,6 +10,7 @@ import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 function AlbumAddItemsContent({
   addTo,
@@ -17,7 +18,7 @@ function AlbumAddItemsContent({
   onClose,
 }: {
   addTo: string;
-  initialFiles: string[];
+  initialFiles: FileModelDTO[];
   onClose: () => void;
 }) {
   const [virtualFolder, setVirtualFolder] = useState<string | undefined>(
@@ -45,9 +46,14 @@ function AlbumAddItemsContent({
     const removed = initialFiles.filter(file => !selectedFiles.includes(file));
 
     selectNone();
-    update.mutateAsync({ add: added, remove: removed }).then(() => {
-      onClose();
-    });
+    update
+      .mutateAsync({
+        add: added.map(file => file.id),
+        remove: removed.map(file => file.id),
+      })
+      .then(() => {
+        onClose();
+      });
   };
 
   const files = useFilesInfinite(virtualFolder, { album_files: true }, 50);
@@ -107,7 +113,7 @@ export function AlbumAddItems({
   small,
 }: {
   id: string;
-  added: string[];
+  added: FileModelDTO[];
   small?: boolean;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

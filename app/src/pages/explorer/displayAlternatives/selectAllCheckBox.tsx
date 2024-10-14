@@ -29,8 +29,8 @@ export function SelectAllCheckBox({
   const toggleSelection = () => {
     if ((!isNoneSelected && !isAllSelected) || isNoneSelected) {
       selectNone();
-      files.map(file => selectFile(file.id));
-      folders.map(folder => selectFolder(folder.id));
+      files.map(file => selectFile(file));
+      folders.map(folder => selectFolder(folder));
     } else if (isAllSelected) {
       selectNone();
     }

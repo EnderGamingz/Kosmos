@@ -1,7 +1,7 @@
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
-type SelectionResult = { files: string[]; folders: string[] };
+type SelectionResult = { files: FileModelDTO[]; folders: FolderModelDTO[] };
 
 export function prepareSelectRange(
   files: FileModelDTO[],
@@ -22,9 +22,9 @@ export function prepareSelectRange(
 
   for (let i = start; i <= end; i++) {
     if (i < foldersEnd) {
-      selected.folders.push(combinedList[i].id);
+      selected.folders.push(<FolderModelDTO>combinedList[i]);
     } else {
-      selected.files.push(combinedList[i].id);
+      selected.files.push(<FileModelDTO>combinedList[i]);
     }
   }
 

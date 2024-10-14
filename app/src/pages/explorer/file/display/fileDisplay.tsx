@@ -21,8 +21,8 @@ export default function FileDisplay({
   shareUuid,
 }: {
   fileIndex?: number;
-  onSelect: (id: string) => void;
-  selected: string[];
+  onSelect: (file: FileModelDTO) => void;
+  selected: FileModelDTO[];
   shareUuid?: string;
 }) {
   const [scopedIndex, setScopedIndex] = useState(fileIndex ?? -1);
@@ -76,7 +76,7 @@ export default function FileDisplay({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolder, scopedIndex, sort /** update **/]);
 
-  const isSelected = selected.includes(file?.id || '');
+  const isSelected = !!file && selected.includes(file);
 
   return (
     <AnimatePresence>
@@ -104,7 +104,7 @@ function FileDisplayContent({
 }: {
   file: FileModelDTO;
   onClose: () => void;
-  onSelect: (id: string) => void;
+  onSelect: (file: FileModelDTO) => void;
   isSelected: boolean;
   // onUpdate: () => void;
   shareUuid?: string;
@@ -162,11 +162,11 @@ function FileDisplayContent({
               onSelect={onSelect}
             />
             {/**
-             * Disabled for now as the favorite changes the file order
-             * and file display currently relies on scope index which changes
-             !shareUuid && (
-             <FileDisplayFavorite file={file} onUpdate={onUpdate} />
-             )**/}
+                         * Disabled for now as the favorite changes the file order
+                         * and file display currently relies on scope index which changes
+                         !shareUuid && (
+                         <FileDisplayFavorite file={file} onUpdate={onUpdate} />
+                         )**/}
             <FileDisplayStats file={file} />
             <FileDisplayActions
               shareUuid={shareUuid}

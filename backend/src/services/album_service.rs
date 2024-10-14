@@ -134,14 +134,14 @@ impl AlbumService {
     pub async fn get_unassociated_albums(
         &self,
         user_id: UserId,
-        file_id: i64,
+        file_ids: &Vec<i64>,
     ) -> Result<Vec<AlbumModel>, AppError> {
         sqlx::query_as!(
             AlbumModel,
             "SELECT * FROM albums WHERE user_id = $1
-            AND id NOT IN (SELECT album_id FROM files_on_album WHERE file_id = $2)",
+            AND id NOT IN (SELECT album_id FROM files_on_album WHERE file_id = ANY($2))",
             user_id,
-            file_id
+            file_ids
         )
         .fetch_all(&self.db_pool)
         .await

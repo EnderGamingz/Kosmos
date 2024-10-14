@@ -104,7 +104,7 @@ function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
       <TableFileItem
         i={index}
         fileIndex={index - totalFolder}
-        selected={selectedFiles}
+        selected={selectedFiles.map(file => file.id)}
         onSelect={onSelectFile}
         key={itemData.id}
         file={itemData}
@@ -116,7 +116,7 @@ function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
   return (
     <TableFolderItem
       i={index}
-      selected={selectedFolders}
+      selected={selectedFolders.map(folder => folder.id)}
       onSelect={onSelectFolder}
       key={itemData.id}
       folder={itemData}
@@ -129,10 +129,10 @@ export type VirtualTableItemData = {
   folders: FolderModelDTO[];
   files: FileModelDTO[];
   totalFolder: number;
-  onSelectFile: (id: string) => void;
-  onSelectFolder: (id: string) => void;
-  selectedFiles: string[];
-  selectedFolders: string[];
+  onSelectFile: (file: FileModelDTO) => void;
+  onSelectFolder: (folder: FolderModelDTO) => void;
+  selectedFiles: FileModelDTO[];
+  selectedFolders: FolderModelDTO[];
 };
 
 export function FileTable() {

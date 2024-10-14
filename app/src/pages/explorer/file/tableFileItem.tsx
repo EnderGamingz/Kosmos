@@ -72,7 +72,7 @@ export function TableFileItem({
   fileIndex: number;
   file: FileModelDTO;
   selected: string[];
-  onSelect: (id: string) => void;
+  onSelect: (file: FileModelDTO) => void;
   outerDisabled?: boolean;
 }) {
   const [disabled, setDisabled] = useState(false);
@@ -111,7 +111,7 @@ export function TableFileItem({
     <tr
       id={file.id}
       onClick={() => {
-        if (isControl) onSelect(file.id);
+        if (isControl) onSelect(file);
         if (isShift) context.select.setRange(i);
       }}
       onContextMenu={e => {
@@ -129,13 +129,13 @@ export function TableFileItem({
         <motion.th /*layoutId={`check-${file.id}`}*/>
           <Checkbox
             isSelected={isSelected}
-            onValueChange={() => onSelect(file.id)}
+            onValueChange={() => onSelect(file)}
           />
         </motion.th>
       )}
       <td
         className={tw(
-          'flex !p-0',
+          'flex h-full !p-0',
           !!context.viewSettings?.noSelect && '!pl-3',
         )}>
         <motion.div
@@ -182,7 +182,7 @@ export function TableFileItem({
           <motion.p
             exit={{ opacity: 0 }}
             className={
-              'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
+              'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-3'
             }>
             {file.file_name}
           </motion.p>

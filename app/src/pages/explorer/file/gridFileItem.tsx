@@ -33,7 +33,7 @@ export default function GridFileItem({
   fileIndex: number;
   file: FileModelDTO;
   selected?: string[];
-  onSelect?: (id: string) => void;
+  onSelect?: (file: FileModelDTO) => void;
   dynamic?: boolean;
   details: DetailType;
   outerDisabled?: boolean;
@@ -67,7 +67,7 @@ export default function GridFileItem({
 
   const handleClick = () => {
     if (disabled) return;
-    if (isControl && !context.viewSettings?.noSelect) onSelect?.(file.id);
+    if (isControl && !context.viewSettings?.noSelect) onSelect?.(file);
     else if (isShift && !context.viewSettings?.noSelect)
       context.select.setRange(index);
     else if (!context.viewSettings?.noDisplay) selectFile(fileIndex);
@@ -139,7 +139,7 @@ export default function GridFileItem({
               <Checkbox
                 className={'h-4 w-4'}
                 isSelected={isSelected}
-                onValueChange={() => onSelect(file.id)}
+                onValueChange={() => onSelect(file)}
                 classNames={{ wrapper: 'backdrop-blur-md' }}
                 size={isDefaultDisplay ? 'md' : 'sm'}
               />

@@ -8,6 +8,7 @@ import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function MoveToTrash({
   id,
@@ -61,7 +62,7 @@ export function MultiMoveToTrash({
   deleteData,
   onClose,
 }: {
-  deleteData: { files: string[] };
+  deleteData: { files: FileModelDTO[] };
   onClose: () => void;
 }) {
   const setSelectedNone = useExplorerStore(s => s.selectedResources.selectNone);
@@ -70,7 +71,7 @@ export function MultiMoveToTrash({
     mutationFn: async () =>
       axios
         .post(`${BASE_URL}auth/multi/bin`, {
-          files: deleteData.files,
+          files: deleteData.files.map(file => file.id),
         })
         .then(async () => {
           invalidateFiles().then();
