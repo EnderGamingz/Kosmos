@@ -113,6 +113,10 @@ fn get_file_router() -> KosmosRouter {
             "/move/:file_id",
             put(crate::routes::api::v1::auth::file::move_file),
         )
+        .route(
+            "/zip/:file_id",
+            get(crate::routes::api::v1::auth::file::zip::get_zip_information),
+        )
         .layer(DefaultBodyLimit::disable())
         .nest("/image", get_image_router())
 }
