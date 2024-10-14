@@ -52,6 +52,7 @@ export type ViewSettings = {
   noSelect?: boolean;
   noDisplay?: boolean;
   isCreateAllowed?: boolean;
+  noActions?: boolean;
   selectDisable?: {
     files?: boolean;
     folders?: boolean;
