@@ -34,16 +34,16 @@ export function ContextMenuTitle({
       className={
         'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
       }>
-      <span
+      <p
         title={title}
         className={tw(
           'flex items-center gap-2 whitespace-nowrap text-sm font-light text-stone-800 dark:text-stone-300',
           '[&_>svg]:h-4 [&_>svg]:min-w-4',
         )}>
         {children}
-        {title}
+        <span className={'truncate'}>{title}</span>
         <div className={'ml-auto min-w-4'}>{renderIcon()}</div>
-      </span>
+      </p>
     </div>
   );
 }
