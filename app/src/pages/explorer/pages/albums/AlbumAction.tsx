@@ -142,6 +142,8 @@ export default function AlbumAction({
   } = useDisclosure();
 
   if (context.shareUuid || shareUuid || !files.length) return null;
+  const fileValidState = files.map(isValidFileForAlbum);
+  if (!fileValidState.every(x => x)) return null;
 
   const handleClick = () => {
     if (albumId && files.length === 1) {
@@ -154,11 +156,6 @@ export default function AlbumAction({
       disclosureOnOpen();
     }
   };
-
-  const fileValidState = files.map(isValidFileForAlbum);
-  console.log(fileValidState);
-
-  if (!fileValidState.every(x => x)) return null;
 
   return (
     <>

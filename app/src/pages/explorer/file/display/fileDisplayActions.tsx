@@ -15,6 +15,7 @@ import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { isValidFileForAlbum } from '@models/album.ts';
 
 const actions = (
   file: FileModelDTO,
@@ -22,12 +23,14 @@ const actions = (
   shareUuid?: string,
 ) => {
   return [
-    <AlbumAction
-      files={[file]}
-      onClose={onClose}
-      dense
-      shareUuid={shareUuid}
-    />,
+    !shareUuid && [file].map(isValidFileForAlbum).every(x => x) && (
+      <AlbumAction
+        files={[file]}
+        onClose={onClose}
+        dense
+        shareUuid={shareUuid}
+      />
+    ),
     <DownloadSingleAction
       id={file.id}
       name={file.file_name}

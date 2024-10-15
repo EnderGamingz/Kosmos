@@ -21,7 +21,6 @@ export default function ArchiveDisplay({
     isSharedInFolder?: boolean;
   };
 }) {
-  console.log(loading);
   const query = useZipInformation(
     share.shareUuid,
     share.isSharedInFolder,
@@ -117,11 +116,15 @@ function ArchiveFolder({
         onClick={() => setOpen(prev => !prev)}
       />
       <Collapse isOpened={open}>
-        {data.folders.map(folder => (
-          <ArchiveFolder data={folder} indent={indent + 1} />
+        {data.folders.map((folder, i) => (
+          <ArchiveFolder
+            key={`${folder.name}-${i}`}
+            data={folder}
+            indent={indent + 1}
+          />
         ))}
-        {data.files.map(file => (
-          <ArchiveItem name={file} />
+        {data.files.map((file, i) => (
+          <ArchiveItem key={`${file}-${i}`} name={file} />
         ))}
       </Collapse>
     </div>
