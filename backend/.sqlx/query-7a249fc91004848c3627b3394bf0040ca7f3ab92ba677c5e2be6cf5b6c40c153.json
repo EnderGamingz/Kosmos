@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM albums WHERE user_id = $1\n            AND id NOT IN (SELECT album_id FROM files_on_album WHERE file_id = $2)",
+  "query": "SELECT * FROM albums WHERE user_id = $1\n            AND id NOT IN (SELECT album_id FROM files_on_album WHERE file_id = ANY($2))",
   "describe": {
     "columns": [
       {
@@ -42,7 +42,7 @@
     "parameters": {
       "Left": [
         "Int8",
-        "Int8"
+        "Int8Array"
       ]
     },
     "nullable": [
@@ -55,5 +55,5 @@
       true
     ]
   },
-  "hash": "5c0a5dfdb07420ef663e15cd0a5c930f7b068aea4bccc9acce49dd1bfd817cdf"
+  "hash": "7a249fc91004848c3627b3394bf0040ca7f3ab92ba677c5e2be6cf5b6c40c153"
 }
