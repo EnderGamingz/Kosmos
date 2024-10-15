@@ -39,6 +39,10 @@ impl FileType {
     pub fn check_valid_for_empty_file(&self) -> bool {
         FileType::FILE_TYPES_FOR_EMPTY_FILE.contains(self)
     }
+    
+    pub fn is_archive(&self) -> bool {
+        self == &FileType::Archive
+    }
 
     pub const VALID_FILE_TYPES_FOR_ALBUM: [FileType; 3] =
         [FileType::Image, FileType::RawImage, FileType::LargeImage];

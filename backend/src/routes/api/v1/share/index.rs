@@ -12,6 +12,7 @@ use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
 use ts_rs::TS;
+use crate::routes::api::v1::auth::file::zip::get_zip_information_for_file;
 
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
@@ -168,6 +169,7 @@ pub async fn access_folder_share(
 pub enum AccessShareItemType {
     File,
     Folder,
+    Zip,
 }
 
 pub async fn access_folder_share_item(
@@ -186,7 +188,7 @@ pub async fn access_folder_share_item(
         })?;
     }
 
-    return match access_type {
+    match access_type {
         AccessShareItemType::File => {
             let file = get_share_file(&state, Some(access_id)).await?;
             Ok(Json(serde_json::json!(file.share_file)))
@@ -208,7 +210,13 @@ pub async fn access_folder_share_item(
                 "structure": structure
             })))
         }
-    };
+        AccessShareItemType::Zip => {
+            let share_file = get_share_file(&state, Some(access_id)).await?;
+            let zip_info = get_zip_information_for_file(state, share_file.file).await?;
+
+            Ok(Json(serde_json::json!(zip_info)))
+        }
+    }
 }
 
 pub async fn get_share_access_for_folder_items(
@@ -218,7 +226,7 @@ pub async fn get_share_access_for_folder_items(
     share: &ExtendedShareModel,
 ) -> Result<bool, AppError> {
     let can_access_with_share = match access_type {
-        AccessShareItemType::File => {
+        AccessShareItemType::File | AccessShareItemType::Zip => {
             let file = state.file_service.get_file(access_id, None).await?;
             if let Some(parent_folder_id) = file.parent_folder_id {
                 state
@@ -286,12 +294,10 @@ pub async fn is_allowed_to_access_share(
     }
 
     //Check password
-    if share.password.is_some() {
-        if !SessionService::check_share_access(&session, &share.uuid.to_string()).await {
-            Err(AppError::Locked {
-                error: "Password protected".to_string(),
-            })?;
-        }
+    if share.password.is_some() && !SessionService::check_share_access(&session, &share.uuid.to_string()).await {
+        Err(AppError::Locked {
+            error: "Password protected".to_string(),
+        })?;
     }
 
     if count_as_use {

@@ -4,3 +4,4 @@ pub mod image_format;
 pub mod operation_type;
 pub mod operation_status;
 pub mod share_type;
+pub mod zip;

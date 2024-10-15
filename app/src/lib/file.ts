@@ -40,3 +40,14 @@ export const createPreviewUrl = (
     ? `${BASE_URL}s/folder/${shareUuid}/image/${fileId}/0`
     : `${BASE_URL}s/file/${shareUuid}/image/0`;
 };
+
+export const createZipInformationUrl = (
+  shareUuid?: string,
+  isSharedInFolder?: boolean,
+  fileId?: string | null,
+) => {
+  if (!shareUuid) return `${BASE_URL}auth/file/zip/${fileId}`;
+  return isSharedInFolder
+    ? `${BASE_URL}s/folder/${shareUuid}/Zip/${fileId}`
+    : `${BASE_URL}s/file/${shareUuid}/zip`;
+};

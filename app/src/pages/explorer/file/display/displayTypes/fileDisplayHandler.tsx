@@ -9,6 +9,7 @@ import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
 import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
 import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import ArchiveDisplay from '@pages/explorer/file/display/displayTypes/archiveDisplay.tsx';
 
 export function FileTypeDisplay({
   id,
@@ -33,13 +34,14 @@ export function FileTypeDisplay({
       exit={{ opacity: 0, scale: 0.5 }}
       transition={{ duration: 0.3 }}
       className={tw(
-        'relative flex h-full w-full flex-col items-center justify-center',
-        'rounded-lg bg-stone-800/20 text-stone-200 shadow-xl [&_svg]:text-stone-200',
-        'outline outline-1 -outline-offset-1 outline-stone-500',
-        'pr-5 text-center backdrop-blur-md',
+        'relative flex h-full w-full flex-col items-center justify-center gap-2',
+        'rounded-lg bg-stone-200/10 text-stone-900 shadow-xl dark:bg-stone-500/10 dark:text-stone-200',
+        '[&_svg]:text-stone-900 dark:[&_svg]:text-stone-200',
+        'outline outline-1 -outline-offset-1 outline-stone-500/30',
+        'pr-5 text-center backdrop-blur-lg',
         loading ? '[&_svg]:h-14 [&_svg]:w-14' : '[&_svg]:h-20 [&_svg]:w-20',
       )}>
-      <div className={tw('relative', shouldShowChildren && 'opacity-0')}>
+      <div className={tw('relative', shouldShowChildren && 'h-0 opacity-0')}>
         {loading && (
           <div
             className={
@@ -48,7 +50,9 @@ export function FileTypeDisplay({
             <div className={'app-loading-indicator !h-16 !w-16'} />
           </div>
         )}
-        <ItemIcon id={id} name={name} type={type} />
+        {!shouldShowChildren && (
+          <ItemIcon id={id} name={name} type={type} keySuffix={'display'} />
+        )}
       </div>
       {!noText && !shouldShowChildren && (
         <motion.p
@@ -95,6 +99,19 @@ export function FileDisplayHandler({
     const t = setTimeout(() => setPreviewOnHold(false), 500);
     return () => clearTimeout(t);
   }, [previewOnHold]);
+
+  if (FileTypeActions.isZipArchive(file)) {
+    return (
+      <ArchiveDisplay
+        loading={previewOnHold}
+        file={file}
+        share={{
+          shareUuid: shareUuid,
+          isSharedInFolder: !!isSharedInFolder,
+        }}
+      />
+    );
+  }
 
   if (FileTypeActions.isImage(file.file_type))
     return (

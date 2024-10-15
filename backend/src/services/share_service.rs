@@ -9,7 +9,9 @@ use crate::model::folder::FolderModelWithShareInfo;
 use crate::model::internal::share_type::ShareType;
 use crate::model::share::{ExtendedShareModel, ShareModel};
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::share::create::{ShareAlbumPublicRequest, ShareFilePublicRequest, ShareFolderPublicRequest};
+use crate::routes::api::v1::share::create::{
+    ShareAlbumPublicRequest, ShareFilePublicRequest, ShareFolderPublicRequest,
+};
 use crate::routes::api::v1::share::AccessShareItemType;
 use crate::services::folder_service::FolderService;
 use crate::services::session_service::UserId;
@@ -107,7 +109,7 @@ impl ShareService {
         );
 
         match share_type {
-            AccessShareItemType::File => query.push(
+            AccessShareItemType::File | AccessShareItemType::Zip => query.push(
                 " FROM files f
                 INNER JOIN public.shares s on f.id = s.file_id",
             ),
@@ -170,7 +172,7 @@ impl ShareService {
     pub async fn get_shared_albums(
         &self,
         user_id: &UserId,
-    )  -> Result<Vec<AlbumModelWithShareInfo>, AppError> {
+    ) -> Result<Vec<AlbumModelWithShareInfo>, AppError> {
         sqlx::query_as::<_, AlbumModelWithShareInfo>(
             "SELECT DISTINCT ON (a.id) a.*, s.uuid as share_uuid, u.username as share_target_username
                 FROM albums a

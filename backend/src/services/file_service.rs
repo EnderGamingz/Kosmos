@@ -19,7 +19,7 @@ use tokio::io::AsyncWriteExt;
 #[derive(Clone)]
 pub struct FileService {
     db_pool: KosmosPool,
-    upload_path: PathBuf,
+    pub upload_path: PathBuf,
     sf: Sonyflake,
 }
 

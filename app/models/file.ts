@@ -43,12 +43,19 @@ export class FileTypeActions {
     return this.canEditContent(data) && data.mime_type === 'text/markdown';
   }
 
+  static isZipArchive(data: FileModelDTO) {
+    return (
+      data.file_type === FileType.Archive && data.file_name.endsWith('.zip')
+    );
+  }
+
   static shouldDelayPreview(data: FileModelDTO) {
     return [
       FileType.Image,
       FileType.Document,
       FileType.Audio,
       FileType.Video,
+      FileType.Archive,
     ].includes(data.file_type);
   }
 }
