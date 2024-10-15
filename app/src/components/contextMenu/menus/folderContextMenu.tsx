@@ -27,7 +27,7 @@ export function FolderContextMenu({
       </ContextMenuTitle>
       <MultiDownload
         files={[]}
-        folders={[data.id]}
+        folders={[data]}
         isContextAction
         onClose={onClose}
       />
@@ -55,7 +55,7 @@ export function FolderContextMenu({
         onClose={onClose}
       />
       <MultiPermanentDelete
-        deleteData={{ folders: [data.id], files: [] }}
+        deleteData={{ folders: [data], files: [] }}
         onClose={onClose}
       />
     </>
