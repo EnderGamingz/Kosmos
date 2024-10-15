@@ -22,7 +22,10 @@ fn get_folder_router() -> KosmosRouter {
                 .delete(crate::routes::api::v1::auth::folder::delete::delete_folder)
                 .patch(crate::routes::api::v1::auth::folder::rename_folder),
         )
-        .route("/:folder_id/color", patch(crate::routes::api::v1::auth::folder::update::recolor_folder))
+        .route(
+            "/:folder_id/color",
+            patch(crate::routes::api::v1::auth::folder::update::recolor_folder),
+        )
         .route(
             "/all",
             get(crate::routes::api::v1::auth::folder::get_folders),
@@ -336,7 +339,6 @@ fn get_passkey_auth_router() -> KosmosRouter {
 
 fn get_quick_share_router() -> KosmosRouter {
     Router::new()
-
 }
 
 fn get_auth_router() -> KosmosRouter {
@@ -373,6 +375,10 @@ fn get_public_share_router() -> KosmosRouter {
         .route(
             "/file/:share_id/image/:format",
             get(crate::routes::api::v1::auth::file::image::get_share_image_by_format),
+        )
+        .route(
+            "/file/:share_id/zip",
+            get(crate::routes::api::v1::auth::file::zip::access_zip_share),
         )
         .route(
             "/folder/:share_id",

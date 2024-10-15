@@ -73,9 +73,10 @@ export function FullscreenToggle({
       exit={{ scale: 0, opacity: 0 }}
       onClick={toggle}
       className={tw(
-        'absolute top-3 z-[110] rounded-full bg-gray-50/40 p-2 backdrop-blur-sm',
+        'absolute top-3 z-[110] rounded-full bg-stone-50/70 p-2 backdrop-blur-sm',
         '[&>svg]:h-5 [&>svg]:w-5',
         isFullscreen || noOffset ? 'right-3' : 'right-3 md:right-8',
+        '[&>svg]:text-stone-800',
       )}>
       {isFullscreen ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
     </motion.div>

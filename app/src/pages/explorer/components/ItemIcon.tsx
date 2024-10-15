@@ -64,6 +64,7 @@ export default function ItemIcon({
   dynamic,
   disablePreview,
   color,
+  keySuffix,
 }: {
   id: string;
   type: FileIcon;
@@ -72,10 +73,11 @@ export default function ItemIcon({
   dynamic?: boolean;
   disablePreview?: boolean;
   color?: string | null;
+  keySuffix?: string;
 }) {
   return (
     <motion.div
-      /*layoutId={`type-${id}`}*/
+      layoutId={`type-${id}-${keySuffix}`}
       className={tw(
         'icon-container pointer-events-none',
         'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',

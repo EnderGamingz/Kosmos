@@ -24,6 +24,8 @@ import { FolderShareData } from '@bindings/FolderShareData.ts';
 import { FolderResponse } from '@bindings/FolderResponse.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
+import { createZipInformationUrl } from '@lib/file.ts';
+import { ZipInformation } from '@bindings/ZipInformation.ts';
 
 export const queryClient = new QueryClient();
 
@@ -332,6 +334,18 @@ export const usePasskeys = () => {
         .get(`${BASE_URL}auth/passkey`)
         .then(res => res.data as PasskeyModelDTO[]),
     queryKey: ['passkeys'],
+  });
+};
+
+export const useZipInformation = (
+  shareUuid?: string,
+  isSharedInFolder?: boolean,
+  fileId?: string | null,
+) => {
+  const url = createZipInformationUrl(shareUuid, isSharedInFolder, fileId);
+  return useQuery({
+    queryFn: () => axios.get(url).then(res => res.data as ZipInformation),
+    queryKey: ['zip', fileId, shareUuid],
   });
 };
 
