@@ -36,7 +36,7 @@ export default function ArchiveDisplay({
       <div className={'h-full w-full overflow-auto p-3 text-left'}>
         <h2
           className={
-            'flex items-center pb-2 text-xl [&_svg]:h-10 [&_svg]:w-10'
+            'flex items-center pb-2 text-xl [&_svg]:!h-10 [&_svg]:!w-10'
           }>
           <ItemIcon
             id={file.id}

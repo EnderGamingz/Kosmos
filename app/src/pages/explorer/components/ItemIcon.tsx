@@ -75,8 +75,10 @@ export default function ItemIcon({
   color?: string | null;
   keySuffix?: string;
 }) {
+  // Only use layout component when suffix exists
+  const Component = keySuffix ? motion.div : 'div';
   return (
-    <motion.div
+    <Component
       layoutId={`type-${id}-${keySuffix}`}
       className={tw(
         'icon-container pointer-events-none',
@@ -87,6 +89,6 @@ export default function ItemIcon({
         color: color || undefined,
       }}>
       {getFileIcon(type, id, name, status, dynamic, disablePreview)}
-    </motion.div>
+    </Component>
   );
 }
