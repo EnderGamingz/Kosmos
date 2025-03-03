@@ -1,7 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect, useState } from 'react';
 import { CheckIcon } from '@heroicons/react/24/outline';
-import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay';
 import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
@@ -11,6 +10,8 @@ import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import useDisclosure from '@hooks/useDisclosure.ts';
+import { Dialog, DialogContent, DialogFooter } from '@components/ui/dialog.tsx';
 
 function AlbumAddItemsContent({
   addTo,
@@ -62,7 +63,7 @@ function AlbumAddItemsContent({
   const breadCrumbs = useFolderBreadCrumbs(folders.data);
 
   return (
-    <div className={'flex h-full select-none flex-col p-10'}>
+    <div className={'flex h-full select-none flex-col'}>
       <div className={'flex items-center pl-3 shadow-sm md:pl-0'}>
         <FileListBreadCrumbs
           crumbs={breadCrumbs}
@@ -71,7 +72,7 @@ function AlbumAddItemsContent({
       </div>
       <div
         className={
-          'file-list relative flex h-full flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
+          'file-list relative flex h-full flex-col overflow-y-auto max-md:max-h-[calc(100dvh-148px)]'
         }>
         <ExplorerDataDisplay
           overwriteDisplay={{
@@ -99,10 +100,12 @@ function AlbumAddItemsContent({
           }}
         />
       </div>
-      <button onClick={submit} className={'btn-black mt-5'}>
-        <CheckIcon />
-        Save
-      </button>
+      <DialogFooter>
+        <button onClick={submit} className={'btn-black mt-5 px-10'}>
+          <CheckIcon />
+          Save
+        </button>
+      </DialogFooter>
     </div>
   );
 }
@@ -125,15 +128,16 @@ export function AlbumAddItems({
         <PlusIcon />
         Add Items
       </button>
-      <Modal size={'full'} isOpen={isOpen} onOpenChange={onClose}>
-        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent
+          className={'!max-w-full !max-h-full h-full rounded-none'}>
           <AlbumAddItemsContent
             addTo={id}
             initialFiles={added}
             onClose={onClose}
           />
-        </ModalContent>
-      </Modal>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

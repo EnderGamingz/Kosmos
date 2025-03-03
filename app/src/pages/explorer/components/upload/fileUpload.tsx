@@ -1,16 +1,17 @@
 import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { useUsageStats } from '@lib/query.ts';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTopSmall } from '@components/defaults/transition.ts';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 import { ReactNode } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
+import useDisclosure from '@hooks/useDisclosure.ts';
 
 export function FileUploadModal({
   open,
@@ -26,19 +27,17 @@ export function FileUploadModal({
   return (
     <>
       {children}
-      <Modal
-        backdrop={'blur'}
-        size={'2xl'}
-        isOpen={open}
-        onOpenChange={onOpenChange}>
-        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
-          <ModalHeader>File Upload</ModalHeader>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>File Upload</DialogTitle>
+          </DialogHeader>
           <FileUploadContent
             folder={currentFolder}
             onClose={() => onOpenChange(false)}
           />
-        </ModalContent>
-      </Modal>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

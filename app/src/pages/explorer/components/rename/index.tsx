@@ -1,9 +1,14 @@
 import { DataOperationType } from '@models/file.ts';
-import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { RenameModalContent } from './renameModalContent.tsx';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import useDisclosure from '@/hooks/useDisclosure.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from '@components/ui/dialog.tsx';
 
 export function RenameAction({
   type,
@@ -16,24 +21,19 @@ export function RenameAction({
   name: string;
   onClose?: () => void;
 }) {
-  const {
-    isOpen,
-    onOpen,
-    onOpenChange,
-    onClose: disclosureOnClose,
-  } = useDisclosure();
+  const { isOpen, onOpenChange, onClose: disclosureOnClose } = useDisclosure();
 
   const context = useContext(DisplayContext);
   if (context.shareUuid) return null;
 
   return (
     <>
-      <Modal
-        size={'md'}
-        backdrop={'blur'}
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}>
-        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogTrigger>
+          <PencilIcon />
+          Rename
+        </DialogTrigger>
+        <DialogContent className={'!max-w-sm'}>
           <RenameModalContent
             renameData={{ type, id, name }}
             onClose={() => {
@@ -45,12 +45,8 @@ export function RenameAction({
               }, 400);
             }}
           />
-        </ModalContent>
-      </Modal>
-      <button onClick={onOpen}>
-        <PencilIcon />
-        Rename
-      </button>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

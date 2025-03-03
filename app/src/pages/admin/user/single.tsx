@@ -4,18 +4,18 @@ import { Role, roleToString } from '@models/user.ts';
 import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import {
-  Chip,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
 import { FormEvent } from 'react';
 import { Helmet } from 'react-helmet';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import { Badge } from '@components/ui/badge.tsx';
+import useDisclosure from '@/hooks/useDisclosure';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 
 export default function AdminUser() {
   const { id } = useParams();
@@ -85,12 +85,12 @@ function AdminDeleteUser({ user }: { user: UserModelDTO }) {
   });
 
   return (
-    <Chip
+    <Badge
       className={'cursor-pointer'}
       onClick={() => deleteAction.mutate()}
-      color={'danger'}>
+      variant={'destructive'}>
       Delete User
-    </Chip>
+    </Badge>
   );
 }
 
@@ -171,69 +171,70 @@ export function AdminUpdateUserModal({ user }: { user: UserModelDTO }) {
 
   return (
     <>
-      <Chip className={'cursor-pointer'} onClick={onOpen} color={'primary'}>
+      <Badge className={'cursor-pointer'} onClick={onOpen} color={'primary'}>
         Update User
-      </Chip>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          <ModalHeader>Create User</ModalHeader>
-          <ModalBody>
-            <form onSubmit={handleSubmit} className={'flex flex-col gap-3'}>
-              <input
-                className={'input'}
-                type={'text'}
-                name={'username'}
-                id={'username'}
-                placeholder={'Username'}
-                defaultValue={user.username}
-              />
-              <input
-                className={'input'}
-                type={'text'}
-                name={'new_password'}
-                id={'new_password'}
-                placeholder={'New Password '}
-              />
-              <input
-                className={'input'}
-                type={'number'}
-                name={'limit'}
-                id={'limit'}
-                placeholder={'Limit'}
-                defaultValue={user.storage_limit}
-              />
-              <input
-                className={'input'}
-                type={'text'}
-                name={'full_name'}
-                id={'full_name'}
-                placeholder={'Full name'}
-                defaultValue={user.full_name ?? ''}
-              />
-              <input
-                className={'input'}
-                type={'text'}
-                name={'email'}
-                id={'email'}
-                placeholder={'Email'}
-                defaultValue={user.email ?? ''}
-              />
-              <select
-                className={'input'}
-                name={'new_role'}
-                id={'new_role'}
-                defaultValue={user.role}>
-                <option value={Role.User}>User</option>
-                <option value={Role.Admin}>Admin</option>
-              </select>
+      </Badge>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create User</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className={'flex flex-col gap-3'}>
+            <input
+              className={'input'}
+              type={'text'}
+              name={'username'}
+              id={'username'}
+              placeholder={'Username'}
+              defaultValue={user.username}
+            />
+            <input
+              className={'input'}
+              type={'text'}
+              name={'new_password'}
+              id={'new_password'}
+              placeholder={'New Password '}
+            />
+            <input
+              className={'input'}
+              type={'number'}
+              name={'limit'}
+              id={'limit'}
+              placeholder={'Limit'}
+              defaultValue={user.storage_limit}
+            />
+            <input
+              className={'input'}
+              type={'text'}
+              name={'full_name'}
+              id={'full_name'}
+              placeholder={'Full name'}
+              defaultValue={user.full_name ?? ''}
+            />
+            <input
+              className={'input'}
+              type={'text'}
+              name={'email'}
+              id={'email'}
+              placeholder={'Email'}
+              defaultValue={user.email ?? ''}
+            />
+            <select
+              className={'input'}
+              name={'new_role'}
+              id={'new_role'}
+              defaultValue={user.role}>
+              <option value={Role.User}>User</option>
+              <option value={Role.Admin}>Admin</option>
+            </select>
+            <DialogFooter>
               <button className={'btn-black'} type={'submit'}>
                 Update
               </button>
-            </form>
-          </ModalBody>
-          <ModalFooter />
-        </ModalContent>
-      </Modal>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

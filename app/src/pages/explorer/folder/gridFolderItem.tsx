@@ -10,13 +10,13 @@ import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useNavigate } from 'react-router-dom';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import { Checkbox } from '@nextui-org/react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Checkbox } from '@components/ui/checkbox.tsx';
 
 export default function GridFolderItem({
   index,
@@ -141,8 +141,8 @@ export default function GridFolderItem({
               )}>
               <Checkbox
                 className={'h-5 w-5 p-0'}
-                isSelected={isSelected}
-                onValueChange={() => !selectDisabled && onSelect(folder)}
+                checked={isSelected}
+                onClick={() => !selectDisabled && onSelect(folder)}
               />
             </div>
           )}

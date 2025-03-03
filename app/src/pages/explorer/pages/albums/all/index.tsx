@@ -1,10 +1,10 @@
-import { Progress } from '@nextui-org/react';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { AlbumItem } from '@pages/explorer/pages/albums/all/albumItem.tsx';
 import { CreateAlbum } from '@pages/explorer/pages/albums/createAlbum.tsx';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
+import { Progress } from '@components/ui/progress.tsx';
 
 export default function AlbumsPage() {
   const albums = AlbumQuery.useAlbums();
@@ -15,7 +15,7 @@ export default function AlbumsPage() {
       </Helmet>
       <Progress
         aria-label={'Recent Files loading...'}
-        isIndeterminate={!albums?.data || albums.isLoading}
+        indeterminate={!albums?.data || albums.isLoading}
         value={100}
         className={'absolute left-0 top-0 z-10 h-1 opacity-50'}
         color={'default'}

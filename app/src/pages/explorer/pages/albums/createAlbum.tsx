@@ -1,12 +1,4 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
 import { useMutation } from '@tanstack/react-query';
 import { CreateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
@@ -15,6 +7,15 @@ import { FormEvent } from 'react';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
+import useDisclosure from '@hooks/useDisclosure.ts';
 
 export function CreateAlbum() {
   const notifications = useNotifications(s => s.actions);
@@ -68,55 +69,58 @@ export function CreateAlbum() {
         <PlusIcon />
         Create Album
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          <ModalHeader>Create Album</ModalHeader>
-          <form onSubmit={handleSubmit}>
-            <ModalBody>
-              <div>
-                <label className={'font-medium'} htmlFor={'name'}>
-                  Name <span className={'text-red-500'}>*</span>
-                </label>
-                <input
-                  name={'name'}
-                  id={'name'}
-                  autoComplete={'off'}
-                  type={'text'}
-                  placeholder={'Album name'}
-                  className={'input w-full'}
-                  required
-                />
-              </div>
-              <div>
-                <label className={'font-medium'} htmlFor={'description'}>
-                  Description
-                </label>
-                <input
-                  name={'description'}
-                  id={'description'}
-                  autoComplete={'off'}
-                  type={'text'}
-                  placeholder={'Album description'}
-                  className={'input w-full'}
-                />
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <button
-                disabled={createMutation.isPending}
-                type={'button'}
-                className={'btn-white mr-auto'}
-                onClick={onClose}>
-                Cancel
-              </button>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Album</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={handleSubmit}
+            className={'space-y-4 [&_label]:block [&_input]:mt-2'}>
+            <div>
+              <label className={'font-medium'} htmlFor={'name'}>
+                Name <span className={'text-red-500'}>*</span>
+              </label>
+              <input
+                name={'name'}
+                id={'name'}
+                autoComplete={'off'}
+                type={'text'}
+                placeholder={'Album name'}
+                className={'input w-full'}
+                required
+              />
+            </div>
+            <div>
+              <label className={'font-medium'} htmlFor={'description'}>
+                Description
+              </label>
+              <input
+                name={'description'}
+                id={'description'}
+                autoComplete={'off'}
+                type={'text'}
+                placeholder={'Album description'}
+                className={'input w-full'}
+              />
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <button
+                  disabled={createMutation.isPending}
+                  type={'button'}
+                  className={'btn-white mr-auto'}>
+                  Cancel
+                </button>
+              </DialogClose>
               <button type={'submit'} className={'btn-black'}>
                 <CheckIcon />
                 Create
               </button>
-            </ModalFooter>
+            </DialogFooter>
           </form>
-        </ModalContent>
-      </Modal>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

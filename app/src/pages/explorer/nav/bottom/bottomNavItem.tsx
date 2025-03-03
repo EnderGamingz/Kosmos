@@ -1,9 +1,14 @@
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
-import { MouseEvent, ReactNode, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
+import { MouseEvent, ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { cn } from '@lib/utils.ts';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import useDisclosure from '@hooks/useDisclosure.ts';
 
 export function BottomNavItem({
   link,
@@ -49,29 +54,27 @@ function BottomNavPopoverWrapper({
   children: ReactNode;
   noPriority?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const { isOpen, onOpenChange, onClose, onOpen } = useDisclosure();
   if (!link.items) return children;
 
   return (
-    <Popover isOpen={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
-        <div>{children}</div>
+    <Popover open={isOpen} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
+        <button onClick={onOpen}>{children}</button>
       </PopoverTrigger>
-      <PopoverContent className={'bg-stone-100 dark:bg-stone-800'}>
-        <div
-          className={'grid gap-1 py-1'}
-          style={{
-            gridTemplateColumns: `repeat(${link.items.length}, minmax(0, 1fr))`,
-          }}>
-          {link.items.map(item => (
-            <BottomNavItem
-              noPriority={noPriority}
-              link={item}
-              key={item.name}
-              onClose={() => setOpen(false)}
-            />
-          ))}
-        </div>
+      <PopoverContent
+        className={'w-full grid gap-1 p-2'}
+        style={{
+          gridTemplateColumns: `repeat(${link.items.length}, minmax(0, 1fr))`,
+        }}>
+        {link.items.map(item => (
+          <BottomNavItem
+            noPriority={noPriority}
+            link={item}
+            key={item.name}
+            onClose={onClose}
+          />
+        ))}
       </PopoverContent>
     </Popover>
   );

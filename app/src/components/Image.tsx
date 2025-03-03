@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import { Skeleton } from '@nextui-org/react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
 import {
   ExclamationCircleIcon,
@@ -9,6 +8,7 @@ import { motion } from 'framer-motion';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { createPreviewUrl } from '@lib/file.ts';
 import { cn } from '@lib/utils.ts';
+import { Skeleton } from '@components/ui/skeleton.tsx';
 
 export function PreviewImage({
   id,
@@ -45,7 +45,7 @@ export function PreviewImage({
         'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
         'shadow-inherit',
         dynamic ? 'min-h-20' : 'h-[40px] w-[40px]',
-        isUnavailable && 'rounded-xl outline outline-1 outline-stone-400/50',
+        isUnavailable && 'rounded-xl outline outline-stone-400/50',
       )}>
       {(isReady || type === FileType.RawImage) && (
         <motion.img
@@ -66,13 +66,9 @@ export function PreviewImage({
         />
       )}
       {!isUnavailable && !isFailed && (!loaded || isProcessing) && (
-        <Skeleton
-          className={cn(
-            'h-full w-full',
-            'rounded-lg !bg-transparent shadow-inner',
-          )}
-        />
+        <Skeleton className={cn('h-full w-full', 'rounded-lg shadow-inner')} />
       )}
+
       {isFailed && (
         <ExclamationCircleIcon className={'h-8 w-8 text-red-500/20'} />
       )}

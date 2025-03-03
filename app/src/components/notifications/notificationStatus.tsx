@@ -1,7 +1,7 @@
 import { Notification, Severity } from '@stores/notificationStore.ts';
-import { Progress } from '@nextui-org/react';
 
 import { cn } from '@lib/utils.ts';
+import { Progress } from '@components/ui/progress.tsx';
 
 export function NotificationStatus({ data }: { data: Notification }) {
   const isSuccess = data.severity === Severity.SUCCESS;
@@ -10,7 +10,7 @@ export function NotificationStatus({ data }: { data: Notification }) {
   if (data.loading) {
     return (
       <Progress
-        isIndeterminate={!isSuccess && !isError}
+        indeterminate={!isSuccess && !isError}
         value={100}
         className={cn(
           'absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden transition-height',

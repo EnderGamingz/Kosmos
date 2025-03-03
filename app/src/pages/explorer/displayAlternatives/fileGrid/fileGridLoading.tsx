@@ -1,9 +1,9 @@
-import { Skeleton } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariant,
 } from '@components/defaults/transition.ts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function FileGridLoading() {
   return (

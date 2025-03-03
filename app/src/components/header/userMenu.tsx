@@ -4,12 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import {
-  Divider,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@nextui-org/react';
-import {
   ArrowRightStartOnRectangleIcon,
   CodeBracketIcon,
   Cog6ToothIcon,
@@ -20,6 +14,7 @@ import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useState } from 'react';
 import { Role } from '@models/user.ts';
 import { cn } from '@lib/utils.ts';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -37,8 +32,8 @@ export function UserMenu() {
   const handleClose = () => setOpen(false);
 
   return (
-    <Popover isOpen={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <button
           className={cn(
             'rounded-lg p-2 text-stone-700',
@@ -66,42 +61,40 @@ export function UserMenu() {
           </div>
         </button>
       </PopoverTrigger>
-      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
-        <div className={'space-y-2 px-1 py-1.5'}>
-          <div className={'mb-1 text-stone-700 dark:text-stone-300'}>
-            <p className={'font-semibold'}>Welcome back</p>
-            <p className={'font-light text-stone-600 dark:text-stone-400'}>
-              {user.user?.username}
-            </p>
-          </div>
-          <UserMenuUsage onClick={handleClose} />
-          <Divider className={'mb-1 mt-2'} />
-          <div className={'space-y-1'}>
-            {user.user?.role === Role.Admin && (
-              <Link
-                to={'/admin/user'}
-                className={'menu-button'}
-                onClick={handleClose}>
-                <CodeBracketIcon className={'h-5 w-5'} />
-                Admin
-              </Link>
-            )}
+      <PopoverContent className={'max-w-52 px-3 py-3'}>
+        <div className={'mb-2 text-stone-700 dark:text-stone-300'}>
+          <p className={'font-semibold'}>Welcome back</p>
+          <p className={'font-light text-stone-600 dark:text-stone-400'}>
+            {user.user?.username}
+          </p>
+        </div>
+        <UserMenuUsage onClick={handleClose} />
+        <hr className={'my-3 mt-2'} />
+        <div className={'space-y-1'}>
+          {user.user?.role === Role.Admin && (
             <Link
-              to={'/settings/account'}
+              to={'/admin/user'}
               className={'menu-button'}
               onClick={handleClose}>
-              <Cog6ToothIcon className={'h-5 w-5'} />
-              Settings
+              <CodeBracketIcon className={'h-5 w-5'} />
+              Admin
             </Link>
-            <div
-              className={cn(
-                'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50',
-                'dark:bg-red-800/30 dark:text-red-300 dark:hover:bg-red-800/50',
-              )}
-              onClick={() => logoutAction.mutate()}>
-              <ArrowRightStartOnRectangleIcon className={'h-5 w-5'} />
-              Logout
-            </div>
+          )}
+          <Link
+            to={'/settings/account'}
+            className={'menu-button'}
+            onClick={handleClose}>
+            <Cog6ToothIcon className={'h-5 w-5'} />
+            Settings
+          </Link>
+          <div
+            className={cn(
+              'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50',
+              'dark:bg-red-800/30 dark:text-red-300 dark:hover:bg-red-800/50',
+            )}
+            onClick={() => logoutAction.mutate()}>
+            <ArrowRightStartOnRectangleIcon className={'h-5 w-5'} />
+            Logout
           </div>
         </div>
       </PopoverContent>

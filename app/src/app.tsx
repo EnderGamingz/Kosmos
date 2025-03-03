@@ -1,7 +1,6 @@
 import { Theme, usePreferenceStore } from '@stores/preferenceStore.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@lib/query.ts';
-import { NextUIProvider } from '@nextui-org/react';
 import LazyRouter from './lazyRouter.tsx';
 import { useEffect } from 'react';
 
@@ -14,12 +13,12 @@ export function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NextUIProvider
+      <div
         className={
           'app-wrapper flex flex-grow flex-col ' + (darkMode ? 'dark' : '')
         }>
         <LazyRouter />
-      </NextUIProvider>
+      </div>
     </QueryClientProvider>
   );
 }

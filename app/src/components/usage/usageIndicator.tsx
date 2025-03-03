@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import { Progress } from '@nextui-org/react';
 import { getPercentageStats } from '@components/usage/getPercentage.ts';
 import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 import { cn } from '@lib/utils.ts';
+import { Progress } from '@components/ui/progress.tsx';
 
 function ActiveBar({ percent }: { percent: number }) {
   return (
@@ -74,7 +74,7 @@ export function UsageIndicator({
           <Progress
             className={'h-full'}
             aria-label={'usage loading'}
-            isIndeterminate
+            indeterminate
           />
         ) : (
           <>

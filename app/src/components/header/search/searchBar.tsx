@@ -4,8 +4,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  useDisclosure,
-} from '@nextui-org/react';
+} from '@/components/ui/popover';
+import useDisclosure from '@/hooks/useDisclosure';
 
 export function SearchBar() {
   return (
@@ -22,18 +22,15 @@ export function SearchPopup() {
 
   return (
     <Popover
-      isOpen={searchDisclosure.isOpen}
-      onOpenChange={searchDisclosure.onOpenChange}
-      placement={'bottom'}>
-      <PopoverTrigger>
+      open={searchDisclosure.isOpen}
+      onOpenChange={searchDisclosure.onOpenChange}>
+      <PopoverTrigger asChild>
         <button className={'block p-2 sm:hidden'}>
           <MagnifyingGlassIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
         </button>
       </PopoverTrigger>
-      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
-        <div className={'p-2'}>
-          <SearchForm onClose={searchDisclosure.onClose} />
-        </div>
+      <PopoverContent side={'bottom'}>
+        <SearchForm onClose={searchDisclosure.onClose} />
       </PopoverContent>
     </Popover>
   );

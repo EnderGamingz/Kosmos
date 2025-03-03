@@ -3,14 +3,6 @@ import { invalidateFiles, setFileContent, useFileContent } from '@lib/query.ts';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
 import { useState } from 'react';
 import MarkdownEditor from '@uiw/react-markdown-editor';
 import {
@@ -29,6 +21,15 @@ import CodeEditor from '@uiw/react-textarea-code-editor';
 import { truncateString } from '@utils/truncate.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import useDisclosure from '@hooks/useDisclosure.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 
 function MarkdownEditorContent({
   file,
@@ -79,25 +80,28 @@ function MarkdownEditorContent({
   });
 
   return (
-    <ModalContent
-      className={'bg-[var(--markdown-bg)] text-[var(--markdown-fg)]'}>
-      <ModalHeader>
-        Editing
-        <p className={'mx-1 font-light'}>
-          {truncateString(file.file_name)}
-        </p> as {isMarkdown ? 'Markdown' : 'Plain Text'}
-      </ModalHeader>
-      <ModalBody className={'px-2 py-0 md:px-5'}>
+    <DialogContent
+      className={
+        '!max-w-full bg-[var(--markdown-bg)] text-[var(--markdown-fg)]'
+      }>
+      <DialogHeader>
+        <DialogTitle>Editing</DialogTitle>
+        <DialogDescription>
+          {truncateString(file.file_name)} as{' '}
+          {isMarkdown ? 'Markdown' : 'Plain Text'}
+        </DialogDescription>
+      </DialogHeader>
+      <div className={'p-0'}>
         <div
           className={cn(
-            'h-full w-full flex-grow rounded-lg shadow-lg',
+            'h-full w-full flex-grow rounded-lg shadow-lg border',
             isMarkdown
               ? 'overflow-hidden'
-              : 'h-[calc(100vh-60px-72px-29px)] overflow-y-auto',
+              : 'h-[calc(100vh-60px-72px-60px)] overflow-y-auto',
           )}>
           {isMarkdown ? (
             <MarkdownEditor
-              height={'calc(100vh - 60px - 72px - 29px)'}
+              height={'calc(100vh - 60px - 72px - 60px)'}
               value={code}
               onChange={value => setCode(value)}
               showToolbar={isMarkdown}
@@ -113,13 +117,13 @@ function MarkdownEditorContent({
             />
           )}
         </div>
-      </ModalBody>
-      <ModalFooter>
+      </div>
+      <DialogFooter>
         <button className={'btn-black'} onClick={() => saveAction.mutate()}>
           <CheckIcon /> Save
         </button>
-      </ModalFooter>
-    </ModalContent>
+      </DialogFooter>
+    </DialogContent>
   );
 }
 
@@ -151,14 +155,14 @@ export function EditMarkdownFile({
         <PencilSquareIcon />
         Edit File
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size={'full'}>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <MarkdownEditorContent
           file={file}
           initialData={query.data}
           onClose={handleClose}
           isMarkdown={isMarkdown}
         />
-      </Modal>
+      </Dialog>
     </>
   );
 }

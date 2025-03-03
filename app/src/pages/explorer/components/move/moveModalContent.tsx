@@ -1,12 +1,5 @@
 import { useState } from 'react';
 import { useFolders } from '@lib/query.ts';
-import {
-  CircularProgress,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Tooltip,
-} from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { ContextOperationType } from '@models/file.ts';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
@@ -14,6 +7,13 @@ import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
+import { LoaderCircle } from 'lucide-react';
 
 export type MoveData = {
   id?: string;
@@ -59,40 +59,37 @@ export function MoveModalContent({
 
   return (
     <>
-      <ModalHeader className='grid gap-1'>
-        <h2 className={'flex flex-wrap gap-1 overflow-hidden'}>
+      <DialogHeader className='grid gap-1'>
+        <DialogTitle
+          className={'flex flex-wrap items-center gap-2 overflow-hidden'}>
           Move {getMoveDescription()}
           {moveData.type !== 'multi' && (
-            <Tooltip content={moveData.name}>
-              <p
-                className={
-                  'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1 dark:bg-stone-700'
-                }>
-                {moveData.name}
-              </p>
-            </Tooltip>
+            <span
+              title={moveData.name}
+              className={
+                'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 py-1 px-1.5 dark:bg-stone-700'
+              }>
+              {moveData.name}
+            </span>
           )}
-        </h2>
-        <div
+        </DialogTitle>
+        <DialogDescription
           className={
-            'flex justify-between gap-1 text-sm font-normal text-stone-600'
+            'flex justify-between gap-1 text-sm font-normal text-muted-foreground'
           }>
-          <div>
+          <span>
             Moving to <ArrowRightIcon className={'inline h-3 w-3'} />{' '}
             {data?.folder?.folder_name || 'Home'}{' '}
-          </div>
+          </span>
           {isLoading && (
-            <CircularProgress
+            <LoaderCircle
               aria-label={'Folder loading...'}
-              classNames={{
-                svg: 'w-4 h-4',
-              }}
-              isIndeterminate
+              className={'w-4 h-4 animate-spin'}
             />
           )}
-        </div>
-      </ModalHeader>
-      <ModalBody className={'min-h-32'}>
+        </DialogDescription>
+      </DialogHeader>
+      <div className={'min-h-32'}>
         <ul
           className={cn(
             '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
@@ -126,8 +123,8 @@ export function MoveModalContent({
               </motion.li>
             ))}
         </ul>
-      </ModalBody>
-      <ModalFooter className={'justify-between'}>
+      </div>
+      <DialogFooter className={'justify-between'}>
         <button onClick={onClose} className={'btn-white'}>
           Cancel
         </button>
@@ -137,7 +134,7 @@ export function MoveModalContent({
           className={'btn-black'}>
           {moveAction.isPending ? 'Moving' : 'Move here'}
         </button>
-      </ModalFooter>
+      </DialogFooter>
     </>
   );
 }

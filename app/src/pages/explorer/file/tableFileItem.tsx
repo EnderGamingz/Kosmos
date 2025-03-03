@@ -1,5 +1,4 @@
 import { normalizeFileType } from '@models/file.ts';
-import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
@@ -24,6 +23,7 @@ import { invalidateBin, invalidateUsage } from '@lib/query.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Checkbox } from '@components/ui/checkbox.tsx';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
@@ -126,12 +126,9 @@ export function TableFileItem({
         context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
       )}>
       {!context.viewSettings?.noSelect && (
-        <motion.th /*layoutId={`check-${file.id}`}*/>
-          <Checkbox
-            isSelected={isSelected}
-            onValueChange={() => onSelect(file)}
-          />
-        </motion.th>
+        <th>
+          <Checkbox checked={isSelected} onClick={() => onSelect(file)} />
+        </th>
       )}
       <td
         className={cn(

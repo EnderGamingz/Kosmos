@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
-import { ScrollShadow } from '@nextui-org/react';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -89,7 +88,7 @@ export function ShareModalContent({
                 {create ? 'Cancel' : 'Create'}
               </button>
             </div>
-            <ScrollShadow
+            <div
               className={
                 'mb-3 flex h-full flex-col overflow-y-auto px-1 py-5 scrollbar-hide'
               }>
@@ -108,7 +107,7 @@ export function ShareModalContent({
                   />
                 )}
               </AnimatePresence>
-            </ScrollShadow>
+            </div>
             <ModalCloseButton onClick={onClose} />
           </motion.div>
         </div>

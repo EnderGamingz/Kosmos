@@ -5,7 +5,6 @@ import {
   useUsageStats,
 } from '@lib/query.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
-import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -13,6 +12,7 @@ import { BASE_URL } from '@lib/env.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
+import { Progress } from '@components/ui/progress.tsx';
 
 export default function BinPage() {
   const { data: usageData } = useUsageStats();
@@ -38,7 +38,7 @@ export default function BinPage() {
       </Helmet>
       <Progress
         aria-label={'Recent Files loading...'}
-        isIndeterminate={!deletedFiles?.data || deletedFiles.isLoading}
+        indeterminate={!deletedFiles?.data || deletedFiles.isLoading}
         value={100}
         className={'absolute left-0 top-0 h-1 opacity-50'}
         color={'default'}

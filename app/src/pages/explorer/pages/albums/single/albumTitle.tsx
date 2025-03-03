@@ -107,7 +107,7 @@ export function AlbumTitle({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className={cn(
-            'bg-transparent font-light text-stone-500 outline-none transition-[font-size]',
+            'bg-transparent font-light text-muted-foreground outline-none transition-[font-size]',
             Boolean(dense) && 'text-sm',
           )}
           defaultValue={album.description || ''}

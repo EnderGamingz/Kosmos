@@ -1,10 +1,10 @@
 import { useFavorites } from '@lib/query.ts';
-import { Progress } from '@nextui-org/react';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
+import { Progress } from '@/components/ui/progress';
 
 export default function FavoritesPage() {
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
@@ -24,7 +24,7 @@ export default function FavoritesPage() {
       </Helmet>
       <Progress
         aria-label={'Favorites loading...'}
-        isIndeterminate={!favorites?.data || favorites.isLoading}
+        indeterminate={!favorites?.data || favorites.isLoading}
         value={100}
         className={'absolute left-0 top-0 h-1 opacity-50'}
         color={'default'}

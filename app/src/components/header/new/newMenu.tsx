@@ -1,9 +1,3 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  useDisclosure,
-} from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import {
@@ -20,6 +14,12 @@ import {
 import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import useDisclosure from '@hooks/useDisclosure.ts';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);
@@ -30,19 +30,19 @@ export function NewMenu() {
 
   return (
     <>
-      <Popover isOpen={open} onOpenChange={setOpen} placement={'bottom'}>
-        <PopoverTrigger>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <button className={'flex items-center gap-1 p-2'}>
             <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
             <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>
         </PopoverTrigger>
-        <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
+        <PopoverContent side={'bottom'} className={'max-w-52 p-3'}>
           <motion.div
             variants={containerVariant()}
             initial={'hidden'}
             animate={'show'}
-            className={'max-w-52 space-y-1 px-0.5 py-2'}>
+            className={'space-y-1'}>
             <div className={'flex items-center gap-1'}>
               <div className={'flex-1'}>
                 <FileUpload

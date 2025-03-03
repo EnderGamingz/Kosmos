@@ -10,7 +10,6 @@ import {
 } from '@models/operation.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariant } from '@components/defaults/transition.ts';
-import { Tooltip } from '@nextui-org/react';
 import { OperationStatusIndicator } from '@components/header/notifications/operationStatusIndicator.tsx';
 import { UpdatingTimeIndicator } from '@components/updatingTimeIndicator.tsx';
 
@@ -39,11 +38,9 @@ export function OperationItem({ data }: { data: OperationModelDTO }) {
           }>
           {getOperationTypeString(data.operation_type)}
         </p>
-        <Tooltip content={getOperationStatusString(data.operation_status)}>
-          <span>
-            <OperationStatusIndicator status={data.operation_status} />
-          </span>
-        </Tooltip>
+        <span title={getOperationStatusString(data.operation_status)}>
+          <OperationStatusIndicator status={data.operation_status} />
+        </span>
       </div>
       <div className={'flex justify-between gap-3'}>
         <p className={'text-xs text-stone-500'}>

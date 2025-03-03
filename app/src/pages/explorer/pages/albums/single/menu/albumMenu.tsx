@@ -1,15 +1,15 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  useDisclosure,
-} from '@nextui-org/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { AlbumDelete } from '@pages/explorer/pages/albums/single/menu/albumDelete.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import useDisclosure from '@/hooks/useDisclosure';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 export function AlbumMenu({
   album,
@@ -20,24 +20,22 @@ export function AlbumMenu({
 }) {
   const { isOpen, onOpenChange, onClose } = useDisclosure();
   return (
-    <Popover placement={'bottom'} isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger>
         <button className={'text-stone-800 dark:text-stone-100'}>
           <EllipsisVerticalIcon className={'h-8 w-8'} />
         </button>
       </PopoverTrigger>
-      <PopoverContent>
-        <div className={'min-w-32 space-y-2 px-1 py-1.5'}>
-          <ContextMenuTitle title={album.name} type={'album'} />
-          <ShareButton
-            className={'menu-button w-full'}
-            id={album.id}
-            type={'album'}
-            onClose={onClose}
-          />
-          <AlbumDelete id={album.id} onClose={onClose} />
-          {children}
-        </div>
+      <PopoverContent side={'bottom'} className={'min-w-32 max-w-52 space-y-2'}>
+        <ContextMenuTitle title={album.name} type={'album'} />
+        <ShareButton
+          className={'menu-button w-full'}
+          id={album.id}
+          type={'album'}
+          onClose={onClose}
+        />
+        <AlbumDelete id={album.id} onClose={onClose} />
+        {children}
       </PopoverContent>
     </Popover>
   );

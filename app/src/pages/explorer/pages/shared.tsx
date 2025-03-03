@@ -1,6 +1,5 @@
 import { useSharedItems } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
@@ -24,6 +23,7 @@ import { AlbumModelWithShareInfoDTO } from '@bindings/AlbumModelWithShareInfoDTO
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Progress } from '@/components/ui/progress';
 
 export default function SharedItems({
   itemsForUser,
@@ -50,7 +50,7 @@ export default function SharedItems({
         }>
         <Progress
           aria-label={'Recent Files loading...'}
-          isIndeterminate={!items?.data || items.isLoading}
+          indeterminate={!items?.data || items.isLoading}
           value={100}
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}

@@ -1,7 +1,7 @@
-import { MutableRefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
 export function useScrollThreshold(
-  ref: MutableRefObject<HTMLElement | null>,
+  ref: RefObject<HTMLElement | null>,
   threshold: number,
 ) {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);

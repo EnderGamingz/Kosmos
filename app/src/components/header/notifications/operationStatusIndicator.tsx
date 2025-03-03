@@ -1,6 +1,6 @@
 import { OperationStatus } from '@models/operation.ts';
-import { CircularProgress } from '@nextui-org/react';
 import { NotificationCircle } from '@components/header/notifications/notificationCircle.tsx';
+import { LoaderCircle } from 'lucide-react';
 
 export function OperationStatusIndicator({
   status,
@@ -9,11 +9,9 @@ export function OperationStatusIndicator({
 }) {
   const statusMapping = {
     [OperationStatus.Pending]: (
-      <CircularProgress
+      <LoaderCircle
         aria-label={'Operation pending'}
-        classNames={{
-          svg: 'h-3 w-3',
-        }}
+        className={'animate-spin w-4 h-4'}
       />
     ),
     [OperationStatus.Success]: (

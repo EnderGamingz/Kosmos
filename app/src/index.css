@@ -15,7 +15,7 @@
 
     .btn-white {
         @apply font-semibold flex cursor-pointer items-center gap-2
-        rounded-xl bg-transparent outline-1 outline outline-stone-900 px-4
+        rounded-xl bg-transparent outline outline-stone-900 px-4
         py-2 text-stone-900 shadow-sm transition-colors
         hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
         dark:outline-stone-100 dark:text-stone-100 dark:hover:bg-stone-700
@@ -26,7 +26,7 @@
     }
 
     .input {
-        @apply rounded-lg bg-stone-50 p-2 outline outline-1 outline-stone-400/20
+        @apply rounded-lg bg-stone-50 p-2 outline outline-stone-400/20
         dark:bg-stone-300/20 dark:outline-stone-700
         dark:placeholder:text-stone-500
     }
@@ -253,6 +253,22 @@ body {
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@theme {
+    --animate-progress: progress 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+
+    @keyframes progress {
+        0% {
+            transform: translateX(0) scaleX(0);
+        }
+        40% {
+            transform: translateX(0) scaleX(0.7);
+        }
+        100% {
+            transform: translateX(100%) scaleX(0.2);
+        }
     }
 }
 

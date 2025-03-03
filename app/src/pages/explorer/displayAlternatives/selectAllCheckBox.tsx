@@ -1,7 +1,7 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { Checkbox } from '@nextui-org/react';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export function SelectAllCheckBox({
   files,
@@ -38,9 +38,14 @@ export function SelectAllCheckBox({
 
   return (
     <Checkbox
-      isSelected={isAllSelected && hasData}
-      isIndeterminate={isPartialSelected}
-      onChange={toggleSelection}
+      checked={
+        isAllSelected && hasData
+          ? true
+          : isPartialSelected
+            ? 'indeterminate'
+            : false
+      }
+      onClick={toggleSelection}
     />
   );
 }

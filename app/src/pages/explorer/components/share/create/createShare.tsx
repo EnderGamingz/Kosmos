@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { getShareTypeString, ShareType } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { TypeButton } from '@pages/explorer/components/share/create/typeButton.tsx';
-import { Collapse } from 'react-collapse';
 import {
   CheckIcon,
   ClockIcon,
@@ -11,8 +10,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
-import { DatePicker } from '@nextui-org/react';
-import { DateValue, getLocalTimeZone, now } from '@internationalized/date';
+import { getLocalTimeZone, now } from '@internationalized/date';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
@@ -20,6 +18,8 @@ import { BASE_URL } from '@lib/env.ts';
 import { ShareOperationType } from '@models/file.ts';
 import { invalidateShares } from '@lib/query.ts';
 import { cn } from '@lib/utils.ts';
+import { Collapse } from 'react-collapse';
+import { DateTimePicker } from '@/components/ui/date-picker';
 
 export function CreateShare({
   dataType,
@@ -40,7 +40,7 @@ export function CreateShare({
     limit,
   }: {
     password: string;
-    expiresAt: DateValue | undefined;
+    expiresAt: Date | undefined;
     limit: number | undefined;
   }) => void;
   disabled?: boolean;
@@ -50,9 +50,11 @@ export function CreateShare({
   const [type, setType] = useState<ShareType>(ShareType.Public);
   const [privateUsername, setPrivateUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [expiresAt, setExpiresAt] = useState<DateValue | undefined>(undefined);
+  const [expiresAt, setExpiresAt] = useState<Date | undefined>(undefined);
   const [limit, setLimit] = useState<number | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState(-1);
+
+  console.log(expiresAt);
 
   const createAction = useMutation({
     mutationFn: async () => {
@@ -76,8 +78,7 @@ export function CreateShare({
             [`${dataType}_id`]: id,
             password: password || undefined,
             limit: limit,
-            expires_at:
-              expiresAt?.toDate(getLocalTimeZone()).toISOString() || undefined,
+            expires_at: expiresAt?.toISOString() || undefined,
             target_username: privateUsername || undefined,
           },
         )
@@ -198,7 +199,9 @@ export function CreateShare({
               selected={selectedTime === 0}
               onClick={() => {
                 setSelectedTime(0);
-                setExpiresAt(now(getLocalTimeZone()).add({ minutes: 5 }));
+                setExpiresAt(
+                  now(getLocalTimeZone()).add({ minutes: 5 }).toDate(),
+                );
               }}
             />
             <Chip
@@ -206,7 +209,9 @@ export function CreateShare({
               selected={selectedTime === 1}
               onClick={() => {
                 setSelectedTime(1);
-                setExpiresAt(now(getLocalTimeZone()).add({ hours: 1 }));
+                setExpiresAt(
+                  now(getLocalTimeZone()).add({ hours: 1 }).toDate(),
+                );
               }}
             />
             <Chip
@@ -214,7 +219,7 @@ export function CreateShare({
               selected={selectedTime === 2}
               onClick={() => {
                 setSelectedTime(2);
-                setExpiresAt(now(getLocalTimeZone()).add({ days: 1 }));
+                setExpiresAt(now(getLocalTimeZone()).add({ days: 1 }).toDate());
               }}
             />
             <Chip
@@ -222,7 +227,7 @@ export function CreateShare({
               selected={selectedTime === 3}
               onClick={() => {
                 setSelectedTime(3);
-                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }));
+                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }).toDate());
               }}
             />
             <Chip
@@ -230,23 +235,23 @@ export function CreateShare({
               selected={selectedTime === 4}
               onClick={() => {
                 setSelectedTime(4);
-                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }));
+                setExpiresAt(now(getLocalTimeZone()).add({ days: 7 }).toDate());
               }}
             />
           </div>
           <Collapse isOpened={!!expiresAt}>
-            <DatePicker
-              label={'Expires at'}
-              variant={'flat'}
-              hideTimeZone
-              hourCycle={24}
-              showMonthAndYearPickers
-              value={expiresAt ?? now(getLocalTimeZone())}
+            <DateTimePicker
+              granularity={'minute'}
+              placeholder={'Expires at'}
+              displayFormat={{
+                hour12: 'PPp',
+              }}
+              disablePast
+              value={expiresAt}
               onChange={e => {
                 setSelectedTime(4);
                 setExpiresAt(e);
               }}
-              minValue={now(getLocalTimeZone())}
             />
           </Collapse>
         </div>

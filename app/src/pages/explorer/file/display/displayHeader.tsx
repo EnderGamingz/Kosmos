@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { Checkbox } from '@nextui-org/react';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export function DisplayHeader({
   file,
@@ -15,7 +15,7 @@ export function DisplayHeader({
     <motion.div className={'flex items-center gap-2'}>
       {selected !== undefined && (
         <motion.div layoutId={`check-${file.id}`}>
-          <Checkbox isSelected={selected} onChange={() => onSelect?.(file)} />
+          <Checkbox checked={selected} onClick={() => onSelect?.(file)} />
         </motion.div>
       )}
       <motion.p

@@ -2,19 +2,20 @@ import { AdminQuery } from '@lib/queries/adminQuery.ts';
 import { roleToString } from '@models/user.ts';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
 import { FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { Helmet } from 'react-helmet';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import useDisclosure from '@hooks/useDisclosure.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@components/ui/dialog.tsx';
 
 function UserItem({ user }: { user: UserModelDTO }) {
   const navigate = useNavigate();
@@ -71,8 +72,8 @@ export default function AdminUserList() {
 
 export function CreateUserModal() {
   const notification = useNotifications(s => s.actions);
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  // Default multiplier is set to MB
+  const { isOpen, onClose, onOpenChange } = useDisclosure();
+  // The default multiplier is set to MB
   const [multiplier, setMultiplier] = useState(1e6);
 
   const createMutation = useMutation({
@@ -127,59 +128,58 @@ export function CreateUserModal() {
   }
 
   return (
-    <>
-      <button className={'btn-black'} onClick={onOpen}>
-        Create
-      </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          <ModalHeader>Create User</ModalHeader>
-          <ModalBody>
-            <form onSubmit={handleSubmit} className={'flex flex-col gap-3'}>
-              <input
-                className={'input'}
-                type={'text'}
-                name={'username'}
-                id={'username'}
-                placeholder={'Username'}
-                required
-              />
-              <input
-                className={'input'}
-                type={'text'}
-                name={'password'}
-                id={'password'}
-                placeholder={'Password'}
-                required
-              />
-              <div className={'flex gap-3'}>
-                <input
-                  className={'input'}
-                  type={'number'}
-                  name={'limit'}
-                  id={'limit'}
-                  placeholder={'Limit'}
-                  required
-                />
-                <select
-                  className={'input'}
-                  name={'multi'}
-                  id={'multi'}
-                  onChange={e => setMultiplier(Number(e.target.value))}
-                  defaultValue={multiplier}>
-                  <option value={1e6}>MB</option>
-                  <option value={1e9}>GB</option>
-                  <option value={1e12}>TB</option>
-                </select>
-              </div>
-              <button className={'btn-black'} type={'submit'}>
-                Create
-              </button>
-            </form>
-          </ModalBody>
-          <ModalFooter />
-        </ModalContent>
-      </Modal>
-    </>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <button className={'btn-black'}>Create</button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create User</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className={'flex flex-col gap-3'}>
+          <input
+            className={'input'}
+            type={'text'}
+            name={'username'}
+            id={'username'}
+            placeholder={'Username'}
+            required
+          />
+          <input
+            className={'input'}
+            type={'text'}
+            name={'password'}
+            id={'password'}
+            placeholder={'Password'}
+            required
+          />
+          <div className={'flex gap-3'}>
+            <input
+              className={'input grow'}
+              type={'number'}
+              name={'limit'}
+              id={'limit'}
+              placeholder={'Limit'}
+              required
+            />
+            <select
+              className={'input'}
+              name={'multi'}
+              id={'multi'}
+              onChange={e => setMultiplier(Number(e.target.value))}
+              defaultValue={multiplier}>
+              <option value={1e6}>MB</option>
+              <option value={1e9}>GB</option>
+              <option value={1e12}>TB</option>
+            </select>
+          </div>
+          <DialogFooter className={'mt-2'}>
+            <button className={'btn-black'} type={'submit'}>
+              Create
+            </button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

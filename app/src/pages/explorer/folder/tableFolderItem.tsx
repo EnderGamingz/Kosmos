@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
@@ -15,6 +14,7 @@ import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Checkbox } from '@components/ui/checkbox.tsx';
 
 export function TableFolderItem({
   i,
@@ -94,8 +94,8 @@ export function TableFolderItem({
       {!context.viewSettings?.noSelect && (
         <th>
           <Checkbox
-            isSelected={isSelected}
-            onValueChange={() => !selectDisabled && onSelect(folder)}
+            checked={isSelected}
+            onClick={() => !selectDisabled && onSelect(folder)}
           />
         </th>
       )}

@@ -7,12 +7,6 @@ import {
   useState,
 } from 'react';
 import { invalidateData } from '@lib/query.ts';
-import {
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Tooltip,
-} from '@nextui-org/react';
 import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -20,6 +14,12 @@ import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
 import { cn } from '@lib/utils.ts';
+import {
+  DialogClose,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 
 export function RenameModalContent({
   renameData,
@@ -88,22 +88,21 @@ export function RenameModalContent({
 
   return (
     <>
-      <ModalHeader className='grid gap-1'>
-        <h2 className={'flex flex-wrap gap-1 overflow-hidden'}>
+      <DialogHeader className='grid gap-1'>
+        <DialogTitle className={'flex flex-wrap gap-1 overflow-hidden'}>
           Rename {renameData.type}
-          <Tooltip content={renameData.name}>
-            <p
-              className={cn(
-                'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1',
-                'dark:bg-stone-700',
-              )}>
-              {renameData.name}
-            </p>
-          </Tooltip>
-        </h2>
-      </ModalHeader>
+          <span
+            title={renameData.name}
+            className={cn(
+              'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1',
+              'dark:bg-stone-700',
+            )}>
+            {renameData.name}
+          </span>
+        </DialogTitle>
+      </DialogHeader>
       <form onSubmit={handleNameSubmit}>
-        <ModalBody className={'min-h-16'}>
+        <div className={'min-h-16'}>
           <input
             ref={inputRef}
             required
@@ -114,21 +113,19 @@ export function RenameModalContent({
             onChange={handleChange}
             onFocus={handleFocus}
             className={
-              'overflow-ellipsis rounded-md border border-stone-400 p-2'
+              'overflow-ellipsis rounded-md border border-stone-400 p-2 w-full'
             }
           />
-        </ModalBody>
-        <ModalFooter className={'justify-between'}>
-          <button type={'button'} onClick={onClose} className={'btn-white'}>
-            Cancel
-          </button>
+        </div>
+        <DialogFooter className={'justify-between'}>
+          <DialogClose className={'btn-white'}>Cancel</DialogClose>
           <button
             type={'submit'}
             disabled={inputName === renameData.name || renameAction.isPending}
             className={'btn-black'}>
             {renameAction.isPending ? 'Renaming' : 'Rename'}
           </button>
-        </ModalFooter>
+        </DialogFooter>
       </form>
     </>
   );

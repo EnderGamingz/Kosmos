@@ -20,13 +20,13 @@ import {
   invalidateUsage,
 } from '@lib/query.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-import { ModalBody, ModalFooter } from '@nextui-org/react';
 import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 import { useByteFormatter } from '@utils/fileSize.ts';
 import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
 import { cn } from '@lib/utils.ts';
+import { DialogFooter } from '@components/ui/dialog.tsx';
 
 export function FileUploadContent({
   folder,
@@ -236,51 +236,52 @@ export function FileUploadContent({
         onSubmit={setToUpload}
         disabled={selectForUpload?.length === toUpload?.length}
       />
-      <ModalBody>
-        <Collapse isOpened={isTryingInvalidFolderUpload}>
-          <div className={'rounded-lg border border-warning-500 bg-warning-50'}>
-            <div className={'p-2'}>
-              <b>Possible Folder Upload Detected</b>
-              <p>
-                It appears you might be attempting to upload a folder using the
-                drop zone. <br />
-                To make your upload successful, kindly use the button below
-                specifically designed for folder uploads.
-              </p>
-            </div>
-          </div>
-        </Collapse>
-        <form ref={formRef}>
-          <input
-            hidden
-            type={'file'}
-            name={'folders'}
-            id={'folders'}
-            className={'hidden'}
-            onChange={handleFileChange}
-            multiple
-            // @ts-expect-error Directory is expected
-            directory={''}
-            webkitdirectory={''}
-            mozdirectory={''}
-          />
-        </form>
+      <Collapse isOpened={isTryingInvalidFolderUpload}>
         <div
-          {...getRootProps()}
-          className={cn(
-            'hidden h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 md:flex',
-            'items-center justify-center text-center text-2xl font-bold text-stone-500',
-            isDragActive && 'border-blue-400/50 bg-blue-100',
-          )}>
-          <input {...getInputProps({ id: 'files' })} />
-          {isDragActive ? (
-            <p>Release the files here</p>
-          ) : (
-            <p>Drop some files here</p>
-          )}
+          className={
+            'rounded-lg border border-amber-400 bg-amber-950/50 text-amber-50'
+          }>
+          <div className={'p-2'}>
+            <b>Possible Folder Upload Detected</b>
+            <p>
+              It appears you might be attempting to upload a folder using the
+              drop zone. <br />
+              To make your upload successful, kindly use the button below
+              specifically designed for folder uploads.
+            </p>
+          </div>
         </div>
-      </ModalBody>
-      <ModalFooter
+      </Collapse>
+      <form ref={formRef}>
+        <input
+          hidden
+          type={'file'}
+          name={'folders'}
+          id={'folders'}
+          className={'hidden'}
+          onChange={handleFileChange}
+          multiple
+          // @ts-expect-error Directory is expected
+          directory={''}
+          webkitdirectory={''}
+          mozdirectory={''}
+        />
+      </form>
+      <div
+        {...getRootProps()}
+        className={cn(
+          'hidden h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 md:flex',
+          'items-center justify-center text-center text-2xl font-bold text-stone-500',
+          isDragActive && 'border-blue-400/50 bg-blue-100',
+        )}>
+        <input {...getInputProps({ id: 'files' })} />
+        {isDragActive ? (
+          <p>Release the files here</p>
+        ) : (
+          <p>Drop some files here</p>
+        )}
+      </div>
+      <DialogFooter
         className={'flex flex-col-reverse justify-between gap-3 sm:flex-row'}>
         <button onClick={onClose} className={'btn-white'}>
           Cancel
@@ -295,7 +296,7 @@ export function FileUploadContent({
             Select Files(s)
           </label>
         </div>
-      </ModalFooter>
+      </DialogFooter>
     </>
   );
 }

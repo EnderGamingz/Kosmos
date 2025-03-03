@@ -3,16 +3,17 @@ import { DataOperationType } from '@models/file.ts';
 import { FileShareDisplay } from '@pages/share/shareTypes/fileShareDisplay.tsx';
 import { FolderShareDisplay } from '@pages/share/shareTypes/folderShareDisplay.tsx';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
-import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 import Preferences from '@pages/settings/preferences';
 import { WindowIcon } from '@heroicons/react/24/outline';
 import { AlbumShareDisplay } from '@pages/share/shareTypes/albumShareDisplay.tsx';
+import { Popover, PopoverContent } from '@/components/ui/popover';
+import { PopoverTrigger } from '@components/ui/popover.tsx';
 
 function SharePreferences() {
   return (
     <div className={'fixed bottom-3 right-3 z-20'}>
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
           <button className={'btn-black'}>
             <WindowIcon className={'h-6 w-6'} />
             <span>Preferences</span>

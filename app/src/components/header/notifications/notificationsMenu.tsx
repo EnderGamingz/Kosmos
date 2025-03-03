@@ -1,11 +1,4 @@
 import { invalidateFiles, useOperations } from '@lib/query.ts';
-import {
-  Badge,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  ScrollShadow,
-} from '@nextui-org/react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { OperationStatus, OperationType } from '@models/operation.ts';
 import { useEffect, useRef, useState } from 'react';
@@ -17,12 +10,17 @@ import { useNotifications } from '@stores/notificationStore.ts';
 import { StaticNotificationItem } from '@components/notifications/staticNotificationItem.tsx';
 import { OperationItem } from '@components/header/notifications/operationItem.tsx';
 import { cn } from '@lib/utils.ts';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@components/ui/popover.tsx';
 
 export function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
   const [initial, setInitial] = useState(true);
   const [initialSucceeded, setInitialSucceeded] = useState<string[]>([]);
-  const operationsHash = useRef<string>();
+  const operationsHash = useRef<string>('');
   const logout = useUserState(s => s.logout);
 
   const operations = useOperations(logout);
@@ -77,95 +75,86 @@ export function NotificationsMenu() {
   }, [operations.data]);
 
   return (
-    <Popover
-      placement={'bottom'}
-      onOpenChange={open => {
-        if (open) setSeen(true);
-      }}>
-      <PopoverTrigger>
-        <button className={'flex p-2'}>
-          <Badge
-            content={''}
-            color={'danger'}
-            isDot
-            showOutline={false}
-            className={'h-2 min-h-2 w-2 min-w-2'}
-            isInvisible={seen}
-            placement={'top-right'}>
-            <BellIcon className={'h-6 w-6'} />
-          </Badge>
+    <Popover onOpenChange={b => b && setSeen(true)}>
+      <PopoverTrigger asChild>
+        <button className={'flex p-2 relative'}>
+          {!seen && (
+            <div
+              className={
+                'absolute w-2 h-2 rounded-full bg-blue-400 animate-pulse top-1 right-1'
+              }
+            />
+          )}
+          <BellIcon className={'h-6 w-6'} />
         </button>
       </PopoverTrigger>
-      <PopoverContent className={'bg-transparent py-0 shadow-none'}>
-        <div
-          className={cn(
-            'flex min-w-[220px] flex-col gap-2',
-            '[&>div]:bg-stone-50 [&>div]:px-2 [&>div]:shadow-large [&>div]:dark:bg-stone-800',
-            '[&>div]:rounded-lg',
-          )}>
-          <div>
-            <h2
-              className={
-                'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
-              }>
-              Notifications
-            </h2>
-            <ScrollShadow
-              as={motion.div}
-              variants={containerVariant()}
-              initial={'hidden'}
-              animate={'show'}
-              className={cn(
-                'h-full max-h-[150px] max-w-56 md:max-h-[250px]',
-                'flex w-full flex-col gap-1 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
-              )}>
-              {notifications.length ? (
-                notifications.map(notification => (
-                  <StaticNotificationItem
-                    key={notification.id}
-                    data={notification}
-                  />
-                ))
-              ) : (
-                <p
-                  className={
-                    'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
-                  }>
-                  No notifications
-                </p>
-              )}
-            </ScrollShadow>
-          </div>
-          <div>
-            <h2
-              className={
-                'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
-              }>
-              Operations
-            </h2>
-            <ScrollShadow
-              as={motion.div}
-              variants={containerVariant()}
-              initial={'hidden'}
-              animate={'show'}
-              className={cn(
-                'max-h-[150px] md:max-h-[250px]',
-                'grid w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
-              )}>
-              {operations.data?.length ? (
-                operations.data?.map(operation => (
-                  <OperationItem key={operation.id} data={operation} />
-                ))
-              ) : (
-                <p
-                  className={
-                    'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
-                  }>
-                  No operations
-                </p>
-              )}
-            </ScrollShadow>
-          </div>
+      <PopoverContent
+        side={'bottom'}
+        className={cn(
+          'bg-transparent p-0 shadow-none border-none min-w-[220px]',
+          'flex flex-col gap-1',
+          '[&>div]:bg-popover [&>div]:border [&>div]:px-2 [&>div]:shadow-large [&>div]:rounded-lg',
+        )}>
+        <div>
+          <h2
+            className={
+              'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
+            }>
+            Notifications
+          </h2>
+          <motion.div
+            variants={containerVariant()}
+            initial={'hidden'}
+            animate={'show'}
+            className={cn(
+              'h-full max-h-[150px] max-w-56 md:max-h-[250px]',
+              'flex w-full flex-col gap-1 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
+            )}>
+            {notifications.length ? (
+              notifications.map(notification => (
+                <StaticNotificationItem
+                  key={notification.id}
+                  data={notification}
+                />
+              ))
+            ) : (
+              <p
+                className={
+                  'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
+                }>
+                No notifications
+              </p>
+            )}
+          </motion.div>
+        </div>
+        <div>
+          <h2
+            className={
+              'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
+            }>
+            Operations
+          </h2>
+          <motion.div
+            variants={containerVariant()}
+            initial={'hidden'}
+            animate={'show'}
+            className={cn(
+              'max-h-[150px] md:max-h-[250px]',
+              'grid w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
+            )}>
+            {operations.data?.length ? (
+              operations.data?.map(operation => (
+                <OperationItem key={operation.id} data={operation} />
+              ))
+            ) : (
+              <p
+                className={
+                  'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
+                }>
+                No operations
+              </p>
+            )}
+          </motion.div>
         </div>
       </PopoverContent>
     </Popover>

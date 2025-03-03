@@ -1,12 +1,12 @@
 import { useSearch } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { Progress } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
+import { Progress } from '@/components/ui/progress';
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -38,7 +38,7 @@ export default function SearchPage() {
       </Helmet>
       <Progress
         aria-label={'Recent Files loading...'}
-        isIndeterminate={!search?.data || search.isLoading}
+        indeterminate={!search?.data || search.isLoading}
         value={100}
         className={'absolute left-0 top-0 h-1 opacity-50'}
         color={'default'}

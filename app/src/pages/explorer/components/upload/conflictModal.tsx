@@ -3,10 +3,16 @@ import {
   UploadFile,
 } from '@pages/explorer/components/upload/uploadFile.ts';
 import { useEffect, useState } from 'react';
-import { Modal, ModalContent, ScrollShadow } from '@nextui-org/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 import { cn } from '@lib/utils.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 
 const actions = [
   {
@@ -99,60 +105,52 @@ export function ConflictModal({
   };
 
   return (
-    <Modal backdrop={'blur'} isOpen={!!files.length} onClose={onAbort}>
-      <ModalContent className={'max-w-xl'}>
-        <div className={'space-y-2 p-4'}>
-          <div
-            className={
-              'flex flex-col items-start gap-3 sm:flex-row sm:items-center'
-            }>
-            <h2
-              className={
-                'flex items-center gap-2 text-2xl font-medium text-stone-700'
-              }>
-              <ExclamationTriangleIcon className={'h-6 w-6'} />
-              File conflicts
-            </h2>
-            <p className={'text-sm text-stone-600'}>
-              Resolved {resolved.length} / {files.length}
-            </p>
-          </div>
-          <span className={'text-stone-500'}>
+    <Dialog open={!!files.length} onOpenChange={b => !b && onAbort()}>
+      <DialogContent className={'max-w-xl space-y-2 p-4'}>
+        <DialogHeader>
+          <DialogTitle className={'flex items-center gap-2'}>
+            <ExclamationTriangleIcon className={'h-6 w-6'} />
+            File conflicts
+          </DialogTitle>
+          <DialogDescription>
+            Resolved {resolved.length} / {files.length}
+          </DialogDescription>
+          <span className={'text-stone-300'}>
             {files.length > 1 ? 'Files' : 'A File'} already exist with the same
             name{files.length > 1 && 's'}.
           </span>
-          <ScrollShadow className={'max-h-[400px] overflow-y-auto'}>
-            <ul className={'divide-y-1'}>
-              {files.map((f, i) => (
-                <FileConflictItem
-                  key={`${f.file.name}-${i}`}
-                  file={f}
-                  selectAction={a => handleResolve(a, i)}
-                />
-              ))}
-            </ul>
-          </ScrollShadow>
-          <div className={'flex justify-between gap-2 pt-5'}>
-            <div className={'flex flex-wrap gap-2'}>
-              {actions.map(a => (
-                <button
-                  key={a.allName}
-                  className={'btn-black btn-sm'}
-                  onClick={() => handleAllResolve(a.action)}>
-                  {a.allName}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={handleSubmit}
-              disabled={resolved.length !== files.length || disabled}
-              className={'btn-black'}>
-              Submit
-            </button>
-          </div>
+        </DialogHeader>
+        <div className={'max-h-[400px] overflow-y-auto'}>
+          <ul className={'divide-y-1'}>
+            {files.map((f, i) => (
+              <FileConflictItem
+                key={`${f.file.name}-${i}`}
+                file={f}
+                selectAction={a => handleResolve(a, i)}
+              />
+            ))}
+          </ul>
         </div>
-      </ModalContent>
-    </Modal>
+        <div className={'flex justify-between gap-2 pt-5'}>
+          <div className={'flex flex-wrap gap-2'}>
+            {actions.map(a => (
+              <button
+                key={a.allName}
+                className={'btn-black btn-sm'}
+                onClick={() => handleAllResolve(a.action)}>
+                {a.allName}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={handleSubmit}
+            disabled={resolved.length !== files.length || disabled}
+            className={'btn-black'}>
+            Submit
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -176,7 +174,7 @@ function FileConflictItem({
         className={cn(
           'flex flex-wrap gap-2',
           '[&>button]:rounded-lg [&>button]:px-2 [&>button]:py-1 [&>button]:text-center',
-          '[&>button]:outline [&>button]:outline-1 [&>button]:outline-stone-500/20 [&>button]:transition-colors',
+          '[&>button]:outline [&>button]:outline-stone-500/20 [&>button]:transition-colors',
         )}>
         {actions.map(a => (
           <button

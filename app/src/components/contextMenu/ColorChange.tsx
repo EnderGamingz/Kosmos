@@ -1,9 +1,3 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  useDisclosure,
-} from '@nextui-org/react';
 import { BackspaceIcon, SwatchIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -12,6 +6,8 @@ import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolder } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { hexToHsva, hsvaToHex, ShadeSlider, Wheel } from '@uiw/react-color';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import useDisclosure from '@/hooks/useDisclosure';
 
 const definedColors = [
   '#f44336',
@@ -106,57 +102,48 @@ export function FolderColorChange({
   }, [isOpen]);
 
   return (
-    <Popover
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-      placement={'left-start'}
-      offset={20}>
+    <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger>
-        <button>
-          <SwatchIcon /> Folder Color
-        </button>
+        <SwatchIcon /> Folder Color
       </PopoverTrigger>
-      <PopoverContent
-        className={'rounded-md bg-stone-50 p-3 dark:bg-stone-800'}>
-        <div className={'max-w-40'}>
-          <div className={'flex flex-wrap gap-2'}>
-            {definedColors.map(color => (
-              <button
-                onClick={handleClick(color)}
-                key={color}
-                className={'h-5 w-5 !rounded-full !p-0 shadow-md'}
-                style={{
-                  backgroundColor: color,
-                }}
-              />
-            ))}
-          </div>
-          <div className={'mt-4 grid gap-2'}>
-            <Wheel
-              width={150}
-              height={150}
-              color={selected || color || '#ffffff'}
-              onChange={color => setSelected(color.hex)}
-            />
-            <ShadeSlider
-              className={'overflow-hidden rounded-md'}
-              hsva={hexToHsva(selected || color || '#ffffff')}
-              onChange={newShade => {
-                const hsva = hexToHsva(selected || color || 'lightgray');
-                setSelected(hsvaToHex({ ...hsva, v: newShade.v }));
+      <PopoverContent className={'max-w-52'}>
+        <div className={'flex flex-wrap gap-2 justify-center'}>
+          {definedColors.map(color => (
+            <button
+              onClick={handleClick(color)}
+              key={color}
+              className={'h-5 w-5 !rounded-full !p-0 shadow-md'}
+              style={{
+                backgroundColor: color,
               }}
             />
-            {(color || selected) && (
-              <button
-                onClick={() => recolorAction.mutate({ remove: true })}
-                className={
-                  'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
-                }>
-                <BackspaceIcon className={'h-5 w-5'} />
-                Remove
-              </button>
-            )}
-          </div>
+          ))}
+        </div>
+        <div className={'mt-4 grid gap-2 place-items-center'}>
+          <Wheel
+            width={150}
+            height={150}
+            color={selected || color || '#ffffff'}
+            onChange={color => setSelected(color.hex)}
+          />
+          <ShadeSlider
+            className={'overflow-hidden w-full border !rounded-xs'}
+            hsva={hexToHsva(selected || color || '#ffffff')}
+            onChange={newShade => {
+              const hsva = hexToHsva(selected || color || 'lightgray');
+              setSelected(hsvaToHex({ ...hsva, v: newShade.v }));
+            }}
+          />
+          {(color || selected) && (
+            <button
+              onClick={() => recolorAction.mutate({ remove: true })}
+              className={
+                'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
+              }>
+              <BackspaceIcon className={'h-5 w-5'} />
+              Remove
+            </button>
+          )}
         </div>
       </PopoverContent>
     </Popover>

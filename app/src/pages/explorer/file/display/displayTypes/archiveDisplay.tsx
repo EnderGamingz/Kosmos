@@ -4,10 +4,10 @@ import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileD
 import { ZipInformation } from '@bindings/ZipInformation.ts';
 import { useState } from 'react';
 import { Collapse } from 'react-collapse';
-import { cn } from '@nextui-org/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export default function ArchiveDisplay({
   file,

@@ -1,7 +1,6 @@
 import { getShareTypeString } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTop } from '@components/defaults/transition.ts';
-import { Tooltip } from '@nextui-org/react';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { ShareOperationType } from '@models/file.ts';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,16 +17,13 @@ import { cn } from '@lib/utils.ts';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
-    <Tooltip content={active ? 'Active' : 'Expired'}>
-      <div
-        className={cn(
-          'hidden h-3 min-h-3 w-3 min-w-3 rounded-full shadow transition-colors sm:block',
-          active
-            ? 'bg-green-300 shadow-green-300'
-            : 'bg-red-300 shadow-red-300',
-        )}
-      />
-    </Tooltip>
+    <div
+      title={active ? 'Active' : 'Expired'}
+      className={cn(
+        'hidden h-3 min-h-3 w-3 min-w-3 rounded-full shadow transition-colors sm:block',
+        active ? 'bg-green-300 shadow-green-300' : 'bg-red-300 shadow-red-300',
+      )}
+    />
   );
 }
 
@@ -59,7 +55,7 @@ export function ShareItem({
       variants={itemTransitionVariantFadeInFromTop}
       className={cn(
         'relative gap-2 rounded-lg bg-stone-300/30 px-3 py-2 sm:flex sm:flex-row sm:items-center',
-        'outline outline-1 sm:bg-stone-300/30 sm:outline-transparent',
+        'sm:bg-stone-300/30 sm:outline-transparent',
         isActive
           ? 'bg-green-300/5 outline-green-300'
           : 'bg-red-300/5 outline-red-300',
@@ -87,9 +83,9 @@ export function ShareItem({
           {share.expires_at && !isExpired && (
             <Chip
               content={
-                <Tooltip content={new Date(share.expires_at).toLocaleString()}>
-                  <p>{formatDistanceToNow(share.expires_at)} left</p>
-                </Tooltip>
+                <p title={new Date(share.expires_at).toLocaleString()}>
+                  {formatDistanceToNow(share.expires_at)} left
+                </p>
               }
             />
           )}
@@ -108,11 +104,11 @@ export function ShareItem({
             'flex items-center gap-1 text-xs text-stone-500/90 dark:text-stone-400'
           }>
           {share.share_target_username ? (
-            <Tooltip content={share.share_target_username}>
-              <p className={'max-w-[100px] truncate'}>
-                @{share.share_target_username}
-              </p>
-            </Tooltip>
+            <p
+              title={share.share_target_username}
+              className={'max-w-[100px] truncate'}>
+              @{share.share_target_username}
+            </p>
           ) : (
             'Public'
           )}

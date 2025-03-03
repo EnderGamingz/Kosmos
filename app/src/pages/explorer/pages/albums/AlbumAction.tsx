@@ -6,14 +6,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
 import { isValidFileForAlbum } from '@models/album.ts';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { motion } from 'framer-motion';
 import { useContext, useState } from 'react';
@@ -21,6 +13,15 @@ import { Link } from 'react-router-dom';
 import { DisplayContext } from '@lib/contexts.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
+import useDisclosure from '@hooks/useDisclosure.ts';
 
 function AddToAlbumModalContent({
   onClose,
@@ -36,15 +37,11 @@ function AddToAlbumModalContent({
 
   return (
     <>
-      <ModalHeader className='grid gap-1'>
-        <h2 className={'text-xl'}>
-          Albums
-          <p className={'text-sm text-stone-500'}>
-            Click on an album to add the file
-          </p>
-        </h2>
-      </ModalHeader>
-      <ModalBody className={'min-h-32'}>
+      <DialogHeader>
+        <DialogTitle>Albums</DialogTitle>
+        <DialogDescription>Click on an album to add the file</DialogDescription>
+      </DialogHeader>
+      <div className={'min-h-32'}>
         <ul
           className={cn(
             '[&_li:not(.added):hover]:bg-indigo-100 [&_li:not(.added)]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
@@ -108,12 +105,12 @@ function AddToAlbumModalContent({
             </motion.li>
           ))}
         </ul>
-      </ModalBody>
-      <ModalFooter className={'justify-between'}>
+      </div>
+      <DialogFooter>
         <button onClick={onClose} className={'btn-white'}>
           Cancel
         </button>
-      </ModalFooter>
+      </DialogFooter>
     </>
   );
 }
@@ -159,13 +156,8 @@ export default function AlbumAction({
 
   return (
     <>
-      <Modal
-        size={'md'}
-        backdrop={'blur'}
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement={'auto'}>
-        <ModalContent className={'bg-stone-50 dark:bg-stone-800'}>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
           <AddToAlbumModalContent
             files={files}
             onClose={() => {
@@ -175,8 +167,8 @@ export default function AlbumAction({
               }, 400);
             }}
           />
-        </ModalContent>
-      </Modal>
+        </DialogContent>
+      </Dialog>
       <button onClick={handleClick}>
         {albumId ? <MinusCircleIcon /> : <SquaresPlusIcon />}
         {dense ? 'Album' : albumId ? 'Remove from album' : 'Add to album'}

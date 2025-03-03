@@ -1,4 +1,3 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 import { KeyIcon } from '@heroicons/react/24/outline';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { useState } from 'react';
@@ -7,6 +6,11 @@ import { BASE_URL } from '@lib/env.ts';
 import axios from 'axios';
 import { invalidateShares } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 function ChangePasswordForm({
   id,
@@ -82,10 +86,11 @@ function ChangePasswordForm({
 export function ChangePassword({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <Popover isOpen={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
-        <button>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button className={'cursor-pointer pointer-events-auto'}>
           <Chip
+            onClick={() => {}}
             content={
               <>
                 <KeyIcon /> Password

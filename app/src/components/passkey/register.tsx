@@ -6,14 +6,10 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { invalidatePasskeys } from '@lib/query.ts';
 import { FormEvent } from 'react';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  useDisclosure,
-} from '@nextui-org/react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useUserState } from '@stores/userStore.ts';
+import useDisclosure from '@hooks/useDisclosure.ts';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
@@ -107,8 +103,8 @@ export default function PasskeyRegister() {
   const user = useUserState(s => s.user);
 
   return (
-    <Popover isOpen={isOpen} onOpenChange={onOpenChange} placement={'bottom'}>
-      <PopoverTrigger>
+    <Popover open={isOpen} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
         <button
           className={'btn-black btn-sm'}
           disabled={registerMutation.isPending}>
@@ -116,33 +112,31 @@ export default function PasskeyRegister() {
           Create Passkey
         </button>
       </PopoverTrigger>
-      <PopoverContent className={'bg-stone-50 dark:bg-stone-800'}>
-        <div className={'w-full p-4'}>
-          <form onSubmit={handleSubmit} className={'flex gap-2'}>
-            <input
-              type={'text'}
-              value={user?.username}
-              readOnly
-              disabled
-              name={'username'}
-              id={'username'}
-              placeholder={'Username*'}
-              autoComplete={'username'}
-              className={'hidden'}
-            />
-            <input
-              type={'text'}
-              name={'name'}
-              id={'name'}
-              placeholder={'Name*'}
-              className={'input'}
-              required
-            />
-            <button type={'submit'} className={'btn-black'}>
-              <PaperAirplaneIcon className={'h-5 w-5'} />
-            </button>
-          </form>
-        </div>
+      <PopoverContent side={'bottom'} className={'w-full p-4'}>
+        <form onSubmit={handleSubmit} className={'flex gap-2'}>
+          <input
+            type={'text'}
+            value={user?.username}
+            readOnly
+            disabled
+            name={'username'}
+            id={'username'}
+            placeholder={'Username*'}
+            autoComplete={'username'}
+            className={'hidden'}
+          />
+          <input
+            type={'text'}
+            name={'name'}
+            id={'name'}
+            placeholder={'Name*'}
+            className={'input'}
+            required
+          />
+          <button type={'submit'} className={'btn-black'}>
+            <PaperAirplaneIcon className={'h-5 w-5'} />
+          </button>
+        </form>
       </PopoverContent>
     </Popover>
   );

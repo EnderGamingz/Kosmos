@@ -5,7 +5,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
-import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { useFormatBytes } from '@utils/fileSize.ts';
@@ -18,6 +17,7 @@ import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Checkbox } from '@components/ui/checkbox.tsx';
 
 export default function GridFileItem({
   index,
@@ -93,7 +93,7 @@ export default function GridFileItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={cn(
-        'group relative rounded-lg outline outline-2 ',
+        'group relative rounded-lg outline-1',
         'outline-transparent transition-[outline-color]',
         Boolean(isSelected) &&
           'bg-indigo-100/50 outline-indigo-300 dark:bg-indigo-900/50',
@@ -138,10 +138,8 @@ export default function GridFileItem({
             <div className={'-mt-1 h-4 w-4'}>
               <Checkbox
                 className={'h-4 w-4'}
-                isSelected={isSelected}
-                onValueChange={() => onSelect(file)}
-                classNames={{ wrapper: 'backdrop-blur-md' }}
-                size={isDefaultDisplay ? 'md' : 'sm'}
+                checked={isSelected}
+                onClick={() => onSelect(file)}
               />
             </div>
           )}

@@ -1,10 +1,10 @@
 import { useRecentFiles } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { Progress } from '@nextui-org/react';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
+import { Progress } from '@components/ui/progress.tsx';
 
 export default function RecentFiles() {
   const files = useRecentFiles();
@@ -23,7 +23,7 @@ export default function RecentFiles() {
         }>
         <Progress
           aria-label={'Recent Files loading...'}
-          isIndeterminate={!files?.data || files.isLoading}
+          indeterminate={!files?.data || files.isLoading}
           value={100}
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}
