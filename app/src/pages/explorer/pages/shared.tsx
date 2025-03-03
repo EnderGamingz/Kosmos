@@ -16,7 +16,6 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
-import tw from '@utils/classMerge.ts';
 import { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FileModelWithShareInfoDTO } from '@bindings/FileModelWithShareInfoDTO.ts';
@@ -24,6 +23,7 @@ import { FolderModelWithShareInfoDTO } from '@bindings/FolderModelWithShareInfoD
 import { AlbumModelWithShareInfoDTO } from '@bindings/AlbumModelWithShareInfoDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function SharedItems({
   itemsForUser,
@@ -124,7 +124,7 @@ function ShareForMeItem({
 
   return (
     <motion.li
-      className={tw(
+      className={cn(
         'grid cursor-pointer items-center rounded-xl bg-stone-300/30 p-1 pr-3 transition-colors hover:bg-stone-400/50 sm:flex sm:gap-2',
         'dark:bg-stone-700/30 dark:hover:bg-stone-700/60',
       )}

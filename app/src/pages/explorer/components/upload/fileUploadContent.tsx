@@ -20,13 +20,13 @@ import {
   invalidateUsage,
 } from '@lib/query.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-import tw from '@utils/classMerge.ts';
 import { ModalBody, ModalFooter } from '@nextui-org/react';
 import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 import { useByteFormatter } from '@utils/fileSize.ts';
 import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
+import { cn } from '@lib/utils.ts';
 
 export function FileUploadContent({
   folder,
@@ -170,9 +170,12 @@ export function FileUploadContent({
       if (!acceptedFiles.length) return;
 
       setIsTryingInvalidFolderUpload(false);
+
       const isPossibleFolderUpload = acceptedFiles
-        .map(file => file.path?.split('/').length)
+        // Checks for leading slashes which are appended by the Windows file explorer
+        .map(file => file.path?.replace(/^\/+/, '').split('/').length)
         .some(x => (x || 0) > 1);
+
       if (isPossibleFolderUpload) {
         if (isInHeader) {
           notification.notify({
@@ -213,7 +216,7 @@ export function FileUploadContent({
         />
         <div
           {...getRootProps()}
-          className={tw(
+          className={cn(
             'rounded-lg outline-dashed outline-2 outline-transparent transition-all !duration-150',
             isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
             className,
@@ -264,7 +267,7 @@ export function FileUploadContent({
         </form>
         <div
           {...getRootProps()}
-          className={tw(
+          className={cn(
             'hidden h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 md:flex',
             'items-center justify-center text-center text-2xl font-bold text-stone-500',
             isDragActive && 'border-blue-400/50 bg-blue-100',

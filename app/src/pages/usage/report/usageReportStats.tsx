@@ -4,7 +4,6 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
-import tw from '@utils/classMerge.ts';
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { useFormatBytes } from '@utils/fileSize.ts';
@@ -16,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { DiskUsageReport } from '@bindings/DiskUsageReport.ts';
 import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import { cn } from '@lib/utils.ts';
 
 export function UsageReportStats({
   report,
@@ -88,7 +88,7 @@ function UsageReportItem({
   return (
     <motion.li
       variants={itemTransitionVariantFadeInFromTop}
-      className={tw(
+      className={cn(
         'flex items-center gap-2 rounded-lg bg-stone-300/20 px-4 py-2 text-stone-800',
         'outline outline-1 outline-stone-800/30',
         'dark:bg-stone-800/20 dark:text-stone-300 dark:outline-stone-400/30',

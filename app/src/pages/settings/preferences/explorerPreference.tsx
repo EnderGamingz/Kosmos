@@ -6,13 +6,13 @@ import {
   selections,
 } from '@pages/settings/preferences/selections.tsx';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
 import { Collapse } from 'react-collapse';
 import { motion } from 'framer-motion';
 import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function ExplorerPreferences({
   inPopup,
@@ -29,7 +29,7 @@ export default function ExplorerPreferences({
         variants={containerVariant(0.04, 0.25)}
         initial={'hidden'}
         animate={'show'}
-        className={tw(
+        className={cn(
           'space-y-3',
           Boolean(inPopup) && 'max-h-[350px] overflow-y-auto scrollbar-hide',
         )}>
@@ -52,7 +52,7 @@ export function Preference({
   return (
     <motion.div
       variants={itemTransitionVariantFadeInFromTop}
-      className={tw(
+      className={cn(
         'w-full rounded-xl bg-stone-400/10 p-3 shadow',
         'outline outline-1 outline-transparent',
         open && 'shadow-md outline-stone-500/20',
@@ -63,7 +63,7 @@ export function Preference({
         onClick={() => setOpen(prev => !prev)}
         className={'flex cursor-pointer items-center justify-between'}>
         <div
-          className={tw(
+          className={cn(
             'flex items-center gap-3 text-stone-600 [&_svg]:h-8 [&_svg]:w-8',
             Boolean(small) && 'gap-2 [&_svg]:h-6 [&_svg]:w-6',
             'dark:text-stone-300',
@@ -71,19 +71,19 @@ export function Preference({
           {item.icon}
           <div>
             <h3
-              className={tw(
+              className={cn(
                 'text-lg font-medium',
                 Boolean(small) && 'text-base',
               )}>
               {item.name}
             </h3>
-            <p className={tw('text-sm', Boolean(small) && 'text-xs')}>
+            <p className={cn('text-sm', Boolean(small) && 'text-xs')}>
               {item.type.getName(item.type.current)}
             </p>
           </div>
         </div>
         <ChevronDownIcon
-          className={tw('h-5 w-5 transition-transform', open && 'rotate-180')}
+          className={cn('h-5 w-5 transition-transform', open && 'rotate-180')}
         />
       </div>
       <Collapse isOpened={open}>
@@ -160,7 +160,7 @@ export function PreferenceSelection({
       key={`${item.name}-${item.name}`}
       variants={itemTransitionVariantFadeInFromTop}
       onClick={() => onSelect(item.value)}
-      className={tw(
+      className={cn(
         'relative flex flex-1 items-center gap-3 p-3 text-lg text-stone-600',
         'isolate rounded-lg bg-stone-500/10 hover:bg-stone-500/20',
         'transition-colors [&_svg]:h-6 [&_svg]:w-6',

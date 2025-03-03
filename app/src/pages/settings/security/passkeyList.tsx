@@ -7,8 +7,8 @@ import { BASE_URL } from '@lib/env.ts';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function PasskeyList() {
   const notifications = useNotifications(s => s.actions);
@@ -92,7 +92,7 @@ function PasskeyItem({
   return (
     <motion.li
       layout
-      className={tw(
+      className={cn(
         'flex items-center justify-between gap-2 border-b-1 border-stone-300 p-2 dark:border-stone-600',
         last && 'border-transparent dark:border-transparent',
       )}>

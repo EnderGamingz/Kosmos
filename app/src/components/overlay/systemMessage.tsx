@@ -2,7 +2,8 @@ import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
 import { SYSTEM_MESSAGE } from '@lib/env.ts';
 import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export default function SystemMessage() {
   const isDismissed = useDismissStore(s =>
@@ -13,7 +14,7 @@ export default function SystemMessage() {
 
   return (
     <div
-      className={tw(
+      className={cn(
         'fixed bottom-1 z-50 mx-1 flex items-center gap-2 rounded-lg bg-stone-600 px-4 py-2 text-sm text-stone-50',
         'md:bottom-[unset] md:right-1/2 md:top-1 md:translate-x-1/2',
       )}>

@@ -1,9 +1,9 @@
 import { ShareOperationType } from '@models/file.ts';
-import tw from '@utils/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { ShareIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function ShareButton({
   id,
@@ -24,7 +24,7 @@ export default function ShareButton({
 
   return (
     <button
-      className={tw(
+      className={cn(
         'flex items-center gap-1',
         className || '',
         iconOnly ? 'p-2' : '',

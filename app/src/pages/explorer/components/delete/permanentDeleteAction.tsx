@@ -13,11 +13,11 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext, useState } from 'react';
-import tw from '@utils/classMerge.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { DisplayContext } from '@lib/contexts.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -153,7 +153,7 @@ export function MultiPermanentDelete({
       onClick={handleDelete}
       disabled={deleteAction.isPending}
       type={'button'}
-      className={tw(
+      className={cn(
         !confirmed && !shift
           ? 'text-gray-400 hover:!text-gray-400'
           : 'bg-red-400 !text-white hover:!bg-red-500',

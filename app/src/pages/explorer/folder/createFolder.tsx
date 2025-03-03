@@ -4,10 +4,10 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolders } from '@lib/query.ts';
 import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { itemTransitionVariantFadeInFromTopSmall } from '@components/defaults/transition.ts';
 import { motion } from 'framer-motion';
+import { cn } from '@lib/utils.ts';
 
 export function CreateFolder({
   folder,
@@ -105,7 +105,7 @@ export function ButtonForm({
             placeholder={'Name'}
             value={active ? value : label}
             onChange={e => setValue(e.target.value)}
-            className={tw(
+            className={cn(
               'border-nones w-36 rounded-lg bg-transparent py-0.5 outline-none transition-all',
               !active && 'pointer-events-none',
             )}

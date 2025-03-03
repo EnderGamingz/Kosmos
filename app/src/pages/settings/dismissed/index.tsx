@@ -6,7 +6,8 @@ import {
   itemTransitionVariantFadeInFromTopSmall,
 } from '@components/defaults/transition.ts';
 import { Helmet } from 'react-helmet';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export default function DismissedOverview() {
   const dismissStore = useDismissStore();
@@ -31,7 +32,7 @@ export default function DismissedOverview() {
                 layout
                 variants={itemTransitionVariantFadeInFromTopSmall}
                 key={item.id}
-                className={tw(
+                className={cn(
                   'flex flex-col items-start gap-2 rounded-lg bg-stone-200 p-2 text-stone-800 md:flex-row md:items-center',
                   'dark:bg-stone-600/40 dark:text-stone-200',
                 )}>

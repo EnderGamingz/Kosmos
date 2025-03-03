@@ -1,7 +1,5 @@
-import { Backdrop } from '@components/overlay/backdrop.tsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import tw from '@utils/classMerge.ts';
 import { useEffect, useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
@@ -11,8 +9,15 @@ import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.
 import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { neutralizeBack, reviveBack } from '@utils/registers/history.ts';
 import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
+import {
+  CleanDialogContent,
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { cn } from '@lib/utils.ts';
 
 export default function FileDisplay({
   fileIndex,
@@ -26,7 +31,6 @@ export default function FileDisplay({
   shareUuid?: string;
 }) {
   const [scopedIndex, setScopedIndex] = useState(fileIndex ?? -1);
-  // const [update, setUpdate] = useState(0);
   const { setFile, currentFolder, filesInScope } = useExplorerStore(
     useShallow(s => ({
       setFile: s.current.selectCurrentFile,
@@ -37,7 +41,7 @@ export default function FileDisplay({
 
   const sort = useSearchState(s => s.sort);
 
-  const close = () => () => {
+  const close = () => {
     setScopedIndex(-1);
     setFile(undefined);
   };
@@ -45,16 +49,12 @@ export default function FileDisplay({
   useArrowKeys({
     left: () =>
       setScopedIndex(prev => {
-        if (prev - 1 < 0) {
-          return -1;
-        }
+        if (prev - 1 < 0) return -1;
         return prev - 1;
       }),
     right: () =>
       setScopedIndex(prev => {
-        if (prev + 1 > filesInScope.length) {
-          return filesInScope.length;
-        }
+        if (prev + 1 > filesInScope.length) return filesInScope.length;
         return prev + 1;
       }),
     deps: [filesInScope.length],
@@ -74,23 +74,18 @@ export default function FileDisplay({
     return filesInScope[scopedIndex];
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFolder, scopedIndex, sort /** update **/]);
+  }, [currentFolder, scopedIndex, sort]);
 
   const isSelected = !!file && selected.includes(file);
 
   return (
-    <AnimatePresence>
-      {file && (
-        <FileDisplayContent
-          file={file}
-          isSelected={isSelected}
-          onSelect={onSelect}
-          onClose={close()}
-          // onUpdate={() => setUpdate(prev => prev + 1)}
-          shareUuid={shareUuid}
-        />
-      )}
-    </AnimatePresence>
+    <FileDisplayContent
+      file={file}
+      isSelected={isSelected}
+      onSelect={onSelect}
+      onClose={() => close()}
+      shareUuid={shareUuid}
+    />
   );
 }
 
@@ -99,84 +94,81 @@ function FileDisplayContent({
   onClose,
   onSelect,
   isSelected,
-  // onUpdate,
   shareUuid,
 }: {
-  file: FileModelDTO;
+  file?: FileModelDTO;
   onClose: () => void;
   onSelect: (file: FileModelDTO) => void;
   isSelected: boolean;
-  // onUpdate: () => void;
   shareUuid?: string;
 }) {
+  const [prevFile, setPrevFile] = useState<FileModelDTO | undefined>(undefined);
   const [fullsScreenPreview, setFullsScreenPreview] = useState(false);
 
   useEffect(() => {
-    neutralizeBack(onClose);
-    return () => reviveBack();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (file) setPrevFile(file);
+  }, [file]);
 
   return (
-    <>
-      <Backdrop onClose={onClose} />
-      <div
-        className={tw(
-          'pointer-events-none h-full w-full max-w-5xl md:max-h-[600px]',
-          'fixed left-1/2 top-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2',
-        )}>
-        <div
-          className={
-            'pointer-events-auto isolate m-4 flex w-full flex-col sm:m-6 md:m-10 md:grid md:grid-cols-2'
-          }>
-          <div
-            className={tw(
-              '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0',
-              fullsScreenPreview ? 'z-20' : 'relative z-0',
-            )}>
-            <motion.div layoutId={`compact-${file.id}`} className={'-z-10'} />
-            <FileDisplayHandler
-              file={file}
-              fullScreen={fullsScreenPreview}
-              onFullScreen={setFullsScreenPreview}
-              shareUuid={shareUuid}
-            />
-          </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: [0, 0], scale: 0.5, pointerEvents: 'none' }}
-            transition={{ duration: 0.2 }}
-            className={tw(
-              'relative shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
-              'z-10 flex w-full flex-col space-y-5 transition-all',
-              'whitespace-nowrap rounded-xl bg-gray-50 p-3 md:p-6',
-              'max-sm:min-h-1/2 outline outline-2 -outline-offset-2 outline-transparent',
-              'dark:bg-stone-900 dark:outline-stone-400/20',
-              isSelected &&
-                '-outline-offset-4 outline-blue-500 dark:outline-blue-400',
-            )}>
-            <DisplayHeader
-              file={file}
-              selected={isSelected}
-              onSelect={onSelect}
-            />
-            {/**
-                         * Disabled for now as the favorite changes the file order
-                         * and file display currently relies on scope index which changes
-                         !shareUuid && (
-                         <FileDisplayFavorite file={file} onUpdate={onUpdate} />
-                         )**/}
-            <FileDisplayStats file={file} />
-            <FileDisplayActions
-              shareUuid={shareUuid}
-              file={file}
-              onClose={onClose}
-            />
-            <FileDisplayFooter file={file} onClose={onClose} />
-          </motion.div>
-        </div>
-      </div>
-    </>
+    <Dialog open={!!file} onOpenChange={b => !b && onClose()}>
+      <CleanDialogContent
+        className={
+          'flex h-full w-full max-w-5xl focus:outline-none focus-visible:outline-none md:grid md:max-h-[600px] md:grid-cols-2'
+        }>
+        <DialogHeader className={'sr-only'}>
+          <DialogTitle>{prevFile?.file_name || 'File'}</DialogTitle>
+          <DialogDescription>{prevFile?.mime_type || ''}</DialogDescription>
+        </DialogHeader>
+        {prevFile && (
+          <>
+            <div
+              className={cn(
+                '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0',
+                fullsScreenPreview ? 'z-20' : 'relative z-0',
+              )}>
+              <motion.div
+                layoutId={`compact-${prevFile.id}`}
+                className={'-z-10'}
+              />
+              <FileDisplayHandler
+                file={prevFile}
+                fullScreen={fullsScreenPreview}
+                onFullScreen={setFullsScreenPreview}
+                shareUuid={shareUuid}
+              />
+            </div>
+            <div
+              className={cn(
+                'relative shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
+                'z-10 flex w-full flex-col space-y-5 transition-all',
+                'whitespace-nowrap rounded-xl bg-gray-50 p-3 md:p-6',
+                'max-sm:min-h-1/2 outline-2 -outline-offset-2 outline-transparent',
+                'dark:bg-stone-900 dark:outline-stone-400/20',
+                isSelected &&
+                  '-outline-offset-4 outline-blue-500 dark:outline-blue-400',
+              )}>
+              <DisplayHeader
+                file={prevFile}
+                selected={isSelected}
+                onSelect={onSelect}
+              />
+              {/**
+               * Disabled for now as the favorite changes the file order
+               * and file display currently relies on scope index which changes
+               !shareUuid && (
+               <FileDisplayFavorite file={file} onUpdate={onUpdate} />
+               )**/}
+              <FileDisplayStats file={prevFile} />
+              <FileDisplayActions
+                shareUuid={shareUuid}
+                file={prevFile}
+                onClose={onClose}
+              />
+              <FileDisplayFooter file={prevFile} onClose={onClose} />
+            </div>
+          </>
+        )}
+      </CleanDialogContent>
+    </Dialog>
   );
 }

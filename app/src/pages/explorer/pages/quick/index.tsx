@@ -2,7 +2,6 @@ import { Helmet } from 'react-helmet';
 import { useCallback, useState } from 'react';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-import tw from '@utils/classMerge.ts';
 import { DocumentIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MAX_QUICK_SHARE_FILES } from '@lib/constants.ts';
@@ -12,6 +11,7 @@ import { useMutation } from '@tanstack/react-query';
 import { getLocalTimeZone } from '@internationalized/date';
 import { quickShareUploadFn } from '@pages/explorer/pages/quick/quickShareUploadFn.ts';
 import { QuickShareResult } from '@pages/explorer/pages/quick/quickShareResult.tsx';
+import { cn } from '@lib/utils.ts';
 
 export default function QuickSharePage() {
   const [shareUuid, setShareUuid] = useState<string | undefined>(undefined);
@@ -112,7 +112,7 @@ export default function QuickSharePage() {
                   layout
                   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
                   {...(getRootProps() as any)}
-                  className={tw(
+                  className={cn(
                     'flex min-h-52 overflow-hidden rounded-xl border-4 border-dashed border-gray-400/50 p-4',
                     isDragActive && 'border-blue-400/50 bg-blue-50',
                     !files.length && 'items-center justify-center',

@@ -2,7 +2,8 @@ import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { MouseEvent, ReactNode, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 import { NavLink } from 'react-router-dom';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export function BottomNavItem({
   link,
@@ -26,7 +27,7 @@ export function BottomNavItem({
         to={link.href || ''}
         end={link.exact}
         className={({ isActive }) =>
-          tw(
+          cn(
             'grid cursor-pointer place-items-center px-2 py-2',
             'rounded-xl transition-colors hover:bg-stone-500/20',
             isActive && !!link.href && 'bg-stone-300/50 dark:bg-stone-700/40',

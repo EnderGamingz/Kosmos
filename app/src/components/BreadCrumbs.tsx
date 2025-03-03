@@ -2,8 +2,8 @@ import ConditionalWrapper from './ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { hexToRGB } from '@utils/color.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (
@@ -61,7 +61,7 @@ export function BreadCrumbItem({
         {name}
       </ConditionalWrapper>
       <span
-        className={tw(
+        className={cn(
           'text-stone-500/70 transition-opacity',
           last ? 'opacity-0' : 'opacity-100',
         )}>

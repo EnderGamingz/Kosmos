@@ -11,7 +11,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 type FileIcon = FileType | 'folder' | 'album';
 
@@ -79,7 +80,7 @@ export default function ItemIcon({
   const layoutId = keySuffix ? `type-${id}-${keySuffix}` : undefined;
   const Component = keySuffix ? motion.div : 'div';
   const props = {
-    className: tw(
+    className: cn(
       'icon-container pointer-events-none',
       'text-stone-700 shadow-inherit [&>svg]:h-10 [&>svg]:w-10 [&>svg]:p-2',
       'dark:shadow-inherit-dark dark:text-stone-300',

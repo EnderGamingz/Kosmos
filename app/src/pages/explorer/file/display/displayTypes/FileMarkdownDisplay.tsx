@@ -23,12 +23,12 @@ import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import tw from '@utils/classMerge.ts';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
 import { Portal } from 'react-portal';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { truncateString } from '@utils/truncate.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 function MarkdownEditorContent({
   file,
@@ -89,7 +89,7 @@ function MarkdownEditorContent({
       </ModalHeader>
       <ModalBody className={'px-2 py-0 md:px-5'}>
         <div
-          className={tw(
+          className={cn(
             'h-full w-full flex-grow rounded-lg shadow-lg',
             isMarkdown
               ? 'overflow-hidden'
@@ -195,7 +195,7 @@ export function MarkdownFullscreenView({
             </motion.div>
             <motion.div
               onClick={onClose}
-              className={tw(
+              className={cn(
                 'fixed top-3 z-[110] [&>svg]:h-5 [&>svg]:w-5',
                 'text-[var(--markdown-fg)]',
                 open ? 'right-3' : 'right-8',
@@ -235,7 +235,7 @@ export default function FileMarkdownDisplay({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.5 }}
         transition={{ duration: 0.3 }}
-        className={tw(
+        className={cn(
           'relative h-full w-full rounded-xl bg-[var(--markdown-bg)] p-3 text-stone-50 shadow-lg',
           !isShared ? 'md:pr-5' : 'md:pr-1',
         )}>
@@ -248,7 +248,7 @@ export default function FileMarkdownDisplay({
           source={query.data}
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw, rehypeSanitize]}
-          className={tw('h-full overflow-y-auto', !isShared && 'pb-10')}
+          className={cn('h-full overflow-y-auto', !isShared && 'pb-10')}
         />
       </motion.div>
     </>

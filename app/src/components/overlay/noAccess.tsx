@@ -1,4 +1,3 @@
-import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import {
   ChevronLeftIcon,
@@ -6,6 +5,7 @@ import {
   KeyIcon,
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { cn } from '@lib/utils.ts';
 
 export function NoAccess({
   page,
@@ -28,7 +28,7 @@ export function NoAccess({
 
   return (
     <div
-      className={tw(
+      className={cn(
         'body-bg absolute inset-0 z-20 !m-0 p-10 text-stone-700',
         'flex flex-col items-center justify-center gap-2',
         'dark:text-stone-300',
@@ -81,7 +81,7 @@ export function NoAccess({
           transition={{ delay: 0.4 }}
           className={'flex w-full'}>
           <Link
-            className={tw(
+            className={cn(
               'w-full rounded-xl bg-stone-700 p-2 text-center text-lg font-medium text-stone-100',
               'mx-auto max-w-2xl shadow transition-colors hover:bg-stone-500/60 hover:shadow-md',
             )}

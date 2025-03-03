@@ -1,5 +1,4 @@
 import { ContextOperationType } from '@models/file.ts';
-import tw from '@utils/classMerge.ts';
 import {
   DocumentIcon,
   FolderIcon,
@@ -7,6 +6,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
+import { cn } from '@lib/utils.ts';
 
 const iconMap = {
   folder: <FolderIcon />,
@@ -36,13 +36,13 @@ export function ContextMenuTitle({
       }>
       <p
         title={title}
-        className={tw(
+        className={cn(
           'flex items-center gap-2 whitespace-nowrap text-sm font-light text-stone-800 dark:text-stone-300',
           '[&_>svg]:h-4 [&_>svg]:min-w-4',
         )}>
         {children}
         <span className={'truncate'}>{title}</span>
-        <div className={'ml-auto min-w-4'}>{renderIcon()}</div>
+        <span className={'ml-auto min-w-4'}>{renderIcon()}</span>
       </p>
     </div>
   );

@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { NavLink, Outlet } from 'react-router-dom';
-import tw from '@utils/classMerge.ts';
 import { links } from '@pages/settings/links.ts';
 import { Helmet } from 'react-helmet';
+import { cn } from '@lib/utils.ts';
 
 export default function Settings() {
   return (
@@ -11,7 +11,7 @@ export default function Settings() {
         <title>Settings</title>
       </Helmet>
       <motion.aside
-        className={tw(
+        className={cn(
           'border-r border-stone-800/10 py-3 transition-width',
           'absolute left-0 top-0 h-full w-20 px-2 md:h-[unset]',
           'flex flex-col md:relative md:w-[unset] md:px-4',
@@ -34,7 +34,7 @@ export default function Settings() {
             end
             title={link.name}
             className={({ isActive }) =>
-              tw(
+              cn(
                 'flex items-center rounded-lg p-2 text-stone-700 transition-all',
                 'px-4 text-lg hover:bg-stone-700/5 dark:text-stone-300 dark:hover:bg-stone-300/10',
                 !!link.bottom && 'mt-auto',

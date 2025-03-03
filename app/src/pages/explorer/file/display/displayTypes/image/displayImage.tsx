@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import {
   FullscreenToggle,
   ImageFullscreenView,
@@ -8,6 +7,7 @@ import { ImageTooLargePrompt } from '@pages/explorer/file/display/displayTypes/i
 
 import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function DisplayImage({
   file,
@@ -45,7 +45,7 @@ export function DisplayImage({
       animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
       exit={{ opacity: 0, scale: 0 }}
       onDoubleClick={toggleFullScreen}
-      className={tw(
+      className={cn(
         'h-full w-full rounded-xl bg-center bg-no-repeat transition-colors',
         isTooLarge && 'scale blur-sm grayscale-[50%]',
         fullScreen
@@ -91,7 +91,7 @@ export function DisplayImage({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.3 } }}
           exit={{ opacity: 0, transition: { duration: 0 } }}
-          className={tw(
+          className={cn(
             'absolute inset-0 -z-10 rounded-xl bg-stone-800/20 text-stone-700 shadow-xl',
             'outline outline-1 -outline-offset-1 outline-stone-500',
           )}

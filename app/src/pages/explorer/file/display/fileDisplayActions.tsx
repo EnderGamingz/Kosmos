@@ -8,7 +8,6 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromLeft,
 } from '@components/defaults/transition.ts';
-import tw from '@utils/classMerge.ts';
 import OpenExternally from '@pages/explorer/components/openExternally.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
@@ -16,6 +15,7 @@ import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { isValidFileForAlbum } from '@models/album.ts';
+import { cn } from '@lib/utils.ts';
 
 const actions = (
   file: FileModelDTO,
@@ -89,7 +89,7 @@ export function FileDisplayActions({
       initial={'hidden'}
       animate={'show'}
       exit={'hidden'}
-      className={tw(
+      className={cn(
         '!my-5 flex flex-wrap gap-4',
         !left && 'justify-center',
         '[&_button>svg]:h-8 [&_button>svg]:w-8 [&_button]:rounded-xl [&_button]:p-2',

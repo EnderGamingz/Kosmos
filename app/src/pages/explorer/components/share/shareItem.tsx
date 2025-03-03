@@ -1,7 +1,6 @@
 import { getShareTypeString } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { itemTransitionVariantFadeInFromTop } from '@components/defaults/transition.ts';
-import tw from '@utils/classMerge.ts';
 import { Tooltip } from '@nextui-org/react';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { ShareOperationType } from '@models/file.ts';
@@ -15,12 +14,13 @@ import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
 import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
     <Tooltip content={active ? 'Active' : 'Expired'}>
       <div
-        className={tw(
+        className={cn(
           'hidden h-3 min-h-3 w-3 min-w-3 rounded-full shadow transition-colors sm:block',
           active
             ? 'bg-green-300 shadow-green-300'
@@ -57,7 +57,7 @@ export function ShareItem({
     <motion.li
       layout
       variants={itemTransitionVariantFadeInFromTop}
-      className={tw(
+      className={cn(
         'relative gap-2 rounded-lg bg-stone-300/30 px-3 py-2 sm:flex sm:flex-row sm:items-center',
         'outline outline-1 sm:bg-stone-300/30 sm:outline-transparent',
         isActive

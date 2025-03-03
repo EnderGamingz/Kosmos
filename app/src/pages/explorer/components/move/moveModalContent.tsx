@@ -11,9 +11,9 @@ import { motion } from 'framer-motion';
 import { ContextOperationType } from '@models/file.ts';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
-import tw from '@utils/classMerge.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export type MoveData = {
   id?: string;
@@ -94,7 +94,7 @@ export function MoveModalContent({
       </ModalHeader>
       <ModalBody className={'min-h-32'}>
         <ul
-          className={tw(
+          className={cn(
             '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
             'dark:[&_li:hover]:bg-indigo-700/50 dark:[&_li]:text-stone-100',
           )}>

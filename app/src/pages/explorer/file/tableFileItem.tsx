@@ -1,5 +1,4 @@
 import { normalizeFileType } from '@models/file.ts';
-import tw from '@utils/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
@@ -24,6 +23,7 @@ import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
@@ -119,7 +119,7 @@ export function TableFileItem({
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
-      className={tw(
+      className={cn(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
         isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
         isShift && 'cursor-pointer',
@@ -134,7 +134,7 @@ export function TableFileItem({
         </motion.th>
       )}
       <td
-        className={tw(
+        className={cn(
           'flex h-full !p-0',
           !!context.viewSettings?.noSelect && '!pl-3',
         )}>

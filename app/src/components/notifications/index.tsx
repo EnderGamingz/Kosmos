@@ -1,8 +1,8 @@
 import { AnimatePresence } from 'framer-motion';
 import { NotificationItem } from './notificationItem';
 import { useNotifications } from '@stores/notificationStore';
-import tw from '@utils/classMerge.ts';
 import { useEffect, useState } from 'react';
+import { cn } from '@lib/utils.ts';
 
 export default function NotificationIndicator() {
   const [expanded, setExpanded] = useState(false);
@@ -33,7 +33,7 @@ export default function NotificationIndicator() {
           }
         }}
         onMouseLeave={() => setExpanded(false)}
-        className={tw(
+        className={cn(
           'group relative isolate',
           'flex max-h-64 flex-col-reverse gap-2 max-sm:flex-col',
           'bottom-0 [&_li]:absolute',

@@ -7,7 +7,6 @@ import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { Checkbox } from '@nextui-org/react';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import tw from '@utils/classMerge.ts';
 import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { ClockIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
@@ -18,6 +17,7 @@ import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function GridFileItem({
   index,
@@ -92,7 +92,7 @@ export default function GridFileItem({
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
-      className={tw(
+      className={cn(
         'group relative rounded-lg outline outline-2 ',
         'outline-transparent transition-[outline-color]',
         Boolean(isSelected) &&
@@ -126,7 +126,7 @@ export default function GridFileItem({
           setDisabled(false);
         }}>
         <div
-          className={tw(
+          className={cn(
             'absolute z-30 flex items-start gap-2 px-2 py-1.5',
             '[&>button>svg]:w-5 [&>button]:-mt-0.5 [&>button]:p-0',
             'left-1.5 top-1.5 h-20 overflow-hidden rounded-t-lg',
@@ -155,7 +155,7 @@ export default function GridFileItem({
         </div>
         <div
           onClick={handleClick}
-          className={tw(
+          className={cn(
             'relative h-32',
             isDefaultDisplay && 'm-1.5 mb-0',
             fileHasPreview
@@ -194,14 +194,14 @@ export default function GridFileItem({
             {isCompact && (
               <div
                 key={`compact-${file.id}`}
-                className={tw(
+                className={cn(
                   'absolute inset-0 z-20 flex rounded-lg !px-1.5 !py-1',
                   'bg-gradient-to-t from-stone-800/70 to-stone-800/0',
                 )}>
                 <p
                   onClick={handleClick}
                   key={`title-${file.id}`}
-                  className={tw(
+                  className={cn(
                     'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                     'mt-auto text-sm text-stone-100',
                     !isCompact && 'lg:text-base',
@@ -218,7 +218,7 @@ export default function GridFileItem({
               <div className={'flex items-center'}>
                 <p
                   onClick={handleClick}
-                  className={tw(
+                  className={cn(
                     'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                     'text-sm',
                     !isCompact && 'lg:text-base',

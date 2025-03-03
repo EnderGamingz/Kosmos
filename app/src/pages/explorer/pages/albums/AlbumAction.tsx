@@ -19,8 +19,8 @@ import { motion } from 'framer-motion';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DisplayContext } from '@lib/contexts.ts';
-import tw from '@utils/classMerge.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 function AddToAlbumModalContent({
   onClose,
@@ -46,7 +46,7 @@ function AddToAlbumModalContent({
       </ModalHeader>
       <ModalBody className={'min-h-32'}>
         <ul
-          className={tw(
+          className={cn(
             '[&_li:not(.added):hover]:bg-indigo-100 [&_li:not(.added)]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
             'dark:[&_li:not(.added):hover]:bg-indigo-700/50',
           )}>

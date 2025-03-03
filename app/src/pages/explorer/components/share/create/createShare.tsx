@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { getShareTypeString, ShareType } from '@models/share.ts';
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { TypeButton } from '@pages/explorer/components/share/create/typeButton.tsx';
 import { Collapse } from 'react-collapse';
 import {
@@ -20,6 +19,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { ShareOperationType } from '@models/file.ts';
 import { invalidateShares } from '@lib/query.ts';
+import { cn } from '@lib/utils.ts';
 
 export function CreateShare({
   dataType,
@@ -117,7 +117,7 @@ export function CreateShare({
       )}
       {!quick && (
         <div
-          className={tw(
+          className={cn(
             'grid grid-cols-1 rounded-xl bg-stone-200/50 p-1 sm:grid-cols-2',
             'dark:bg-stone-700/50 dark:text-stone-300',
           )}>
@@ -134,7 +134,7 @@ export function CreateShare({
         </div>
       )}
       <div
-        className={tw(
+        className={cn(
           'grid [&>div]:overflow-hidden [&>div]:rounded-xl [&>div]:bg-stone-200/50 [&>div]:p-2',
           'gap-2 [&_input]:mt-1 [&_input]:w-full [&_input]:py-1.5 [&_label]:text-sm [&_svg]:w-4',
           '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-stone-600',

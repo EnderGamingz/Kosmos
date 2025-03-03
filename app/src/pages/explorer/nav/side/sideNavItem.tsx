@@ -1,9 +1,9 @@
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { MouseEvent, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import tw from '@utils/classMerge.ts';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
+import { cn } from '@lib/utils.ts';
 
 export function SideNavItem({
   link,
@@ -21,7 +21,7 @@ export function SideNavItem({
 
   return (
     <div
-      className={tw(
+      className={cn(
         'rounded-lg transition-all',
         open && 'bg-stone-300/30 dark:bg-stone-700/30',
       )}>
@@ -30,7 +30,7 @@ export function SideNavItem({
         to={link.href || ''}
         end={link.exact}
         className={({ isActive }) =>
-          tw(
+          cn(
             'flex items-center gap-3 rounded-lg px-5 py-2 transition-background',
             'cursor-pointer hover:bg-stone-300 md:text-lg dark:text-stone-300 dark:hover:bg-stone-500/20',
             open && 'shadow-md',
@@ -42,7 +42,7 @@ export function SideNavItem({
         }>
         {link.icon}
         <div className={'flex w-full items-center justify-between'}>
-          <p className={tw(small ? 'text-base' : 'text-lg')}>{link.name}</p>
+          <p className={cn(small ? 'text-base' : 'text-lg')}>{link.name}</p>
           {link.description && (
             <p className={'text-xs text-stone-600 dark:text-stone-500'}>
               {link.description}
@@ -50,7 +50,7 @@ export function SideNavItem({
           )}
           {link.items && (
             <ChevronUpIcon
-              className={tw(
+              className={cn(
                 '!h-4 !w-4 rotate-180 transition-transform',
                 open && 'rotate-0',
               )}

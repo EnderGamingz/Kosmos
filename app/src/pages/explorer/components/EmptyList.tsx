@@ -1,8 +1,8 @@
 import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
 import Illustration from '@components/Illustration.tsx';
-import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
+import { cn } from '@lib/utils.ts';
 
 export default function EmptyList({
   table,
@@ -32,7 +32,7 @@ export default function EmptyList({
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className={tw(
+        className={cn(
           'grid w-full flex-grow place-items-center gap-4 px-2 py-4 opacity-70',
           grid
             ? 'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7'

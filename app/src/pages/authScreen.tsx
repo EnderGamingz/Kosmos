@@ -2,8 +2,8 @@ import { FormEvent, ReactNode } from 'react';
 import { HeaderBranding } from '@components/header/headerBranding.tsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import tw from '@utils/classMerge.ts';
 import { Helmet } from 'react-helmet';
+import { cn } from '@lib/utils.ts';
 
 export function AuthScreen({
   children,
@@ -55,7 +55,7 @@ export function AuthScreen({
           </motion.p>
           <form
             onSubmit={onSubmit}
-            className={tw(
+            className={cn(
               'mt-10 flex flex-col gap-4',
               '[&>label>svg]:absolute [&>label>svg]:h-5 [&>label>svg]:w-5 [&_input]:pl-8 [&_label]:relative',
               '[&>label>svg]:left-2 [&>label>svg]:top-1/2 [&>label>svg]:-translate-y-1/2 [&>label>svg]:text-stone-700',

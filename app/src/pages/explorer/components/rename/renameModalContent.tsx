@@ -18,7 +18,8 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export function RenameModalContent({
   renameData,
@@ -92,7 +93,7 @@ export function RenameModalContent({
           Rename {renameData.type}
           <Tooltip content={renameData.name}>
             <p
-              className={tw(
+              className={cn(
                 'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1',
                 'dark:bg-stone-700',
               )}>

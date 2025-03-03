@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import tw from '@utils/classMerge.ts';
 import { FileDisplayHandler } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
@@ -12,6 +11,7 @@ import { ShareError } from '@pages/share/shareError.tsx';
 import { Helmet } from 'react-helmet';
 import { truncateString } from '@utils/truncate.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function FileShareDisplay({ uuid }: { uuid: string }) {
   const [fullsScreenPreview, setFullScreenPreview] = useState(false);
@@ -33,7 +33,7 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
         <title>{truncateString(share.data.file_name) ?? 'Shared File'}</title>
       </Helmet>
       <div
-        className={tw(
+        className={cn(
           '-mb-5 h-[300px] flex-grow overflow-hidden md:-mr-5 md:mb-0 md:h-[500px] md:min-h-[unset] [&>*]:absolute [&>*]:inset-0 [&>*]:overflow-visible',
           fullsScreenPreview ? 'z-20' : 'relative z-0',
         )}>

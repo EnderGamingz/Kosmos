@@ -1,6 +1,5 @@
 import { useUsageStats } from '@lib/query.ts';
 import { getPercentageStats } from '@components/usage/getPercentage.ts';
-import tw from '@utils/classMerge.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
@@ -8,6 +7,7 @@ import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
+import { cn } from '@lib/utils.ts';
 
 export default function StorageLimitBanner() {
   const usage = useUsageStats();
@@ -37,7 +37,7 @@ export default function StorageLimitBanner() {
             marginTop: 0,
             marginBottom: 0,
           }}
-          className={tw(
+          className={cn(
             'm-4 shrink-0 overflow-hidden rounded-xl outline outline-1',
             percentages.warningLimit &&
               'bg-yellow-100/40 outline-yellow-600 dark:bg-yellow-900/40',

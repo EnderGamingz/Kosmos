@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { Link } from 'react-router-dom';
 import {
   ArrowRightEndOnRectangleIcon,
@@ -9,6 +8,7 @@ import {
 import { ALLOW_REGISTER } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { ReactNode } from 'react';
+import { cn } from '@lib/utils.ts';
 
 function HeroLink({
   to,
@@ -24,7 +24,7 @@ function HeroLink({
   return (
     <Link
       to={to}
-      className={tw(
+      className={cn(
         'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
         'text-lg transition-colors hover:bg-stone-300 sm:text-2xl dark:bg-stone-300 dark:text-stone-800 dark:hover:bg-stone-400',
         className,
@@ -38,14 +38,10 @@ function HeroLink({
 export function Hero() {
   const user = useUserState(s => s.user);
   return (
-    <div
-      className={'flex p-5 sm:h-[calc(100dvh-90px)] sm:max-h-[650px] sm:p-10'}>
-      <motion.div
-        initial={{ borderRadius: '0.5rem' }}
-        animate={{ borderRadius: '3rem' }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className={tw(
-          'relative flex-grow overflow-hidden rounded-[3rem] bg-stone-900 shadow-2xl',
+    <div className={'flex sm:h-[calc(100dvh-90px)] sm:max-h-[650px]'}>
+      <div
+        className={cn(
+          'relative flex-grow overflow-hidden bg-stone-900 shadow-lg',
           'grid p-10 md:p-16 lg:p-24',
         )}>
         <motion.img
@@ -107,7 +103,6 @@ export function Hero() {
                   icon={<HomeIcon className={'h-8 w-8'} />}>
                   Dashboard
                 </HeroLink>
-
                 <HeroLink
                   to={'/home/quick'}
                   icon={<ClockIcon className={'h-8 w-8'} />}>
@@ -130,7 +125,7 @@ export function Hero() {
             )}
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

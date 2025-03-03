@@ -1,7 +1,6 @@
 import { useKeyStore } from '@stores/keyStore.ts';
 import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import GridFileItem from '@pages/explorer/file/gridFileItem.tsx';
 import { DetailType } from '@stores/preferenceStore.ts';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
@@ -29,6 +28,7 @@ import {
 } from '@lib/constants.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 function Footer(props: {
   fileModels: FileModelDTO[];
@@ -41,7 +41,7 @@ function Footer(props: {
         <EmptyList grid />
       ) : (
         <motion.div
-          className={tw(
+          className={cn(
             'w-full cursor-default select-none border-none text-sm text-stone-500/50',
             'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
             'flex gap-5 pb-28 pt-4',
@@ -72,7 +72,7 @@ function FolderGrid(props: {
       variants={containerVariant()}
       initial={'hidden'}
       animate={'show'}
-      className={tw(
+      className={cn(
         'mb-5 flex gap-3 overflow-x-auto py-2 md:grid',
         'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
         'xl:grid-cols-5 2xl:grid-cols-7',
@@ -137,7 +137,7 @@ export default function FileGrid({
           />
         )}
         <motion.div
-          className={tw(
+          className={cn(
             'flex-grow',
             Boolean(dynamic) && 'mt-6 gap-3',
             !!viewSettings?.limitedView && 'mt-3',

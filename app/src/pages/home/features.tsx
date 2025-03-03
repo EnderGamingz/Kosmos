@@ -4,7 +4,8 @@ import {
   WindowIcon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 type Feature = {
   icon: ReactNode;
@@ -54,9 +55,10 @@ export function Features() {
 function Feature({ icon: Icon, label, description }: Feature) {
   return (
     <div
-      className={tw(
+      className={cn(
         'space-y-2 rounded-xl bg-stone-200/60 p-4 text-stone-900 shadow-md outline outline-1 outline-stone-600/20',
         'dark:bg-stone-800/50 dark:text-stone-100 dark:outline-stone-500/20',
+        'bg-gradient-to-bl from-stone-100 to-stone-300 dark:from-stone-800 dark:to-stone-700',
       )}>
       <div className={'flex items-center gap-2'}>
         <div

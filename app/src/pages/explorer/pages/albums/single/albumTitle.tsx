@@ -6,8 +6,8 @@ import { BASE_URL } from '@lib/env.ts';
 import { FormEvent, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
-import tw from '@utils/classMerge.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 const useAlbumUpdateMutation = () => {
   const notifications = useNotifications(s => s.actions);
@@ -76,7 +76,7 @@ export function AlbumTitle({
 
   return (
     <div
-      className={tw(
+      className={cn(
         'flex flex-grow flex-col gap-5 transition-all',
         dense && 'gap-1',
       )}>
@@ -90,7 +90,7 @@ export function AlbumTitle({
             layoutId={`album-name-${album.id}`}
             disabled={disabled}
             title={album.name}
-            className={tw(
+            className={cn(
               'w-0 flex-grow truncate transition-[font-size]',
               'bg-transparent text-2xl font-light outline-none sm:text-3xl md:text-4xl',
               Boolean(dense) && 'text-lg sm:text-xl md:text-2xl',
@@ -106,7 +106,7 @@ export function AlbumTitle({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className={tw(
+          className={cn(
             'bg-transparent font-light text-stone-500 outline-none transition-[font-size]',
             Boolean(dense) && 'text-sm',
           )}

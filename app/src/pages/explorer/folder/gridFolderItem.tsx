@@ -10,13 +10,13 @@ import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useNavigate } from 'react-router-dom';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
 import { Checkbox } from '@nextui-org/react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function GridFolderItem({
   index,
@@ -123,7 +123,7 @@ export default function GridFolderItem({
         onMouseLeave={() => {
           if (!disabled) setDragDestination();
         }}
-        className={tw(
+        className={cn(
           'flex items-center',
           'rounded-lg bg-stone-400/40 dark:bg-stone-700/40',
           'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg',
@@ -134,7 +134,7 @@ export default function GridFolderItem({
         <div className={'relative min-h-10 min-w-10'}>
           {!context.viewSettings?.noSelect && (
             <div
-              className={tw(
+              className={cn(
                 'absolute inset-0 z-10 grid h-10 w-10 place-items-center opacity-0',
                 'transition-opacity group-hover:opacity-100',
                 isSelected && 'opacity-100',
@@ -147,7 +147,7 @@ export default function GridFolderItem({
             </div>
           )}
           <div
-            className={tw(
+            className={cn(
               'absolute transition-opacity group-hover:opacity-0',
               isSelected && 'opacity-0',
             )}>

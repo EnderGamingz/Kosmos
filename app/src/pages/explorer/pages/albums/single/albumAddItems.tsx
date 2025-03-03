@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import { PlusIcon } from '@heroicons/react/24/solid';
-import tw from '@utils/classMerge.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay';
 import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
@@ -11,6 +10,7 @@ import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 function AlbumAddItemsContent({
   addTo,
@@ -120,7 +120,7 @@ export function AlbumAddItems({
   return (
     <>
       <button
-        className={tw('btn-black transition-all', Boolean(small) && 'btn-sm')}
+        className={cn('btn-black transition-all', Boolean(small) && 'btn-sm')}
         onClick={onOpen}>
         <PlusIcon />
         Add Items

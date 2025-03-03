@@ -26,6 +26,7 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
+      "@/*": ["./src/*"],
       "@models/*": ["./models/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],

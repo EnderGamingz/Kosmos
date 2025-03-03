@@ -1,7 +1,7 @@
 import { getShareTypeString, ShareType } from '@models/share.ts';
-import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
+import { cn } from '@lib/utils.ts';
 
 export function TypeButton({
   type,
@@ -15,7 +15,7 @@ export function TypeButton({
   return (
     <button
       onClick={onSelect}
-      className={tw(
+      className={cn(
         'relative flex rounded-lg px-3 py-1 transition-colors hover:bg-stone-400/20',
         'items-center gap-4 text-lg',
       )}

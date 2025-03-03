@@ -4,12 +4,12 @@ import { ShareOperationType } from '@models/file.ts';
 import { useEffect, useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
-import tw from '@utils/classMerge.ts';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
 import { ScrollShadow } from '@nextui-org/react';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { cn } from '@lib/utils.ts';
 
 export default function ShareModal() {
   const { shareElementId, shareElementType, clearShareElement } =
@@ -51,7 +51,7 @@ export function ShareModalContent({
     <>
       <Backdrop onClose={onClose} />
       <div
-        className={tw(
+        className={cn(
           'pointer-events-none isolate flex h-full w-full items-center justify-end',
           'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 p-3 md:p-5',
         )}>
@@ -64,7 +64,7 @@ export function ShareModalContent({
             animate={{ opacity: 1, x: 0, scale: 1, height: '100%' }}
             exit={{ opacity: 0, x: 80, scale: 0.9, height: '50%' }}
             transition={{ duration: 0.2 }}
-            className={tw(
+            className={cn(
               'relative z-10 shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
               'w-full rounded-xl bg-gray-50 p-3 md:p-6',
               'flex flex-col overflow-hidden text-stone-800',
@@ -81,7 +81,7 @@ export function ShareModalContent({
                 onClick={() => setCreate(prev => !prev)}
                 className={'flex items-center gap-2 font-bold'}>
                 <PlusIcon
-                  className={tw(
+                  className={cn(
                     'h-4 w-4 fill-stone-800 transition-all',
                     create && 'rotate-45',
                   )}

@@ -4,7 +4,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { useUsageStats } from '@lib/query.ts';
-import tw from '@utils/classMerge.ts';
 import { motion } from 'framer-motion';
 import {
   getAdminLinks,
@@ -14,6 +13,7 @@ import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
+import { cn } from '@lib/utils.ts';
 
 export function SideNav({ admin }: { admin?: boolean }) {
   const usage = useUsageStats();
@@ -33,7 +33,7 @@ export function SideNav({ admin }: { admin?: boolean }) {
 
   return (
     <motion.aside
-      className={tw(
+      className={cn(
         'body-bg flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
         'overflow-hidden transition-all md:h-[initial]',
         'dark:border-stone-300/10',
@@ -46,7 +46,7 @@ export function SideNav({ admin }: { admin?: boolean }) {
       <div className={'mt-auto grid gap-2 border-t border-stone-800/10 p-5'}>
         <Link
           to={'/usage/report'}
-          className={tw(
+          className={cn(
             'flex items-center gap-2 rounded-lg px-2 py-1 font-light',
             'hover:bg-stone-800/10 dark:hover:bg-stone-300/10',
           )}>

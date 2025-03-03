@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 import { isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
-import tw from '@utils/classMerge.ts';
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
@@ -13,6 +12,7 @@ import { FileContextMenu } from '@components/contextMenu/menus/fileContextMenu.t
 import { FolderContextMenu } from '@components/contextMenu/menus/folderContextMenu.tsx';
 import { MultiContextMenu } from '@components/contextMenu/menus/multiContextMenu.tsx';
 import { FileWindowContextMenu } from '@components/contextMenu/menus/fileWindowContextMenu.tsx';
+import { cn } from '@lib/utils.ts';
 
 export default function ContextMenu({
   children,
@@ -37,7 +37,7 @@ export default function ContextMenu({
       </style>
       <Backdrop onClose={onClose} />
       <motion.div
-        className={tw(
+        className={cn(
           'absolute z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',
           '[&_button>svg]:h-5 [&_button]:flex [&_button]:items-center [&_button]:gap-2 [&_button]:text-left',
           '[&_button:not(.no-pre):hover]:bg-stone-100 [&_button:not(.no-pre):hover]:text-stone-900 [&_button:not(.no-pre)]:px-3 [&_button:not(.no-pre)]:py-1.5',

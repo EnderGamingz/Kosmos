@@ -1,7 +1,8 @@
 import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { ReactNode } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export function PagedWrapper({
   viewSettings,
@@ -20,7 +21,7 @@ export function PagedWrapper({
       hasMore={viewSettings.hasNextPage}
       useWindow={false}
       threshold={500}
-      className={tw(Boolean(height) && 'h-full')}
+      className={cn(Boolean(height) && 'h-full')}
       loader={
         <div className={'p-1 text-center text-sm text-stone-600'} key={0}>
           Loading ...

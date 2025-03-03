@@ -1,7 +1,7 @@
 import { SortBy, SortOrder } from '@models/sort.ts';
 import { useSearchState } from '@stores/searchStore.ts';
-import tw from '@utils/classMerge.ts';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
+import { cn } from '@lib/utils.ts';
 
 export function ExplorerSort({
   name,
@@ -50,7 +50,7 @@ export function ExplorerSort({
 function SortIcon({ desc }: { desc: boolean }) {
   return (
     <span
-      className={tw(
+      className={cn(
         'ml-2 inline-block transition-transform',
         desc ? 'rotate-0' : 'rotate-180',
       )}>

@@ -4,12 +4,12 @@ import FileMarkdownDisplay from '@pages/explorer/file/display/displayTypes/FileM
 import { ReactNode, useState } from 'react';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
 import { Portal } from 'react-portal';
-import tw from '@utils/classMerge.ts';
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
 } from '@heroicons/react/24/outline';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function EmbedFile({
   file,
@@ -55,7 +55,7 @@ export function ObjectFullscreenView({
             {children}
             <motion.div
               onClick={onClose}
-              className={tw(
+              className={cn(
                 'fixed top-3 z-[110] [&>svg]:h-5 [&>svg]:w-5',
                 'text-[var(--markdown-fg)]',
                 open ? 'right-3' : 'right-8',

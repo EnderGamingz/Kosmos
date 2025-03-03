@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import tw from '@utils/classMerge.ts';
 import objectHash from 'object-hash';
+import { cn } from '@lib/utils.ts';
 
 export function UserInformation() {
   const user = useUserState(s => s.user);
@@ -57,7 +57,7 @@ export function UserInformation() {
     <section className={'space-y-3'}>
       <h2 className={'text-xl font-bold'}>User Information</h2>
       <form
-        className={tw(
+        className={cn(
           'grid grid-cols-1 gap-2 md:grid-cols-2',
           '[&_input]:input [&_input]:w-full',
           '[&_label]:p-1 [&_label]:text-sm [&_label]:font-medium [&_label]:text-stone-800',

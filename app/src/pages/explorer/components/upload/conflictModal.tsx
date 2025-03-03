@@ -5,7 +5,8 @@ import {
 import { useEffect, useState } from 'react';
 import { Modal, ModalContent, ScrollShadow } from '@nextui-org/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 const actions = [
   {
@@ -164,7 +165,7 @@ function FileConflictItem({
 }) {
   return (
     <li
-      className={tw(
+      className={cn(
         'flex flex-col gap-1 py-1 transition-opacity',
         file.resolveAction !== undefined && 'opacity-60',
       )}>
@@ -172,7 +173,7 @@ function FileConflictItem({
         {file.file.name}
       </p>
       <div
-        className={tw(
+        className={cn(
           'flex flex-wrap gap-2',
           '[&>button]:rounded-lg [&>button]:px-2 [&>button]:py-1 [&>button]:text-center',
           '[&>button]:outline [&>button]:outline-1 [&>button]:outline-stone-500/20 [&>button]:transition-colors',
@@ -180,7 +181,7 @@ function FileConflictItem({
         {actions.map(a => (
           <button
             key={a.name}
-            className={tw(a.action === file.resolveAction && 'bg-stone-500/50')}
+            className={cn(a.action === file.resolveAction && 'bg-stone-500/50')}
             onClick={() => selectAction(a.action)}>
             {a.name}
           </button>

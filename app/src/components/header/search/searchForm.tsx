@@ -4,7 +4,8 @@ import {
   ArrowTurnDownRightIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export function SearchForm({ onClose }: { onClose?: () => void }) {
   const [value, setValue] = useState('');
@@ -44,7 +45,7 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
         <button
           type={'submit'}
           disabled={!value}
-          className={tw(
+          className={cn(
             'absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2',
             'text-stone-500 transition-opacity',
             !value && 'opacity-0',

@@ -1,7 +1,6 @@
 import { FileType, FileTypeActions, getFileTypeString } from '@models/file.ts';
 import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -10,6 +9,7 @@ import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx
 import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import ArchiveDisplay from '@pages/explorer/file/display/displayTypes/archiveDisplay.tsx';
+import { cn } from '@lib/utils.ts';
 
 export function FileTypeDisplay({
   id,
@@ -33,7 +33,7 @@ export function FileTypeDisplay({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5 }}
       transition={{ duration: 0.3 }}
-      className={tw(
+      className={cn(
         'relative flex h-full w-full flex-col items-center justify-center gap-2',
         'rounded-lg bg-stone-200/10 text-stone-900 shadow-xl dark:bg-stone-500/10 dark:text-stone-200',
         '[&_svg]:text-stone-900 dark:[&_svg]:text-stone-200',
@@ -41,7 +41,7 @@ export function FileTypeDisplay({
         'pr-5 text-center backdrop-blur-lg',
         loading ? '[&_svg]:h-14 [&_svg]:w-14' : '[&_svg]:h-20 [&_svg]:w-20',
       )}>
-      <div className={tw('relative', shouldShowChildren && 'h-0 opacity-0')}>
+      <div className={cn('relative', shouldShowChildren && 'h-0 opacity-0')}>
         {loading && (
           <div
             className={

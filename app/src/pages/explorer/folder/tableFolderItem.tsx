@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@nextui-org/react';
 import { formatDistanceToNow } from 'date-fns';
-import tw from '@utils/classMerge.ts';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { motion } from 'framer-motion';
@@ -15,6 +14,7 @@ import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function TableFolderItem({
   i,
@@ -84,7 +84,7 @@ export function TableFolderItem({
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
-      className={tw(
+      className={cn(
         'group transition-colors [&_td]:p-3 [&_th]:p-3',
         'hover:bg-stone-500/10 hover:shadow-sm',
         isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',

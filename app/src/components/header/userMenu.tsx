@@ -15,11 +15,11 @@ import {
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import useLogout from '@hooks/useLogout.ts';
-import tw from '@utils/classMerge.ts';
 import MinidentIcon from '@components/MinidentIcon.tsx';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useState } from 'react';
 import { Role } from '@models/user.ts';
+import { cn } from '@lib/utils.ts';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -40,7 +40,7 @@ export function UserMenu() {
     <Popover isOpen={open} onOpenChange={setOpen}>
       <PopoverTrigger>
         <button
-          className={tw(
+          className={cn(
             'rounded-lg p-2 text-stone-700',
             ' flex items-center gap-2 rounded-full sm:p-1',
             'outline-none dark:text-stone-300',
@@ -55,7 +55,7 @@ export function UserMenu() {
             />
           </div>
           <div
-            className={tw(
+            className={cn(
               'hidden max-w-32 flex-col overflow-hidden whitespace-nowrap pr-2 text-left sm:flex',
               '[&_*]:overflow-hidden [&_*]:overflow-ellipsis',
             )}>
@@ -94,7 +94,7 @@ export function UserMenu() {
               Settings
             </Link>
             <div
-              className={tw(
+              className={cn(
                 'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50',
                 'dark:bg-red-800/30 dark:text-red-300 dark:hover:bg-red-800/50',
               )}

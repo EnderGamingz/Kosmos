@@ -1,7 +1,8 @@
 import { registerSW } from 'virtual:pwa-register';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import tw from '@utils/classMerge.ts';
+
+import { cn } from '@lib/utils.ts';
 
 export function useServiceWorker() {
   const notifications = useNotifications(s => s.actions);
@@ -38,7 +39,7 @@ export function useServiceWorker() {
                 });
               });
             }}
-            className={tw(
+            className={cn(
               'my-1 flex w-full items-center gap-4 rounded-lg px-4 py-1 shadow-md',
               'bg-stone-900 text-stone-50 transition-colors hover:bg-stone-600 hover:text-stone-100',
               'outline outline-1 outline-stone-400/20',

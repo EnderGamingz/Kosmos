@@ -8,7 +8,6 @@ import {
 } from '@nextui-org/react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { OperationStatus, OperationType } from '@models/operation.ts';
-import tw from '@utils/classMerge.ts';
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
@@ -17,6 +16,7 @@ import { useUserState } from '@stores/userStore.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { StaticNotificationItem } from '@components/notifications/staticNotificationItem.tsx';
 import { OperationItem } from '@components/header/notifications/operationItem.tsx';
+import { cn } from '@lib/utils.ts';
 
 export function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
@@ -98,7 +98,7 @@ export function NotificationsMenu() {
       </PopoverTrigger>
       <PopoverContent className={'bg-transparent py-0 shadow-none'}>
         <div
-          className={tw(
+          className={cn(
             'flex min-w-[220px] flex-col gap-2',
             '[&>div]:bg-stone-50 [&>div]:px-2 [&>div]:shadow-large [&>div]:dark:bg-stone-800',
             '[&>div]:rounded-lg',
@@ -115,7 +115,7 @@ export function NotificationsMenu() {
               variants={containerVariant()}
               initial={'hidden'}
               animate={'show'}
-              className={tw(
+              className={cn(
                 'h-full max-h-[150px] max-w-56 md:max-h-[250px]',
                 'flex w-full flex-col gap-1 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
               )}>
@@ -148,7 +148,7 @@ export function NotificationsMenu() {
               variants={containerVariant()}
               initial={'hidden'}
               animate={'show'}
-              className={tw(
+              className={cn(
                 'max-h-[150px] md:max-h-[250px]',
                 'grid w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
               )}>

@@ -1,4 +1,3 @@
-import tw from '@utils/classMerge.ts';
 import { useContext, useState } from 'react';
 import { Skeleton } from '@nextui-org/react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
@@ -9,6 +8,7 @@ import {
 import { motion } from 'framer-motion';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { createPreviewUrl } from '@lib/file.ts';
+import { cn } from '@lib/utils.ts';
 
 export function PreviewImage({
   id,
@@ -41,7 +41,7 @@ export function PreviewImage({
   return (
     <motion.div
       /*layoutId={`image-${id}`}*/
-      className={tw(
+      className={cn(
         'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
         'shadow-inherit',
         dynamic ? 'min-h-20' : 'h-[40px] w-[40px]',
@@ -55,7 +55,7 @@ export function PreviewImage({
           data-loaded={loaded}
           width={40}
           height={40}
-          className={tw(
+          className={cn(
             'img relative z-10 aspect-square rounded-lg object-cover text-[0] opacity-0',
             'rounded-lg shadow-xl !duration-300 transition-transform-opacity',
             'data-[loaded=true]:opacity-100 motion-reduce:transition-none',
@@ -67,7 +67,7 @@ export function PreviewImage({
       )}
       {!isUnavailable && !isFailed && (!loaded || isProcessing) && (
         <Skeleton
-          className={tw(
+          className={cn(
             'h-full w-full',
             'rounded-lg !bg-transparent shadow-inner',
           )}

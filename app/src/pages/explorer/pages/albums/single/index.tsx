@@ -14,12 +14,12 @@ import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlid
 import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';
 import { AnimatePresence } from 'framer-motion';
 import { DisplayContext } from '@lib/contexts.ts';
-import tw from '@utils/classMerge.ts';
 import { Helmet } from 'react-helmet';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { getInitialGridSize } from '@utils/grid.ts';
 import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
+import { cn } from '@lib/utils.ts';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -120,7 +120,7 @@ export function AlbumPageContent({
       }}>
       <div aria-hidden className={'max-h-[200px] min-h-[200px]'} />
       <div
-        className={tw(
+        className={cn(
           'absolute left-5 right-5 top-5 z-40 !mt-0 flex items-start gap-5 rounded-b-xl transition-all',
           scrolling &&
             'left-0 right-0 top-0 bg-stone-50/70 p-2 backdrop-blur-lg dark:bg-stone-900/70',

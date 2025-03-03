@@ -7,13 +7,13 @@ import {
 import { UserMenu } from './userMenu.tsx';
 import { NewMenu } from './new/newMenu.tsx';
 import { NotificationsMenu } from '@components/header/notifications/notificationsMenu.tsx';
-import tw from '@utils/classMerge.ts';
 import { ALLOW_REGISTER } from '@lib/env.ts';
 import { HeaderBranding } from '@components/header/headerBranding.tsx';
 import {
   SearchBar,
   SearchPopup,
 } from '@components/header/search/searchBar.tsx';
+import { cn } from '@lib/utils.ts';
 
 export default function Header() {
   const location = useLocation();
@@ -31,7 +31,7 @@ export default function Header() {
       {!isAuthPage && <HeaderBranding user={user} />}
       {user && <SearchBar />}
       <div
-        className={tw(
+        className={cn(
           'rounded-lg bg-stone-700/5 px-2 py-1',
           'flex items-center gap-2 rounded-lg',
           'dark:bg-stone-700/30',

@@ -1,6 +1,5 @@
 import { getFileTypeString } from '@models/file.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
-import tw from '@utils/classMerge.ts';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -8,6 +7,7 @@ import {
   itemTransitionVariantFadeInFromTopSmall,
 } from '@components/defaults/transition.ts';
 import { FileTypeSumDataDTO } from '@bindings/FileTypeSumDataDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function UsageReportByType({ types }: { types: FileTypeSumDataDTO[] }) {
   return (
@@ -41,7 +41,7 @@ function FileTypeUsageItem({ type }: { type: FileTypeSumDataDTO }) {
     <motion.div
       variants={itemTransitionVariantFadeInFromTopSmall}
       onClick={() => navigate(`/home/files/${type.file_type}`)}
-      className={tw(
+      className={cn(
         'overflow-hidden rounded-xl bg-stone-300/40 p-2 text-stone-700',
         'cursor-pointer transition-colors hover:bg-stone-400/40',
         'outline outline-1 outline-stone-400/20',

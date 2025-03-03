@@ -4,13 +4,13 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
-import tw from '@utils/classMerge.ts';
 import {
   CircleStackIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function FileDisplayStats({ file }: { file: FileModelDTO }) {
   return (
@@ -19,7 +19,7 @@ export function FileDisplayStats({ file }: { file: FileModelDTO }) {
       initial={'hidden'}
       animate={'show'}
       exit={'hidden'}
-      className={tw(
+      className={cn(
         'flex flex-wrap gap-1',
         '[&>*]:flex [&>*]:flex-1 [&>*]:items-center [&>*]:gap-2 [&_svg]:h-4 [&_svg]:w-4',
         '[&>*]:rounded-full [&>*]:bg-stone-200/70 [&>*]:px-3 [&>*]:py-1',

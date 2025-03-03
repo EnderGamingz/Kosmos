@@ -4,9 +4,9 @@ import axios from 'axios';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { FormEvent, useState } from 'react';
 import useLogout from '@hooks/useLogout.ts';
-import tw from '@utils/classMerge.ts';
 import { useUsageStats } from '@lib/query.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
+import { cn } from '@lib/utils.ts';
 
 function DeleteAccount() {
   const usage = useUsageStats();
@@ -90,7 +90,7 @@ function DeleteAccount() {
 export function DangerSettings() {
   return (
     <section
-      className={tw(
+      className={cn(
         '!mt-12 space-y-3 rounded-xl bg-red-500/5 p-4',
         'text-red-950 outline outline-1 outline-red-700/50',
         'dark:bg-red-400/20 dark:text-red-200',

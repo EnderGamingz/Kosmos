@@ -1,11 +1,11 @@
 import { Notification, useNotifications } from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { NotificationStatus } from './notificationStatus.tsx';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
 import { Collapse } from 'react-collapse';
+import { cn } from '@lib/utils.ts';
 
 const ExpandedNotificationHeight = 56;
 
@@ -61,7 +61,7 @@ export function NotificationItem({
       }}
       exit={{ opacity: 0, y: exitDirection, zIndex: 1, skew: '-10deg' }}
       transition={{ duration: 0.2 }}
-      className={tw(
+      className={cn(
         'relative w-full cursor-grab overflow-hidden shadow-sm transition-colors',
         'rounded-md bg-stone-700 text-stone-50 shadow-[0_0_5px_-2px_#000000A0]',
         index === 0 || expanded ? 'text-stone-50' : 'text-stone-50/20',

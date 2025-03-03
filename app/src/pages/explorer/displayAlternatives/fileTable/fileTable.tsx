@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
 import {
   createContext,
@@ -20,6 +19,7 @@ import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.t
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 const VirtualTableContext = createContext<{
   top: number;
@@ -179,7 +179,7 @@ export function FileTable() {
               }>
               <tr>
                 {!viewSettings?.binView && <td />}
-                <td className={tw(!!viewSettings?.binView && 'pl-4')}>
+                <td className={cn(!!viewSettings?.binView && 'pl-4')}>
                   {folders.length} Folders <br />
                   {files.length} Files
                 </td>

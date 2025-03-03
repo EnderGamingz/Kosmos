@@ -103,7 +103,7 @@ export default function ExplorerDataDisplay({
   }, [files, preferences]);
 
   // Needed because when the query client returns a cached result, framer motion
-  // will try to reorder the items which causes issues when too many
+  // will try to reorder the items that cause issues when too many
   useEffect(() => {
     const t = setTimeout(() => setPrevSort(sort), 1);
     return () => clearTimeout(t);

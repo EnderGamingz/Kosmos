@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import tw from '@utils/classMerge.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
+import { cn } from '@lib/utils.ts';
 
 export function ImageTooLargePrompt({
   threshold,
@@ -21,7 +21,7 @@ export function ImageTooLargePrompt({
         'absolute inset-0 flex h-full w-full items-center justify-center'
       }>
       <div
-        className={tw(
+        className={cn(
           'space-y-3 rounded-xl bg-black/40 p-3 text-white backdrop-blur-lg',
           '[&>button>svg]:h-6 [&>button>svg]:w-6 [&>button]:flex',
           '[&>button]:gap-2 [&>button]:bg-stone-200 [&>button]:p-1 [&>button]:text-stone-800',
