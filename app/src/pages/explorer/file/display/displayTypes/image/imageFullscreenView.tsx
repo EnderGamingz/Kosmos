@@ -1,11 +1,17 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { Portal } from 'react-portal';
+import { motion } from 'framer-motion';
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
 } from '@heroicons/react/24/outline';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 
 export function ImageFullscreenView({
   open,
@@ -13,47 +19,28 @@ export function ImageFullscreenView({
   onDoubleClick,
   src,
   file,
-  noOffset,
 }: {
   open: boolean;
   tooLarge: boolean;
   onDoubleClick: () => void;
   src: string;
   file: FileModelDTO;
-  noOffset?: boolean;
 }) {
   return (
-    <AnimatePresence>
-      {open && !tooLarge && (
-        <Portal>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={
-              'fixed inset-0 z-[100] bg-stone-50 p-10 dark:bg-stone-900'
-            }>
-            <motion.img
-              onDoubleClick={onDoubleClick}
-              className={
-                'h-full w-full rounded-xl object-contain drop-shadow-lg'
-              }
-              layoutId={`image-${file.id}`}
-              src={src}
-              alt={file.file_name}
-            />
-            <motion.div
-              onClick={onDoubleClick}
-              className={cn(
-                'absolute top-3 z-[110] [&>svg]:h-5 [&>svg]:w-5',
-                open || noOffset ? 'right-3' : 'right-8',
-              )}>
-              {open ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
-            </motion.div>
-          </motion.div>
-        </Portal>
-      )}
-    </AnimatePresence>
+    <Dialog open={open && !tooLarge} onOpenChange={b => !b && onDoubleClick()}>
+      <DialogContent className={'!max-w-full h-full p-10 rounded-none'}>
+        <DialogHeader className={'sr-only'}>
+          <DialogTitle>Image Fullscreen Preview</DialogTitle>
+          <DialogDescription>{file.file_name}</DialogDescription>
+        </DialogHeader>
+        <img
+          onDoubleClick={onDoubleClick}
+          className={'h-full w-full rounded-xl object-contain drop-shadow-lg'}
+          src={src}
+          alt={file.file_name}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }
 

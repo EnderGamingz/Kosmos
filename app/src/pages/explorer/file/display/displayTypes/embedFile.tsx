@@ -1,15 +1,15 @@
 import { FileTypeActions } from '@models/file.ts';
-import { AnimatePresence, motion } from 'framer-motion';
 import FileMarkdownDisplay from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 import { ReactNode, useState } from 'react';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
-import { Portal } from 'react-portal';
-import {
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-} from '@heroicons/react/24/outline';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { cn } from '@lib/utils.ts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 
 export default function EmbedFile({
   file,
@@ -36,36 +36,23 @@ export function ObjectFullscreenView({
   open,
   onClose,
   children,
+  file,
 }: {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
+  file: FileModelDTO;
 }) {
   return (
-    <AnimatePresence>
-      {open && (
-        <Portal>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={
-              'fixed inset-0 z-[100] overflow-y-auto bg-[var(--markdown-bg)] p-10'
-            }>
-            {children}
-            <motion.div
-              onClick={onClose}
-              className={cn(
-                'fixed top-3 z-[110] [&>svg]:h-5 [&>svg]:w-5',
-                'text-[var(--markdown-fg)]',
-                open ? 'right-3' : 'right-8',
-              )}>
-              {open ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
-            </motion.div>
-          </motion.div>
-        </Portal>
-      )}
-    </AnimatePresence>
+    <Dialog open={open} onOpenChange={b => !b && onClose()}>
+      <DialogContent className={'!max-w-full h-full p-10 rounded-none'}>
+        <DialogHeader className={'sr-only'}>
+          <DialogTitle>Object View</DialogTitle>
+          <DialogDescription>{file.file_name}</DialogDescription>
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -80,12 +67,7 @@ function FileObjectDisplay({
 
   // Using 'object' because iframes seem to be blocked by browsers when loading the files
   const object = (
-    <motion.object
-      layoutId={`type-${file.id}`}
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.3 }}
+    <object
       className={
         'h-full w-full rounded-xl bg-stone-800/20 text-stone-50 shadow-lg backdrop-blur-md'
       }
@@ -96,6 +78,7 @@ function FileObjectDisplay({
   return (
     <div className={'relative'}>
       <ObjectFullscreenView
+        file={file}
         open={fullscreen}
         onClose={() => setFullscreen(false)}>
         {object}

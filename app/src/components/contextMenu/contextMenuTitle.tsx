@@ -34,7 +34,7 @@ export function ContextMenuTitle({
       className={
         'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
       }>
-      <p
+      <div
         title={title}
         className={cn(
           'flex items-center gap-2 whitespace-nowrap text-sm font-light text-stone-800 dark:text-stone-300',
@@ -43,7 +43,7 @@ export function ContextMenuTitle({
         {children}
         <span className={'truncate'}>{title}</span>
         <span className={'ml-auto min-w-4'}>{renderIcon()}</span>
-      </p>
+      </div>
     </div>
   );
 }

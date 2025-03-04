@@ -10,6 +10,7 @@ import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import ArchiveDisplay from '@pages/explorer/file/display/displayTypes/archiveDisplay.tsx';
 import { cn } from '@lib/utils.ts';
+import EmbedAudio from '@pages/explorer/file/display/displayTypes/embedAudio.tsx';
 
 export function FileTypeDisplay({
   id,
@@ -37,7 +38,7 @@ export function FileTypeDisplay({
         'relative flex h-full w-full flex-col items-center justify-center gap-2',
         'rounded-lg bg-stone-200/10 text-stone-900 shadow-xl dark:bg-stone-500/10 dark:text-stone-200',
         '[&_svg]:text-stone-900 dark:[&_svg]:text-stone-200',
-        'outline outline-1 -outline-offset-1 outline-stone-500/30',
+        'outline -outline-offset-1 outline-stone-500/30',
         'pr-5 text-center backdrop-blur-lg',
         loading ? '[&_svg]:h-14 [&_svg]:w-14' : '[&_svg]:h-20 [&_svg]:w-20',
       )}>
@@ -136,6 +137,18 @@ export function FileDisplayHandler({
         type={file.file_type}
         loading={previewOnHold}>
         <EmbedVideo file={file} serveUrl={highResUrl} />
+      </FileTypeDisplay>
+    );
+  }
+
+  if (FileTypeActions.isAudio(file.file_type)) {
+    return (
+      <FileTypeDisplay
+        id={file.id}
+        name={file.file_name}
+        type={file.file_type}
+        loading={previewOnHold}>
+        <EmbedAudio file={file} serveUrl={highResUrl} />
       </FileTypeDisplay>
     );
   }

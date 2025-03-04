@@ -23,6 +23,10 @@ export class FileTypeActions {
     return [FileType.Video].includes(id);
   }
 
+  static isAudio(id: number) {
+    return [FileType.Audio].includes(id);
+  }
+
   static canOpenExternal(data: FileModelDTO) {
     return [FileType.Document, FileType.Video].includes(data.file_type);
   }

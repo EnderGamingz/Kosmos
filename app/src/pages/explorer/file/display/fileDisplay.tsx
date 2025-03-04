@@ -113,7 +113,7 @@ function FileDisplayContent({
     <Dialog open={!!file} onOpenChange={b => !b && onClose()}>
       <CleanDialogContent
         className={
-          'flex h-full w-full max-w-5xl focus:outline-none focus-visible:outline-none md:grid md:max-h-[600px] md:grid-cols-2'
+          'flex flex-col h-full w-full max-w-5xl focus:outline-none focus-visible:outline-none md:grid md:max-h-[600px] md:grid-cols-2'
         }>
         <DialogHeader className={'sr-only'}>
           <DialogTitle>{prevFile?.file_name || 'File'}</DialogTitle>
@@ -123,8 +123,7 @@ function FileDisplayContent({
           <>
             <div
               className={cn(
-                '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0',
-                fullsScreenPreview ? 'z-20' : 'relative z-0',
+                '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0 relative',
               )}>
               <motion.div
                 layoutId={`compact-${prevFile.id}`}
@@ -141,8 +140,8 @@ function FileDisplayContent({
               className={cn(
                 'relative shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
                 'z-10 flex w-full flex-col space-y-5 transition-all',
-                'whitespace-nowrap rounded-xl bg-gray-50 p-3 md:p-6',
-                'max-sm:min-h-1/2 outline-2 -outline-offset-2 outline-transparent',
+                'whitespace-nowrap rounded-xl max-md:rounded-b-none bg-gray-50 p-3 md:p-6',
+                'max-sm:min-h-1/2 md:outline-2 -outline-offset-2 outline-transparent',
                 'dark:bg-stone-900 dark:outline-stone-400/20',
                 isSelected &&
                   '-outline-offset-4 outline-blue-500 dark:outline-blue-400',
@@ -153,7 +152,7 @@ function FileDisplayContent({
                 onSelect={onSelect}
               />
               {/**
-               * Disabled for now as the favorite changes the file order
+               * Disabled for now as the favorite changes, the file order
                * and file display currently relies on scope index which changes
                !shareUuid && (
                <FileDisplayFavorite file={file} onUpdate={onUpdate} />

@@ -1,22 +1,16 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { invalidateFiles, setFileContent, useFileContent } from '@lib/query.ts';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import { useState } from 'react';
 import MarkdownEditor from '@uiw/react-markdown-editor';
-import {
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-  CheckIcon,
-  PencilSquareIcon,
-} from '@heroicons/react/24/outline';
+import { CheckIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
-import { Portal } from 'react-portal';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { truncateString } from '@utils/truncate.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -172,45 +166,29 @@ export function MarkdownFullscreenView({
   data,
   open,
   onClose,
-  id,
+  file,
 }: {
   data: string;
   open: boolean;
   onClose: () => void;
-  id: string;
+  file: FileModelDTO;
 }) {
   return (
-    <AnimatePresence>
-      {open && (
-        <Portal>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={
-              'fixed inset-0 z-[100] overflow-y-auto bg-[var(--markdown-bg)] p-10'
-            }>
-            <motion.div layoutId={`markdown-display-${id}`}>
-              <MarkdownEditor.Markdown
-                source={data}
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                className={'h-full overflow-y-auto p-3'}
-              />
-            </motion.div>
-            <motion.div
-              onClick={onClose}
-              className={cn(
-                'fixed top-3 z-[110] [&>svg]:h-5 [&>svg]:w-5',
-                'text-[var(--markdown-fg)]',
-                open ? 'right-3' : 'right-8',
-              )}>
-              {open ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
-            </motion.div>
-          </motion.div>
-        </Portal>
-      )}
-    </AnimatePresence>
+    <Dialog open={open} onOpenChange={b => !b && onClose()}>
+      <DialogContent
+        className={'!max-w-full h-full rounded-none flex flex-col'}>
+        <DialogHeader>
+          <DialogTitle>Markdown Preview</DialogTitle>
+          <DialogDescription>{file.file_name}</DialogDescription>
+        </DialogHeader>
+        <MarkdownEditor.Markdown
+          source={data}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+          className={'h-full overflow-y-auto p-3 border rounded-md'}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -229,7 +207,7 @@ export default function FileMarkdownDisplay({
   return (
     <>
       <MarkdownFullscreenView
-        id={file.id}
+        file={file}
         data={query.data}
         open={fullscreen}
         onClose={() => setFullscreen(false)}

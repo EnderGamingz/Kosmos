@@ -1,6 +1,6 @@
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
-export default function EmbedVideo({
+export default function EmbedAudio({
   file,
   serveUrl,
 }: {
@@ -8,13 +8,11 @@ export default function EmbedVideo({
   serveUrl: string;
 }) {
   return (
-    <video
+    <audio
+      className={'animate-fade-scale-in duration-300'}
       controls
-      className={
-        'absolute inset-0 h-full w-full object-scale-down animate-fade-scale-in duration-300'
-      }
       title={file.file_name}>
       <source src={serveUrl} type={'video/mp4'} />;
-    </video>
+    </audio>
   );
 }

@@ -40,10 +40,7 @@ export function DisplayImage({
   const isFullScreenAvailable = fullScreen !== undefined;
 
   const img = (
-    <motion.img
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
-      exit={{ opacity: 0, scale: 0 }}
+    <img
       onDoubleClick={toggleFullScreen}
       className={cn(
         'h-full w-full rounded-xl bg-center bg-no-repeat transition-colors',
@@ -52,8 +49,6 @@ export function DisplayImage({
           ? 'bg-contain object-contain drop-shadow-lg'
           : 'bg-cover object-cover shadow-lg',
       )}
-      layout
-      layoutId={`image-${file.id}`}
       src={isTooLarge ? lowRes : highRes}
       style={{
         // Image background serves as a low-quality placeholder
@@ -75,7 +70,6 @@ export function DisplayImage({
           onDoubleClick={toggleFullScreen}
           file={file}
           src={highRes}
-          noOffset={!!share?.shareUuid && !share?.isSharedInFolder}
         />
       )}
       <div className={'relative overflow-hidden rounded-xl'}>
@@ -93,7 +87,7 @@ export function DisplayImage({
           exit={{ opacity: 0, transition: { duration: 0 } }}
           className={cn(
             'absolute inset-0 -z-10 rounded-xl bg-stone-800/20 text-stone-700 shadow-xl',
-            'outline outline-1 -outline-offset-1 outline-stone-500',
+            'outline -outline-offset-1 outline-stone-500',
           )}
         />
         {img}

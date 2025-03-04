@@ -212,6 +212,7 @@ body {
     --animate-fade-in-left: fade-in-left 0.5s ease-in-out backwards;
     --animate-fade-in-right: fade-in-right 0.5s ease-in-out backwards;
     --animate-scale-up-original: scale-up-original 0.5s ease-in-out backwards;
+    --animate-fade-scale-in: fade-in 0.5s ease-in-out backwards, scale-in 0.5s ease-in-out backwards;
 
     @keyframes progress {
         0% {
@@ -285,6 +286,15 @@ body {
     @keyframes scale-up-original {
         0% {
             transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes scale-in {
+        0% {
+            transform: scale(0.5);
         }
         100% {
             transform: scale(1);
