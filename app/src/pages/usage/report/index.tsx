@@ -4,7 +4,7 @@ import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { UsageReportByType } from '@pages/usage/report/usageReportByType.tsx';
 import { NoAccess } from '@components/overlay/noAccess.tsx';
 import { UsageReportLargeFiles } from '@pages/usage/report/usageReportLargeFiles.tsx';
-import { Helmet } from 'react-helmet';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function UsageReport() {
   const report = useUsageReport();
@@ -18,9 +18,7 @@ export default function UsageReport() {
       className={
         'mx-auto flex w-full max-w-5xl flex-grow flex-col space-y-6 p-5 md:p-10'
       }>
-      <Helmet>
-        <title>Usage Report</title>
-      </Helmet>
+      <PageMetadata title={'Usage Report'} />
       <motion.h1
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

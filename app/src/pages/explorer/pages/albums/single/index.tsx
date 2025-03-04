@@ -14,12 +14,12 @@ import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlid
 import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';
 import { AnimatePresence } from 'framer-motion';
 import { DisplayContext } from '@lib/contexts.ts';
-import { Helmet } from 'react-helmet';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { getInitialGridSize } from '@utils/grid.ts';
 import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
 import { cn } from '@lib/utils.ts';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function AlbumPage() {
   const { albumId } = useParams();
@@ -41,11 +41,9 @@ export default function AlbumPage() {
 
   return (
     <div className={'relative h-full'}>
-      <Helmet>
-        <title>
-          {albumQuery.data ? `${albumQuery.data.album.name}` : 'Album'}
-        </title>
-      </Helmet>
+      <PageMetadata
+        title={albumQuery.data ? `${albumQuery.data.album.name}` : 'Album'}
+      />
       <div
         ref={container}
         className={

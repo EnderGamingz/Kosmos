@@ -5,7 +5,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { Helmet } from 'react-helmet';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import {
@@ -16,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
+import { PageMetadata } from '@components/metadata.tsx';
 
 function UserItem({ user }: { user: UserModelDTO }) {
   const navigate = useNavigate();
@@ -39,13 +39,11 @@ export default function AdminUserList() {
   const users = AdminQuery.useUsers();
   return (
     <>
+      <PageMetadata title={'Users'} />
       <div className={'flex items-center justify-between gap-2'}>
         <h1 className={'text-2xl font-semibold'}>Users</h1>
         <CreateUserModal />
       </div>
-      <Helmet>
-        <title>Users</title>
-      </Helmet>
       <div className={'flex flex-grow flex-col overflow-x-auto'}>
         <table
           className={

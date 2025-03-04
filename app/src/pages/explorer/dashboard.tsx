@@ -1,14 +1,12 @@
 import { Outlet } from 'react-router-dom';
 import { SideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
-import { Helmet } from 'react-helmet';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function Dashboard() {
   return (
     <>
-      <Helmet>
-        <title>Dashboard</title>
-      </Helmet>
+      <PageMetadata title={'Dashboard'} />
       <div
         className={'grid flex-grow grid-cols-6 lg:grid-cols-7 xl:grid-cols-6'}>
         <div className={'col-span-2 hidden md:flex xl:col-span-1'}>

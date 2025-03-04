@@ -7,9 +7,9 @@ import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
-import { Helmet } from 'react-helmet';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export function FolderShareDisplay({ uuid }: { uuid: string }) {
   return (
@@ -37,9 +37,7 @@ function Display({ uuid }: { uuid: string }) {
 
   return (
     <>
-      <Helmet>
-        <title>{share.data.folder?.folder_name ?? 'Shared Folder'}</title>
-      </Helmet>
+      <PageMetadata title={share.data.folder?.folder_name ?? 'Shared Folder'} />
       <FileListBreadCrumbs
         crumbs={share.data?.structure}
         firstHome={`/s/folder/${uuid}`}

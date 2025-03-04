@@ -2,8 +2,8 @@ import { FormEvent, ReactNode } from 'react';
 import { HeaderBranding } from '@components/header/headerBranding.tsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { cn } from '@lib/utils.ts';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export function AuthScreen({
   children,
@@ -28,9 +28,7 @@ export function AuthScreen({
       className={
         'fixed inset-0 isolate z-50 grid flex-grow grid-cols-1 bg-stone-50 md:grid-cols-5 dark:bg-stone-900'
       }>
-      <Helmet>
-        <title>{title}</title>
-      </Helmet>
+      <PageMetadata title={title} />
       <div
         className={
           'z-10 col-span-3 flex flex-col gap-5 bg-stone-50 p-10 shadow-[0_10px_10px_10px_rgba(255,255,255,0.3)] dark:bg-stone-900 dark:shadow-[0_10px_10px_10px_rgba(0,0,0,0.3)]'

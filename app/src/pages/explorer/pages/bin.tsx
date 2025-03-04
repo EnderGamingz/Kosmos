@@ -10,9 +10,9 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function BinPage() {
   const { data: usageData } = useUsageStats();
@@ -33,9 +33,7 @@ export default function BinPage() {
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
-      <Helmet>
-        <title>Trash Bin</title>
-      </Helmet>
+      <PageMetadata title={'Trash Bin'} />
       <Progress
         aria-label={'Recent Files loading...'}
         indeterminate={!deletedFiles?.data || deletedFiles.isLoading}

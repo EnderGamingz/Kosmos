@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
-import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -24,6 +23,7 @@ import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Progress } from '@/components/ui/progress';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function SharedItems({
   itemsForUser,
@@ -41,9 +41,7 @@ export default function SharedItems({
 
   return (
     <div className={'relative h-full'}>
-      <Helmet>
-        <title>{itemsForUser ? 'Shared with me' : 'Shared by me'}</title>
-      </Helmet>
+      <PageMetadata title={itemsForUser ? 'Shared with me' : 'Shared by me'} />
       <div
         className={
           'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'

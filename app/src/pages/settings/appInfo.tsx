@@ -6,7 +6,7 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import { BUILD_ID, BUILD_TAG } from '@lib/env.ts';
-import { Helmet } from 'react-helmet';
+import { PageMetadata } from '@components/metadata.tsx';
 
 const links = [
   {
@@ -48,9 +48,7 @@ export function BuildTagDisplay({ noIcon }: { noIcon?: boolean }) {
 export default function AppInfo() {
   return (
     <div className={'space-y-2 p-4 md:p-10'}>
-      <Helmet>
-        <title>Info</title>
-      </Helmet>
+      <PageMetadata title={'Info'} />
       <div className={'flex items-center gap-3 text-stone-700'}>
         <ApplicationIcon className={'h-12 w-12 md:h-16 md:w-16'} />
         <h2

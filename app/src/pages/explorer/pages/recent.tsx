@@ -2,9 +2,9 @@ import { useRecentFiles } from '@lib/query.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function RecentFiles() {
   const files = useRecentFiles();
@@ -14,9 +14,7 @@ export default function RecentFiles() {
 
   return (
     <div className={'relative'}>
-      <Helmet>
-        <title>Recent Files</title>
-      </Helmet>
+      <PageMetadata title={'Recent Files'} />
       <div
         className={
           'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'

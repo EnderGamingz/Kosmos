@@ -2,17 +2,15 @@ import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { AlbumItem } from '@pages/explorer/pages/albums/all/albumItem.tsx';
 import { CreateAlbum } from '@pages/explorer/pages/albums/createAlbum.tsx';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
-import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function AlbumsPage() {
   const albums = AlbumQuery.useAlbums();
   return (
     <div>
-      <Helmet>
-        <title>Albums</title>
-      </Helmet>
+      <PageMetadata title={'Albums'} />
       <Progress
         aria-label={'Recent Files loading...'}
         indeterminate={!albums?.data || albums.isLoading}

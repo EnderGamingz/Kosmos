@@ -5,7 +5,6 @@ import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
-import { Helmet } from 'react-helmet';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import { Badge } from '@components/ui/badge.tsx';
 import useDisclosure from '@/hooks/useDisclosure';
@@ -16,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function AdminUser() {
   const { id } = useParams();
@@ -27,9 +27,7 @@ export default function AdminUser() {
 
   return (
     <div>
-      <Helmet>
-        <title>{data.username} | User</title>
-      </Helmet>
+      <PageMetadata title={`${data.username} | User`} />
       <div className={'grid grid-cols-2 gap-5'}>
         <UserInfoItem label={'ID'} value={data.id} />
         <UserInfoItem label={'Username'} value={data.username} />

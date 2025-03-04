@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@/components/ui/progress';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -33,9 +33,7 @@ export default function SearchPage() {
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
-      <Helmet>
-        <title>"{query}" - Search</title>
-      </Helmet>
+      <PageMetadata title={`"${query}" - Search`} />
       <Progress
         aria-label={'Recent Files loading...'}
         indeterminate={!search?.data || search.isLoading}

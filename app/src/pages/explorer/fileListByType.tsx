@@ -4,7 +4,7 @@ import { useFileByTypeInfinite } from '@lib/query.ts';
 import { getFileTypeString } from '@models/file.ts';
 import { useEffect } from 'react';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { Helmet } from 'react-helmet';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function FileListByType() {
   const navigate = useNavigate();
@@ -31,9 +31,7 @@ export default function FileListByType() {
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
-      <Helmet>
-        <title>File type: {fileTypeString}</title>
-      </Helmet>
+      <PageMetadata title={fileTypeString} />
       <div className={'p-5'}>
         <h1>
           Showing files of type{' '}

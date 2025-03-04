@@ -6,8 +6,8 @@ import { AlbumPageContent } from '@pages/explorer/pages/albums/single';
 import { useScrollThreshold } from '@hooks/useScrollDirection.ts';
 import { useRef } from 'react';
 import { AlbumShareResponse } from '@models/album.ts';
-import { Helmet } from 'react-helmet';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export function AlbumShareDisplay({ uuid }: { uuid: string }) {
   const share = useAccessAlbumShare(uuid);
@@ -26,9 +26,7 @@ function Content({ share, uuid }: { share: AlbumShareResponse; uuid: string }) {
 
   return (
     <div className={'relative h-full'}>
-      <Helmet>
-        <title>{share.album.name ?? 'Shared Album'}</title>
-      </Helmet>
+      <PageMetadata title={share.album.name ?? 'Shared Album'} />
       <div
         ref={container}
         className={

@@ -21,15 +21,12 @@ export default function Footer() {
             <p className={'italic'}>High performance file hosting platform</p>
           </div>
         </div>
-        <div>
-          Made with <HeartIcon className={'inline h-5 w-5'} />️ by{' '}
-          <Link
-            to={'https://setilic.com'}
-            target={'_blank'}
-            className={'text-stone-600 hover:underline dark:text-stone-100'}>
-            Setilic
-          </Link>
-        </div>
+        <Link
+          to={'https://aka.setilic.com/l/portfolio?ref=kosmos'}
+          target={'_blank'}
+          className={'hover:underline'}>
+          Made with <HeartIcon className={'inline h-5 w-5'} />
+        </Link>
       </div>
       <div
         className={

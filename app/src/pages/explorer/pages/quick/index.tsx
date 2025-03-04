@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet';
 import { useCallback, useState } from 'react';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 import { FileWithPath, useDropzone } from 'react-dropzone';
@@ -8,10 +7,10 @@ import { MAX_QUICK_SHARE_FILES } from '@lib/constants.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { useByteFormatter } from '@utils/fileSize.ts';
 import { useMutation } from '@tanstack/react-query';
-import { getLocalTimeZone } from '@internationalized/date';
 import { quickShareUploadFn } from '@pages/explorer/pages/quick/quickShareUploadFn.ts';
 import { QuickShareResult } from '@pages/explorer/pages/quick/quickShareResult.tsx';
 import { cn } from '@lib/utils.ts';
+import { PageMetadata } from '@components/metadata.tsx';
 
 export default function QuickSharePage() {
   const [shareUuid, setShareUuid] = useState<string | undefined>(undefined);
@@ -82,9 +81,7 @@ export default function QuickSharePage() {
 
   return (
     <>
-      <Helmet>
-        <title>Quick Share</title>
-      </Helmet>
+      <PageMetadata title={'Quick Share'} />
       <div
         className={
           'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5 md:max-h-[calc(100dvh-90px)]'
@@ -153,9 +150,7 @@ export default function QuickSharePage() {
                   onCreate={data => {
                     uploadAction.mutate({
                       ...data,
-                      expiresAt: data.expiresAt
-                        ?.toDate(getLocalTimeZone())
-                        .toISOString(),
+                      expiresAt: data.expiresAt?.toISOString(),
                       files,
                     });
                   }}
