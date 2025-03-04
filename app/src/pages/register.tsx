@@ -2,11 +2,12 @@ import axios from 'axios';
 import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { AuthScreen } from '@pages/authScreen.tsx';
-import { motion } from 'framer-motion';
 import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
 
 type RegisterData = { username: string; password: string };
 
@@ -55,11 +56,7 @@ export default function Register() {
     mutate({ username: username.value, password: password.value });
   }
 
-  useEffect(() => {
-    if (!ALLOW_REGISTER) {
-      navigate('/auth/login');
-    }
-  }, [navigate]);
+  if (!ALLOW_REGISTER) return <Navigate to={'/auth/login'} />;
 
   return (
     <AuthScreen
@@ -72,39 +69,34 @@ export default function Register() {
         actionText: 'Login',
         link: '/auth/login',
       }}>
-      <motion.label
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}>
+      <label htmlFor={'username'} className={'animate-fade-in-top delay-200'}>
         <UserIcon />
-        <input
-          className={'input'}
+        <Input
+          id={'username'}
           placeholder={'Username'}
           type={'text'}
           name={'username'}
+          minLength={3}
+          required
         />
-      </motion.label>
-      <motion.label
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}>
+      </label>
+      <label htmlFor={'password'} className={'animate-fade-in-top delay-300'}>
         <KeyIcon />
-        <input
-          className={'input'}
+        <Input
+          id={'password'}
           placeholder={'Password'}
           type={'password'}
           name={'password'}
+          minLength={6}
+          required
         />
-      </motion.label>
-      <motion.button
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className={'btn-black mt-5 lg:text-lg'}
+      </label>
+      <Button
+        className={'lg:text-lg animate-fade-in-top delay-400 cursor-pointer'}
         disabled={isPending}
         type={'submit'}>
         Register
-      </motion.button>
+      </Button>
     </AuthScreen>
   );
 }

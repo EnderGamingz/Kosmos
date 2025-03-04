@@ -4,6 +4,7 @@ import { CheckBadgeIcon } from '@heroicons/react/24/outline';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
+import { Button } from '../ui/button';
 
 export default function PasskeyLogin() {
   const notifications = useNotifications(s => s.actions);
@@ -37,12 +38,14 @@ export default function PasskeyLogin() {
   });
 
   return (
-    <button
+    <Button
+      type={'button'}
+      variant={'outline'}
       onClick={() => loginMutation.mutate()}
-      className={'btn-white w-full'}
+      className={'w-full cursor-pointer'}
       disabled={loginMutation.isPending}>
       <CheckBadgeIcon />
       Use Passkey
-    </button>
+    </Button>
   );
 }

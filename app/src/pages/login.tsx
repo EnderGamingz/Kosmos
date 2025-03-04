@@ -6,10 +6,11 @@ import { FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
 import { AuthScreen } from '@pages/authScreen.tsx';
 import PasskeyLogin from '@components/passkey/login.tsx';
 import { useConditionalPasskeyLogin } from '@components/passkey/useConditionalPasskeyLogin.ts';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
 
 type LoginData = { username: string; password: string };
 
@@ -59,9 +60,7 @@ export default function Login() {
     event.preventDefault();
     const { username, password } = event.currentTarget;
 
-    if (!username.value || !password.value) {
-      return;
-    }
+    if (!username.value || !password.value) return;
 
     mutate({ username: username.value, password: password.value });
   }
@@ -77,60 +76,48 @@ export default function Login() {
         actionText: 'Create one here',
         link: '/auth/register',
       }}>
-      <motion.label
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}>
+      <label htmlFor={'username'} className={'animate-fade-in-top delay-200'}>
         <UserIcon />
-        <input
-          className={'input'}
+        <Input
+          id={'username'}
           placeholder={'Username'}
           type={'text'}
           name={'username'}
           autoComplete={'username webauthn'}
+          minLength={3}
+          required
         />
-      </motion.label>
-      <motion.label
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}>
+      </label>
+      <label htmlFor={'password'} className={'animate-fade-in-top delay-300'}>
         <KeyIcon />
-        <input
-          className={'input'}
+        <Input
+          id={'password'}
           placeholder={'Password'}
           type={'password'}
           name={'password'}
           autoComplete={'current-password webauthn'}
+          minLength={6}
+          required
         />
-      </motion.label>
-      <motion.button
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className={'btn-black mt-2 lg:text-lg'}
+      </label>
+      <Button
         disabled={isPending}
-        type={'submit'}>
+        type={'submit'}
+        className={'lg:text-lg cursor-pointer animate-fade-in-top delay-400'}>
         Login
-      </motion.button>
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.6 }}
-        className={'relative'}>
+      </Button>
+      <div className={'relative animate-fade-in-left delay-500'}>
         <hr className={'my-2 border-stone-800/30 dark:border-stone-300/50'} />
         <p
           className={
-            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-stone-50 px-2 text-sm dark:bg-stone-900'
+            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-sm'
           }>
           or
         </p>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}>
+      </div>
+      <div className={'animate-fade-in-bottom delay-600'}>
         <PasskeyLogin />
-      </motion.div>
+      </div>
     </AuthScreen>
   );
 }
