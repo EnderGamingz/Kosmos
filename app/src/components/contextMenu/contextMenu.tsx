@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import { isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { ContextData } from '@hooks/useContextMenu.ts';
-import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import { isFileWindow } from '@utils/contextDataParse.ts';
@@ -17,11 +16,9 @@ import { cn } from '@lib/utils.ts';
 export default function ContextMenu({
   children,
   pos,
-  onClose,
 }: {
   children: ReactNode;
   pos: { x: number; y: number };
-  onClose: () => void;
 }) {
   const isOverflowingX = pos.x + CONTEXT_MENU_WIDTH > window.innerWidth;
   const isOverflowingY = pos.y + CONTEXT_MENU_WIDTH > window.innerHeight;
@@ -35,7 +32,6 @@ export default function ContextMenu({
             }
         `}
       </style>
-      <Backdrop onClose={onClose} />
       <motion.div
         className={cn(
           'absolute z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',
@@ -63,7 +59,7 @@ export default function ContextMenu({
   );
 }
 
-export function ContextMenuContent({
+export function ContextMenuExplorerContent({
   data,
   onClose,
 }: {

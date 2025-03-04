@@ -5,10 +5,8 @@ import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
 import { DisplayContext } from '@lib/contexts.ts';
 import { MultipleActionButton } from '@pages/explorer/components/multipleActionButton.tsx';
 import FileDisplay from '@pages/explorer/file/display/fileDisplay.tsx';
-import { AnimatePresence } from 'framer-motion';
-import { Portal } from 'react-portal';
-import ContextMenu, {
-  ContextMenuContent,
+import ExplorerContextMenu, {
+  ContextMenuExplorerContent,
 } from '@components/contextMenu/contextMenu.tsx';
 import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
 import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
@@ -20,6 +18,9 @@ import { useShallow } from 'zustand/react/shallow';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { createPortal } from 'react-dom';
+import { AnimatePresence } from 'framer-motion';
+import { Backdrop } from '@components/overlay/backdrop.tsx';
 
 export type Vec2 = { x: number; y: number };
 
@@ -178,22 +179,26 @@ export function ExplorerDisplayWrapper({
         />
       )}
       {!shareUuid && <ShareModal />}
-      {!viewSettings?.scrollControlMissing && (
-        <AnimatePresence>
-          {context.clicked && (
-            <Portal>
-              <ContextMenu
-                pos={context.pos}
-                onClose={() => context.setClicked(false)}>
-                <ContextMenuContent
+      {!viewSettings?.scrollControlMissing &&
+        createPortal(
+          <AnimatePresence>
+            {context.clicked && (
+              <Backdrop
+                key={'backdrop-context-menu'}
+                onClose={() => context.setClicked(false)}
+              />
+            )}
+            {context.clicked && (
+              <ExplorerContextMenu key={'context-menu'} pos={context.pos}>
+                <ContextMenuExplorerContent
                   data={context.data}
                   onClose={() => context.setClicked(false)}
                 />
-              </ContextMenu>
-            </Portal>
-          )}
-        </AnimatePresence>
-      )}
+              </ExplorerContextMenu>
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
     </DisplayContext.Provider>
   );
 }
