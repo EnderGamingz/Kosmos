@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Button } from '@components/ui/button.tsx';
 
 const useAlbumUpdateMutation = () => {
   const notifications = useNotifications(s => s.actions);
@@ -117,9 +118,9 @@ export function AlbumTitle({
           name={'description'}
           type={'text'}
         />
-        <button className={'btn-black hidden'} type={'submit'}>
+        <Button className={'sr-only'} type={'submit'}>
           Update
-        </button>
+        </Button>
       </form>
       <AnimatePresence>
         {!dense && (

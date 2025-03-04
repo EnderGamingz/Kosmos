@@ -6,7 +6,6 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
-import { Badge } from '@components/ui/badge.tsx';
 import useDisclosure from '@/hooks/useDisclosure';
 import {
   Dialog,
@@ -16,6 +15,17 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
+import { Pen, Trash2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select.tsx';
 
 export default function AdminUser() {
   const { id } = useParams();
@@ -83,12 +93,13 @@ function AdminDeleteUser({ user }: { user: UserModelDTO }) {
   });
 
   return (
-    <Badge
+    <Button
       className={'cursor-pointer'}
       onClick={() => deleteAction.mutate()}
       variant={'destructive'}>
+      <Trash2 />
       Delete User
-    </Badge>
+    </Button>
   );
 }
 
@@ -169,66 +180,64 @@ export function AdminUpdateUserModal({ user }: { user: UserModelDTO }) {
 
   return (
     <>
-      <Badge className={'cursor-pointer'} onClick={onOpen} color={'primary'}>
+      <Button className={'cursor-pointer'} onClick={onOpen}>
+        <Pen />
         Update User
-      </Badge>
+      </Button>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Create User</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className={'flex flex-col gap-3'}>
-            <input
-              className={'input'}
+            <Input
               type={'text'}
               name={'username'}
               id={'username'}
               placeholder={'Username'}
               defaultValue={user.username}
             />
-            <input
-              className={'input'}
+            <Input
               type={'text'}
               name={'new_password'}
               id={'new_password'}
               placeholder={'New Password '}
             />
-            <input
-              className={'input'}
+            <Input
               type={'number'}
               name={'limit'}
               id={'limit'}
               placeholder={'Limit'}
               defaultValue={user.storage_limit}
             />
-            <input
-              className={'input'}
+            <Input
               type={'text'}
               name={'full_name'}
               id={'full_name'}
               placeholder={'Full name'}
               defaultValue={user.full_name ?? ''}
             />
-            <input
-              className={'input'}
+            <Input
               type={'text'}
               name={'email'}
               id={'email'}
               placeholder={'Email'}
               defaultValue={user.email ?? ''}
             />
-            <select
-              className={'input'}
-              name={'new_role'}
-              id={'new_role'}
-              defaultValue={user.role}>
-              <option value={Role.User}>User</option>
-              <option value={Role.Admin}>Admin</option>
-            </select>
+            <Select name={'new_role'} defaultValue={user.role.toString()}>
+              <SelectTrigger>
+                <SelectValue placeholder={"Select User's Role"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={Role.User.toString()}>User</SelectItem>
+                  <SelectItem value={Role.Admin.toString()}>Admin</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             <DialogFooter>
-              <button className={'btn-black'} type={'submit'}>
-                Update
-              </button>
+              <Button type={'submit'}>Update</Button>
             </DialogFooter>
           </form>
         </DialogContent>

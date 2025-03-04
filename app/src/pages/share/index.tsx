@@ -8,16 +8,17 @@ import { WindowIcon } from '@heroicons/react/24/outline';
 import { AlbumShareDisplay } from '@pages/share/shareTypes/albumShareDisplay.tsx';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { PopoverTrigger } from '@components/ui/popover.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 function SharePreferences() {
   return (
     <div className={'fixed bottom-3 right-3 z-20'}>
       <Popover>
         <PopoverTrigger asChild>
-          <button className={'btn-black'}>
+          <Button>
             <WindowIcon className={'h-6 w-6'} />
             <span>Preferences</span>
-          </button>
+          </Button>
         </PopoverTrigger>
         <PopoverContent>
           <div className={'p-2'}>

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
 import { cn } from '@lib/utils.ts';
+import { buttonVariants } from '@/components/ui/button';
 
 export default function StorageLimitBanner() {
   const usage = useUsageStats();
@@ -38,13 +39,13 @@ export default function StorageLimitBanner() {
             marginBottom: 0,
           }}
           className={cn(
-            'm-4 shrink-0 overflow-hidden rounded-xl outline outline-1',
+            'm-4 shrink-0 overflow-hidden rounded-xl border',
             percentages.warningLimit &&
-              'bg-yellow-100/40 outline-yellow-600 dark:bg-yellow-900/40',
+              'bg-yellow-100/40 border-yellow-600 dark:bg-yellow-900/40',
             percentages.alertLimit &&
-              'bg-red-100/40 outline-red-600 dark:bg-red-900/40',
+              'bg-red-100/40 border-red-600 dark:bg-red-900/40',
           )}>
-          <div className={'space-y-2 p-4 '}>
+          <div className={'space-y-3 p-4 '}>
             <h2 className={'text-xl'}>
               You have{' '}
               <strong>
@@ -65,7 +66,7 @@ export default function StorageLimitBanner() {
               Consider deleting files to free up space.
             </p>
             <div className={'flex flex-col gap-4 sm:flex-row'}>
-              <Link className={'btn-black'} to={'/usage/report'}>
+              <Link className={cn(buttonVariants())} to={'/usage/report'}>
                 <ArrowTopRightOnSquareIcon />
                 Usage Report
               </Link>

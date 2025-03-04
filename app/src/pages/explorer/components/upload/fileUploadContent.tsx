@@ -26,7 +26,8 @@ import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.t
 import { useByteFormatter } from '@utils/fileSize.ts';
 import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
 import { cn } from '@lib/utils.ts';
-import { DialogFooter } from '@components/ui/dialog.tsx';
+import { DialogClose, DialogFooter } from '@components/ui/dialog.tsx';
+import { Button, buttonVariants } from '@components/ui/button.tsx';
 
 export function FileUploadContent({
   folder,
@@ -271,7 +272,7 @@ export function FileUploadContent({
         {...getRootProps()}
         className={cn(
           'hidden h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 md:flex',
-          'items-center justify-center text-center text-2xl font-bold text-stone-500',
+          'items-center justify-center text-center text-2xl font-bold text-stone-500 cursor-pointer',
           isDragActive && 'border-blue-400/50 bg-blue-100',
         )}>
         <input {...getInputProps({ id: 'files' })} />
@@ -282,16 +283,18 @@ export function FileUploadContent({
         )}
       </div>
       <DialogFooter
-        className={'flex flex-col-reverse justify-between gap-3 sm:flex-row'}>
-        <button onClick={onClose} className={'btn-white'}>
-          Cancel
-        </button>
+        className={
+          'flex flex-col-reverse justify-between gap-3 sm:flex-row [&_button,&_label]:cursor-pointer'
+        }>
+        <DialogClose asChild>
+          <Button variant={'outline'}>Cancel</Button>
+        </DialogClose>
         <div className={'flex flex-col gap-1 sm:flex-row'}>
-          <label htmlFor={'folders'} className={'btn-black'}>
+          <label htmlFor={'folders'} className={buttonVariants()}>
             <FolderIcon />
             Select Folder
           </label>
-          <label htmlFor={'files'} className={'btn-black'}>
+          <label htmlFor={'files'} className={buttonVariants()}>
             <DocumentIcon />
             Select Files(s)
           </label>

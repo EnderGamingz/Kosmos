@@ -16,6 +16,8 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import useDisclosure from '@hooks/useDisclosure.ts';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
 
 export function CreateAlbum() {
   const notifications = useNotifications(s => s.actions);
@@ -65,10 +67,10 @@ export function CreateAlbum() {
 
   return (
     <>
-      <button className={'btn-white btn-sm'} onClick={onOpen}>
+      <Button size={'sm'} onClick={onOpen}>
         <PlusIcon />
         Create Album
-      </button>
+      </Button>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
@@ -81,13 +83,12 @@ export function CreateAlbum() {
               <label className={'font-medium'} htmlFor={'name'}>
                 Name <span className={'text-red-500'}>*</span>
               </label>
-              <input
+              <Input
                 name={'name'}
                 id={'name'}
                 autoComplete={'off'}
                 type={'text'}
                 placeholder={'Album name'}
-                className={'input w-full'}
                 required
               />
             </div>
@@ -95,28 +96,28 @@ export function CreateAlbum() {
               <label className={'font-medium'} htmlFor={'description'}>
                 Description
               </label>
-              <input
+              <Input
                 name={'description'}
                 id={'description'}
                 autoComplete={'off'}
                 type={'text'}
                 placeholder={'Album description'}
-                className={'input w-full'}
               />
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <button
+                <Button
+                  variant={'outline'}
                   disabled={createMutation.isPending}
                   type={'button'}
-                  className={'btn-white mr-auto'}>
+                  className={'mr-auto'}>
                   Cancel
-                </button>
+                </Button>
               </DialogClose>
-              <button type={'submit'} className={'btn-black'}>
+              <Button type={'submit'}>
                 <CheckIcon />
                 Create
-              </button>
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -5,37 +5,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @layer components {
-    .btn-black {
-        @apply font-semibold flex cursor-pointer items-center gap-2 rounded-xl bg-stone-700 px-4
-        py-2 text-stone-100 shadow-sm transition-colors
-        enabled:hover:bg-stone-800 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
-        disabled:cursor-not-allowed disabled:opacity-50
-        dark:bg-stone-300 dark:text-stone-700 enabled:dark:hover:bg-stone-200
-    }
-
-    .btn-white {
-        @apply font-semibold flex cursor-pointer items-center gap-2
-        rounded-xl bg-transparent outline outline-stone-900 px-4
-        py-2 text-stone-900 shadow-sm transition-colors
-        hover:bg-stone-300 hover:shadow-md [&_svg]:h-5 [&_svg]:w-5
-        dark:outline-stone-100 dark:text-stone-100 dark:hover:bg-stone-700
-    }
-
-    .btn-sm {
-        @apply px-3 py-2 text-sm [&_svg]:h-4 [&_svg]:w-4
-    }
-
-    .input {
-        @apply rounded-lg bg-stone-50 p-2 outline outline-stone-400/20
-        dark:bg-stone-300/20 dark:outline-stone-700
-        dark:placeholder:text-stone-500
-    }
-
-    .input option {
-        @apply bg-stone-50 text-stone-700
-        dark:bg-stone-700 dark:text-stone-300
-    }
-
     .header-login-btn {
         @apply flex items-center gap-2 rounded-lg hover:bg-stone-700/5 px-2 py-1 sm:px-4 sm:py-2
         text-stone-700 transition-all [&_svg]:h-5 [&_svg]:w-5
@@ -328,7 +297,7 @@ body {
     --foreground: oklch(0.985 0.001 106.423);
     --card: oklch(0.147 0.004 49.25);
     --card-foreground: oklch(0.985 0.001 106.423);
-    --popover: oklch(0.147 0.004 49.25);
+    --popover: oklch(0.16 0.006 56.043);
     --popover-foreground: oklch(0.985 0.001 106.423);
     --primary: oklch(0.985 0.001 106.423);
     --primary-foreground: oklch(0.216 0.006 56.043);

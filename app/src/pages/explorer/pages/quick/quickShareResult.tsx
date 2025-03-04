@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Copy } from '@pages/explorer/components/share/copy.tsx';
 import { useNotifications } from '@stores/notificationStore.ts';
+import { Button } from '@/components/ui/button';
 
 export function QuickShareResult({
   uuid,
@@ -45,11 +46,12 @@ export function QuickShareResult({
           </QrCodeModal>
 
           {navigator.share !== undefined && navigator.canShare(shareData) && (
-            <button
+            <Button
               onClick={() => navigator.share(shareData)}
-              className={'btn-white'}>
+              variant={'outline'}
+              className={'border-primary bg-transparent'}>
               <ArrowUpOnSquareIcon className={'h-5 w-5'} /> Share
-            </button>
+            </Button>
           )}
           <Copy text={shareData.url} notify={notifications.notify} chip={false}>
             <ClipboardDocumentIcon className={'h-5 w-5'} /> Copy Link

@@ -9,9 +9,9 @@ import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { cn } from '@lib/utils.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Dialog, DialogContent, DialogFooter } from '@components/ui/dialog.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 function AlbumAddItemsContent({
   addTo,
@@ -101,10 +101,10 @@ function AlbumAddItemsContent({
         />
       </div>
       <DialogFooter>
-        <button onClick={submit} className={'btn-black mt-5 px-10'}>
+        <Button onClick={submit} className={'mt-5 px-10'}>
           <CheckIcon />
           Save
-        </button>
+        </Button>
       </DialogFooter>
     </div>
   );
@@ -122,12 +122,10 @@ export function AlbumAddItems({
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <button
-        className={cn('btn-black transition-all', Boolean(small) && 'btn-sm')}
-        onClick={onOpen}>
+      <Button size={small ? 'sm' : 'default'} onClick={onOpen}>
         <PlusIcon />
         Add Items
-      </button>
+      </Button>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent
           className={'!max-w-full !max-h-full h-full rounded-none'}>

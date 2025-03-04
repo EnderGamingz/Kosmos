@@ -15,6 +15,7 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -22,14 +23,9 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import useDisclosure from '@hooks/useDisclosure.ts';
+import { Button } from '@components/ui/button.tsx';
 
-function AddToAlbumModalContent({
-  onClose,
-  files,
-}: {
-  onClose: () => void;
-  files: FileModelDTO[];
-}) {
+function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
   const [loading, setLoading] = useState<string[]>([]);
   const albums = AlbumQuery.useAvailableAlbums(files.map(file => file.id));
 
@@ -69,19 +65,19 @@ function AddToAlbumModalContent({
               }}>
               {album.name}
               {loading.includes(album.id) && (
-                <span className={'ml-1 text-sm text-stone-400'}>Adding</span>
+                <span className={'ml-1 text-sm'}>Adding</span>
               )}
             </motion.li>
           ))}
           {!albums.data?.available.length && (
-            <motion.span layout className={'text-stone-500'}>
+            <motion.span layout className={'text-muted-foreground'}>
               No albums available
             </motion.span>
           )}
           {!!albums.data?.added.length && (
             <>
               <motion.hr layout className={'my-2'} />
-              <motion.span layout className={'text-xs text-stone-400'}>
+              <motion.span layout className={'text-xs text-muted-foreground'}>
                 Added
               </motion.span>
             </>
@@ -94,12 +90,12 @@ function AddToAlbumModalContent({
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.2, bounce: 0.1 }}
               key={album.id}
-              className={'added flex items-center gap-2 text-stone-500'}>
+              className={'added flex items-center gap-2 text-muted-foreground'}>
               <CheckIcon className={'h-4 w-4'} />
               {album.name}
               <Link className={'ml-auto'} to={`/home/album/${album.id}`}>
                 <ArrowTopRightOnSquareIcon
-                  className={'h-4 w-4 text-stone-800'}
+                  className={'h-4 w-4 text-muted-foreground'}
                 />
               </Link>
             </motion.li>
@@ -107,9 +103,9 @@ function AddToAlbumModalContent({
         </ul>
       </div>
       <DialogFooter>
-        <button onClick={onClose} className={'btn-white'}>
-          Cancel
-        </button>
+        <DialogClose asChild>
+          <Button variant={'outline'}>Cancel</Button>
+        </DialogClose>
       </DialogFooter>
     </>
   );
@@ -156,17 +152,14 @@ export default function AlbumAction({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={() => {
+          onOpenChange();
+          onClose?.();
+        }}>
         <DialogContent>
-          <AddToAlbumModalContent
-            files={files}
-            onClose={() => {
-              disclosureOnClose();
-              setTimeout(() => {
-                onClose?.();
-              }, 400);
-            }}
-          />
+          <AddToAlbumModalContent files={files} />
         </DialogContent>
       </Dialog>
       <button onClick={handleClick}>

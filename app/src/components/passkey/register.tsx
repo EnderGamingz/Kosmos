@@ -10,6 +10,8 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useUserState } from '@stores/userStore.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
@@ -105,12 +107,10 @@ export default function PasskeyRegister() {
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <button
-          className={'btn-black btn-sm'}
-          disabled={registerMutation.isPending}>
+        <Button disabled={registerMutation.isPending}>
           <PlusIcon />
           Create Passkey
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent side={'bottom'} className={'w-full p-4'}>
         <form onSubmit={handleSubmit} className={'flex gap-2'}>
@@ -125,17 +125,16 @@ export default function PasskeyRegister() {
             autoComplete={'username'}
             className={'hidden'}
           />
-          <input
+          <Input
             type={'text'}
             name={'name'}
             id={'name'}
             placeholder={'Name*'}
-            className={'input'}
             required
           />
-          <button type={'submit'} className={'btn-black'}>
+          <Button type={'submit'}>
             <PaperAirplaneIcon className={'h-5 w-5'} />
-          </button>
+          </Button>
         </form>
       </PopoverContent>
     </Popover>

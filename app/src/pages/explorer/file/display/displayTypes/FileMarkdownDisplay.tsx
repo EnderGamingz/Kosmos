@@ -30,6 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 function MarkdownEditorContent({
   file,
@@ -119,9 +120,9 @@ function MarkdownEditorContent({
         </div>
       </div>
       <DialogFooter>
-        <button className={'btn-black'} onClick={() => saveAction.mutate()}>
+        <Button onClick={() => saveAction.mutate()}>
           <CheckIcon /> Save
-        </button>
+        </Button>
       </DialogFooter>
     </DialogContent>
   );

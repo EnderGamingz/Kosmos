@@ -20,6 +20,8 @@ import { invalidateShares } from '@lib/query.ts';
 import { cn } from '@lib/utils.ts';
 import { Collapse } from 'react-collapse';
 import { DateTimePicker } from '@/components/ui/date-picker';
+import { Button } from '@/components/ui/button';
+import { Input } from '@components/ui/input.tsx';
 
 export function CreateShare({
   dataType,
@@ -137,9 +139,9 @@ export function CreateShare({
       <div
         className={cn(
           'grid [&>div]:overflow-hidden [&>div]:rounded-xl [&>div]:bg-stone-200/50 [&>div]:p-2',
-          'gap-2 [&_input]:mt-1 [&_input]:w-full [&_input]:py-1.5 [&_label]:text-sm [&_svg]:w-4',
-          '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-stone-600',
-          'dark:[&>div]:bg-stone-700/50 dark:[&_label]:text-stone-300',
+          'gap-2 [&_input]:mt-1 [&_input]:bg-input [&_label]:text-sm [&_svg]:w-4',
+          '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-muted-foreground',
+          'dark:[&>div]:bg-stone-700/50',
         )}>
         <div className={'!p-0'}>
           <Collapse isOpened={type === ShareType.Private}>
@@ -151,8 +153,7 @@ export function CreateShare({
                   <div className={'ml-auto text-sm'}>Active</div>
                 )}
               </label>
-              <input
-                className={'input'}
+              <Input
                 type={'text'}
                 id={'username'}
                 name={'username'}
@@ -170,8 +171,7 @@ export function CreateShare({
             Password
             {password && <div className={'ml-auto text-sm'}>Active</div>}
           </label>
-          <input
-            className={'input'}
+          <Input
             type={'password'}
             id={'password'}
             name={'password'}
@@ -241,6 +241,7 @@ export function CreateShare({
           </div>
           <Collapse isOpened={!!expiresAt}>
             <DateTimePicker
+              className={'bg-input cursor-pointer'}
               granularity={'minute'}
               placeholder={'Expires at'}
               displayFormat={{
@@ -264,8 +265,7 @@ export function CreateShare({
           <p className={'text-xs text-stone-600 dark:text-stone-400'}>
             Every access like download and preview counts as one.
           </p>
-          <input
-            className={'input'}
+          <Input
             type={'number'}
             min={1}
             max={1000}
@@ -277,9 +277,8 @@ export function CreateShare({
             onChange={e => {
               const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
 
-              if (sanitizedValue === '') {
-                setLimit(undefined);
-              } else {
+              if (sanitizedValue === '') setLimit(undefined);
+              else {
                 const parsedNumber = Number(sanitizedValue);
                 setLimit(
                   parsedNumber > 0 && parsedNumber < 1000
@@ -294,17 +293,17 @@ export function CreateShare({
           />
         </div>
 
-        <button
+        <Button
           disabled={
             disabled ||
             createAction.isPending ||
             (type === ShareType.Private && !privateUsername)
           }
-          className={'btn-black w-full justify-center'}
-          onClick={() => createAction.mutate()}>
+          onClick={() => createAction.mutate()}
+          className={'cursor-pointer'}>
           <CheckIcon />
           {createButtonText}
-        </button>
+        </Button>
       </div>
     </motion.div>
   );

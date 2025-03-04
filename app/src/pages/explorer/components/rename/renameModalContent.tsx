@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 export function RenameModalContent({
   renameData,
@@ -118,13 +119,14 @@ export function RenameModalContent({
           />
         </div>
         <DialogFooter className={'justify-between'}>
-          <DialogClose className={'btn-white'}>Cancel</DialogClose>
-          <button
+          <DialogClose asChild>
+            <Button variant={'outline'}>Cancel</Button>
+          </DialogClose>
+          <Button
             type={'submit'}
-            disabled={inputName === renameData.name || renameAction.isPending}
-            className={'btn-black'}>
+            disabled={inputName === renameData.name || renameAction.isPending}>
             {renameAction.isPending ? 'Renaming' : 'Rename'}
-          </button>
+          </Button>
         </DialogFooter>
       </form>
     </>

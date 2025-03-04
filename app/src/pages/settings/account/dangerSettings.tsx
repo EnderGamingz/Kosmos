@@ -7,6 +7,8 @@ import useLogout from '@hooks/useLogout.ts';
 import { useUsageStats } from '@lib/query.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { cn } from '@lib/utils.ts';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
 
 function DeleteAccount() {
   const usage = useUsageStats();
@@ -60,28 +62,29 @@ function DeleteAccount() {
   };
 
   return (
-    <div className={'space-y-3'}>
+    <div className={'space-y-2'}>
       <p>Enter your current password to delete your account</p>
       <span className={'text-sm'}>
-        This action <b>cannot</b> be undone and will permanently{' '}
-        <b>delete your {useFormatBytes(usage.data?.total || 0)}</b> of data.
+        This action <strong>cannot</strong> be undone and will permanently{' '}
+        <strong>delete your {useFormatBytes(usage.data?.total || 0)}</strong> of
+        data.
       </span>
       <form
         onSubmit={handleSubmit}
-        className={'flex flex-col gap-2 md:flex-row'}>
-        <input
-          className={'input'}
+        className={'flex flex-col gap-2 md:flex-row mt-4'}>
+        <Input
           placeholder={'Password'}
           type={'password'}
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
-        <button
-          className={'btn-black bg-red-700'}
+        <Button
+          variant={'destructive'}
           type={'submit'}
+          className={'h-11'}
           disabled={action.isPending || !password}>
           {confirm ? 'Are you sure?' : 'Delete Account'}
-        </button>
+        </Button>
       </form>
     </div>
   );
@@ -91,9 +94,9 @@ export function DangerSettings() {
   return (
     <section
       className={cn(
-        '!mt-12 space-y-3 rounded-xl bg-red-500/5 p-4',
-        'text-red-950 outline outline-1 outline-red-700/50',
-        'dark:bg-red-400/20 dark:text-red-200',
+        '!mt-12 space-y-2 rounded-xl  p-4',
+        'text-red-950 border-2 border-red-700/50',
+        'dark:text-red-50',
       )}>
       <h2 className={'text-xl font-bold'}>Danger Zone</h2>
       <DeleteAccount />

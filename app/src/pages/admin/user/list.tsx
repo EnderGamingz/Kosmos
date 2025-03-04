@@ -16,6 +16,18 @@ import {
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
+import { Button } from '@components/ui/button.tsx';
+import { Plus } from 'lucide-react';
+import { Input } from '@components/ui/input.tsx';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select.tsx';
+import { getBytesBySuffix } from '@utils/fileSize.ts';
 
 function UserItem({ user }: { user: UserModelDTO }) {
   const navigate = useNavigate();
@@ -72,7 +84,7 @@ export function CreateUserModal() {
   const notification = useNotifications(s => s.actions);
   const { isOpen, onClose, onOpenChange } = useDisclosure();
   // The default multiplier is set to MB
-  const [multiplier, setMultiplier] = useState(1e6);
+  const [multiplier, setMultiplier] = useState<string>('mb');
 
   const createMutation = useMutation({
     mutationFn: async ({
@@ -120,7 +132,8 @@ export function CreateUserModal() {
     const formData = new FormData(e.target as HTMLFormElement);
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
-    const limit = Number(formData.get('limit')) * multiplier || 0;
+    const limit =
+      Number(formData.get('limit')) * getBytesBySuffix(multiplier) || 0;
 
     createMutation.mutate({ username, password, limit });
   }
@@ -128,23 +141,24 @@ export function CreateUserModal() {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <button className={'btn-black'}>Create</button>
+        <Button>
+          <Plus />
+          Create
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create User</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className={'flex flex-col gap-3'}>
-          <input
-            className={'input'}
+          <Input
             type={'text'}
             name={'username'}
             id={'username'}
             placeholder={'Username'}
             required
           />
-          <input
-            className={'input'}
+          <Input
             type={'text'}
             name={'password'}
             id={'password'}
@@ -152,29 +166,35 @@ export function CreateUserModal() {
             required
           />
           <div className={'flex gap-3'}>
-            <input
-              className={'input grow'}
+            <Input
+              className={'grow'}
               type={'number'}
               name={'limit'}
               id={'limit'}
               placeholder={'Limit'}
               required
             />
-            <select
-              className={'input'}
+            <Select
               name={'multi'}
-              id={'multi'}
-              onChange={e => setMultiplier(Number(e.target.value))}
+              onValueChange={setMultiplier}
               defaultValue={multiplier}>
-              <option value={1e6}>MB</option>
-              <option value={1e9}>GB</option>
-              <option value={1e12}>TB</option>
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder={'Select Data Size'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={'mb'}>MB</SelectItem>
+                  <SelectItem value={'gb'}>GB</SelectItem>
+                  <SelectItem value={'tb'}>TB</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <DialogFooter className={'mt-2'}>
-            <button className={'btn-black'} type={'submit'}>
+            <Button type={'submit'}>
+              <Plus />
               Create
-            </button>
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

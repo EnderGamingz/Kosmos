@@ -3,6 +3,8 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
+import { Input } from '@components/ui/input.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 export function PasswordChange() {
   const [oldPassword, setOldPassword] = useState('');
@@ -56,31 +58,29 @@ export function PasswordChange() {
       <form
         className={'grid grid-cols-1 gap-4 md:grid-cols-2'}
         onSubmit={handleSubmit}>
-        <input
+        <Input
           type={'password'}
           placeholder={'Enter old password'}
           name={'old_password'}
-          className={'input'}
           value={oldPassword}
           onChange={e => setOldPassword(e.target.value)}
+          minLength={6}
           required
         />
-        <input
+        <Input
           type={'password'}
           placeholder={'Enter new password'}
           name={'new_password'}
-          className={'input'}
           value={newPassword}
           onChange={e => setNewPassword(e.target.value)}
           required
         />
         <div className={'col-span-1 md:col-span-2'}>
-          <button
+          <Button
             type={'submit'}
-            className={'btn-black ml-auto'}
             disabled={action.isPending || (!oldPassword && !newPassword)}>
             Change Password
-          </button>
+          </Button>
         </div>
       </form>
     </section>

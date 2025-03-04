@@ -44,3 +44,16 @@ export function formatBytes(bytes: number, precision = 1, useSI = false) {
 
   return bytes.toFixed(precision) + ' ' + units[iteration];
 }
+
+export function getBytesBySuffix(suffix: 'mb' | 'gb' | 'tb' | string) {
+  switch (suffix) {
+    case 'mb':
+      return 1e6;
+    case 'gb':
+      return 1e9;
+    case 'tb':
+      return 1e12;
+    default:
+      return 0;
+  }
+}

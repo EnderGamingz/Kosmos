@@ -37,7 +37,7 @@ export function NewMenu() {
             <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>
         </PopoverTrigger>
-        <PopoverContent side={'bottom'} className={'max-w-52 p-3'}>
+        <PopoverContent side={'bottom'} className={'max-w-60 p-3'}>
           <motion.div
             variants={containerVariant()}
             initial={'hidden'}

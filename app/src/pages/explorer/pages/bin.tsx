@@ -13,6 +13,7 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDis
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 export default function BinPage() {
   const { data: usageData } = useUsageStats();
@@ -53,16 +54,15 @@ export default function BinPage() {
           </motion.p>
         </div>
         {!!deletedFiles.data?.length && (
-          <motion.button
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ delay: 0.2 }}
-            className={'btn-white rounded-lg px-2 py-1'}
+          <Button
+            variant={'outline'}
+            className={
+              'border-primary bg-transparent cursor-pointer animate-fade-in-right delay-300'
+            }
             onClick={() => deleteAll.mutate()}
             disabled={deleteAll.isPending || !deletedFiles.data?.length}>
             Clear Trash
-          </motion.button>
+          </Button>
         )}
       </div>
       <ExplorerDataDisplay

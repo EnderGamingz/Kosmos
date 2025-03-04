@@ -1,6 +1,7 @@
 import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
+import { Button } from '@components/ui/button.tsx';
 
 export function DismissButton({
   id,
@@ -16,9 +17,12 @@ export function DismissButton({
   if (children) return <button onClick={dismissHandler}>{children}</button>;
 
   return (
-    <button onClick={dismissHandler} className={'btn-white'}>
+    <Button
+      className={'cursor-pointer bg-transparent border-primary'}
+      onClick={dismissHandler}
+      variant={'outline'}>
       <XMarkIcon />
       Dismiss
-    </button>
+    </Button>
   );
 }

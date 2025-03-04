@@ -11,6 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Button } from '@components/ui/button.tsx';
+import { Input } from '@components/ui/input.tsx';
 
 function ChangePasswordForm({
   id,
@@ -64,20 +66,18 @@ function ChangePasswordForm({
           action.mutate();
         }}
         className={'flex flex-col gap-2'}>
-        <input
+        <Input
           type={'password'}
           placeholder={'New Password'}
-          className={'input'}
           value={value}
           onChange={e => setValue(e.target.value)}
           required
         />
-        <button
+        <Button
           type={'submit'}
-          className={'btn-black justify-center'}
           disabled={action.isPending || !value || value.length < 3}>
           Change
-        </button>
+        </Button>
       </form>
     </div>
   );

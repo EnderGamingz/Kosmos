@@ -6,7 +6,8 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateShareAccess } from '@lib/query.ts';
-import { motion } from 'framer-motion';
+import { Input } from '@components/ui/input.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 export function PasswordUnlock() {
   const [value, setValue] = useState('');
@@ -55,44 +56,31 @@ export function PasswordUnlock() {
 
   return (
     <div className={'flex flex-grow flex-col items-center justify-center'}>
-      <div className={'text-stone-700'}>
-        <motion.h2
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className={'text-xl font-medium'}>
+      <div>
+        <h2 className={'text-xl font-medium animate-fade-in-top delay-300'}>
           This share is password protected.
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          className={'text-sm'}>
+        </h2>
+        <p className={'text-sm animate-fade-in-top delay-200'}>
           Please enter the password to access it.
-        </motion.p>
+        </p>
         <form onSubmit={handleSubmit} className={'mt-2 flex gap-2'}>
-          <motion.input
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.4 }}
-            autoFocus
-            type={'password'}
-            placeholder={'Password'}
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            className={'input-bordered input w-full max-w-xs'}
-          />
-          <motion.button
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.5 }}
+          <div className={'w-full max-w-xs animate-fade-in-left delay-400'}>
+            <Input
+              autoFocus
+              type={'password'}
+              placeholder={'Password'}
+              value={value}
+              onChange={e => setValue(e.target.value)}
+            />
+          </div>
+          <Button
             type={'submit'}
             disabled={!value || unlock.isPending}
             className={
-              'btn-black grid min-w-10 place-items-center p-2 text-stone-50'
+              'grid min-w-10 place-items-center p-2 animate-fade-in-right delay-500'
             }>
             <CheckIcon className={'h-5 w-5'} />
-          </motion.button>
+          </Button>
         </form>
       </div>
     </div>

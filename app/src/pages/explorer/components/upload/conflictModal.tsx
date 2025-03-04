@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 const actions = [
   {
@@ -134,20 +135,21 @@ export function ConflictModal({
         <div className={'flex justify-between gap-2 pt-5'}>
           <div className={'flex flex-wrap gap-2'}>
             {actions.map(a => (
-              <button
+              <Button
+                className={'cursor-pointer'}
+                variant={'outline'}
                 key={a.allName}
-                className={'btn-black btn-sm'}
                 onClick={() => handleAllResolve(a.action)}>
                 {a.allName}
-              </button>
+              </Button>
             ))}
           </div>
-          <button
+          <Button
+            className={'cursor-pointer'}
             onClick={handleSubmit}
-            disabled={resolved.length !== files.length || disabled}
-            className={'btn-black'}>
+            disabled={resolved.length !== files.length || disabled}>
             Submit
-          </button>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

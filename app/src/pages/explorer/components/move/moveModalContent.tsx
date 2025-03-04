@@ -8,12 +8,14 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
+  DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import { LoaderCircle } from 'lucide-react';
+import { Button } from '@components/ui/button.tsx';
 
 export type MoveData = {
   id?: string;
@@ -125,15 +127,14 @@ export function MoveModalContent({
         </ul>
       </div>
       <DialogFooter className={'justify-between'}>
-        <button onClick={onClose} className={'btn-white'}>
-          Cancel
-        </button>
-        <button
+        <DialogClose asChild>
+          <Button variant={'outline'}>Cancel</Button>
+        </DialogClose>
+        <Button
           disabled={selectedFolder === parent || moveAction.isPending}
-          onClick={() => moveAction.mutate()}
-          className={'btn-black'}>
+          onClick={() => moveAction.mutate()}>
           {moveAction.isPending ? 'Moving' : 'Move here'}
-        </button>
+        </Button>
       </DialogFooter>
     </>
   );
