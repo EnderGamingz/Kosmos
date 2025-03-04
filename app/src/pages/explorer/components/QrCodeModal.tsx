@@ -21,7 +21,10 @@ export default function QrCodeModal({
       <PopoverTrigger asChild>
         <Button
           variant={button ? 'outline' : 'ghost'}
-          className={cn(button && 'bg-transparent border-primary')}>
+          className={cn(
+            'bg-transparent',
+            button ? 'border-primary' : 'h-5 w-5 hover:bg-transparent',
+          )}>
           <QrCodeIcon
             className={'h-5 w-5 text-stone-700 dark:text-stone-300'}
           />

@@ -8,12 +8,16 @@ import {
   getOperationTypeString,
   OperationStatus,
 } from '@models/operation.ts';
-import { motion } from 'framer-motion';
-import { itemTransitionVariant } from '@components/defaults/transition.ts';
 import { OperationStatusIndicator } from '@components/header/notifications/operationStatusIndicator.tsx';
 import { UpdatingTimeIndicator } from '@components/updatingTimeIndicator.tsx';
 
-export function OperationItem({ data }: { data: OperationModelDTO }) {
+export function OperationItem({
+  data,
+  index,
+}: {
+  data: OperationModelDTO;
+  index: number;
+}) {
   const retry = useMutation({
     mutationFn: () =>
       axios.post(`${BASE_URL}auth/file/image/retry/operation/${data.id}`),
@@ -30,12 +34,13 @@ export function OperationItem({ data }: { data: OperationModelDTO }) {
     data.operation_status === OperationStatus.Interrupted;
 
   return (
-    <motion.div variants={itemTransitionVariant}>
+    <div
+      className={'py-1 animate-fade-in-top'}
+      style={{
+        animationDelay: `${index * 50}ms`,
+      }}>
       <div className={'flex items-center justify-between gap-5'}>
-        <p
-          className={
-            'text-base font-medium text-stone-800 dark:text-stone-300'
-          }>
+        <p className={'text-base font-medium'}>
           {getOperationTypeString(data.operation_type)}
         </p>
         <span title={getOperationStatusString(data.operation_status)}>
@@ -52,7 +57,7 @@ export function OperationItem({ data }: { data: OperationModelDTO }) {
         {canRetry && !retry.isSuccess && (
           <button
             disabled={retry.isPending}
-            className={'text-xs text-stone-800 underline dark:text-stone-300'}
+            className={'text-xs underline'}
             onClick={() => {
               retry.mutate();
             }}>
@@ -60,6 +65,6 @@ export function OperationItem({ data }: { data: OperationModelDTO }) {
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

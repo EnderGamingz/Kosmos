@@ -2,8 +2,6 @@ import { invalidateFiles, useOperations } from '@lib/query.ts';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { OperationStatus, OperationType } from '@models/operation.ts';
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import { containerVariant } from '@components/defaults/transition.ts';
 import objectHash from 'object-hash';
 import { useUserState } from '@stores/userStore.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
@@ -77,7 +75,7 @@ export function NotificationsMenu() {
   return (
     <Popover onOpenChange={b => b && setSeen(true)}>
       <PopoverTrigger asChild>
-        <button className={'flex p-2 relative'}>
+        <button className={'flex p-2 relative cursor-pointer'}>
           {!seen && (
             <div
               className={
@@ -92,7 +90,7 @@ export function NotificationsMenu() {
         side={'bottom'}
         className={cn(
           'bg-transparent p-0 shadow-none border-none min-w-[220px]',
-          'flex flex-col gap-1',
+          'flex flex-col gap-2',
           '[&>div]:bg-popover [&>div]:border [&>div]:px-2 [&>div]:shadow-large [&>div]:rounded-lg',
         )}>
         <div>
@@ -102,30 +100,28 @@ export function NotificationsMenu() {
             }>
             Notifications
           </h2>
-          <motion.div
-            variants={containerVariant()}
-            initial={'hidden'}
-            animate={'show'}
+          <div
             className={cn(
-              'h-full max-h-[150px] max-w-56 md:max-h-[250px]',
-              'flex w-full flex-col gap-1 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
+              'h-full max-h-[150px] md:max-h-[250px]',
+              'flex w-full flex-col divide-y divide-border overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
             )}>
             {notifications.length ? (
-              notifications.map(notification => (
+              notifications.map((notification, i) => (
                 <StaticNotificationItem
                   key={notification.id}
                   data={notification}
+                  index={i}
                 />
               ))
             ) : (
               <p
                 className={
-                  'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
+                  'self-center justify-self-center font-light text-muted-foreground'
                 }>
                 No notifications
               </p>
             )}
-          </motion.div>
+          </div>
         </div>
         <div>
           <h2
@@ -134,27 +130,24 @@ export function NotificationsMenu() {
             }>
             Operations
           </h2>
-          <motion.div
-            variants={containerVariant()}
-            initial={'hidden'}
-            animate={'show'}
+          <div
             className={cn(
               'max-h-[150px] md:max-h-[250px]',
-              'grid w-full gap-2 divide-y divide-stone-200 overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
+              'grid w-full divide-y divide-border overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
             )}>
             {operations.data?.length ? (
-              operations.data?.map(operation => (
-                <OperationItem key={operation.id} data={operation} />
+              operations.data?.map((operation, i) => (
+                <OperationItem key={operation.id} data={operation} index={i} />
               ))
             ) : (
               <p
                 className={
-                  'self-center justify-self-center font-light text-stone-400 dark:text-stone-500'
+                  'self-center justify-self-center font-light text-muted-foreground'
                 }>
                 No operations
               </p>
             )}
-          </motion.div>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

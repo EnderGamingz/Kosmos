@@ -56,8 +56,6 @@ export function CreateShare({
   const [limit, setLimit] = useState<number | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState(-1);
 
-  console.log(expiresAt);
-
   const createAction = useMutation({
     mutationFn: async () => {
       if (disabled) return;

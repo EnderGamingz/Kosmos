@@ -1,6 +1,5 @@
 import { getShareTypeString } from '@models/share.ts';
 import { motion } from 'framer-motion';
-import { itemTransitionVariantFadeInFromTop } from '@components/defaults/transition.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { ShareOperationType } from '@models/file.ts';
 import { formatDistanceToNow } from 'date-fns';
@@ -30,9 +29,11 @@ function ShareItemIndicator({ active }: { active: boolean }) {
 export function ShareItem({
   share,
   type,
+  index,
 }: {
   share: ExtendedShareModelDTO;
   type: ShareOperationType;
+  index: number;
 }) {
   const notifications = useNotifications(s => s.actions);
 
@@ -52,14 +53,14 @@ export function ShareItem({
   return (
     <motion.li
       layout
-      variants={itemTransitionVariantFadeInFromTop}
       className={cn(
         'relative gap-2 rounded-lg bg-stone-300/30 px-3 py-2 sm:flex sm:flex-row sm:items-center',
-        'sm:bg-stone-300/30 sm:outline-transparent',
-        isActive
-          ? 'bg-green-300/5 outline-green-300'
-          : 'bg-red-300/5 outline-red-300',
-      )}>
+        'sm:bg-stone-300/30 outline sm:outline-transparent animate-fade-in-top',
+        isActive ? 'outline-green-300/70' : 'outline-red-300/70',
+      )}
+      style={{
+        animationDelay: `${index * 50}ms`,
+      }}>
       <ShareItemIndicator active={isActive} />
       <div>
         <p className={'font-medium'}>

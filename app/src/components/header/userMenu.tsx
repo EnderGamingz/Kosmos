@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { Role } from '@models/user.ts';
 import { cn } from '@lib/utils.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Button } from '@components/ui/button.tsx';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -35,11 +36,9 @@ export function UserMenu() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className={cn(
-            'rounded-lg p-2 text-stone-700',
-            ' flex items-center gap-2 rounded-full sm:p-1',
-            'outline-none dark:text-stone-300',
-          )}>
+          className={
+            'cursor-pointer p-2 flex items-center gap-2 rounded-full sm:p-1 outline-none'
+          }>
           <div
             className={
               'h-6 w-6 overflow-hidden rounded-full bg-stone-50 sm:ml-1 sm:h-8 sm:w-8'
@@ -63,18 +62,23 @@ export function UserMenu() {
       </PopoverTrigger>
       <PopoverContent className={'max-w-52 px-3 py-3'}>
         <div className={'mb-2 text-stone-700 dark:text-stone-300'}>
-          <p className={'font-semibold'}>Welcome back</p>
-          <p className={'font-light text-stone-600 dark:text-stone-400'}>
+          <p className={'font-semibold animate-fade-in-top'}>Welcome back</p>
+          <p
+            className={
+              'font-light text-stone-600 dark:text-stone-400 animate-fade-in-top delay-75'
+            }>
             {user.user?.username}
           </p>
         </div>
-        <UserMenuUsage onClick={handleClose} />
-        <hr className={'my-3 mt-2'} />
+        <div className={'animate-fade-in-top delay-100'}>
+          <UserMenuUsage onClick={handleClose} />
+        </div>
+        <hr className={'my-3 mt-2 animate-fade-in-top delay-100'} />
         <div className={'space-y-1'}>
           {user.user?.role === Role.Admin && (
             <Link
               to={'/admin/user'}
-              className={'menu-button'}
+              className={'menu-button animate-fade-in-top delay-100'}
               onClick={handleClose}>
               <CodeBracketIcon className={'h-5 w-5'} />
               Admin
@@ -82,20 +86,21 @@ export function UserMenu() {
           )}
           <Link
             to={'/settings/account'}
-            className={'menu-button'}
+            className={'menu-button animate-fade-in-top delay-200'}
             onClick={handleClose}>
             <Cog6ToothIcon className={'h-5 w-5'} />
             Settings
           </Link>
-          <div
-            className={cn(
-              'menu-button bg-red-200/30 text-red-700 hover:bg-red-200/50',
-              'dark:bg-red-800/30 dark:text-red-300 dark:hover:bg-red-800/50',
-            )}
+          <Button
+            variant={'destructive'}
+            className={
+              'w-full mt-2 animate-fade-in-top delay-300 justify-start cursor-pointer'
+            }
+            size={'sm'}
             onClick={() => logoutAction.mutate()}>
             <ArrowRightStartOnRectangleIcon className={'h-5 w-5'} />
             Logout
-          </div>
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

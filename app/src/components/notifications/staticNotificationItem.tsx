@@ -1,18 +1,21 @@
 import { Notification } from '@stores/notificationStore.ts';
-import { motion } from 'framer-motion';
-import { itemTransitionVariant } from '@components/defaults/transition.ts';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
 import { NotificationStatus } from '@components/notifications/notificationStatus.tsx';
 import { Bars3BottomLeftIcon, ForwardIcon } from '@heroicons/react/24/outline';
 
-export function StaticNotificationItem({ data }: { data: Notification }) {
+export function StaticNotificationItem({
+  data,
+  index,
+}: {
+  data: Notification;
+  index: number;
+}) {
   return (
-    <motion.div
-      layout
-      variants={itemTransitionVariant}
-      className={
-        'relative w-full text-stone-800 transition-colors dark:text-stone-300'
-      }>
+    <div
+      className={'relative w-full animate-fade-in-top'}
+      style={{
+        animationDelay: `${index * 50}ms`,
+      }}>
       <div className={'flex items-center'}>
         <div className={'mr-1 mt-1 flex h-5 w-5'}>
           {getSeverityIcon(data.severity)}
@@ -34,6 +37,6 @@ export function StaticNotificationItem({ data }: { data: Notification }) {
         )}
       </div>
       <NotificationStatus data={data} />
-    </motion.div>
+    </div>
   );
 }

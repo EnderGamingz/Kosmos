@@ -64,11 +64,11 @@ export function ShareModalContent({
             exit={{ opacity: 0, x: 80, scale: 0.9, height: '50%' }}
             transition={{ duration: 0.2 }}
             className={cn(
-              'relative z-10 shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
-              'w-full rounded-xl bg-gray-50 p-3 md:p-6',
-              'flex flex-col overflow-hidden text-stone-800',
-              'dark:bg-stone-800 dark:text-stone-100',
+              'relative shadow-lg',
+              'w-full rounded-xl bg-popover/50 p-3 md:p-6',
+              'flex flex-col overflow-hidden',
             )}>
+            <div className={'absolute backdrop-blur-2xl inset-0 -z-10'} />
             <div className={'flex items-center justify-between'}>
               <h2 className={'text-2xl font-semibold'}>
                 Share {shareElementType}{' '}

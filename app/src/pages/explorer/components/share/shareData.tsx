@@ -1,7 +1,5 @@
 import { ShareOperationType } from '@models/file.ts';
-import { motion } from 'framer-motion';
 import { ShareItem } from '@pages/explorer/components/share/shareItem.tsx';
-import { containerVariant } from '@components/defaults/transition.ts';
 import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 
 const renderMessage = (message: string) => (
@@ -23,14 +21,10 @@ export function ShareData({
     return renderMessage(`No shares found for this ${type}`);
 
   return (
-    <motion.ul
-      className={'space-y-2'}
-      variants={containerVariant()}
-      initial={'hidden'}
-      animate={'show'}>
-      {shares.map(share => (
-        <ShareItem key={share.id} type={type} share={share} />
+    <ul className={'space-y-2'}>
+      {shares.map((share, i) => (
+        <ShareItem key={share.id} type={type} share={share} index={i} />
       ))}
-    </motion.ul>
+    </ul>
   );
 }

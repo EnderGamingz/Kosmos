@@ -6,11 +6,6 @@ import {
 } from '@pages/explorer/components/upload/fileUpload.tsx';
 import { CreateFolder } from '@pages/explorer/folder/createFolder.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { motion } from 'framer-motion';
-import {
-  containerVariant,
-  itemTransitionVariantFadeInFromTopSmall,
-} from '@components/defaults/transition.ts';
 import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
@@ -32,19 +27,15 @@ export function NewMenu() {
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button className={'flex items-center gap-1 p-2'}>
+          <button className={'flex items-center gap-1 p-2 cursor-pointer'}>
             <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
             <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>
         </PopoverTrigger>
         <PopoverContent side={'bottom'} className={'max-w-60 p-3'}>
-          <motion.div
-            variants={containerVariant()}
-            initial={'hidden'}
-            animate={'show'}
-            className={'space-y-1'}>
+          <div className={'space-y-1'}>
             <div className={'flex items-center gap-1'}>
-              <div className={'flex-1'}>
+              <div className={'flex-1 animate-fade-in-top'}>
                 <FileUpload
                   onClick={() => {
                     handleClose();
@@ -52,19 +43,24 @@ export function NewMenu() {
                   }}
                 />
               </div>
-              <motion.div variants={itemTransitionVariantFadeInFromTopSmall}>
-                <Link
-                  title={'Quick Share'}
-                  to={'/home/quick'}
-                  onClick={handleClose}
-                  className={'menu-button py-2'}>
-                  <ClockIcon className={'h-5 w-5'} />
-                </Link>
-              </motion.div>
+              <Link
+                title={'Quick Share'}
+                to={'/home/quick'}
+                onClick={handleClose}
+                className={'menu-button py-2 animate-fade-in-top delay-75'}>
+                <ClockIcon className={'h-5 w-5'} />
+              </Link>
             </div>
-            <CreateFolder onClose={handleClose} folder={currentFolder} />
-            <CreateMarkdownFile folder={currentFolder} onClose={handleClose} />
-          </motion.div>
+            <div className={'animate-fade-in-top delay-100'}>
+              <CreateFolder onClose={handleClose} folder={currentFolder} />
+            </div>
+            <div className={'animate-fade-in-top delay-200'}>
+              <CreateMarkdownFile
+                folder={currentFolder}
+                onClose={handleClose}
+              />
+            </div>
+          </div>
         </PopoverContent>
       </Popover>
       <FileUploadModal
