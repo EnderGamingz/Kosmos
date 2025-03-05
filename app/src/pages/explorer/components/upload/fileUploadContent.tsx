@@ -175,7 +175,7 @@ export function FileUploadContent({
 
       const isPossibleFolderUpload = acceptedFiles
         // Checks for leading slashes which are appended by the Windows file explorer
-        .map(file => file.path?.replace(/^\/+/, '').split('/').length)
+        .map(file => file.path?.replace(/^(\.\/|\/)+/, '').split('/').length)
         .some(x => (x || 0) > 1);
 
       if (isPossibleFolderUpload) {

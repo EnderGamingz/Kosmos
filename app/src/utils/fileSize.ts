@@ -24,9 +24,7 @@ export function useFormatBytes(bytes: number, precision = 1) {
 export function formatBytes(bytes: number, precision = 1, useSI = false) {
   const unitSize = useSI ? 1000 : 1024;
 
-  if (Math.abs(bytes) < unitSize) {
-    return bytes + ' B';
-  }
+  if (Math.abs(bytes) < unitSize) return bytes + ' B';
 
   const units = useSI
     ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']

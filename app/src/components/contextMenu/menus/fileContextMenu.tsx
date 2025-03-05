@@ -23,7 +23,7 @@ export function FileContextMenu({
       <ContextMenuTitle type={'file'} title={data.file_name} />
       <AlbumAction files={[data]} onClose={onClose} />
       <SetAsAvatarAction file={data} onClose={onClose} />
-      {isImage && <hr />}
+      {isImage && <hr className={'dark:border-muted-foreground'} />}
       <DownloadSingleAction
         id={data.id}
         name={data.file_name}
