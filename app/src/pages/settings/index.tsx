@@ -11,7 +11,7 @@ export default function Settings() {
         <div className={'w-64 hidden md:flex'}>
           <SideNav source={'settings'} />
         </div>
-        <div className={'grow p-5'}>
+        <div className={'grow p-5 max-w-5xl w-full mx-auto'}>
           <Outlet />
         </div>
       </div>

@@ -36,6 +36,7 @@ pub struct UserService {
     sf: Sonyflake,
 }
 
+
 impl UserService {
     pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
         UserService { db_pool, sf }
@@ -150,6 +151,18 @@ impl UserService {
 
     pub async fn delete_user(&self, user_id: UserId) -> Result<KosmosDbResult, AppError> {
         sqlx::query("DELETE FROM users WHERE id = $1")
+            .bind(user_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error deleting user: {}", e);
+                AppError::InternalError
+            })
+    }
+
+    pub async fn update_user_avatar_id(&self, user_id: UserId, file_id: Option<i64>) {
+        sqlx::query("UPDATE users SET avatar_image_id = $1 WHERE id = $2")
+            .bind(file_id)
             .bind(user_id)
             .execute(&self.db_pool)
             .await

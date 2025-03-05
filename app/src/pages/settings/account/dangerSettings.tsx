@@ -71,7 +71,7 @@ function DeleteAccount() {
       </span>
       <form
         onSubmit={handleSubmit}
-        className={'flex flex-col gap-2 md:flex-row mt-4'}>
+        className={'flex flex-col gap-2 sm:flex-row mt-4'}>
         <Input
           placeholder={'Password'}
           type={'password'}

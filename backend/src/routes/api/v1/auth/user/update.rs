@@ -9,6 +9,7 @@ use axum::extract::State;
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
+use tokio::io::Join;
 use tower_sessions::Session;
 use validator::Validate;
 
@@ -101,6 +102,35 @@ pub async fn update_user_password(
         .user_service
         .update_user_password(user_id, new_password_hash)
         .await?;
+
+    Ok(AppSuccess::UPDATED)
+}
+
+#[derive(Deserialize, Validate)]
+pub struct UpdateAvatarPayload {
+    image_id: Option<i64>,
+}
+
+pub async fn update_user_avatar_id(
+    State(state): KosmosState,
+    session: Session,
+    Valid(Json(payload)): Valid<Json<UpdateAvatarPayload>>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+    let user = state.user_service.get_auth_user(user_id).await?;
+
+    if let Some(image_id) = payload.image_id {
+        let file = state.file_service.get_file(image_id, user.id.into()).await?;
+        if !file.file_type.is_image() {
+            return Err(AppError::BadRequest {
+                error: Some("File is not an image".to_string()),
+            });
+        };
+
+        state.user_service.update_user_avatar_id(user_id, Some(image_id)).await?;
+    } else if user.avatar_image_id.is_some() {
+        state.user_service.update_user_avatar_id(user_id, None).await?;
+    }
 
     Ok(AppSuccess::UPDATED)
 }

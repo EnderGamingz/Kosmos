@@ -19,3 +19,4 @@ pub mod favorite;
 pub mod album;
 pub mod passkey;
 pub mod content;
+pub mod profile;

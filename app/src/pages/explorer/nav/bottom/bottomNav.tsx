@@ -9,8 +9,6 @@ export default function BottomNav({ source }: { source: LinkSource }) {
     return [explorerLinks, getBottomMoreLinks(explorerLinks)];
   }, [source]);
 
-  console.log(more);
-
   return (
     <aside
       className={

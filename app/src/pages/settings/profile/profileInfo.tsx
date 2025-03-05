@@ -1,31 +1,25 @@
-import { useUserState } from '@stores/userStore.ts';
-import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
-import objectHash from 'object-hash';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
+import objectHash from 'object-hash';
+import { useUserState } from '@stores/userStore.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
+import { useMutation } from '@tanstack/react-query';
+import { UpdateProfilePayload } from '@pages/settings/profile/types.ts';
+import { FormEvent } from 'react';
 
-export function UserInformation() {
+export default function ProfileInfoSettings() {
   const user = useUserState(s => s.user);
-  const updateUser = useUserState(s => s.setUser);
   const notifications = useNotifications(s => s.actions);
 
-  const [username, setUsername] = useState(user?.username || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [fullName, setFullName] = useState(user?.full_name || '');
-
   const action = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ payload }: { payload: UpdateProfilePayload }) => {
       const updateId = notifications.notify({
-        title: 'Update user',
+        title: 'Update Profile',
         severity: Severity.INFO,
         loading: true,
         canDismiss: false,
       });
-      await axios
+      /*await axios
         .patch(`${BASE_URL}auth/user`, {
           username: username,
           email: email ?? undefined,
@@ -48,20 +42,26 @@ export function UserInformation() {
             timeout: 2000,
             canDismiss: true,
           });
-        });
+        });*/
     },
   });
 
-  if (!user) return null;
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const payload: UpdateProfilePayload = {
+      full_name: formData.get('full_name') as string,
+      email: formData.get('email') as string,
+    };
+    action.mutate({ payload });
+  };
 
+  // TODO Update form and fetch current profile data
   return (
     <section className={'space-y-3'}>
       <h2 className={'text-xl font-bold'}>User Information</h2>
       <form
-        onSubmit={e => {
-          e.preventDefault();
-          action.mutate();
-        }}
+        onSubmit={onSubmit}
         className={
           'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block'
         }>
@@ -70,30 +70,18 @@ export function UserInformation() {
           <Input
             required
             id={'username'}
-            value={username}
             placeholder={'Username'}
             minLength={3}
             maxLength={255}
-            onChange={e => setUsername(e.target.value.trim())}
           />
         </div>
         <div>
           <label htmlFor={'email'}>Email</label>
-          <Input
-            id={'email'}
-            value={email}
-            placeholder={'Email'}
-            onChange={e => setEmail(e.target.value.trim())}
-          />
+          <Input id={'email'} placeholder={'Email'} />
         </div>
         <div>
           <label htmlFor={'full_name'}>Full Name</label>
-          <Input
-            id={'full_name'}
-            value={fullName}
-            placeholder={'Full Name'}
-            onChange={e => setFullName(e.target.value)}
-          />
+          <Input id={'full_name'} placeholder={'Full Name'} />
         </div>
         <div className={'col-span-1 mt-1 md:col-span-2'}>
           <Button

@@ -15,6 +15,7 @@ pub struct UserModel {
     pub storage_limit: i64,
     pub role: i16,
     pub uuid: Uuid,
+    pub avatar_image_id: Option<i64>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
