@@ -34,6 +34,7 @@ import AlbumPage from '@pages/explorer/pages/albums/single';
 import { useServiceWorker } from '@hooks/serviceWorker.tsx';
 import QuickSharePage from '@pages/explorer/pages/quick';
 import { DefaultMetadata } from '@components/metadata.tsx';
+import ProfileSettings from '@pages/settings/profile';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -84,6 +85,7 @@ export default function Router() {
             <Route path={'preferences'} element={<Preferences />} />
             <Route path={'account'} element={<AccountSettings />} />
             <Route path={'security'} element={<SecuritySettings />} />
+            <Route path={'profile'} element={<ProfileSettings />} />
             <Route path={'info'} element={<AppInfo />} />
             <Route index element={<AccountSettings />} />
           </Route>

@@ -152,7 +152,7 @@ fn get_user_router() -> KosmosRouter {
         )
         .route(
             "/avatar",
-            post(crate::routes::api::v1::auth::user::update::update_user_avatar_id),
+            patch(crate::routes::api::v1::auth::user::update::update_user_avatar_id),
         )
         .route(
             "/avatar/:user_id",
@@ -349,6 +349,18 @@ fn get_quick_share_router() -> KosmosRouter {
     Router::new()
 }
 
+fn get_profile_router() -> KosmosRouter {
+    Router::new()
+        .route(
+            "/:user_id",
+            get(crate::routes::api::v1::auth::profile::index::get_profile_by_user_id),
+        )
+        .route(
+            "/",
+            patch(crate::routes::api::v1::auth::profile::update::update_profile),
+        )
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -367,6 +379,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/quick", get_quick_share_router())
         .nest("/operation", get_operation_router())
         .nest("/user", get_user_router())
+        .nest("/profile", get_profile_router())
         .nest("/admin", get_admin_router())
 }
 

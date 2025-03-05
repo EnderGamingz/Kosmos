@@ -16,6 +16,7 @@ export function NotificationStatus({ data }: { data: Notification }) {
           'absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden transition-height',
           (isSuccess || isError) && 'h-0',
         )}
+        indicatorClassName={'bg-stone-50'}
         aria-label={'Loading...'}
       />
     );

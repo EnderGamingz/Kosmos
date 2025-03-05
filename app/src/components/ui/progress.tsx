@@ -5,12 +5,14 @@ import { cn } from '@/lib/utils';
 
 type ComponentProps = React.ComponentProps<typeof ProgressPrimitive.Root> & {
   indeterminate?: boolean;
+  indicatorClassName?: string;
 };
 
 export function Progress({
   className,
   value,
   indeterminate,
+  indicatorClassName,
   ...props
 }: ComponentProps) {
   return (
@@ -25,6 +27,7 @@ export function Progress({
         data-slot='progress-indicator'
         className={cn(
           'bg-primary h-full w-full flex-1 transition-all',
+          indicatorClassName,
           indeterminate && 'animate-progress origin-left',
         )}
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}

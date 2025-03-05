@@ -1,4 +1,4 @@
-import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
+import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 import Illustration from '@components/Illustration.tsx';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';

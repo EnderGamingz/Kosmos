@@ -10,3 +10,4 @@ pub mod usage_service;
 pub mod search_service;
 pub mod album_service;
 pub mod passkey_service;
+pub mod profile_service;

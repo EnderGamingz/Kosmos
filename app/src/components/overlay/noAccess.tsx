@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import {
   ChevronLeftIcon,
   ExclamationCircleIcon,
@@ -6,6 +5,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
+import { buttonVariants } from '@components/ui/button.tsx';
 
 export function NoAccess({
   page,
@@ -33,21 +33,18 @@ export function NoAccess({
         'flex flex-col items-center justify-center gap-2',
         'dark:text-stone-300',
       )}>
-      <motion.button
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.5 }}
-        className={'mr-auto flex items-center gap-1'}
+      <button
+        className={
+          'mr-auto flex items-center gap-1 animate-fade-in-left delay-300'
+        }
         onClick={() => window.history.back()}>
         <ChevronLeftIcon className={'h-4 w-4'} />
         Back
-      </motion.button>
+      </button>
       <div className={'my-auto flex flex-col items-center gap-3'}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+        <div
           className={
-            'rounded-full bg-stone-500 p-5 text-stone-200 dark:bg-stone-700/50'
+            'rounded-full bg-stone-500 p-5 text-stone-200 dark:bg-stone-700/50 animate-fade-in'
           }>
           {loading ? (
             <div
@@ -58,37 +55,28 @@ export function NoAccess({
           ) : (
             <KeyIcon className={'h-12 w-12'} />
           )}
-        </motion.div>
-        <motion.p
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className={'text-center font-medium'}>
+        </div>
+        <p className={'text-center font-medium animate-fade-in-top delay-100'}>
           {loading ? loadingText : error ? errorText : noAccessText}
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className={'text-center text-sm font-light'}>
+        </p>
+        <p
+          className={
+            'text-center text-sm font-light animate-fade-in-top delay-200'
+          }>
           {loading ? loadingSubText : error ? error : noAccessSubText}
-        </motion.p>
+        </p>
       </div>
       {!loading && !error && !isLoggedIn && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className={'flex w-full'}>
+        <div className={'flex w-full animate-fade-in-top delay-400'}>
           <Link
             className={cn(
-              'w-full rounded-xl bg-stone-700 p-2 text-center text-lg font-medium text-stone-100',
-              'mx-auto max-w-2xl shadow transition-colors hover:bg-stone-500/60 hover:shadow-md',
+              buttonVariants({ size: 'lg' }),
+              'w-full max-w-2xl mx-auto',
             )}
             to={'/auth/login'}>
             Login
           </Link>
-        </motion.div>
+        </div>
       )}
     </div>
   );

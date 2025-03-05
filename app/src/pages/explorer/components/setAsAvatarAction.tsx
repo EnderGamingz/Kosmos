@@ -24,7 +24,7 @@ export default function SetAsAvatarAction({
 
   const setAction = useMutation({
     mutationFn: () =>
-      axios.post(`${BASE_URL}auth/user/avatar`, {
+      axios.patch(`${BASE_URL}auth/user/avatar`, {
         file_id: file.id,
       }),
     onSuccess: () => fetchUser({ background: true }),

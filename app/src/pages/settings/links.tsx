@@ -19,6 +19,12 @@ export const getSettingsLinks = (): ExplorerLink[] => [
     icon: <KeyIcon />,
   },
   {
+    name: 'Profile',
+    href: '/settings/profile',
+    icon: <UserIcon />,
+    lessPriority: true,
+  },
+  {
     name: 'Preferences',
     href: '/settings/preferences',
     icon: <WindowIcon />,

@@ -10,6 +10,7 @@ use crate::services::image_service::ImageService;
 use crate::services::operation_service::OperationService;
 use crate::services::passkey_service::PasskeyService;
 use crate::services::permission_service::PermissionService;
+use crate::services::profile_service::ProfileService;
 use crate::services::search_service::SearchService;
 use crate::services::share_service::ShareService;
 use crate::services::usage_service::UsageService;
@@ -20,6 +21,7 @@ pub type KosmosState = State<AppState>;
 #[derive(Clone)]
 pub struct AppState {
     pub user_service: UserService,
+    pub profile_service: ProfileService,
     pub file_service: FileService,
     pub folder_service: FolderService,
     pub image_service: ImageService,
@@ -48,6 +50,7 @@ impl AppState {
 pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
+    let profile_service = ProfileService::new(db.clone(), sf.clone());
     let file_service = FileService::new(db.clone(), sf.clone());
     let folder_service = FolderService::new(db.clone(), sf.clone());
     let image_service = ImageService::new(db.clone(), sf.clone());
@@ -61,6 +64,7 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
 
     AppState {
         user_service,
+        profile_service,
         file_service,
         folder_service,
         image_service,

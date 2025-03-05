@@ -46,7 +46,7 @@ export default function FileList() {
   return (
     <div
       className={
-        'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
+        'file-list relative flex h-full flex-col overflow-y-auto max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
       <div className={'flex items-center pl-3 shadow-sm md:pl-0'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />

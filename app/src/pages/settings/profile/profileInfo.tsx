@@ -1,32 +1,34 @@
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
-import objectHash from 'object-hash';
 import { useUserState } from '@stores/userStore.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { UpdateProfilePayload } from '@pages/settings/profile/types.ts';
 import { FormEvent } from 'react';
+import { UpdateProfileDTO } from '@bindings/UpdateProfileDTO.ts';
+import { ProfileQuery } from '@lib/queries/profileQuery.ts';
+import { Textarea } from '@components/ui/textarea.tsx';
+import axios from 'axios';
+import { BASE_URL } from '@lib/env.ts';
 
 export default function ProfileInfoSettings() {
   const user = useUserState(s => s.user);
   const notifications = useNotifications(s => s.actions);
 
+  if (!user) return null;
+
+  const { data } = ProfileQuery.useProfileByIdSuspense(user.id);
+
   const action = useMutation({
-    mutationFn: async ({ payload }: { payload: UpdateProfilePayload }) => {
+    mutationFn: async ({ payload }: { payload: UpdateProfileDTO }) => {
       const updateId = notifications.notify({
         title: 'Update Profile',
         severity: Severity.INFO,
         loading: true,
         canDismiss: false,
       });
-      /*await axios
-        .patch(`${BASE_URL}auth/user`, {
-          username: username,
-          email: email ?? undefined,
-          full_name: fullName ?? undefined,
-        })
-        .then(res => {
-          updateUser(res.data);
+      await axios
+        .patch(`${BASE_URL}auth/profile`, payload)
+        .then(() => {
           notifications.updateNotification(updateId, {
             severity: Severity.SUCCESS,
             status: 'Updated',
@@ -42,56 +44,99 @@ export default function ProfileInfoSettings() {
             timeout: 2000,
             canDismiss: true,
           });
-        });*/
+        });
     },
   });
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const payload: UpdateProfilePayload = {
+    const payload: UpdateProfileDTO = {
       full_name: formData.get('full_name') as string,
       email: formData.get('email') as string,
+      phone_number: formData.get('phone_number') as string,
+      bio: formData.get('bio') as string,
+      website: formData.get('website') as string,
+      location: formData.get('location') as string,
     };
+
     action.mutate({ payload });
   };
 
-  // TODO Update form and fetch current profile data
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-bold'}>User Information</h2>
+      <h2 className={'text-xl font-bold'}>Public Information</h2>
       <form
         onSubmit={onSubmit}
         className={
           'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block'
         }>
         <div>
-          <label htmlFor={'username'}>Username</label>
+          <label htmlFor={'full_name'}>Full Name</label>
           <Input
-            required
-            id={'username'}
-            placeholder={'Username'}
-            minLength={3}
-            maxLength={255}
+            id={'full_name'}
+            name={'full_name'}
+            type={'text'}
+            placeholder={'John Doe'}
+            defaultValue={data.full_name ?? ''}
           />
         </div>
         <div>
           <label htmlFor={'email'}>Email</label>
-          <Input id={'email'} placeholder={'Email'} />
+          <Input
+            id={'email'}
+            name={'email'}
+            type={'email'}
+            placeholder={'email@example.com'}
+            defaultValue={data.email ?? ''}
+          />
         </div>
         <div>
-          <label htmlFor={'full_name'}>Full Name</label>
-          <Input id={'full_name'} placeholder={'Full Name'} />
+          <label htmlFor={'phone_number'}>Phone Number</label>
+          <Input
+            id={'phone_number'}
+            name={'phone_number'}
+            type={'tel'}
+            placeholder={'+12 34567890'}
+            defaultValue={data.phone_number ?? ''}
+          />
         </div>
-        <div className={'col-span-1 mt-1 md:col-span-2'}>
+        <div className={'sm:row-span-2 sm:col-span-2 flex flex-col'}>
+          <label htmlFor={'bio'}>Bio</label>
+          <Textarea
+            id={'bio'}
+            name={'bio'}
+            placeholder={'Write something about yourself'}
+            defaultValue={data.bio ?? ''}
+            className={'resize-none h-32'}
+          />
+        </div>
+        <div>
+          <label htmlFor={'website'}>Website</label>
+          <Input
+            id={'website'}
+            name={'website'}
+            type={'url'}
+            placeholder={'https://example.com'}
+            defaultValue={data.website ?? ''}
+          />
+        </div>
+        <div>
+          <label htmlFor={'location'}>Location</label>
+          <Input
+            id={'location'}
+            name={'location'}
+            type={'text'}
+            placeholder={'City, Country'}
+            defaultValue={data.location ?? ''}
+          />
+        </div>
+
+        <div className={'mt-auto'}>
           <Button
             type={'submit'}
-            disabled={
-              action.isPending ||
-              objectHash(user) ===
-                objectHash({ ...user, username, email, full_name: fullName })
-            }
-            className={'float-right px-5'}>
+            disabled={action.isPending}
+            className={'float-right px-10'}>
             Update
           </Button>
         </div>

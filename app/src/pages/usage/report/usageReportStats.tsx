@@ -4,7 +4,7 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
-import ConditionalWrapper from '@components/ConditionalWrapper.tsx';
+import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';

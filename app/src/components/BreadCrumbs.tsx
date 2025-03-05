@@ -1,4 +1,4 @@
-import ConditionalWrapper from './ConditionalWrapper.tsx';
+import ConditionalWrapper from './wrappers/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';

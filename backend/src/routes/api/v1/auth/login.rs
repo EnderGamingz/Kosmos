@@ -48,6 +48,11 @@ pub async fn login(
         })?;
     }
 
+    let has_profile = state.profile_service.check_profile_exists(user.id).await?;
+    if !has_profile {
+        state.profile_service.create_empty_profile(user.id).await?;
+    }
+
     session
         .insert(SESSION_USER_ID_KEY, user.id)
         .await
