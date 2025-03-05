@@ -127,12 +127,7 @@ export default function AlbumAction({
   const update = useToAlbumMutation(albumId);
   const context = useContext(DisplayContext);
 
-  const {
-    isOpen,
-    onOpenChange,
-    onOpen: disclosureOnOpen,
-    onClose: disclosureOnClose,
-  } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen: disclosureOnOpen } = useDisclosure();
 
   if (context.shareUuid || shareUuid || !files.length) return null;
   const fileValidState = files.map(isValidFileForAlbum);

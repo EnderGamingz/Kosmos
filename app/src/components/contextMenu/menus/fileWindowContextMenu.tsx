@@ -10,19 +10,29 @@ export function FileWindowContextMenu({ onClose }: { onClose: () => void }) {
   const currentFolder = useExplorerStore(s => s.current.folder);
 
   return (
-    <>
-      <ContextMenuTitle type={'create'} title={'New'} />
-      <FileUploadButtonControlled onClose={onClose} />
-      <Link
-        title={'Quick Share'}
-        to={'/home/quick'}
-        onClick={onClose}
-        className={'menu-button py-2'}>
-        <ClockIcon className={'h-5 w-5'} />
-        Quick Share
-      </Link>
-      <CreateFolder onClose={onClose} folder={currentFolder} />
-      <CreateMarkdownFile onClose={onClose} folder={currentFolder} />
-    </>
+    <div className={'flex flex-col gap-[inherit] [&>div]:animate-fade-in-top'}>
+      <div>
+        <ContextMenuTitle type={'create'} title={'New'} />
+      </div>
+      <div className={'!delay-50'}>
+        <FileUploadButtonControlled onClose={onClose} />
+      </div>
+      <div className={'!delay-100'}>
+        <Link
+          title={'Quick Share'}
+          to={'/home/quick'}
+          onClick={onClose}
+          className={'menu-button py-2'}>
+          <ClockIcon className={'h-5 w-5'} />
+          Quick Share
+        </Link>
+      </div>
+      <div className={'!delay-150'}>
+        <CreateFolder onClose={onClose} folder={currentFolder} />
+      </div>
+      <div className={'!delay-200'}>
+        <CreateMarkdownFile onClose={onClose} folder={currentFolder} />
+      </div>
+    </div>
   );
 }

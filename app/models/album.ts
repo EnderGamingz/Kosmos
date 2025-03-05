@@ -44,3 +44,7 @@ export function isAlbumFile(data: ContextData): data is AlbumFile {
 export function isValidFileForAlbum(file: FileModelDTO) {
   return [FileType.Image, FileType.RawImage].includes(file.file_type);
 }
+
+export function isValidFileForAvatar(file: FileModelDTO) {
+  return [FileType.Image, FileType.RawImage].includes(file.file_type);
+}

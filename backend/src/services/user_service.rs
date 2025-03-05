@@ -36,7 +36,6 @@ pub struct UserService {
     sf: Sonyflake,
 }
 
-
 impl UserService {
     pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
         UserService { db_pool, sf }
@@ -160,7 +159,11 @@ impl UserService {
             })
     }
 
-    pub async fn update_user_avatar_id(&self, user_id: UserId, file_id: Option<i64>) {
+    pub async fn update_user_avatar_id(
+        &self,
+        user_id: UserId,
+        file_id: Option<i64>,
+    ) -> Result<KosmosDbResult, AppError> {
         sqlx::query("UPDATE users SET avatar_image_id = $1 WHERE id = $2")
             .bind(file_id)
             .bind(user_id)

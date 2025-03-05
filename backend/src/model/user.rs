@@ -12,10 +12,10 @@ pub struct UserModel {
     pub password_hash: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
+    pub avatar_image_id: Option<i64>,
     pub storage_limit: i64,
     pub role: i16,
     pub uuid: Uuid,
-    pub avatar_image_id: Option<i64>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -30,6 +30,7 @@ pub struct UserModelDTO {
     #[ts(type = "number")]
     pub storage_limit: i64,
     pub role: i16,
+    pub has_avatar: bool,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -43,6 +44,7 @@ impl From<UserModel> for UserModelDTO {
             email: user.email,
             storage_limit: user.storage_limit,
             role: user.role,
+            has_avatar: user.avatar_image_id.is_some(),
             created_at: user.created_at,
             updated_at: user.updated_at,
         }

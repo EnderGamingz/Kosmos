@@ -62,9 +62,7 @@ export function DownloadSingleAction({
       }
 
       if (!window.WritableStream) {
-        // @ts-expect-error Override
         streamSaver.WritableStream = WritableStream;
-        // @ts-expect-error Override window
         window.WritableStream = WritableStream;
       }
 

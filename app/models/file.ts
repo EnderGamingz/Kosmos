@@ -117,3 +117,10 @@ export function isMultiple(data: ContextData): data is Selected {
     (data as Selected).folders !== undefined
   );
 }
+
+export function isEmpty(data: ContextData): data is Selected {
+  return (
+    (data as Selected).files.length === 0 &&
+    (data as Selected).folders.length === 0
+  )
+}

@@ -1,3 +1,4 @@
+use crate::model::internal::entity_id::EntityId;
 use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -9,7 +10,6 @@ use axum::extract::State;
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
-use tokio::io::Join;
 use tower_sessions::Session;
 use validator::Validate;
 
@@ -108,7 +108,7 @@ pub async fn update_user_password(
 
 #[derive(Deserialize, Validate)]
 pub struct UpdateAvatarPayload {
-    image_id: Option<i64>,
+    file_id: Option<EntityId>,
 }
 
 pub async fn update_user_avatar_id(
@@ -119,17 +119,26 @@ pub async fn update_user_avatar_id(
     let user_id = SessionService::check_logged_in(&session).await?;
     let user = state.user_service.get_auth_user(user_id).await?;
 
-    if let Some(image_id) = payload.image_id {
-        let file = state.file_service.get_file(image_id, user.id.into()).await?;
+    if let Some(file_id) = payload.file_id {
+        let file = state
+            .file_service
+            .get_file(file_id.into(), user.id.into())
+            .await?;
         if !file.file_type.is_image() {
             return Err(AppError::BadRequest {
                 error: Some("File is not an image".to_string()),
             });
         };
 
-        state.user_service.update_user_avatar_id(user_id, Some(image_id)).await?;
+        state
+            .user_service
+            .update_user_avatar_id(user_id, Some(file_id.into()))
+            .await?;
     } else if user.avatar_image_id.is_some() {
-        state.user_service.update_user_avatar_id(user_id, None).await?;
+        state
+            .user_service
+            .update_user_avatar_id(user_id, None)
+            .await?;
     }
 
     Ok(AppSuccess::UPDATED)

@@ -6,6 +6,7 @@ import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import { MoveToTrash } from '@pages/explorer/components/delete';
+import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx';
 
 export function FileContextMenu({
   data,
@@ -18,6 +19,7 @@ export function FileContextMenu({
     <>
       <ContextMenuTitle type={'file'} title={data.file_name} />
       <AlbumAction files={[data]} onClose={onClose} />
+      <SetAsAvatarAction file={data} onClose={onClose} />
       <DownloadSingleAction
         id={data.id}
         name={data.file_name}

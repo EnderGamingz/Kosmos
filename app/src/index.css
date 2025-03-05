@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "tailwindcss";
+@import "tailwindcss";
 
 @plugin "tailwindcss-animate";
 
@@ -193,6 +195,11 @@ body {
     height: 18px;
     border-radius: 50%;
     background: rgb(41 37 36);
+}
+
+.delay-50 {
+    transition-delay: 50ms;
+    animation-delay: 50ms;
 }
 
 @keyframes rotation {

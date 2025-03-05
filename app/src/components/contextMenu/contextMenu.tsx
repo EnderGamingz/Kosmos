@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { isFileModel, isMultiple } from '@models/file.ts';
+import { isEmpty, isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
@@ -70,13 +70,18 @@ export function ContextMenuExplorerContent({
 
   if (isAlbumFile(data))
     return <AlbumContextMenu data={data} onClose={onClose} />;
+
   if (isFileModel(data))
     return <FileContextMenu data={data} onClose={onClose} />;
+
   if (isFolderModel(data))
     return <FolderContextMenu data={data} onClose={onClose} />;
+
+  if (isFileWindow(data) || isEmpty(data))
+    return <FileWindowContextMenu onClose={onClose} />;
+
   if (isMultiple(data))
     return <MultiContextMenu data={data} onClose={onClose} />;
-  if (isFileWindow(data)) return <FileWindowContextMenu onClose={onClose} />;
 
   return null;
 }

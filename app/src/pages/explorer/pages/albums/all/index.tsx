@@ -9,7 +9,7 @@ import { PageMetadata } from '@components/metadata.tsx';
 export default function AlbumsPage() {
   const albums = AlbumQuery.useAlbums();
   return (
-    <div>
+    <div className={'relative'}>
       <PageMetadata title={'Albums'} />
       <Progress
         aria-label={'Recent Files loading...'}
