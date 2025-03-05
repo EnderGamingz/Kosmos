@@ -7,7 +7,7 @@ import {
 } from '@components/defaults/transition.ts';
 
 import { cn } from '@lib/utils.ts';
-import { PageMetadata } from '@components/metadata.tsx';
+import { SettingsPageMetadata } from '@components/metadata.tsx';
 
 export default function DismissedOverview() {
   const dismissStore = useDismissStore();
@@ -16,7 +16,7 @@ export default function DismissedOverview() {
   return (
     <div className={'space-y-3'}>
       <h1 className={'text-3xl font-bold'}>Dismissed Messages</h1>
-      <PageMetadata title={'Dismissed Messages'} />
+      <SettingsPageMetadata title={'Dismissed Messages'} />
       <motion.ul
         variants={containerVariant()}
         initial={'hidden'}

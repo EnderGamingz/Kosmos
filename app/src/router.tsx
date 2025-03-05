@@ -34,7 +34,6 @@ import AlbumPage from '@pages/explorer/pages/albums/single';
 import { useServiceWorker } from '@hooks/serviceWorker.tsx';
 import QuickSharePage from '@pages/explorer/pages/quick';
 import { DefaultMetadata } from '@components/metadata.tsx';
-import { ThemePreferences } from '@pages/settings/preferences/themePreferences.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);

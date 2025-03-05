@@ -1,12 +1,15 @@
-import {
-  getBottomMoreLinks,
-  getExplorerLinks,
-} from '@pages/explorer/nav/explorerLinks.tsx';
+import { getBottomMoreLinks } from '@pages/explorer/nav/explorerLinks.tsx';
 import { BottomNavItem } from '@pages/explorer/nav/bottom/bottomNavItem.tsx';
+import { useMemo } from 'react';
+import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
 
-export default function BottomNav() {
-  const links = getExplorerLinks();
-  const more = getBottomMoreLinks();
+export default function BottomNav({ source }: { source: LinkSource }) {
+  const [links, more] = useMemo(() => {
+    const explorerLinks = getLinks(source);
+    return [explorerLinks, getBottomMoreLinks(explorerLinks)];
+  }, [source]);
+
+  console.log(more);
 
   return (
     <aside
@@ -17,7 +20,9 @@ export default function BottomNav() {
         {links.map(link => (
           <BottomNavItem key={`bottom-nav-${link.name}`} link={link} />
         ))}
-        <BottomNavItem noPriority key={`bottom-nav-more`} link={more} />
+        {!!more.items?.length && (
+          <BottomNavItem noPriority key={`bottom-nav-more`} link={more} />
+        )}
       </div>
     </aside>
   );

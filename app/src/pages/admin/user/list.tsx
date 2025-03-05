@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
-import { PageMetadata } from '@components/metadata.tsx';
+import { AdminPageMetadata } from '@components/metadata.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Plus } from 'lucide-react';
 import { Input } from '@components/ui/input.tsx';
@@ -51,7 +51,7 @@ export default function AdminUserList() {
   const users = AdminQuery.useUsers();
   return (
     <>
-      <PageMetadata title={'Users'} />
+      <AdminPageMetadata title={'Users'} />
       <div className={'flex items-center justify-between gap-2'}>
         <h1 className={'text-2xl font-semibold'}>Users</h1>
         <CreateUserModal />

@@ -70,10 +70,10 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
   },
 ];
 
-export const getBottomMoreLinks = (): ExplorerLink => ({
+export const getBottomMoreLinks = (links: ExplorerLink[]): ExplorerLink => ({
   name: 'More',
   icon: <EllipsisHorizontalIcon />,
-  items: getExplorerLinks().filter(link => link.lessPriority === true),
+  items: links.filter(link => link.lessPriority === true),
 });
 
 export const getAdminLinks = (): ExplorerLink[] => [

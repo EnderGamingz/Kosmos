@@ -1,4 +1,4 @@
-import { getTitle } from '@utils/metadata.ts';
+import { getAdminTitle, getSettingsTitle, getTitle } from '@utils/metadata.ts';
 
 export function DefaultMetadata() {
   return (
@@ -12,6 +12,22 @@ export function PageMetadata({ title }: { title: string }) {
   return (
     <>
       <title>{getTitle(title)}</title>
+    </>
+  );
+}
+
+export function AdminPageMetadata({ title }: { title?: string }) {
+  return (
+    <>
+      <title>{getAdminTitle(title)}</title>
+    </>
+  );
+}
+
+export function SettingsPageMetadata({ title }: { title?: string }) {
+  return (
+    <>
+      <title>{getSettingsTitle(title)}</title>
     </>
   );
 }

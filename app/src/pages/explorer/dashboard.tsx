@@ -7,17 +7,16 @@ export default function Dashboard() {
   return (
     <>
       <PageMetadata title={'Dashboard'} />
-      <div
-        className={'grid flex-grow grid-cols-6 lg:grid-cols-7 xl:grid-cols-6'}>
-        <div className={'col-span-2 hidden md:flex xl:col-span-1'}>
-          <SideNav />
+      <div className={'flex grow'}>
+        <div className={'w-64 hidden md:flex'}>
+          <SideNav source={'default'} />
         </div>
-        <div className={'col-span-6 md:col-span-4 lg:col-span-5 xl:col-span-5'}>
+        <div className={'grow'}>
           <Outlet />
         </div>
       </div>
       <div className={'sticky bottom-0 hidden max-md:block'}>
-        <BottomNav />
+        <BottomNav source={'default'} />
       </div>
     </>
   );

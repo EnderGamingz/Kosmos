@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
-import { PageMetadata } from '@components/metadata.tsx';
+import { AdminPageMetadata } from '@components/metadata.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { Pen, Trash2 } from 'lucide-react';
@@ -37,7 +37,7 @@ export default function AdminUser() {
 
   return (
     <div>
-      <PageMetadata title={`${data.username} | User`} />
+      <AdminPageMetadata title={`${data.username} | User`} />
       <div className={'grid grid-cols-2 gap-5'}>
         <UserInfoItem label={'ID'} value={data.id} />
         <UserInfoItem label={'Username'} value={data.username} />

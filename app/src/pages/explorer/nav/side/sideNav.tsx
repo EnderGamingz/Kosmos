@@ -4,18 +4,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { useUsageStats } from '@lib/query.ts';
-import { motion } from 'framer-motion';
-import {
-  getAdminLinks,
-  getExplorerLinks,
-} from '@pages/explorer/nav/explorerLinks.tsx';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
 import { cn } from '@lib/utils.ts';
+import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
 
-export function SideNav({ admin }: { admin?: boolean }) {
+export function SideNav({ source }: { source: LinkSource }) {
   const usage = useUsageStats();
 
   const limit = usage.data?.limit || 0;
@@ -24,15 +20,10 @@ export function SideNav({ admin }: { admin?: boolean }) {
 
   const binUsage = useFormatBytes(bin);
 
-  const links = useMemo(() => {
-    if (admin) {
-      return getAdminLinks();
-    }
-    return getExplorerLinks(binUsage);
-  }, [admin, binUsage]);
+  const links = useMemo(() => getLinks(source, binUsage), [source, binUsage]);
 
   return (
-    <motion.aside
+    <aside
       className={cn(
         'body-bg flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
         'overflow-hidden transition-all md:h-[initial]',
@@ -63,6 +54,6 @@ export function SideNav({ admin }: { admin?: boolean }) {
           </span>
         </div>
       </div>
-    </motion.aside>
+    </aside>
   );
 }

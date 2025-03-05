@@ -5,32 +5,34 @@ import {
   UserIcon,
   WindowIcon,
 } from '@heroicons/react/24/outline';
+import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 
-export const links = [
+export const getSettingsLinks = (): ExplorerLink[] => [
   {
     name: 'Account',
     href: '/settings/account',
-    icon: UserIcon,
+    icon: <UserIcon />,
   },
   {
     name: 'Security',
     href: '/settings/security',
-    icon: KeyIcon,
+    icon: <KeyIcon />,
   },
   {
     name: 'Preferences',
     href: '/settings/preferences',
-    icon: WindowIcon,
+    icon: <WindowIcon />,
   },
   {
     name: 'Dismissed',
     href: '/settings/dismissed',
-    icon: CheckBadgeIcon,
+    icon: <CheckBadgeIcon />,
+    lessPriority: true,
   },
   {
     name: 'Kosmos',
     href: '/settings/info',
-    icon: InformationCircleIcon,
-    bottom: true,
+    icon: <InformationCircleIcon />,
+    lessPriority: true,
   },
 ];
