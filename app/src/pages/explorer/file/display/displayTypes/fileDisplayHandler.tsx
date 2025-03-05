@@ -1,6 +1,5 @@
 import { FileType, FileTypeActions, getFileTypeString } from '@models/file.ts';
 import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
-import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -29,18 +28,15 @@ export function FileTypeDisplay({
 }) {
   const shouldShowChildren = Boolean(children && !loading);
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.3 }}
+    <div
       className={cn(
-        'relative flex h-full w-full flex-col items-center justify-center gap-2',
-        'rounded-lg bg-stone-200/10 text-stone-900 shadow-xl dark:bg-stone-500/10 dark:text-stone-200',
-        '[&_svg]:text-stone-900 dark:[&_svg]:text-stone-200',
+        'relative flex h-full w-full flex-col items-center justify-center gap-5',
+        'rounded-lg bg-stone-200/10  shadow-xl dark:bg-stone-500/10 text-stone-200',
+        '[&_svg]:text-stone-200 pr-5 text-center backdrop-blur-lg',
         'outline -outline-offset-1 outline-stone-500/30',
-        'pr-5 text-center backdrop-blur-lg',
-        loading ? '[&_svg]:h-14 [&_svg]:w-14' : '[&_svg]:h-20 [&_svg]:w-20',
+        'animate-fade-in-right transition-all',
+        loading && '[&_svg]:h-14 [&_svg]:w-14',
+        !loading && shouldShowChildren && 'gap-0',
       )}>
       <div className={cn('relative', shouldShowChildren && 'h-0 opacity-0')}>
         {loading && (
@@ -56,16 +52,12 @@ export function FileTypeDisplay({
         )}
       </div>
       {!noText && !shouldShowChildren && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ delay: 0.35 }}>
+        <p className={'animate-fade-in-top delay-100'}>
           {getFileTypeString(type)} File
-        </motion.p>
+        </p>
       )}
       {!loading && children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -97,8 +89,8 @@ export function FileDisplayHandler({
 
   useEffect(() => {
     if (!previewOnHold) return;
-    const t = setTimeout(() => setPreviewOnHold(false), 500);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => setPreviewOnHold(false), 500);
+    return () => clearTimeout(timeout);
   }, [previewOnHold]);
 
   if (FileTypeActions.isZipArchive(file)) {

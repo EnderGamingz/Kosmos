@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Collapse } from 'react-collapse';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function ArchiveDisplay({
@@ -43,20 +42,16 @@ export default function ArchiveDisplay({
             type={file.file_type}
             keySuffix={'display'}
           />
-          <motion.span
-            className={'overflow-hidden whitespace-nowrap'}
-            initial={{ width: 0, opacity: 0.4 }}
-            animate={{ width: '100%', opacity: 1 }}
-            transition={{ delay: 0.2 }}>
+          <span
+            className={
+              'overflow-hidden whitespace-nowrap animate-fade-in-left delay-300'
+            }>
             Archive Preview
-          </motion.span>
+          </span>
         </h2>
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          transition={{ delay: 0.3 }}>
+        <div className={'animate-fade-in-top delay-400'}>
           {query.data && <ArchiveFolder data={query.data} />}
-        </motion.div>
+        </div>
       </div>
     </FileTypeDisplay>
   );
@@ -76,7 +71,8 @@ function ArchiveItem({
       onClick={onClick}
       className={cn(
         'flex items-center gap-2 rounded-lg px-2 py-1 transition-colors',
-        onClick && 'cursor-pointer bg-stone-700/20 hover:bg-stone-700/40',
+        onClick &&
+          'cursor-pointer bg-stone-600/60 hover:bg-stone-600/40 dark:bg-stone-700/60',
       )}>
       {onClick && (
         <ChevronDownIcon
@@ -105,7 +101,7 @@ function ArchiveFolder({
     <div
       className={cn(
         'transition-colors',
-        indent > 0 && 'mt-1 border-l-1 border-stone-600/50 pl-1',
+        indent > 0 && 'mt-1 border-l-1 border-stone-700/50 pl-1',
       )}
       style={{
         marginLeft: indent * 3,

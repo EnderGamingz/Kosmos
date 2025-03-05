@@ -3,7 +3,10 @@ import { Button } from '@components/ui/button.tsx';
 
 export function ModalCloseButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant={'secondary'} className={'w-full'}>
+    <Button
+      onClick={onClick}
+      variant={'secondary'}
+      className={'w-full cursor-pointer'}>
       <XMarkIcon className={'h-4 w-4'} /> Close
     </Button>
   );

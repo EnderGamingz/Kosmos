@@ -54,13 +54,7 @@ export class FileTypeActions {
   }
 
   static shouldDelayPreview(data: FileModelDTO) {
-    return [
-      FileType.Image,
-      FileType.Document,
-      FileType.Audio,
-      FileType.Video,
-      FileType.Archive,
-    ].includes(data.file_type);
+    return [FileType.Image, FileType.Document].includes(data.file_type);
   }
 }
 
