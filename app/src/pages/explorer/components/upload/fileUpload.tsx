@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
@@ -29,11 +30,16 @@ export function FileUploadModal({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>File Upload</DialogTitle>
+            <DialogDescription>
+              Upload files by selecting them below
+            </DialogDescription>
           </DialogHeader>
-          <FileUploadContent
-            folder={currentFolder}
-            onClose={() => onOpenChange(false)}
-          />
+          <div>
+            <FileUploadContent
+              folder={currentFolder}
+              onClose={() => onOpenChange(false)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </>

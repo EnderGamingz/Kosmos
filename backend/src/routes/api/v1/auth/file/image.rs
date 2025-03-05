@@ -20,7 +20,7 @@ use crate::services::image_service::ImageService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
-async fn get_image_format_data(
+pub(crate) async fn get_image_format_data(
     format: ImageFormat,
     file_data: &FileModel,
 ) -> Result<(Vec<u8>, [(&str, &str); 1]), AppError> {

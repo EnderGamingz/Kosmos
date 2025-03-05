@@ -27,7 +27,7 @@ export default function SetAsAvatarAction({
       axios.post(`${BASE_URL}auth/user/avatar`, {
         file_id: file.id,
       }),
-    onSuccess: () => fetchUser(),
+    onSuccess: () => fetchUser({ background: true }),
   });
 
   if (context.shareUuid || shareUuid) return null;

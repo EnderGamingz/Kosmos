@@ -4,9 +4,9 @@ import { BASE_URL } from '@lib/env.ts';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 export type UserState = {
-  user?: UserModelDTO;
+  user?: UserModelDTO & { fetched_at: number };
   error?: string;
-  fetchUser: () => void;
+  fetchUser: (props?: { background: boolean }) => void;
   setUser: (user: UserModelDTO) => void;
   logout: () => void;
   initialized: boolean;
@@ -16,8 +16,9 @@ export const useUserState = create<UserState>(set => ({
   user: undefined,
   initialized: false,
   error: undefined,
-  fetchUser: async () => {
-    set({ initialized: false, error: undefined });
+  fetchUser: async props => {
+    if (!props?.background) set({ initialized: false, error: undefined });
+
     const user = await axios
       .get(`${BASE_URL}auth`)
       .then(({ data }) => data)
@@ -32,10 +33,14 @@ export const useUserState = create<UserState>(set => ({
         set({ initialized: true });
       });
 
-    if (user) set({ user });
+    if (user) set({ user: { ...user, fetched_at: new Date().getTime() } });
   },
   setUser: (data: UserModelDTO) => {
-    set({ user: data, initialized: true, error: undefined });
+    set({
+      user: { ...data, fetched_at: new Date().getTime() },
+      initialized: true,
+      error: undefined,
+    });
   },
   logout: () => {
     set({ user: undefined });

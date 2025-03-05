@@ -155,6 +155,10 @@ fn get_user_router() -> KosmosRouter {
             post(crate::routes::api::v1::auth::user::update::update_user_avatar_id),
         )
         .route(
+            "/avatar/:user_id",
+            get(crate::routes::api::v1::auth::user::index::get_avatar_by_user_id),
+        )
+        .route(
             "/password",
             patch(crate::routes::api::v1::auth::user::update::update_user_password),
         )

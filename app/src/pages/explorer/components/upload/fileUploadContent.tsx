@@ -28,18 +28,19 @@ import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
 import { cn } from '@lib/utils.ts';
 import { DialogClose, DialogFooter } from '@components/ui/dialog.tsx';
 import { Button, buttonVariants } from '@components/ui/button.tsx';
+import { X } from 'lucide-react';
 
 export function FileUploadContent({
   folder,
   onClose,
-  isInHeader,
+  isInList,
   children,
-  className = '',
+  className,
   disabled,
 }: {
   folder?: string;
   onClose?: () => void;
-  isInHeader?: boolean;
+  isInList?: boolean;
   children?: ReactNode;
   className?: string;
   disabled?: boolean;
@@ -178,7 +179,7 @@ export function FileUploadContent({
         .some(x => (x || 0) > 1);
 
       if (isPossibleFolderUpload) {
-        if (isInHeader) {
+        if (isInList) {
           notification.notify({
             title: 'Folder Upload',
             status: 'Prevented',
@@ -193,20 +194,18 @@ export function FileUploadContent({
 
       setSelectForUpload(makeUploadFiles(acceptedFiles, fileNamesRef.current));
     },
-    [fileNamesRef, isInHeader, notification],
+    [fileNamesRef, isInList, notification],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    noClick: isInHeader,
-    noKeyboard: isInHeader,
+    noClick: isInList,
+    noKeyboard: isInList,
   });
 
-  if (disabled) {
-    return <>{children}</>;
-  }
+  if (disabled) return children;
 
-  if (isInHeader && children) {
+  if (isInList && children) {
     return (
       <>
         <ConflictModal
@@ -240,10 +239,16 @@ export function FileUploadContent({
       <Collapse isOpened={isTryingInvalidFolderUpload}>
         <div
           className={
-            'rounded-lg border border-amber-400 bg-amber-950/50 text-amber-50'
+            'mb-2 rounded-md border dark:border-amber-400 dark:bg-amber-950/50 dark:text-amber-50 border-amber-400 bg-amber-100 text-amber-900'
           }>
           <div className={'p-2'}>
-            <b>Possible Folder Upload Detected</b>
+            <b>
+              Possible Folder Upload Detected
+              <X
+                className={'float-right w-5 h-5'}
+                onClick={() => setIsTryingInvalidFolderUpload(false)}
+              />
+            </b>
             <p>
               It appears you might be attempting to upload a folder using the
               drop zone. <br />
@@ -284,7 +289,7 @@ export function FileUploadContent({
       </div>
       <DialogFooter
         className={
-          'flex flex-col-reverse justify-between gap-3 sm:flex-row [&_button,&_label]:cursor-pointer'
+          'mt-4 flex flex-col-reverse justify-between gap-3 sm:flex-row [&_button,&_label]:cursor-pointer'
         }>
         <DialogClose asChild>
           <Button variant={'outline'}>Cancel</Button>

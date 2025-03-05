@@ -165,7 +165,7 @@ export function ExplorerDisplayWrapper({
         <FileUploadContent
           disabled={!viewSettings?.isCreateAllowed}
           folder={currentFolder}
-          isInHeader
+          isInList
           className={'h-full'}>
           {children}
         </FileUploadContent>

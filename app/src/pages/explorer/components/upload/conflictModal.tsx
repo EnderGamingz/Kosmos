@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { Badge } from '@components/ui/badge.tsx';
 
 const actions = [
   {
@@ -65,16 +66,10 @@ export function ConflictModal({
   const handleSubmit = () => {
     if (resolved.length !== files.length || disabled) return;
 
-    const skipped = files.filter(f => f.resolveAction === ResolveAction.Skip);
-
-    if (skipped.length) {
-      onAbort();
-      return;
-    }
-
     const modifiedFiles: File[] = [];
 
     for (const file of files) {
+      if (file.resolveAction === ResolveAction.Skip) continue;
       if (file.resolveAction === ResolveAction.MakeUnique) {
         const fileParts = file.file.name.split('.');
         const extension = fileParts.pop();
@@ -92,6 +87,12 @@ export function ConflictModal({
         modifiedFiles.push(file.file);
       }
     }
+
+    if (modifiedFiles.length + noConflict.length === 0) {
+      onAbort();
+      return;
+    }
+
     onSubmit([...modifiedFiles, ...noConflict]);
   };
 
@@ -107,19 +108,19 @@ export function ConflictModal({
 
   return (
     <Dialog open={!!files.length} onOpenChange={b => !b && onAbort()}>
-      <DialogContent className={'max-w-xl space-y-2 p-4'}>
+      <DialogContent className={'!max-w-2xl space-y-2 p-4'}>
         <DialogHeader>
           <DialogTitle className={'flex items-center gap-2'}>
             <ExclamationTriangleIcon className={'h-6 w-6'} />
             File conflicts
           </DialogTitle>
           <DialogDescription>
-            Resolved {resolved.length} / {files.length}
-          </DialogDescription>
-          <span className={'text-stone-300'}>
             {files.length > 1 ? 'Files' : 'A File'} already exist with the same
             name{files.length > 1 && 's'}.
-          </span>
+          </DialogDescription>
+          <p className={'text-muted-foreground'}>
+            Resolved {resolved.length} / {files.length}
+          </p>
         </DialogHeader>
         <div className={'max-h-[400px] overflow-y-auto'}>
           <ul className={'divide-y-1'}>
@@ -179,12 +180,15 @@ function FileConflictItem({
           '[&>button]:outline [&>button]:outline-stone-500/20 [&>button]:transition-colors',
         )}>
         {actions.map(a => (
-          <button
+          <Badge
             key={a.name}
-            className={cn(a.action === file.resolveAction && 'bg-stone-500/50')}
+            className={cn(
+              'cursor-pointer',
+              a.action === file.resolveAction && 'bg-stone-700/50',
+            )}
             onClick={() => selectAction(a.action)}>
             {a.name}
-          </button>
+          </Badge>
         ))}
       </div>
     </li>

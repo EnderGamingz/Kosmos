@@ -5,24 +5,29 @@ type Props = {
   username: string;
   saturation?: number;
   lightness?: number;
-  [key: string]: unknown;
 };
 
-// noinspection SpellCheckingInspection
-const MinidenticonImg = ({
+export function MinidentIcon({
   username,
   saturation = 50,
   lightness = 50,
-  ...props
-}: Props) => {
-  const svgURI = useMemo(
-    () =>
-      'data:image/svg+xml;utf8,' +
-      encodeURIComponent(minidenticon(username, saturation, lightness)),
+}: Props) {
+  const src = useMemo(
+    () => getMinidentIconSrc({ username, saturation, lightness }),
     [username, saturation, lightness],
   );
 
-  return <img src={svgURI} alt={username} {...props} />;
-};
+  return <img src={src} alt={username} />;
+}
 
-export default MinidenticonImg;
+// noinspection SpellCheckingInspection
+export function getMinidentIconSrc({
+  username,
+  saturation = 50,
+  lightness = 50,
+}: Props) {
+  return (
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(minidenticon(username, saturation, lightness))
+  );
+}
