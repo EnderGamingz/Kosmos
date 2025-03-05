@@ -14,8 +14,9 @@ import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { isValidFileForAlbum } from '@models/album.ts';
+import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
 import { cn } from '@lib/utils.ts';
+import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx';
 
 const actions = (
   file: FileModelDTO,
@@ -23,6 +24,14 @@ const actions = (
   shareUuid?: string,
 ) => {
   return [
+    isValidFileForAvatar(file) && (
+      <SetAsAvatarAction
+        file={file}
+        onClose={onClose}
+        dense
+        shareUuid={shareUuid}
+      />
+    ),
     !shareUuid && [file].map(isValidFileForAlbum).every(x => x) && (
       <AlbumAction
         files={[file]}

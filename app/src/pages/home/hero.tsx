@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRightEndOnRectangleIcon,
@@ -9,6 +8,7 @@ import { ALLOW_REGISTER } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
+import UserAvatar from '@components/UserAvatar.tsx';
 
 function HeroLink({
   to,
@@ -38,72 +38,65 @@ function HeroLink({
 export function Hero() {
   const user = useUserState(s => s.user);
   return (
-    <div className={'flex sm:h-[calc(100dvh-90px)] sm:max-h-[650px]'}>
+    <div className={'flex sm:h-[calc(100dvh-90px)] sm:max-h-[600px]'}>
       <div
         className={cn(
           'relative flex-grow overflow-hidden bg-stone-900 shadow-lg',
           'grid p-10 md:p-16 lg:p-24',
         )}>
-        <motion.img
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
+        <img
           src={'/img/pictures/hero.jpg'}
           alt={'Stone Background'}
           className={
             'absolute inset-0 z-0 h-full w-full object-cover brightness-50'
           }
         />
-        <div
-          className={
-            'z-10 flex flex-grow flex-col gap-10 text-center sm:gap-12'
-          }>
-          <div>
-            {user && (
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className={
-                  'text-2xl font-bold text-stone-200/80 sm:text-2xl lg:text-3xl dark:text-stone-300/80'
-                }>
-                Welcome back
-              </motion.p>
+        <div className={'z-10 flex flex-grow flex-col gap-10 sm:gap-12'}>
+          <div className={'flex gap-4 items-center'}>
+            {user?.has_avatar && (
+              <UserAvatar
+                username={user.username}
+                userId={user.id}
+                className={'w-24 h-24 animate-fade-in-left'}
+              />
             )}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className={
-                'text-5xl font-black text-stone-50 sm:text-6xl lg:text-7xl dark:text-stone-200'
-              }>
-              {user
-                ? (user.full_name ?? user.username)
-                : 'Explore Infinite Possibilities'}
-            </motion.h1>
+            <div>
+              {user && (
+                <p
+                  className={
+                    'text-2xl font-bold text-stone-200 sm:text-2xl lg:text-3xl dark:text-stone-300 animate-fade-in-left delay-100'
+                  }>
+                  Welcome back!
+                </p>
+              )}
+              <h1
+                className={
+                  'text-5xl font-black text-stone-50 sm:text-6xl lg:text-7xl dark:text-stone-200 animate-fade-in-left delay-200'
+                }>
+                {user
+                  ? (user.full_name ?? user.username)
+                  : 'Explore Infinite Possibilities'}
+              </h1>
+            </div>
           </div>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+          <p
             className={
-              'text-xl text-stone-100 md:text-3xl lg:text-4xl dark:text-stone-300'
+              'text-xl text-stone-300 md:text-3xl dark:text-stone-300 animate-fade-in-bottom delay-200'
             }>
-            Kosmos - Your high-performance file hosting platform
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className={'mx-auto mt-auto flex flex-col gap-5 sm:flex-row'}>
+            <strong>Kosmos </strong> - Your high-performance file hosting
+            platform
+          </p>
+          <div className={'mx-auto mt-auto flex flex-col gap-5 sm:flex-row'}>
             {user ? (
               <>
                 <HeroLink
+                  className={'animate-fade-in-bottom delay-300'}
                   to={'/home'}
                   icon={<HomeIcon className={'h-8 w-8'} />}>
                   Dashboard
                 </HeroLink>
                 <HeroLink
+                  className={'animate-fade-in-bottom delay-400'}
                   to={'/home/quick'}
                   icon={<ClockIcon className={'h-8 w-8'} />}>
                   Quick Share
@@ -111,6 +104,7 @@ export function Hero() {
               </>
             ) : (
               <HeroLink
+                className={'animate-fade-in-bottom delay-300'}
                 to={'/auth/login'}
                 icon={<ArrowRightEndOnRectangleIcon className={'h-8 w-8'} />}>
                 Login
@@ -118,12 +112,13 @@ export function Hero() {
             )}
             {ALLOW_REGISTER && !user && (
               <HeroLink
+                className={'animate-fade-in-bottom delay-400'}
                 to={'/auth/register'}
                 icon={<ArrowRightEndOnRectangleIcon className={'h-8 w-8'} />}>
                 Register
               </HeroLink>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

@@ -161,7 +161,6 @@ export default function AlbumAction({
         {albumId ? <MinusCircleIcon /> : <SquaresPlusIcon />}
         {dense ? 'Album' : albumId ? 'Remove from album' : 'Add to album'}
       </button>
-      {!dense && <hr className={'border-stone-300 dark:border-stone-500'} />}
     </>
   );
 }

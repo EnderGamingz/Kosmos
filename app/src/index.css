@@ -220,6 +220,7 @@ body {
     --animate-fade-in-right: fade-in-right 0.5s ease-in-out backwards;
     --animate-scale-up-original: scale-up-original 0.5s ease-in-out backwards;
     --animate-fade-scale-in: fade-in 0.5s ease-in-out backwards, scale-in 0.5s ease-in-out backwards;
+    --animate-fade-in-left-scale-in: fade-in-left 0.5s ease-in-out backwards, scale-in 0.5s ease-in-out backwards;
 
     @keyframes progress {
         0% {

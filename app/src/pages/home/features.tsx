@@ -4,7 +4,6 @@ import {
   WindowIcon,
 } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
-
 import { cn } from '@lib/utils.ts';
 
 type Feature = {
@@ -39,26 +38,34 @@ export function Features() {
     <div className={'space-y-5'}>
       <h2
         className={
-          'text-center text-2xl font-semibold text-stone-600 dark:text-stone-300'
+          'text-center text-2xl font-semibold text-stone-600 dark:text-stone-300 animate-fade-in-top delay-400'
         }>
         Features
       </h2>
       <div className={'grid grid-cols-1 gap-5 p-5 md:grid-cols-3'}>
-        {features.map(feature => (
-          <Feature key={feature.label} {...feature} />
+        {features.map((feature, i) => (
+          <Feature key={feature.label} {...feature} index={i} />
         ))}
       </div>
     </div>
   );
 }
 
-function Feature({ icon: Icon, label, description }: Feature) {
+function Feature({
+  icon: Icon,
+  label,
+  description,
+  index,
+}: Feature & { index: number }) {
   return (
     <div
+      style={{
+        animationDelay: `${(index + 1) * 100 + 400}ms`,
+      }}
       className={cn(
-        'space-y-2 rounded-xl bg-stone-200/60 p-4 text-stone-900 shadow-md outline outline-1 outline-stone-600/20',
-        'dark:bg-stone-800/50 dark:text-stone-100 dark:outline-stone-500/20',
-        'bg-gradient-to-bl from-stone-100 to-stone-300 dark:from-stone-800 dark:to-stone-700',
+        'space-y-2 rounded-xl bg-stone-200/60 p-4 text-stone-900 shadow-md border border-stone-600/20',
+        'dark:bg-stone-800/50 dark:text-stone-100 dark:border-stone-500/20',
+        'bg-gradient-to-bl from-stone-100 to-stone-300 dark:from-stone-800 dark:to-stone-700 animate-fade-in-bottom',
       )}>
       <div className={'flex items-center gap-2'}>
         <div

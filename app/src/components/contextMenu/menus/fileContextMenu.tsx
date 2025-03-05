@@ -7,6 +7,7 @@ import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import { MoveToTrash } from '@pages/explorer/components/delete';
 import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx';
+import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
 
 export function FileContextMenu({
   data,
@@ -15,11 +16,14 @@ export function FileContextMenu({
   data: FileModelDTO;
   onClose: () => void;
 }) {
+  const isImage = isValidFileForAvatar(data) || isValidFileForAlbum(data);
+
   return (
     <>
       <ContextMenuTitle type={'file'} title={data.file_name} />
       <AlbumAction files={[data]} onClose={onClose} />
       <SetAsAvatarAction file={data} onClose={onClose} />
+      {isImage && <hr />}
       <DownloadSingleAction
         id={data.id}
         name={data.file_name}

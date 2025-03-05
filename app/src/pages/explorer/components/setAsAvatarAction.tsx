@@ -2,11 +2,11 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { isValidFileForAvatar } from '@models/album.ts';
-import { Aperture } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 
 export default function SetAsAvatarAction({
   file,
@@ -39,12 +39,9 @@ export default function SetAsAvatarAction({
   };
 
   return (
-    <>
-      <button onClick={handleClick}>
-        <Aperture />
-        {dense ? 'Avatar' : 'Set as Avatar'}
-      </button>
-      {!dense && <hr className={'border-stone-300 dark:border-stone-500'} />}
-    </>
+    <button onClick={handleClick}>
+      <UserCircleIcon />
+      {dense ? 'Set Avatar' : 'Set as Avatar'}
+    </button>
   );
 }

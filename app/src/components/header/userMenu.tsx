@@ -9,14 +9,13 @@ import {
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import useLogout from '@hooks/useLogout.ts';
-import { MinidentIcon } from '@components/MinidentIcon.tsx';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useState } from 'react';
 import { Role } from '@models/user.ts';
 import { cn } from '@lib/utils.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar.tsx';
+import UserAvatar from '@components/UserAvatar.tsx';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -40,18 +39,12 @@ export function UserMenu() {
           className={
             'cursor-pointer p-2 flex items-center gap-2 rounded-full sm:p-1 outline-none'
           }>
-          <Avatar className={'h-6 w-6 sm:h-8 sm:w-8'}>
-            {user.user?.has_avatar && (
-              <AvatarImage
-                className={'object-cover'}
-                src={`${BASE_URL}auth/user/avatar/${user.user.id}?${user.user.fetched_at}`}
-                alt={user.user.username}
-              />
-            )}
-            <AvatarFallback>
-              <MinidentIcon username={user.user?.username || ''} />
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            userId={user.user?.id}
+            fetchedAt={user.user?.fetched_at}
+            username={user.user?.username}
+            className={'h-6 w-6 sm:h-8 sm:w-8'}
+          />
           <div
             className={cn(
               'hidden max-w-32 flex-col overflow-hidden whitespace-nowrap pr-2 text-left sm:flex',
