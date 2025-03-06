@@ -52,6 +52,11 @@
         "ordinal": 9,
         "name": "uuid",
         "type_info": "Uuid"
+      },
+      {
+        "ordinal": 10,
+        "name": "avatar_image_id",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -72,7 +77,8 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
   "hash": "cd264b067f532f71a26696ea9544bad333a8e0cf4802d2c77a66cdbb67ce1723"
