@@ -218,7 +218,7 @@ function VirtualGrid({
   footer?: ReactNode;
   row: FixedSizeListProps['children'];
 } & Omit<FixedSizeListProps, 'children' | 'innerElementType'>) {
-  const listRef = useRef<FixedSizeList | null>();
+  const listRef = useRef<FixedSizeList | null>(null);
   const [top, setTop] = useState(0);
 
   return (
@@ -236,7 +236,7 @@ function VirtualGrid({
           // Call the original callback
           rest.onItemsRendered && rest.onItemsRendered(props);
         }}
-        ref={el => (listRef.current = el)}>
+        ref={listRef}>
         {row}
       </FixedSizeList>
     </VirtualGridContext.Provider>

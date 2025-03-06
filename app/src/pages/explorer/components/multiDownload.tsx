@@ -89,9 +89,7 @@ export function MultiDownload({
       }
 
       if (!window.WritableStream) {
-        // @ts-expect-error Override
         streamSaver.WritableStream = WritableStream;
-        // @ts-expect-error Override
         window.WritableStream = WritableStream;
       }
 
