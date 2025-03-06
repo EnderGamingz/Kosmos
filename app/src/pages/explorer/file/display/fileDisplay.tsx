@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect, useMemo, useState } from 'react';
 import { DisplayHeader } from '@pages/explorer/file/display/displayHeader.tsx';
@@ -125,10 +124,6 @@ function FileDisplayContent({
               className={cn(
                 '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0 relative',
               )}>
-              <motion.div
-                layoutId={`compact-${prevFile.id}`}
-                className={'-z-10'}
-              />
               <FileDisplayHandler
                 file={prevFile}
                 fullScreen={fullsScreenPreview}

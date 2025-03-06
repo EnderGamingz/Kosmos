@@ -6,6 +6,7 @@ import { MultiMoveToTrash } from '@pages/explorer/components/delete';
 import { MultiPermanentDelete } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
+import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
 
 export function MultiContextMenu({
   data,
@@ -36,6 +37,7 @@ export function MultiContextMenu({
         onClose={onClose}
         current_parent={currentFolder}
       />
+      <ContextMenuDivider />
 
       {!!data.files.length && !data.folders.length && (
         <MultiMoveToTrash
@@ -43,7 +45,6 @@ export function MultiContextMenu({
           onClose={onClose}
         />
       )}
-      <hr />
       <MultiPermanentDelete
         deleteData={{ folders: data.folders, files: data.files }}
         onClose={onClose}

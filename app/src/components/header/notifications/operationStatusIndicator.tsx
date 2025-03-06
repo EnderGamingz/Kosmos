@@ -11,7 +11,7 @@ export function OperationStatusIndicator({
     [OperationStatus.Pending]: (
       <LoaderCircle
         aria-label={'Operation pending'}
-        className={'animate-spin w-4 h-4'}
+        className={'animate-spin w-3 h-3'}
       />
     ),
     [OperationStatus.Success]: (

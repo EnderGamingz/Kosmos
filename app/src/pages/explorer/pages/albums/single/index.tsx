@@ -12,7 +12,6 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDis
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlider.tsx';
 import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';
-import { AnimatePresence } from 'framer-motion';
 import { DisplayContext } from '@lib/contexts.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -78,16 +77,12 @@ export function AlbumPageContent({
   useArrowKeys({
     left: () =>
       setSelected(prev => {
-        if (prev - 1 < 0) {
-          return -1;
-        }
+        if (prev - 1 < 0) return -1;
         return prev - 1;
       }),
     right: () =>
       setSelected(prev => {
-        if (prev + 1 > files.length) {
-          return files.length;
-        }
+        if (prev + 1 > files.length) return files.length;
         return prev + 1;
       }),
     deps: [files.length],
@@ -136,7 +131,8 @@ export function AlbumPageContent({
             <AlbumAddItems id={album.id} added={files} small={scrolling} />
           )}
         </AlbumTitle>
-        <div className={'ml-auto text-stone-800'}>
+        <div
+          className={'ml-auto text-stone-800 animate-fade-in-right delay-200'}>
           <AlbumMenu album={album}>
             <GridSizeSlider
               value={size}
@@ -145,7 +141,7 @@ export function AlbumPageContent({
           </AlbumMenu>
         </div>
       </div>
-      <div className={'flex flex-grow flex-col'}>
+      <div className={'flex flex-grow flex-col animate-fade-in delay-200'}>
         <ExplorerDataDisplay
           isLoading={false}
           files={files}
@@ -165,20 +161,15 @@ export function AlbumPageContent({
           }}
         />
       </div>
-      <AnimatePresence>
-        {file && (
-          <AlbumFullscreen
-            file={file}
-            onClose={() => setSelected(-1)}
-            shareUuid={shareUuid}
-          />
-        )}
-      </AnimatePresence>
+      <AlbumFullscreen
+        file={file}
+        onClose={() => setSelected(-1)}
+        shareUuid={shareUuid}
+      />
       {!files.length && !shareUuid && (
         <EmptyList
-          grid
-          message={'No files added yet'}
           noIcon
+          message={'No files added yet'}
           action={<AlbumAddItems id={album.id} added={files} />}
         />
       )}

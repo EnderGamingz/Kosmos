@@ -34,7 +34,7 @@ export function FileTypeDisplay({
         'rounded-lg bg-stone-200/10  shadow-xl dark:bg-stone-500/10 text-stone-200',
         '[&_svg]:text-stone-200 pr-5 text-center backdrop-blur-lg',
         'outline -outline-offset-1 outline-stone-500/30',
-        'animate-fade-in-right transition-all',
+        'animate-fade-in-right transition-all delay-100',
         loading && '[&_svg]:h-14 [&_svg]:w-14',
         !loading && shouldShowChildren && 'gap-0',
       )}>

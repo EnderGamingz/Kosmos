@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { isEmpty, isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
 import { ContextData } from '@hooks/useContextMenu.ts';
-import { CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
+import { CONTEXT_MENU_HEIGHT, CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import { isFileWindow } from '@utils/contextDataParse.ts';
 import { AlbumContextMenu } from '@components/contextMenu/menus/albumContextMenu.tsx';
@@ -21,7 +21,7 @@ export default function ContextMenu({
   pos: { x: number; y: number };
 }) {
   const isOverflowingX = pos.x + CONTEXT_MENU_WIDTH > window.innerWidth;
-  const isOverflowingY = pos.y + CONTEXT_MENU_WIDTH > window.innerHeight;
+  const isOverflowingY = pos.y + CONTEXT_MENU_HEIGHT > window.innerHeight;
 
   return (
     <>
@@ -39,6 +39,7 @@ export default function ContextMenu({
           '[&_button:not(.no-pre):hover]:bg-stone-100 [&_button:not(.no-pre):hover]:text-stone-900 [&_button:not(.no-pre)]:px-3 [&_button:not(.no-pre)]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',
           'bg-stone-50 dark:bg-stone-800 dark:[&_button:not(.no-pre):hover]:bg-stone-600/50 dark:[&_button:not(.no-pre):hover]:text-stone-100',
+          '[&_button]:cursor-pointer',
         )}
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}

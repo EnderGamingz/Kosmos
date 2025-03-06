@@ -99,7 +99,7 @@ function AlbumDisplayItem({
         } as AlbumFile);
       }}
       className={cn(
-        '[&_.img-container]:h-full [&_.img-container]:min-h-24 [&_.img-container]:w-full',
+        'w-full [&_.img-container]:h-full [&_.img-container]:min-h-24 [&_.img-container]:w-full',
         '[&_img]:aspect-auto [&_img]:h-auto [&_img]:min-h-[inherit] [&_img]:w-full',
       )}>
       <PreviewImage

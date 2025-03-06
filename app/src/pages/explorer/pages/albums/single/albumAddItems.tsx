@@ -10,7 +10,14 @@ import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
-import { Dialog, DialogContent, DialogFooter } from '@components/ui/dialog.tsx';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
 
 function AlbumAddItemsContent({
@@ -64,7 +71,7 @@ function AlbumAddItemsContent({
 
   return (
     <div className={'flex h-full select-none flex-col'}>
-      <div className={'flex items-center pl-3 shadow-sm md:pl-0'}>
+      <div className={'flex items-center pl-3 md:pl-0'}>
         <FileListBreadCrumbs
           crumbs={breadCrumbs}
           clickOverwrite={setVirtualFolder}
@@ -129,6 +136,12 @@ export function AlbumAddItems({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent
           className={'!max-w-full !max-h-full h-full rounded-none'}>
+          <DialogHeader className={'sr-only'}>
+            <DialogTitle>Add images to album</DialogTitle>
+            <DialogDescription>
+              Add images to the album by selecting them from the file list.
+            </DialogDescription>
+          </DialogHeader>
           <AlbumAddItemsContent
             addTo={id}
             initialFiles={added}

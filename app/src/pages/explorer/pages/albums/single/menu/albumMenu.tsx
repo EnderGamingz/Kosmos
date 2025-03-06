@@ -21,7 +21,7 @@ export function AlbumMenu({
   const { isOpen, onOpenChange, onClose } = useDisclosure();
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <button className={'text-stone-800 dark:text-stone-100'}>
           <EllipsisVerticalIcon className={'h-8 w-8'} />
         </button>
@@ -29,13 +29,15 @@ export function AlbumMenu({
       <PopoverContent side={'bottom'} className={'min-w-32 max-w-52 space-y-2'}>
         <ContextMenuTitle title={album.name} type={'album'} />
         <ShareButton
-          className={'menu-button w-full'}
+          className={'menu-button w-full animate-fade-in-top delay-50'}
           id={album.id}
           type={'album'}
           onClose={onClose}
         />
-        <AlbumDelete id={album.id} onClose={onClose} />
-        {children}
+        <div className={'animate-fade-in-top delay-100'}>
+          <AlbumDelete id={album.id} onClose={onClose} />
+        </div>
+        <div className={'animate-fade-in-top delay-150'}>{children}</div>
       </PopoverContent>
     </Popover>
   );

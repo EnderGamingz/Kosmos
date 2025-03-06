@@ -19,12 +19,14 @@ export function ImageFullscreenView({
   onDoubleClick,
   src,
   file,
+  previewSrc,
 }: {
   open: boolean;
   tooLarge: boolean;
   onDoubleClick: () => void;
   src: string;
   file: FileModelDTO;
+  previewSrc?: string;
 }) {
   return (
     <Dialog open={open && !tooLarge} onOpenChange={b => !b && onDoubleClick()}>
@@ -43,6 +45,12 @@ export function ImageFullscreenView({
             className={'h-full w-auto rounded-xl max-h-fit'}
             src={src}
             alt={file.file_name}
+            style={{
+              backgroundImage: previewSrc ? `url(${previewSrc})` : 'none',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+            }}
           />
         </div>
       </DialogContent>

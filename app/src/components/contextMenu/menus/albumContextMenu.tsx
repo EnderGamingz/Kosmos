@@ -5,6 +5,7 @@ import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import { RenameAction } from '@pages/explorer/components/rename';
+import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
 
 export function AlbumContextMenu({
   data,
@@ -18,6 +19,7 @@ export function AlbumContextMenu({
       <ContextMenuTitle type={'file'} title={data.file_name} />
       <SetAlbumPreview album={data.album} fileId={data.id} onClose={onClose} />
       <AlbumAction files={[data]} albumId={data.album.id} onClose={onClose} />
+      <ContextMenuDivider />
       <DownloadSingleAction
         id={data.id}
         name={data.file_name}

@@ -103,12 +103,9 @@ export function AlbumTitle({
             required
           />
         </div>
-        <motion.input
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+        <input
           className={cn(
-            'bg-transparent font-light text-muted-foreground outline-none transition-[font-size]',
+            'bg-transparent font-light text-muted-foreground outline-none transition-[font-size] animate-fade-in-top animation-delay-300',
             Boolean(dense) && 'text-sm',
           )}
           defaultValue={album.description || ''}
@@ -124,12 +121,7 @@ export function AlbumTitle({
       </form>
       <AnimatePresence>
         {!dense && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
-            className={'flex items-center gap-4'}>
-            {children}
-          </motion.div>
+          <div className={'animate-fade-in-top delay-400'}>{children}</div>
         )}
       </AnimatePresence>
     </div>

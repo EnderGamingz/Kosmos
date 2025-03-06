@@ -12,6 +12,7 @@ import {
   MultiPermanentDelete,
   PermanentDeleteAction,
 } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
+import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
 
 export function FolderContextMenu({
   data,
@@ -50,6 +51,7 @@ export function FolderContextMenu({
         current_parent={data.parent_id}
         onClose={onClose}
       />
+      <ContextMenuDivider />
       <PermanentDeleteAction
         deleteData={{ type: 'folder', id: data.id, name: data.folder_name }}
         onClose={onClose}

@@ -20,10 +20,8 @@ function SharePreferences() {
             <span>Preferences</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent>
-          <div className={'p-2'}>
-            <Preferences inPopup />
-          </div>
+        <PopoverContent className={'max-w-md w-full'}>
+          <Preferences inPopup />
         </PopoverContent>
       </Popover>
     </div>

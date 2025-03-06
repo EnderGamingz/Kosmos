@@ -8,6 +8,7 @@ import { MoveAction } from '@pages/explorer/components/move';
 import { MoveToTrash } from '@pages/explorer/components/delete';
 import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx';
 import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
+import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
 
 export function FileContextMenu({
   data,
@@ -23,7 +24,7 @@ export function FileContextMenu({
       <ContextMenuTitle type={'file'} title={data.file_name} />
       <AlbumAction files={[data]} onClose={onClose} />
       <SetAsAvatarAction file={data} onClose={onClose} />
-      {isImage && <hr className={'dark:border-muted-foreground'} />}
+      {isImage && <ContextMenuDivider />}
       <DownloadSingleAction
         id={data.id}
         name={data.file_name}
@@ -43,6 +44,7 @@ export function FileContextMenu({
         current_parent={data.parent_folder_id}
         onClose={onClose}
       />
+      <ContextMenuDivider />
       <MoveToTrash id={data.id} name={data.file_name} onClose={onClose} />
     </>
   );
