@@ -2,15 +2,11 @@ stages:
   - build
   - release
 
-variables:
-  REGISTRY_URL: registry.setilic.com
-  REGISTRY_USER: setilic
-  FRONTEND_IMAGE_PATH: setilic/kosmos/app
-  BACKEND_IMAGE_PATH: setilic/kosmos/backend
-
 kosmos_app_build_job:
   stage: build
   image: docker:stable
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE-app:$CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
   script:
@@ -22,20 +18,23 @@ kosmos_app_build_job:
     - sed -i "s#\[SYSTEM_MESSAGE\]#$SYSTEM_MESSAGE#g" .env
     - sed -i "s#\[BUILD_ID\]#$CI_COMMIT_SHORT_SHA#g" .env
     - sed -i "s#\[BUILD_TAG\]#$CI_COMMIT_TAG#g" .env
-    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin $REGISTRY_URL
-    - docker build -t $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG .
-    - docker push $REGISTRY_URL/$FRONTEND_IMAGE_PATH:$CI_COMMIT_TAG
+    - docker build -t $IMAGE_TAG .
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
+    - docker push $IMAGE_TAG
 
 kosmos_backend_build_job:
   stage: build
   image: docker:stable
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE-backend:$CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
   script:
     - cd backend
-    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin $REGISTRY_URL
-    - docker build -t $REGISTRY_URL/$BACKEND_IMAGE_PATH:$CI_COMMIT_TAG .
-    - docker push $REGISTRY_URL/$BACKEND_IMAGE_PATH:$CI_COMMIT_TAG
+    - docker build -t $IMAGE_TAG .
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
+    - docker push $IMAGE_TAG
+
 
 kosmos_release_job:
   stage: release
