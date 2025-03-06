@@ -5,6 +5,7 @@ import { Button, buttonVariants } from '@components/ui/button.tsx';
 import { ArrowUpRight } from 'lucide-react';
 import { ProfileQuery } from '@lib/queries/profileQuery.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 export default function ProfilePictureSettings() {
   const { user, fetchUser } = useUserState(s => s);
@@ -17,21 +18,27 @@ export default function ProfilePictureSettings() {
 
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-bold'}>Avatar</h2>
+      <SettingsSubtitle title={'Avatar'} />
       <div className={'flex gap-5 max-sm:flex-col items-center'}>
         <UserAvatar
           userId={user.id}
           username={user.username}
           fetchedAt={user.fetched_at}
-          className={'w-32 h-32 ring ring-primary/50 ring-offset-4 shadow-lg'}
+          className={
+            'w-32 h-32 ring ring-primary/50 ring-offset-4 shadow-lg animate-fade-in-left delay-50'
+          }
         />
         <div className={'space-y-2'}>
-          <p className={'text-muted-foreground whitespace-pre-wrap'}>
+          <p
+            className={
+              'text-muted-foreground whitespace-pre-wrap animate-fade-in-top delay-100'
+            }>
             {user.has_avatar
               ? "Your avatar is set by a file you've uploaded."
               : "You don't have an avatar set yet. \nBrowse your files and select and image for your avatar."}
           </p>
-          <div className={'flex flex-wrap gap-2'}>
+          <div
+            className={'flex flex-wrap gap-2 animate-fade-in-left delay-200'}>
             {user.has_avatar && (
               <Button
                 className={'cursor-pointer'}
@@ -41,7 +48,7 @@ export default function ProfilePictureSettings() {
                 Remove Avatar
               </Button>
             )}
-            <Link to={'/home'} className={buttonVariants({})}>
+            <Link to={'/home'} className={buttonVariants()}>
               Browse Files
               <ArrowUpRight />
             </Link>

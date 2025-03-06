@@ -34,13 +34,12 @@ export function MoveAction({
   const context = useContext(DisplayContext);
   if (context.shareUuid) return null;
 
+  //TODO Fix context menu closing issue
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <button>
-          <FolderOpenIcon />
-          Move
-        </button>
+      <DialogTrigger>
+        <FolderOpenIcon />
+        Move
       </DialogTrigger>
       <DialogContent>
         <MoveModalContent

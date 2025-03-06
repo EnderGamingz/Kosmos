@@ -27,26 +27,24 @@ export function RenameAction({
   if (context.shareUuid) return null;
 
   return (
-    <>
-      <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogTrigger>
-          <PencilIcon />
-          Rename
-        </DialogTrigger>
-        <DialogContent className={'!max-w-sm'}>
-          <RenameModalContent
-            renameData={{ type, id, name }}
-            onClose={() => {
-              disclosureOnClose();
-              // Next UI Causes the file display modal to not close properly
-              // this is a workaround
-              setTimeout(() => {
-                onClose?.();
-              }, 400);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogTrigger>
+        <PencilIcon />
+        Rename
+      </DialogTrigger>
+      <DialogContent className={'!max-w-sm'}>
+        <RenameModalContent
+          renameData={{ type, id, name }}
+          onClose={() => {
+            disclosureOnClose();
+            // Next UI Causes the file display modal to not close properly
+            // this is a workaround
+            setTimeout(() => {
+              onClose?.();
+            }, 400);
+          }}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }

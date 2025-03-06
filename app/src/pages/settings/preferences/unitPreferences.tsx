@@ -1,9 +1,8 @@
 import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
 import { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
 import { ServerIcon, ServerStackIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
-import { containerVariant } from '@components/defaults/transition.ts';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {
   const unitPref = usePreferenceStore(s => s.unit);
@@ -24,13 +23,9 @@ export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {
   ];
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-semibold'}>Explorer Units</h2>
-      <motion.div
-        variants={containerVariant(0.04, 0.1)}
-        initial={'hidden'}
-        animate={'show'}
-        className={'flex flex-col gap-3 sm:flex-row'}>
-        {choices.map(option => (
+      <SettingsSubtitle title={'Explorer Units'} />
+      <div className={'flex flex-col gap-3 sm:flex-row'}>
+        {choices.map((option, i) => (
           <PreferenceSelection
             small={inPopup}
             item={option}
@@ -38,9 +33,10 @@ export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {
             onSelect={unitPref.setType}
             key={`${option.name}-choice`}
             type={`unit-choice`}
+            index={i}
           />
         ))}
-      </motion.div>
+      </div>
     </section>
   );
 }

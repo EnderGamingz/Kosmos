@@ -28,17 +28,23 @@ export function ImageFullscreenView({
 }) {
   return (
     <Dialog open={open && !tooLarge} onOpenChange={b => !b && onDoubleClick()}>
-      <DialogContent className={'!max-w-full h-full p-10 rounded-none'}>
+      <DialogContent
+        className={'!max-w-full h-full pt-10 sm:p-10 rounded-none'}>
         <DialogHeader className={'sr-only'}>
           <DialogTitle>Image Fullscreen Preview</DialogTitle>
           <DialogDescription>{file.file_name}</DialogDescription>
         </DialogHeader>
-        <img
-          onDoubleClick={onDoubleClick}
-          className={'h-full w-full rounded-xl object-contain drop-shadow-lg'}
-          src={src}
-          alt={file.file_name}
-        />
+        <div
+          className={
+            'overflow-hidden drop-shadow-lg flex justify-center items-center'
+          }>
+          <img
+            onDoubleClick={onDoubleClick}
+            className={'h-full w-auto rounded-xl max-h-fit'}
+            src={src}
+            alt={file.file_name}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );

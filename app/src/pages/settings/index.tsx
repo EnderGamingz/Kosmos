@@ -26,3 +26,4 @@ export default function Settings() {
     </>
   );
 }
+export { SettingsTitle } from '@pages/settings/settingsTitle.tsx';

@@ -50,25 +50,36 @@ export default function AppInfo() {
     <div className={'space-y-2 p-4 md:p-10'}>
       <SettingsPageMetadata title={'Info'} />
       <div className={'flex items-center gap-3 text-stone-700'}>
-        <ApplicationIcon className={'h-12 w-12 md:h-16 md:w-16'} />
+        <ApplicationIcon
+          className={'h-12 w-12 md:h-16 md:w-16 animate-fade-in-left'}
+        />
         <h2
           className={
-            'text-2xl font-semibold text-stone-700 md:text-5xl dark:text-stone-300'
+            'text-2xl font-semibold text-stone-700 md:text-5xl dark:text-stone-300 animate-fade-in-left delay-50'
           }>
           Kosmos
         </h2>
       </div>
-      <p className={'italic'}>High performance file hosting platform</p>
+      <p className={'italic animate-fade-in-top delay-100'}>
+        High performance file hosting platform
+      </p>
       <ul className={'py-5'}>
-        {links.map(link => (
+        {links.map((link, i) => (
           <li key={link.name} className={'flex items-center gap-2'}>
-            <link.icon className={'h-6 w-6'} />
-            {link.name}:{' '}
+            <span
+              className={'animate-fade-in-left flex gap-1'}
+              style={{ animationDelay: `${(i + 1) * 100 + 100}ms` }}>
+              <link.icon className={'h-6 w-6'} />
+              {link.name}:{' '}
+            </span>
             <Link
               to={link.href}
               target={'_blank'}
+              style={{
+                animationDelay: `${(i + 1) * 150 + 100}ms`,
+              }}
               className={
-                'w-0 flex-grow truncate text-stone-600 hover:underline dark:text-stone-300'
+                'w-0 flex-grow truncate text-stone-600 hover:underline dark:text-stone-300 animate-fade-in-left'
               }>
               {link.href}
             </Link>
@@ -76,8 +87,11 @@ export default function AppInfo() {
         ))}
       </ul>
       <div
+        style={{
+          animationDelay: `${links.length * 150 + 200}ms`,
+        }}
         className={
-          'flex flex-wrap items-center gap-5 text-stone-500 dark:text-stone-400'
+          'flex flex-wrap items-center gap-5 text-stone-500 dark:text-stone-400 animate-fade-in-bottom'
         }>
         <p>
           © {new Date().getFullYear()}{' '}

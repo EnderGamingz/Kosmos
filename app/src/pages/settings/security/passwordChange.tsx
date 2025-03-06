@@ -5,6 +5,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 export function PasswordChange() {
   const [oldPassword, setOldPassword] = useState('');
@@ -54,7 +55,7 @@ export function PasswordChange() {
 
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-bold'}>Change Password</h2>
+      <SettingsSubtitle title={'Change password'} />
       <form
         className={'grid grid-cols-1 gap-4 md:grid-cols-2'}
         onSubmit={handleSubmit}>
@@ -66,6 +67,7 @@ export function PasswordChange() {
           onChange={e => setOldPassword(e.target.value)}
           minLength={6}
           required
+          className={'animate-fade-in-top delay-50'}
         />
         <Input
           type={'password'}
@@ -74,8 +76,12 @@ export function PasswordChange() {
           value={newPassword}
           onChange={e => setNewPassword(e.target.value)}
           required
+          className={'animate-fade-in-top delay-100'}
         />
-        <div className={'col-span-1 md:col-span-2'}>
+        <div
+          className={
+            'col-span-1 md:col-span-2 flex justify-end animate-fade-in-right delay-150'
+          }>
           <Button
             type={'submit'}
             disabled={action.isPending || (!oldPassword && !newPassword)}>

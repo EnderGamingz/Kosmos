@@ -9,6 +9,7 @@ import { useFormatBytes } from '@utils/fileSize.ts';
 import { cn } from '@lib/utils.ts';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 function DeleteAccount() {
   const usage = useUsageStats();
@@ -63,12 +64,14 @@ function DeleteAccount() {
 
   return (
     <div className={'space-y-2'}>
-      <p>Enter your current password to delete your account</p>
-      <span className={'text-sm'}>
+      <p className={'animate-fade-in-top delay-300'}>
+        Enter your current password to delete your account
+      </p>
+      <p className={'text-sm animate-fade-in-top delay-400'}>
         This action <strong>cannot</strong> be undone and will permanently{' '}
         <strong>delete your {useFormatBytes(usage.data?.total || 0)}</strong> of
         data.
-      </span>
+      </p>
       <form
         onSubmit={handleSubmit}
         className={'flex flex-col gap-2 sm:flex-row mt-4'}>
@@ -77,11 +80,12 @@ function DeleteAccount() {
           type={'password'}
           value={password}
           onChange={e => setPassword(e.target.value)}
+          className={'animate-fade-in-left delay-500'}
         />
         <Button
           variant={'destructive'}
           type={'submit'}
-          className={'h-11'}
+          className={'h-11 animate-fade-in-right delay-500'}
           disabled={action.isPending || !password}>
           {confirm ? 'Are you sure?' : 'Delete Account'}
         </Button>
@@ -96,9 +100,9 @@ export function DangerSettings() {
       className={cn(
         '!mt-12 space-y-2 rounded-xl  p-4',
         'text-red-950 border-2 border-red-700/50',
-        'dark:text-red-50',
+        'dark:text-red-50 animate-fade-in-bottom delay-200',
       )}>
-      <h2 className={'text-xl font-bold'}>Danger Zone</h2>
+      <SettingsSubtitle title={'Danger Zone'} className={'delay-300'} />
       <DeleteAccount />
     </section>
   );

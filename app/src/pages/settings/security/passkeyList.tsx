@@ -9,6 +9,7 @@ import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
 import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 export default function PasskeyList() {
   const notifications = useNotifications(s => s.actions);
@@ -46,8 +47,8 @@ export default function PasskeyList() {
 
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-bold'}>
-        Added Passkeys{' '}
+      <div className={'flex'}>
+        <SettingsSubtitle title={'Passkeys'} />
         {!!passkeys.data?.length && (
           <span
             className={
@@ -56,10 +57,10 @@ export default function PasskeyList() {
             ({passkeys.data?.length})
           </span>
         )}
-      </h2>
-      <motion.ul
+      </div>
+      <ul
         className={
-          'max-w-md rounded-xl bg-stone-200/50 p-2 dark:bg-stone-700/50'
+          'max-w-md rounded-xl bg-popover p-2 border animate-fade-in-top delay-300'
         }>
         {!passkeys.data?.length && (
           <EmptyList noIcon message={'No passkeys added'} />
@@ -75,7 +76,7 @@ export default function PasskeyList() {
         <motion.li layout className={'flex justify-center pt-3'}>
           <PasskeyRegister />
         </motion.li>
-      </motion.ul>
+      </ul>
     </section>
   );
 }

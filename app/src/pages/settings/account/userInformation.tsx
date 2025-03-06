@@ -7,6 +7,7 @@ import { BASE_URL } from '@lib/env.ts';
 import objectHash from 'object-hash';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 export function UserInformation() {
   const user = useUserState(s => s.user);
@@ -56,14 +57,14 @@ export function UserInformation() {
 
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-bold'}>User Information</h2>
+      <SettingsSubtitle title={'User information'} />
       <form
         onSubmit={e => {
           e.preventDefault();
           action.mutate();
         }}
         className={
-          'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block'
+          'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block animate-fade-in-top delay-100'
         }>
         <div>
           <label htmlFor={'username'}>Username</label>
@@ -95,7 +96,10 @@ export function UserInformation() {
             onChange={e => setFullName(e.target.value)}
           />
         </div>
-        <div className={'col-span-1 mt-1 md:col-span-2'}>
+        <div
+          className={
+            'col-span-1 mt-1 md:col-span-2 animate-fade-in-top delay-200'
+          }>
           <Button
             type={'submit'}
             disabled={

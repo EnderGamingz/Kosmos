@@ -1,11 +1,12 @@
 import { DangerSettings } from '@pages/settings/account/dangerSettings.tsx';
 import { UserInformation } from '@pages/settings/account/userInformation.tsx';
 import { SettingsPageMetadata } from '@components/metadata.tsx';
+import { SettingsTitle } from '@pages/settings';
 
 export default function AccountSettings() {
   return (
     <div className={'space-y-3'}>
-      <h1 className={'text-3xl font-bold'}>Account Settings</h1>
+      <SettingsTitle title={'Account'} />
       <SettingsPageMetadata title={'Account'} />
       <UserInformation />
       <DangerSettings />

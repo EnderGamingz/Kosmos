@@ -27,32 +27,22 @@ export default function EmptyList({
           </tr>
         </motion.tfoot>
       )}>
-      <motion.div
-        layout
-        initial={{ y: -10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
+      <div
         className={cn(
-          'grid w-full flex-grow place-items-center gap-4 px-2 py-4 opacity-70',
+          'grid w-full flex-grow place-items-center gap-4 px-2 py-4 animate-fade-in-top delay-200',
           grid
             ? 'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7'
             : '',
         )}>
         {!noIcon && <Illustration.NoData className={'h-20 w-20'} />}
-        <motion.p
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className={'text-center text-stone-600 dark:text-stone-400'}>
+        <p
+          className={
+            'text-center text-stone-600 dark:text-stone-400 animate-fade-in-top delay-300'
+          }>
           {message ?? 'No items'}
-        </motion.p>
-        <motion.div
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}>
-          {action}
-        </motion.div>
-      </motion.div>
+        </p>
+        <div className={'animate-fade-in-top delay-400'}>{action}</div>
+      </div>
     </ConditionalWrapper>
   );
 }

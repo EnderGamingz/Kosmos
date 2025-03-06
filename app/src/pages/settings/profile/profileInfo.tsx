@@ -9,6 +9,7 @@ import { ProfileQuery } from '@lib/queries/profileQuery.ts';
 import { Textarea } from '@components/ui/textarea.tsx';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 export default function ProfileInfoSettings() {
   const user = useUserState(s => s.user);
@@ -65,11 +66,11 @@ export default function ProfileInfoSettings() {
 
   return (
     <section className={'space-y-3'}>
-      <h2 className={'text-xl font-bold'}>Public Information</h2>
+      <SettingsSubtitle title={'Public information'} className={'delay-300'} />
       <form
         onSubmit={onSubmit}
         className={
-          'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block'
+          'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block animate-fade-in-top delay-300'
         }>
         <div>
           <label htmlFor={'full_name'}>Full Name</label>
@@ -132,11 +133,14 @@ export default function ProfileInfoSettings() {
           />
         </div>
 
-        <div className={'mt-auto'}>
+        <div
+          className={
+            'mt-auto sm:col-span-2 justify-self-end animate-fade-in-top delay-400'
+          }>
           <Button
             type={'submit'}
             disabled={action.isPending}
-            className={'float-right px-10'}>
+            className={'px-10'}>
             Update
           </Button>
         </div>
