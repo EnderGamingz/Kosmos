@@ -37,11 +37,7 @@ export function RenameAction({
           renameData={{ type, id, name }}
           onClose={() => {
             disclosureOnClose();
-            // Next UI Causes the file display modal to not close properly
-            // this is a workaround
-            setTimeout(() => {
-              onClose?.();
-            }, 400);
+            onClose?.();
           }}
         />
       </DialogContent>

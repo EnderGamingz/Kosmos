@@ -1,5 +1,4 @@
 import { useUsageReport, useUsageStats } from '@lib/query.ts';
-import { motion } from 'framer-motion';
 import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { UsageReportByType } from '@pages/usage/report/usageReportByType.tsx';
 import { NoAccess } from '@components/overlay/noAccess.tsx';
@@ -19,13 +18,12 @@ export default function UsageReport() {
         'mx-auto flex w-full max-w-5xl flex-grow flex-col space-y-6 p-5 md:p-10'
       }>
       <PageMetadata title={'Usage Report'} />
-      <motion.h1
-        initial={{ y: -10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.2, delay: 0.1 }}
-        className={'text-2xl font-bold text-stone-700 dark:text-stone-300'}>
+      <h1
+        className={
+          'text-2xl font-bold text-stone-700 dark:text-stone-300 animate-fade-in-top delay-100'
+        }>
         Usage Report
-      </motion.h1>
+      </h1>
       {isLoading && !isError && (
         <div className={'grid flex-grow place-content-center'}>
           <div className={'app-loading-indicator'} />

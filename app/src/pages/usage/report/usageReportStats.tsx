@@ -1,9 +1,4 @@
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import {
-  containerVariant,
-  itemTransitionVariantFadeInFromTop,
-} from '@components/defaults/transition.ts';
 import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { useFormatBytes } from '@utils/fileSize.ts';
@@ -41,10 +36,7 @@ export function UsageReportStats({
         />
       </div>
       {report && (
-        <motion.ul
-          variants={containerVariant(0.08, 0.2)}
-          initial={'hidden'}
-          animate={'show'}
+        <ul
           className={
             'mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3'
           }>
@@ -53,6 +45,7 @@ export function UsageReportStats({
             count={report.active_storage.count}
             icon={<DocumentIcon />}
             label={'Files'}
+            index={0}
           />
           <UsageReportItem
             sum={report.bin_storage.sum}
@@ -60,13 +53,15 @@ export function UsageReportStats({
             link={'/home/bin'}
             icon={<TrashIcon />}
             label={'Files in Bin'}
+            index={1}
           />
           <UsageReportItem
             sum={usage.limit - usage.total}
             icon={<CircleStackIcon />}
             label={'Free Space'}
+            index={2}
           />
-        </motion.ul>
+        </ul>
       )}
     </section>
   );
@@ -78,20 +73,24 @@ function UsageReportItem({
   icon,
   label,
   link,
+  index,
 }: {
   sum: number;
   count?: number;
   icon: ReactNode;
   link?: string;
   label: string;
+  index: number;
 }) {
   return (
-    <motion.li
-      variants={itemTransitionVariantFadeInFromTop}
+    <li
+      style={{
+        animationDelay: `${(index + 1) * 100 + 200}ms`,
+      }}
       className={cn(
         'flex items-center gap-2 rounded-lg bg-stone-300/20 px-4 py-2 text-stone-800',
-        'outline outline-1 outline-stone-800/30',
-        'dark:bg-stone-800/20 dark:text-stone-300 dark:outline-stone-400/30',
+        'border border-stone-600/30 animate-fade-in-top',
+        'dark:bg-stone-800/20 dark:text-stone-300 dark:border-stone-400/30',
       )}>
       <div className={'[&_svg]:h-7 [&_svg]:w-7'}>{icon}</div>
       <div>
@@ -110,6 +109,6 @@ function UsageReportItem({
         </ConditionalWrapper>
         <p className={'text-sm'}>{count ? `${count} ${label}` : label}</p>
       </div>
-    </motion.li>
+    </li>
   );
 }

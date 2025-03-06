@@ -34,7 +34,6 @@ export function MoveAction({
   const context = useContext(DisplayContext);
   if (context.shareUuid) return null;
 
-  //TODO Fix context menu closing issue
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger>
@@ -48,9 +47,7 @@ export function MoveAction({
           parent={current_parent}
           onClose={() => {
             disclosureOnClose();
-            setTimeout(() => {
-              onClose?.();
-            }, 400);
+            onClose?.();
           }}
         />
       </DialogContent>

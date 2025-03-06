@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { AuthScreen } from '@pages/authScreen.tsx';

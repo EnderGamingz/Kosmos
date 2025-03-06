@@ -82,13 +82,15 @@ function DeleteAccount() {
           onChange={e => setPassword(e.target.value)}
           className={'animate-fade-in-left delay-500'}
         />
-        <Button
-          variant={'destructive'}
-          type={'submit'}
-          className={'h-11 animate-fade-in-right delay-500'}
-          disabled={action.isPending || !password}>
-          {confirm ? 'Are you sure?' : 'Delete Account'}
-        </Button>
+        <div className={'animate-fade-in-right delay-500'}>
+          <Button
+            variant={'destructive'}
+            type={'submit'}
+            className={'h-11'}
+            disabled={action.isPending || !password}>
+            {confirm ? 'Are you sure?' : 'Delete Account'}
+          </Button>
+        </div>
       </form>
     </div>
   );
