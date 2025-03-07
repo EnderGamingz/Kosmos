@@ -6,3 +6,4 @@ pub mod operation_status;
 pub mod share_type;
 pub mod zip;
 pub mod entity_id;
+pub mod contact_request_status;

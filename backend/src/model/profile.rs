@@ -21,6 +21,7 @@ pub struct ProfileModel {
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct ProfileModelDTO {
+    pub user_id: i64,
     pub full_name: Option<String>,
     pub email: Option<String>,
     pub phone_number: Option<String>,
@@ -32,6 +33,7 @@ pub struct ProfileModelDTO {
 impl From<ProfileModel> for ProfileModelDTO {
     fn from(model: ProfileModel) -> Self {
         ProfileModelDTO {
+            user_id: model.user_id,
             full_name: model.full_name,
             email: model.email,
             phone_number: model.phone_number,

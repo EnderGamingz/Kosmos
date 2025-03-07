@@ -10,3 +10,4 @@ pub mod album;
 pub mod passkey;
 pub mod internal;
 pub mod profile;
+pub mod contact;
