@@ -1,4 +1,5 @@
 import {
+  ArrowLeftIcon,
   ArrowTopRightOnSquareIcon,
   CloudIcon,
 } from '@heroicons/react/24/outline';
@@ -7,11 +8,31 @@ import { useUsageStats } from '@lib/query.ts';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { cn } from '@lib/utils.ts';
 import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
 
-export function SideNav({ source }: { source: LinkSource }) {
+function SideNavWrapper({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <aside
+      className={cn(
+        'body-bg flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
+        'overflow-hidden transition-all md:h-[initial]',
+        'dark:border-stone-300/10',
+        className,
+      )}>
+      {children}
+    </aside>
+  );
+}
+
+export function ExplorerSideNav({ source }: { source: LinkSource }) {
   const usage = useUsageStats();
 
   const limit = usage.data?.limit || 0;
@@ -23,12 +44,7 @@ export function SideNav({ source }: { source: LinkSource }) {
   const links = useMemo(() => getLinks(source, binUsage), [source, binUsage]);
 
   return (
-    <aside
-      className={cn(
-        'body-bg flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
-        'overflow-hidden transition-all md:h-[initial]',
-        'dark:border-stone-300/10',
-      )}>
+    <SideNavWrapper>
       <div className={'flex flex-col gap-2 p-3'}>
         {links.map(link => (
           <SideNavItem key={`side-nav-${link.name}`} link={link} />
@@ -54,6 +70,30 @@ export function SideNav({ source }: { source: LinkSource }) {
           </span>
         </div>
       </div>
-    </aside>
+    </SideNavWrapper>
+  );
+}
+
+export function SocialSideNav() {
+  const links = getLinks('social');
+
+  return (
+    <SideNavWrapper className={'!bg-none !bg-transparent border-none'}>
+      <div className={'flex flex-col gap-2 p-3'}>
+        {links.map(link => (
+          <SideNavItem key={`side-nav-${link.name}`} link={link} />
+        ))}
+      </div>
+      <div className={'mt-auto'}>
+        <hr className={'my-2'} />
+        <SideNavItem
+          link={{
+            href: '/home',
+            name: 'Back to Dashboard',
+            icon: <ArrowLeftIcon className={'h-5 w-5'} />,
+          }}
+        />
+      </div>
+    </SideNavWrapper>
   );
 }

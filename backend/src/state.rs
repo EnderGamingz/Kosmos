@@ -4,6 +4,7 @@ use webauthn_rs::Webauthn;
 use crate::db::KosmosPool;
 use crate::response::error_handling::AppError;
 use crate::services::album_service::AlbumService;
+use crate::services::contact_service::ContactService;
 use crate::services::file_service::FileService;
 use crate::services::folder_service::FolderService;
 use crate::services::image_service::ImageService;
@@ -22,6 +23,7 @@ pub type KosmosState = State<AppState>;
 pub struct AppState {
     pub user_service: UserService,
     pub profile_service: ProfileService,
+    pub contact_service: ContactService,
     pub file_service: FileService,
     pub folder_service: FolderService,
     pub image_service: ImageService,
@@ -51,6 +53,7 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
     let profile_service = ProfileService::new(db.clone(), sf.clone());
+    let contact_service = ContactService::new(db.clone(), sf.clone());
     let file_service = FileService::new(db.clone(), sf.clone());
     let folder_service = FolderService::new(db.clone(), sf.clone());
     let image_service = ImageService::new(db.clone(), sf.clone());
@@ -65,6 +68,7 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
     AppState {
         user_service,
         profile_service,
+        contact_service,
         file_service,
         folder_service,
         image_service,

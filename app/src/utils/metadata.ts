@@ -9,3 +9,7 @@ export function getAdminTitle(title?: string) {
 export function getSettingsTitle(title?: string) {
   return title ? `${title} - Kosmos Settings` : 'Kosmos Settings';
 }
+
+export function getSocialTitle(title?: string) {
+  return title ? `${title} - Social` : 'Social - Kosmos';
+}

@@ -361,6 +361,19 @@ fn get_profile_router() -> KosmosRouter {
         )
 }
 
+fn get_contact_router() -> KosmosRouter {
+    Router::new()
+        .route("/ping", get(crate::routes::api::v1::auth::contact::index::get_requires_attention))
+        .route("/profiles", get(crate::routes::api::v1::auth::contact::index::get_contacts_profiles))
+        .route("/unhandled", get(crate::routes::api::v1::auth::contact::index::get_unhandled_contact_requests))
+        .route("/send", post(crate::routes::api::v1::auth::contact::create::send_contact_request))
+}
+
+fn get_social_router() -> KosmosRouter {
+    Router::new()
+        .nest("/contact", get_contact_router())
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -380,6 +393,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/operation", get_operation_router())
         .nest("/user", get_user_router())
         .nest("/profile", get_profile_router())
+        .nest("/social", get_social_router())
         .nest("/admin", get_admin_router())
 }
 

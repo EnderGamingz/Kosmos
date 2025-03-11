@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/ui/popover.tsx';
+import { AttentionDot } from '@components/header/attentionDot.tsx';
 
 export function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
@@ -76,13 +77,7 @@ export function NotificationsMenu() {
     <Popover onOpenChange={b => b && setSeen(true)}>
       <PopoverTrigger asChild>
         <button className={'flex p-2 relative cursor-pointer'}>
-          {!seen && (
-            <div
-              className={
-                'absolute w-2 h-2 rounded-full bg-blue-400 animate-pulse top-1 right-1'
-              }
-            />
-          )}
+          {!seen && <AttentionDot />}
           <BellIcon className={'h-6 w-6'} />
         </button>
       </PopoverTrigger>

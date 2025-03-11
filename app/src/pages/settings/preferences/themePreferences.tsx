@@ -6,21 +6,21 @@ import { containerVariant } from '@components/defaults/transition.ts';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
+export const themeChoices: PreferenceOption[] = [
+  {
+    name: 'Light Theme',
+    value: Theme.Light,
+    icon: <SunIcon />,
+  },
+  {
+    name: 'Dark Theme',
+    value: Theme.Dark,
+    icon: <MoonIcon />,
+  },
+];
+
 export function ThemePreferences({ inPopup }: { inPopup?: boolean }) {
   const themePreferences = usePreferenceStore(s => s.theme);
-
-  const choices: PreferenceOption[] = [
-    {
-      name: 'Light Theme',
-      value: Theme.Light,
-      icon: <SunIcon />,
-    },
-    {
-      name: 'Dark Theme',
-      value: Theme.Dark,
-      icon: <MoonIcon />,
-    },
-  ];
   return (
     <section className={'space-y-3'}>
       <SettingsSubtitle title={'Application Theme'} />
@@ -29,7 +29,7 @@ export function ThemePreferences({ inPopup }: { inPopup?: boolean }) {
         initial={'hidden'}
         animate={'show'}
         className={'flex flex-col gap-3 sm:flex-row'}>
-        {choices.map((option, i) => (
+        {themeChoices.map((option, i) => (
           <PreferenceSelection
             small={inPopup}
             item={option}

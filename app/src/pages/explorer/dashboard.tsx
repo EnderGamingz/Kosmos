@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { SideNav } from '@pages/explorer/nav/side/sideNav.tsx';
+import { ExplorerSideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
 
@@ -9,7 +9,7 @@ export default function Dashboard() {
       <PageMetadata title={'Dashboard'} />
       <div className={'flex grow'}>
         <div className={'w-64 hidden md:flex'}>
-          <SideNav source={'default'} />
+          <ExplorerSideNav source={'default'} />
         </div>
         <div className={'grow'}>
           <Outlet />

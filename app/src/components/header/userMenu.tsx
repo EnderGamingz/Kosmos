@@ -10,12 +10,14 @@ import {
 } from '@heroicons/react/24/outline';
 import useLogout from '@hooks/useLogout.ts';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Role } from '@models/user.ts';
 import { cn } from '@lib/utils.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
 import UserAvatar from '@components/UserAvatar.tsx';
+import { usePreferenceStore } from '@stores/preferenceStore.ts';
+import { themeChoices } from '@pages/settings/preferences/themePreferences.tsx';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -88,10 +90,14 @@ export function UserMenu() {
             <Cog6ToothIcon className={'h-5 w-5'} />
             Settings
           </Link>
+          <hr className={'my-2 animate-fade-in-top delay-200'} />
+          <UserMenuThemeSwitcher />
+          <hr className={'my-2 animate-fade-in-top delay-300'} />
+
           <Button
             variant={'destructive'}
             className={
-              'w-full mt-2 animate-fade-in-top delay-300 justify-start cursor-pointer'
+              'w-full animate-fade-in-top delay-400 justify-start cursor-pointer'
             }
             size={'sm'}
             onClick={() => logoutAction.mutate()}>
@@ -101,5 +107,34 @@ export function UserMenu() {
         </div>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function UserMenuThemeSwitcher() {
+  const themePreferences = usePreferenceStore(s => s.theme);
+
+  const current = useMemo(() => {
+    return (
+      themeChoices.find(c => c.value === themePreferences.type) ||
+      themeChoices[0]
+    );
+  }, [themePreferences.type]);
+
+  const other = useMemo(() => {
+    return (
+      themeChoices.find(c => c.value !== themePreferences.type) ||
+      themeChoices[0]
+    );
+  }, [themePreferences.type]);
+
+  return (
+    <button
+      onClick={() => themePreferences.setType(other.value)}
+      className={
+        'menu-button w-full animate-fade-in-top delay-200 [&_svg]:h-5 [&_svg]:w-5'
+      }>
+      {current.icon}
+      {current.name}
+    </button>
   );
 }

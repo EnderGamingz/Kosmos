@@ -14,6 +14,7 @@ import {
   SearchPopup,
 } from '@components/header/search/searchBar.tsx';
 import { cn } from '@lib/utils.ts';
+import { SocialHeaderLink } from '@components/header/socialHeaderLink.tsx';
 
 export default function Header() {
   const location = useLocation();
@@ -35,8 +36,8 @@ export default function Header() {
           'rounded-lg bg-stone-700/5 px-2 py-1',
           'flex items-center gap-2 rounded-lg',
           'dark:bg-stone-700/30',
-          '[&>button:hover]:bg-stone-600/10 dark:[&>button:hover]:bg-stone-300/20 [&>button]:rounded-lg',
-          '[&>button]:transition-colors [&>button]:duration-150',
+          '[&>button:hover]:bg-stone-600/10 dark:[&>button:hover]:bg-stone-300/20 [&>button]:rounded-lg [&>button]:transition-colors [&>button]:duration-150',
+          '[&>a:hover]:bg-stone-600/10 dark:[&>a:hover]:bg-stone-300/20 [&>a]:rounded-lg [&>a]:transition-colors [&>a]:duration-150',
           !user && 'ml-auto',
         )}>
         {user ? (
@@ -44,6 +45,7 @@ export default function Header() {
             <SearchPopup />
             <NewMenu />
             <NotificationsMenu />
+            <SocialHeaderLink />
             <UserMenu />
           </>
         ) : (

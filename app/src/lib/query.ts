@@ -1,6 +1,6 @@
 import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { BASE_URL, IS_DEVELOPMENT } from './env.ts';
+import { BASE_URL } from './env.ts';
 import { ContextOperationType, ShareOperationType } from '@models/file.ts';
 import {
   canFolderBeSorted,
@@ -248,7 +248,7 @@ export const useOperations = (onUnauthorized?: () => void) => {
         }),
     queryKey: ['operations'],
     // 20 seconds
-    refetchInterval: IS_DEVELOPMENT ? 5_000 : 20_000,
+    refetchInterval: 20_000,
     refetchOnWindowFocus: true,
   });
 };

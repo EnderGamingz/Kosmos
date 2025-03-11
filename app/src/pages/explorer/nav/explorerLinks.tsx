@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import {
+  ChatBubbleLeftRightIcon,
   ClockIcon,
   CloudIcon,
   EllipsisHorizontalIcon,
@@ -8,6 +9,7 @@ import {
   Square2StackIcon,
   StarIcon,
   TrashIcon,
+  UserGroupIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
 
@@ -81,5 +83,24 @@ export const getAdminLinks = (): ExplorerLink[] => [
     name: 'User',
     href: '/admin/user',
     icon: <UserIcon />,
+  },
+];
+
+export const getSocialLinks = (): ExplorerLink[] => [
+  {
+    name: 'Home',
+    href: '/social',
+    icon: <HomeIcon />,
+    exact: true,
+  },
+  {
+    name: 'Chats',
+    href: '/social/chats',
+    icon: <ChatBubbleLeftRightIcon />,
+  },
+  {
+    name: 'Contacts',
+    href: '/social/contacts',
+    icon: <UserGroupIcon />,
   },
 ];

@@ -35,6 +35,7 @@ import { useServiceWorker } from '@hooks/serviceWorker.tsx';
 import QuickSharePage from '@pages/explorer/pages/quick';
 import { DefaultMetadata } from '@components/metadata.tsx';
 import ProfileSettings from '@pages/settings/profile';
+import SocialRouter from '@pages/social/router.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -53,6 +54,11 @@ export default function Router() {
       <Header />
       <main className={'relative flex flex-grow flex-col'}>
         <Routes>
+          <Route
+            path={'social'}
+            element={<AccessWrapper el={<SocialRouter />} page={'Social'} />}>
+            <Route path={'*'} element={<SocialRouter />} />
+          </Route>
           <Route path={'auth/register'} element={<Register />} />
           <Route path={'auth/login'} element={<Login />} />
           <Route

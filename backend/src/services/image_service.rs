@@ -19,6 +19,7 @@ use crate::response::error_handling::AppError;
 use crate::state::AppState;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct ImageServiceResizeError {
     file_id: i64,
     format: ImageFormat,
