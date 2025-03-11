@@ -7,8 +7,10 @@ use axum::extract::State;
 use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
+use ts_rs::TS;
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ContactRequestsResponse {
     pub requests_send: Vec<ContactRequestModelDTO>,
     pub requests_received: Vec<ContactRequestModelDTO>,

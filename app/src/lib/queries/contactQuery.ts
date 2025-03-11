@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import { ContactRequestsResponse } from '@bindings/ContactRequestsResponse.ts';
 
 export class ContactQuery {
   public static useRequiresAttention = () => {
@@ -24,6 +25,15 @@ export class ContactQuery {
           .get(`${BASE_URL}auth/social/contact/profiles`)
           .then(res => res.data as ProfileContactModelDTO[]),
       queryKey: ['social', 'contact', 'profiles'],
+    });
+  };
+  public static useUnhandledSuspense = () => {
+    return useSuspenseQuery({
+      queryFn: () =>
+        axios
+          .get(`${BASE_URL}auth/social/contact/unhandled`)
+          .then(res => res.data as ContactRequestsResponse),
+      queryKey: ['social', 'contact', 'unhandled'],
     });
   };
 

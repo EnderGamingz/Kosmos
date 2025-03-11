@@ -7,10 +7,7 @@ export default function SocialRouter() {
   return (
     <div className={'max-w-6xl w-full mx-auto p-5 grow flex flex-col'}>
       <AdminPageMetadata />
-      <div
-        className={
-          'flex grow overflow-y-auto max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]'
-        }>
+      <div className={'flex grow'}>
         <div className={'w-64 hidden md:flex'}>
           <SocialSideNav />
         </div>

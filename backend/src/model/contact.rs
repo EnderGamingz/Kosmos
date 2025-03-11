@@ -2,6 +2,7 @@ use crate::services::session_service::UserId;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
+use ts_rs::TS;
 use crate::model::internal::contact_request_status::ContactRequestStatus;
 
 // Start: Contact Model
@@ -40,7 +41,8 @@ pub struct ContactRequestModel {
     pub created_at: DateTime<Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ContactRequestModelDTO {
     pub user_id: UserId,
     pub request_user_id: UserId,
