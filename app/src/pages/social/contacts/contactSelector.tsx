@@ -103,7 +103,7 @@ function ContactSelectorContent({
   });
 
   return (
-    <ul>
+    <ul className={'max-h-72 overflow-y-auto'}>
       {data.map(profile => (
         <li
           key={profile.user_id}
