@@ -367,6 +367,9 @@ fn get_contact_router() -> KosmosRouter {
         .route("/profiles", get(crate::routes::api::v1::auth::contact::index::get_contacts_profiles))
         .route("/unhandled", get(crate::routes::api::v1::auth::contact::index::get_unhandled_contact_requests))
         .route("/send", post(crate::routes::api::v1::auth::contact::create::send_contact_request))
+        .route("/answer", post(crate::routes::api::v1::auth::contact::update::update_received_contact_request))
+        .route("/cancel", post(crate::routes::api::v1::auth::contact::delete::cancel_sent_contact_request))
+        .route("/", delete(crate::routes::api::v1::auth::contact::delete::delete_contact_link))
 }
 
 fn get_social_router() -> KosmosRouter {

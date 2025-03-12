@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
 use ts_rs::TS;
+use crate::model::internal::contact_request_status::ContactRequestStatus;
 
 // Start: Profile Model
 #[derive(Clone, FromRow, Debug, Serialize)]
@@ -61,6 +62,15 @@ pub struct ProfileContactModel {
     pub updated_at: DateTime<Utc>,
 }
 
+#[derive(Clone, FromRow, Debug, Serialize)]
+pub struct ProfileContactPendingModel {
+    pub id: i64,
+    pub user_id: i64,
+    pub status:ContactRequestStatus,
+    pub username: String,
+    pub full_name: Option<String>,
+}
+
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct ProfileContactModelDTO {
@@ -90,3 +100,26 @@ impl From<ProfileContactModel> for ProfileContactModelDTO {
 }
 // End: Profile Contact Model
 
+// Start: Profile Contact Lite Model
+#[derive(Serialize, TS)]
+#[ts(export)]
+pub struct ProfileContactPendingModelDTO {
+    pub id: String,
+    pub user_id: String,
+    pub username: String,
+    pub full_name: Option<String>,
+    pub status: ContactRequestStatus,
+}
+
+impl From<ProfileContactPendingModel> for ProfileContactPendingModelDTO {
+    fn from(model: ProfileContactPendingModel) -> Self {
+        ProfileContactPendingModelDTO {
+            id: model.id.to_string(),
+            user_id: model.user_id.to_string(),
+            username: model.username,
+            full_name: model.full_name,
+            status: model.status,
+        }
+    }
+}
+// End: Profile Contact Lite Model

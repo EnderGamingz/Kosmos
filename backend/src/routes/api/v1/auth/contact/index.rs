@@ -1,5 +1,4 @@
-use crate::model::contact::ContactRequestModelDTO;
-use crate::model::profile::{ProfileContactModelDTO};
+use crate::model::profile::{ProfileContactPendingModelDTO, ProfileContactModelDTO};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
@@ -12,8 +11,8 @@ use ts_rs::TS;
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct ContactRequestsResponse {
-    pub requests_send: Vec<ContactRequestModelDTO>,
-    pub requests_received: Vec<ContactRequestModelDTO>,
+    pub requests_send: Vec<ProfileContactPendingModelDTO>,
+    pub requests_received: Vec<ProfileContactPendingModelDTO>,
 }
 
 pub async fn get_unhandled_contact_requests(
@@ -24,7 +23,7 @@ pub async fn get_unhandled_contact_requests(
 
     let requests_send = state
         .contact_service
-        .get_send_requests(user_id)
+        .get_send_requests_profiles(user_id)
         .await?
         .into_iter()
         .map(|r| r.into())
@@ -32,7 +31,7 @@ pub async fn get_unhandled_contact_requests(
 
     let requests_received = state
         .contact_service
-        .get_received_requests(user_id)
+        .get_received_requests_profiles(user_id)
         .await?
         .into_iter()
         .map(|r| r.into())
@@ -52,7 +51,7 @@ pub async fn get_requires_attention(
 
     let requires_attention = state
         .contact_service
-        .does_require_attention(user_id)
+        .has_unhandled_requests(user_id)
         .await?;
 
     Ok(Json(requires_attention))

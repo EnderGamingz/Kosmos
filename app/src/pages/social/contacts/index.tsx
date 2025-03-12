@@ -1,39 +1,75 @@
-import { Button } from '@components/ui/button.tsx';
-import { Plus } from 'lucide-react';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
 import { ContactList } from '@pages/social/contacts/contactList.tsx';
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
+import { AddContact } from '@pages/social/contacts/addContact.tsx';
+import { SocialPageMetadata } from '@components/metadata.tsx';
+import { ContactRequestListItem } from '@pages/social/contacts/answerRequest.tsx';
+import { cn } from '@lib/utils.ts';
+import { AnimatePresence } from 'framer-motion';
 
 export default function ContactsPage() {
-  const { data: unhandled } = ContactQuery.useUnhandledSuspense();
-
-  console.log(unhandled);
   return (
     <div className={'space-y-4'}>
+      <SocialPageMetadata title={'Contacts'} />
       <div className={'flex items-center gap-2 justify-between'}>
         <h1 className={'text-3xl animate-fade-in-top'}>Contacts</h1>
-        <Button size={'sm'} className={'animate-fade-in-right delay-200'}>
-          <Plus />
-          Add Contact
-        </Button>
+        <AddContact />
       </div>
-      <h2 className={'text-xl animate-fade-in-top delay-200'}>
-        Contact Request{unhandled.requests_received.length !== 1 && 's'}{' '}
-        <span className={'text-sm text-muted-foreground'}>
-          ({unhandled.requests_received.length})
-        </span>
-      </h2>
+      <FetchBoundary fetchGoal={'unhandled requests'}>
+        <UnhandledRequests />
+      </FetchBoundary>
       <hr />
-      <h2 className={'text-xl animate-fade-in-top delay-200'}>
-        Request{unhandled.requests_send.length !== 1 && 's'} Pending{' '}
-        <span className={'text-sm text-muted-foreground'}>
-          ({unhandled.requests_send.length})
-        </span>
-      </h2>
-      <hr />
-      <FetchBoundary fetchGoal={'my Contacts'}>
+      <FetchBoundary fetchGoal={'my contacts'}>
         <ContactList />
       </FetchBoundary>
     </div>
+  );
+}
+
+function UnhandledRequests() {
+  const { data } = ContactQuery.useUnhandledSuspense();
+
+  return (
+    <>
+      <div className={cn(data.requests_received.length === 0 && 'opacity-40')}>
+        <h2 className={'text-xl animate-fade-in-top delay-200'}>
+          Contact Request{data.requests_received.length !== 1 && 's'}{' '}
+          <span className={'text-sm text-muted-foreground'}>
+            ({data.requests_received.length})
+          </span>
+        </h2>
+        <ul>
+          <AnimatePresence>
+            {data.requests_received.map(request => (
+              <ContactRequestListItem
+                key={request.user_id}
+                request={request}
+                type={'received'}
+              />
+            ))}
+          </AnimatePresence>
+        </ul>
+      </div>
+      <hr />
+      <div className={cn(data.requests_send.length === 0 && 'opacity-40')}>
+        <h2 className={'text-xl animate-fade-in-top delay-200'}>
+          Request{data.requests_send.length !== 1 && 's'} Pending{' '}
+          <span className={'text-sm text-muted-foreground'}>
+            ({data.requests_send.length})
+          </span>
+        </h2>
+        <ul>
+          <AnimatePresence>
+            {data.requests_send.map(request => (
+              <ContactRequestListItem
+                key={request.user_id}
+                request={request}
+                type={'sent'}
+              />
+            ))}
+          </AnimatePresence>
+        </ul>
+      </div>
+    </>
   );
 }

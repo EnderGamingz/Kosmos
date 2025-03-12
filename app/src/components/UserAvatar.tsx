@@ -8,11 +8,13 @@ export default function UserAvatar({
   fetchedAt,
   username,
   className,
+  disabled,
 }: {
   userId?: string;
   fetchedAt?: unknown;
   username?: string;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
     <Avatar
@@ -20,7 +22,7 @@ export default function UserAvatar({
         'isolate relative after:content-["_"] after:absolute after:inset-0 after:z-10 after:rounded-full after:inset-shadow-sm',
         className,
       )}>
-      {userId && (
+      {userId && !disabled && (
         <AvatarImage
           className={'object-cover'}
           src={getAvatarUrl(userId, fetchedAt)}

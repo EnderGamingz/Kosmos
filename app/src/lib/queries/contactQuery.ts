@@ -37,6 +37,33 @@ export class ContactQuery {
     });
   };
 
+  public static sendRequest = (username: string) => {
+    return axios.post(`${BASE_URL}auth/social/contact/send`, {
+      username,
+    });
+  };
+
+  public static cancelRequest = (id: string) => {
+    return axios.post(`${BASE_URL}auth/social/contact/cancel`, {
+      id,
+    });
+  };
+
+  public static answerRequest = (id: string, accept: boolean) => {
+    return axios.post(`${BASE_URL}auth/social/contact/answer`, {
+      id,
+      accept,
+    });
+  };
+
+  public static removeContactRequest = (user_id: string) => {
+    return axios.delete(`${BASE_URL}auth/social/contact`, {
+      data: {
+        user_id,
+      },
+    });
+  };
+
   public static invalidateContact = () => {
     return queryClient.invalidateQueries({
       queryKey: ['social', 'contact'],

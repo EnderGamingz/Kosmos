@@ -42,6 +42,7 @@ export function UserMenu() {
             'cursor-pointer p-2 flex items-center gap-2 rounded-full sm:p-1 outline-none'
           }>
           <UserAvatar
+            disabled={!user.user?.has_avatar}
             userId={user.user?.id}
             fetchedAt={user.user?.fetched_at}
             username={user.user?.username}
