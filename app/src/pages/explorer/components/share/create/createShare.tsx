@@ -22,6 +22,8 @@ import { Collapse } from 'react-collapse';
 import { DateTimePicker } from '@/components/ui/date-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@components/ui/input.tsx';
+import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import { ContactSelector } from '@pages/social/contacts/contactSelector.tsx';
 
 export function CreateShare({
   dataType,
@@ -50,7 +52,9 @@ export function CreateShare({
 }) {
   const notifications = useNotifications(s => s.actions);
   const [type, setType] = useState<ShareType>(ShareType.Public);
-  const [privateUsername, setPrivateUsername] = useState('');
+  const [privateContact, setPrivateContact] = useState<
+    ProfileContactModelDTO | undefined
+  >(undefined);
   const [password, setPassword] = useState('');
   const [expiresAt, setExpiresAt] = useState<Date | undefined>(undefined);
   const [limit, setLimit] = useState<number | undefined>(undefined);
@@ -79,7 +83,7 @@ export function CreateShare({
             password: password || undefined,
             limit: limit,
             expires_at: expiresAt?.toISOString() || undefined,
-            target_username: privateUsername || undefined,
+            target_username: privateContact?.username || undefined,
           },
         )
         .then(() => {
@@ -143,22 +147,17 @@ export function CreateShare({
         )}>
         <div className={'!p-0'}>
           <Collapse isOpened={type === ShareType.Private}>
-            <div className={'p-2'}>
+            <div className={'p-2 space-y-2'}>
               <label htmlFor={'username'}>
                 <UserIcon />
                 User to share with*
-                {privateUsername && (
+                {privateContact && (
                   <div className={'ml-auto text-sm'}>Active</div>
                 )}
               </label>
-              <Input
-                type={'text'}
-                id={'username'}
-                name={'username'}
-                required={type === ShareType.Private}
-                value={privateUsername}
-                onChange={e => setPrivateUsername(e.target.value)}
-                placeholder={'Username'}
+              <ContactSelector
+                selected={privateContact}
+                onSelect={setPrivateContact}
               />
             </div>
           </Collapse>
@@ -295,7 +294,7 @@ export function CreateShare({
           disabled={
             disabled ||
             createAction.isPending ||
-            (type === ShareType.Private && !privateUsername)
+            (type === ShareType.Private && !privateContact)
           }
           onClick={() => createAction.mutate()}
           className={'cursor-pointer'}>

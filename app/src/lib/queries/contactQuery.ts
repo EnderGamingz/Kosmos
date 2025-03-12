@@ -5,6 +5,12 @@ import { queryClient } from '@lib/query.ts';
 import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { ContactRequestsResponse } from '@bindings/ContactRequestsResponse.ts';
 
+type UseProfilesSuspenseParams = {
+  limit?: number;
+  page?: number;
+  query?: string;
+};
+
 export class ContactQuery {
   public static useRequiresAttention = () => {
     return useQuery({
@@ -18,15 +24,23 @@ export class ContactQuery {
     });
   };
 
-  public static useProfilesSuspense = () => {
+  public static useProfilesSuspense = (props?: UseProfilesSuspenseParams) => {
+    let params: UseProfilesSuspenseParams = {};
+    if (props?.query) params.query = props.query;
+    if (props?.limit) params.limit = props.limit;
+    if (props?.page) params.page = props.page;
+
     return useSuspenseQuery({
       queryFn: () =>
         axios
-          .get(`${BASE_URL}auth/social/contact/profiles`)
+          .get(`${BASE_URL}auth/social/contact/profiles`, {
+            params,
+          })
           .then(res => res.data as ProfileContactModelDTO[]),
-      queryKey: ['social', 'contact', 'profiles'],
+      queryKey: ['social', 'contact', 'profiles', params],
     });
   };
+
   public static useUnhandledSuspense = () => {
     return useSuspenseQuery({
       queryFn: () =>

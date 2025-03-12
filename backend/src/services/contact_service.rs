@@ -2,9 +2,9 @@ use crate::model::contact::{ContactModel, ContactRequestModel};
 use crate::model::internal::contact_request_status::ContactRequestStatus;
 use crate::model::profile::{ProfileContactModel, ProfileContactPendingModel};
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::contact::index::GetContactProfilesParamsDTO;
 use crate::KosmosPool;
 use sonyflake::Sonyflake;
-use sqlx::query::Query;
 use sqlx::QueryBuilder;
 
 #[derive(Clone)]
@@ -251,6 +251,53 @@ impl ContactService {
             })
     }
 
+    pub async fn get_contacts_profiles_by_search(
+        &self,
+        user_id: i64,
+        params: GetContactProfilesParamsDTO,
+    ) -> Result<Vec<ProfileContactModel>, AppError> {
+        let mut query = QueryBuilder::new("SELECT profiles.*, users.username FROM profiles
+            INNER JOIN contacts ON contacts.user_id_1 = profiles.user_id OR contacts.user_id_2 = profiles.user_id
+            INNER JOIN users ON users.id = profiles.user_id
+            WHERE (contacts.user_id_1 = ");
+
+        query
+            .push_bind(user_id)
+            .push(" OR contacts.user_id_2 = ")
+            .push_bind(user_id)
+            .push(") AND profiles.user_id != ")
+            .push_bind(user_id);
+
+        let like_query = params.query.as_ref().map(|search_query| format!("%{}%", search_query));
+
+        if let Some(ref like_query) = like_query {
+
+            query
+                .push(" AND (profiles.full_name ILIKE ")
+                .push_bind(like_query)
+                .push(" OR users.username ILIKE ")
+                .push_bind(like_query)
+                .push(" OR profiles.email ILIKE ")
+                .push_bind(like_query)
+                .push(")");
+        }
+
+        query
+            .push(" LIMIT ")
+            .push_bind(&params.limit)
+            .push(" OFFSET ")
+            .push_bind(params.page * params.limit);
+
+
+        query
+            .build_query_as::<ProfileContactModel>()
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error getting contacts profiles by search: {}", e);
+                AppError::InternalError
+            })
+    }
 
     pub async fn create_contact_link(
         &self,
@@ -270,11 +317,7 @@ impl ContactService {
         Ok(())
     }
 
-    pub async fn delete_contact_link(
-        &self,
-        user_id: i64,
-        to_user_id: i64,
-    ) -> Result<(), AppError> {
+    pub async fn delete_contact_link(&self, user_id: i64, to_user_id: i64) -> Result<(), AppError> {
         sqlx::query!(
             "DELETE FROM contacts WHERE (user_id_1 = $1 AND user_id_2 = $2) OR (user_id_1 = $2 AND user_id_2 = $1)",
             user_id,
