@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS contact_requests
     user_id         BIGINT      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     request_user_id BIGINT      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     status          VARCHAR(20) NOT NULL,
-    updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

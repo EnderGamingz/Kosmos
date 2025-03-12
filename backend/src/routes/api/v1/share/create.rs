@@ -57,10 +57,10 @@ pub async fn share_file_public(
 
 #[derive(Deserialize)]
 pub struct ShareFolderPublicRequest {
-    pub(crate) folder_id: String,
-    pub(crate) password: Option<String>,
-    pub(crate) limit: Option<i32>,
-    pub(crate) expires_at: Option<DateTime<Utc>>,
+    pub folder_id: String,
+    pub password: Option<String>,
+    pub limit: Option<i32>,
+    pub expires_at: Option<DateTime<Utc>>,
 }
 
 impl ShareFolderPublicRequest {
@@ -154,6 +154,15 @@ pub async fn share_file_private(
         None => return Err(AppError::UserNotFound),
         Some(u) => u,
     };
+
+    let is_contact_with_user = state
+        .contact_service
+        .check_users_are_contacts(user_id, target_user.id)
+        .await?;
+
+    if !is_contact_with_user {
+        Err(AppError::UserNotFound)?;
+    }
 
     if user_id == target_user.id {
         return Err(AppError::BadRequest {
