@@ -55,7 +55,7 @@ export default function Router() {
       <main className={'relative flex flex-grow flex-col'}>
         <Routes>
           <Route
-            path={'social'}
+            path={'social/*'}
             element={<AccessWrapper el={<SocialRouter />} page={'Social'} />}>
             <Route path={'*'} element={<SocialRouter />} />
           </Route>

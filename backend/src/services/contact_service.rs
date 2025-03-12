@@ -4,6 +4,8 @@ use crate::model::profile::{ProfileContactModel, ProfileContactPendingModel};
 use crate::response::error_handling::AppError;
 use crate::KosmosPool;
 use sonyflake::Sonyflake;
+use sqlx::query::Query;
+use sqlx::QueryBuilder;
 
 #[derive(Clone)]
 pub struct ContactService {
@@ -248,6 +250,7 @@ impl ContactService {
                 AppError::InternalError
             })
     }
+
 
     pub async fn create_contact_link(
         &self,
