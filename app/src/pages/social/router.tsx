@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { SocialPageMetadata } from '@components/metadata.tsx';
 import { SocialSideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import ContactsPage from '@pages/social/contacts';
+import SocialHomePage from '@pages/social/home';
 
 export default function SocialRouter() {
   return (
@@ -14,7 +15,7 @@ export default function SocialRouter() {
         <div className={'grow'}>
           <Routes>
             <Route path={'contacts'} element={<ContactsPage />} />
-            <Route index element={<div>Home</div>} />
+            <Route index element={<SocialHomePage />} />
           </Routes>
         </div>
       </div>

@@ -51,16 +51,16 @@ function UnhandledRequests() {
         </ul>
       </div>
       <hr />
-      <div className={cn(data.requests_send.length === 0 && 'opacity-40')}>
+      <div className={cn(data.requests_sent.length === 0 && 'opacity-40')}>
         <h2 className={'text-xl animate-fade-in-top delay-200'}>
-          Request{data.requests_send.length !== 1 && 's'} Pending{' '}
+          Request{data.requests_sent.length !== 1 && 's'} Pending{' '}
           <span className={'text-sm text-muted-foreground'}>
-            ({data.requests_send.length})
+            ({data.requests_sent.length})
           </span>
         </h2>
         <ul className={'animate-fade-in-top delay-300'}>
           <AnimatePresence>
-            {data.requests_send.map(request => (
+            {data.requests_sent.map(request => (
               <ContactRequestListItem
                 key={request.user_id}
                 request={request}

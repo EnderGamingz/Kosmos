@@ -9,6 +9,7 @@ import { useUserState } from '@stores/userStore.ts';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
 import UserAvatar from '@components/UserAvatar.tsx';
+import getCurrentTimeSection from '@utils/getCurrentTimeSection.ts';
 
 function HeroLink({
   to,
@@ -48,7 +49,7 @@ export function Hero() {
           src={'/img/pictures/hero.jpg'}
           alt={'Stone Background'}
           className={
-            'absolute inset-0 z-0 h-full w-full object-cover brightness-50'
+            'absolute inset-0 z-0 h-full w-full object-cover brightness-50 animate-fade-in'
           }
         />
         <div className={'z-10 flex flex-grow flex-col gap-10 sm:gap-12'}>
@@ -66,7 +67,7 @@ export function Hero() {
                   className={
                     'text-2xl font-bold text-stone-200 sm:text-2xl lg:text-3xl dark:text-stone-300 animate-fade-in-left delay-100'
                   }>
-                  Welcome back!
+                  Good {getCurrentTimeSection()}!
                 </p>
               )}
               <h1

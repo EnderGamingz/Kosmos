@@ -31,7 +31,7 @@ export default function QrCodeModal({
           {children}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={'w-full bg-white'}>
+      <PopoverContent className={'w-full bg-white grid place-items-center'}>
         <QRCode value={value} />
       </PopoverContent>
     </Popover>

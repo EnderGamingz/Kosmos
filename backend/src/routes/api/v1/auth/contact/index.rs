@@ -13,7 +13,7 @@ use validator::Validate;
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct ContactRequestsResponse {
-    pub requests_send: Vec<ProfileContactPendingModelDTO>,
+    pub requests_sent: Vec<ProfileContactPendingModelDTO>,
     pub requests_received: Vec<ProfileContactPendingModelDTO>,
 }
 
@@ -23,7 +23,7 @@ pub async fn get_unhandled_contact_requests(
 ) -> Result<Json<ContactRequestsResponse>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let requests_send = state
+    let requests_sent = state
         .contact_service
         .get_sent_requests_profiles(user_id)
         .await?
@@ -40,7 +40,7 @@ pub async fn get_unhandled_contact_requests(
         .collect();
 
     Ok(Json(ContactRequestsResponse {
-        requests_send,
+        requests_sent,
         requests_received,
     }))
 }
