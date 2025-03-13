@@ -43,7 +43,7 @@ impl ContactService {
         user_id_2: i64,
     ) -> Result<bool, AppError> {
         sqlx::query!(
-            "SELECT EXISTS(SELECT 1 FROM contact_requests WHERE (user_id = $1 AND request_user_id = $2) OR (user_id = $2 AND request_user_id = $1) AND status = $3)",
+            "SELECT EXISTS(SELECT 1 FROM contact_requests WHERE (user_id = $1 AND request_user_id = $2) AND status = $3 OR (user_id = $2 AND request_user_id = $1) AND status = $3)",
             user_id_1,
             user_id_2,
             ContactRequestStatus::Pending.to_string()

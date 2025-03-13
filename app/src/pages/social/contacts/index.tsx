@@ -38,7 +38,7 @@ function UnhandledRequests() {
             ({data.requests_received.length})
           </span>
         </h2>
-        <ul>
+        <ul className={'animate-fade-in-top delay-300'}>
           <AnimatePresence>
             {data.requests_received.map(request => (
               <ContactRequestListItem
@@ -58,7 +58,7 @@ function UnhandledRequests() {
             ({data.requests_send.length})
           </span>
         </h2>
-        <ul>
+        <ul className={'animate-fade-in-top delay-300'}>
           <AnimatePresence>
             {data.requests_send.map(request => (
               <ContactRequestListItem

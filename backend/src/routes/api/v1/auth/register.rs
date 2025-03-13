@@ -59,6 +59,8 @@ pub async fn register(
         state.user_service.update_role(id, Role::Admin).await?;
     }
 
+    state.profile_service.create_empty_profile(id).await?;
+
     Ok(AppSuccess::CREATED {
         id: Some(id.to_string()),
     })
