@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS(SELECT 1 FROM contact_requests WHERE (user_id = $1 AND request_user_id = $2) AND status = $3 OR (user_id = $2 AND request_user_id = $1) AND status = $3)",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "3aef14e312ae4d25ddcca72a1f4cea36b75ad3994ee4bb34343143aff35856c6"
+}
