@@ -2,7 +2,7 @@ import { useUserState } from '@stores/userStore';
 import axios from 'axios';
 import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
@@ -18,6 +18,7 @@ export default function Login() {
   const navigate = useNavigate();
   const userState = useUserState();
   const notification = useNotifications(s => s.actions);
+  const controller = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (userState.user) navigate('/home');
@@ -54,7 +55,7 @@ export default function Login() {
     },
   });
 
-  useConditionalPasskeyLogin();
+  const restartConditionalPasskey = useConditionalPasskeyLogin(controller);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -116,7 +117,10 @@ export default function Login() {
         </p>
       </div>
       <div className={'animate-fade-in-bottom delay-600'}>
-        <PasskeyLogin />
+        <PasskeyLogin
+          conditionalAbortController={controller}
+          onFail={restartConditionalPasskey}
+        />
       </div>
     </AuthScreen>
   );

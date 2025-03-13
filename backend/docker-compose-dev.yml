@@ -7,3 +7,8 @@ services:
       - POSTGRES_DB=kosmos
     ports:
       - "5432:5432"
+    volumes:
+      - kosmos_db_data:/var/lib/postgresql/data
+
+volumes:
+    kosmos_db_data:

@@ -19,6 +19,7 @@ export const startPasskeyLoginFunction = ({
       credentialRequestOptions.publicKey.challenge = Base64.toUint8Array(
         credentialRequestOptions.publicKey.challenge,
       );
+
       credentialRequestOptions.publicKey.allowCredentials?.forEach(
         (listItem: { id: string | Uint8Array }) => {
           if (typeof listItem.id === 'string') {
@@ -26,10 +27,10 @@ export const startPasskeyLoginFunction = ({
           }
         },
       );
+
       return navigator.credentials.get({
         ...credentialRequestOptions,
-        mediation:
-          mediationOverwrite ?? credentialRequestOptions.data.mediation,
+        mediation: mediationOverwrite ?? credentialRequestOptions.mediation,
         signal: controller.signal,
       });
     })

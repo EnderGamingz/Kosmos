@@ -1,34 +1,40 @@
-import {useUserState} from '@stores/userStore.ts';
-import {useNavigate} from 'react-router-dom';
-import {useEffect, useRef} from 'react';
-import {startPasskeyLoginFunction} from '@components/passkey/startPasskeyLoginFunction.ts';
+import { useUserState } from '@stores/userStore.ts';
+import { useNavigate } from 'react-router-dom';
+import { RefObject, useEffect, useState } from 'react';
+import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
 
-export function useConditionalPasskeyLogin() {
+export function useConditionalPasskeyLogin(
+  controller: RefObject<AbortController | null>,
+) {
+  const [restart, setRestart] = useState(0);
   const setUser = useUserState(s => s.setUser);
   const navigate = useNavigate();
-  const controller = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    if (typeof window.PublicKeyCredential.isConditionalMediationAvailable !== 'function') return;
-    window.PublicKeyCredential.isConditionalMediationAvailable().then(
-      result => {
-        if (result) {
-          if (controller.current !== null) {
-            controller.current.abort(
-              'aborting ongoing passkey login and starting new one',
-            );
-          }
-          startPasskeyLoginFunction({
-            onController: (abortController: AbortController) => {
-              controller.current = abortController;
-            },
-          }).then(res => {
-            setUser(res);
-            navigate('/home');
-          });
+    if (
+      typeof PublicKeyCredential.isConditionalMediationAvailable !== 'function'
+    )
+      return;
+
+    PublicKeyCredential.isConditionalMediationAvailable().then(result => {
+      if (result) {
+        if (controller.current !== null) {
+          controller.current.abort(
+            'aborting ongoing passkey login and starting new one',
+          );
         }
-      },
-    );
+        startPasskeyLoginFunction({
+          onController: (abortController: AbortController) => {
+            controller.current = abortController;
+          },
+        }).then(res => {
+          setUser(res);
+          navigate('/home');
+        });
+      }
+    });
     return () => controller.current?.abort('aborting passkey due to unmount');
-  }, [navigate, setUser]);
+  }, [navigate, setUser, restart]);
+
+  return () => setRestart(prev => (prev === 0 ? 1 : 0));
 }

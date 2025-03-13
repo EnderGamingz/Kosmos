@@ -12,6 +12,7 @@ import useDisclosure from '@hooks/useDisclosure.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
+import getPasskeyError from '@components/passkey/getPasskeyError.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
@@ -83,7 +84,7 @@ export default function PasskeyRegister() {
           notifications.updateNotification(registerId, {
             severity: Severity.ERROR,
             status: 'Failed',
-            description: e.response?.data?.error || 'Error',
+            description: getPasskeyError(e),
             canDismiss: true,
             timeout: 3000,
           });

@@ -14,6 +14,8 @@ import { Input } from '@components/ui/input.tsx';
 import { cn } from '@lib/utils.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import EmptyList from '@pages/explorer/components/EmptyList.tsx';
+import { Link } from 'react-router-dom';
 
 export function ContactSelector({
   selected,
@@ -36,7 +38,14 @@ export function ContactSelector({
   return (
     <div className={'p-2 border border-muted-foreground/20 rounded-md'}>
       <div className={'flex gap-2 justify-between items-center'}>
-        <p>Select a contact</p>
+        <div className={'-space-y-1'}>
+          <p>Select a contact</p>
+          <Link
+            to={'/social/contacts'}
+            className={'text-xs underline text-muted-foreground'}>
+            View contact list
+          </Link>
+        </div>
         <div className={'flex gap-1'}>
           {selected && (
             <Button
@@ -112,6 +121,11 @@ function ContactSelectorContent({
           <ContactItem profile={profile} isSelected={selected === profile} />
         </li>
       ))}
+      {!data.length && (
+        <div className={'overflow-hidden'}>
+          <EmptyList noIcon message={'No contacts found'} />
+        </div>
+      )}
     </ul>
   );
 }

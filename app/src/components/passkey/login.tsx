@@ -5,8 +5,16 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
 import { Button } from '../ui/button';
+import { RefObject } from 'react';
+import getPasskeyError from '@components/passkey/getPasskeyError.ts';
 
-export default function PasskeyLogin() {
+export default function PasskeyLogin({
+  conditionalAbortController,
+  onFail,
+}: {
+  conditionalAbortController: RefObject<AbortController | null>;
+  onFail: () => void;
+}) {
   const notifications = useNotifications(s => s.actions);
   const setUser = useUserState(s => s.setUser);
   const navigate = useNavigate();
@@ -19,6 +27,9 @@ export default function PasskeyLogin() {
         loading: true,
         canDismiss: false,
       });
+      conditionalAbortController.current?.abort(
+        'aborting conditional passkey login and starting new one',
+      );
       await startPasskeyLoginFunction({ mediationOverwrite: 'required' })
         .then(res => {
           navigate('/home');
@@ -26,14 +37,16 @@ export default function PasskeyLogin() {
 
           notifications.removeNotification(loginId);
         })
-        .catch(() =>
+        .catch(e => {
           notifications.updateNotification(loginId, {
             severity: Severity.ERROR,
             status: 'Failed',
+            description: getPasskeyError(e),
             canDismiss: true,
             timeout: 1000,
-          }),
-        );
+          });
+          onFail();
+        });
     },
   });
 
