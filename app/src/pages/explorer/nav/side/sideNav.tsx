@@ -79,9 +79,11 @@ export function SocialSideNav() {
   return (
     <SideNavWrapper className={'border-none'}>
       <div className={'flex flex-col gap-2 p-3'}>
-        {links.map(link => (
-          <SideNavItem key={`side-nav-${link.name}`} link={link} />
-        ))}
+        {links
+          .filter(link => !link.onlyBottom)
+          .map(link => (
+            <SideNavItem key={`side-nav-${link.name}`} link={link} />
+          ))}
       </div>
       <div className={'mt-auto'}>
         <hr className={'my-2'} />

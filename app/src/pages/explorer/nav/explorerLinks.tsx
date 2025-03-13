@@ -21,6 +21,7 @@ export type ExplorerLink = {
   exact?: boolean;
   description?: string;
   lessPriority?: boolean;
+  onlyBottom?: boolean;
   items?: ExplorerLink[];
 };
 
@@ -108,5 +109,6 @@ export const getSocialLinks = (): ExplorerLink[] => [
     name: 'Back',
     href: '/home',
     icon: <ArrowLeftIcon />,
+    onlyBottom: true,
   },
 ];
