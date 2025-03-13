@@ -6,7 +6,6 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { invalidatePasskeys } from '@lib/query.ts';
 import { FormEvent } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { useUserState } from '@stores/userStore.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
@@ -52,6 +51,10 @@ const startFunction = (name: string) =>
           }
         },
       );
+
+      // Required for username-less login
+      credentialCreationOptions.publicKey.authenticatorSelection.residentKey =
+        'required';
 
       return navigator.credentials.create({
         publicKey: credentialCreationOptions.publicKey,
@@ -103,7 +106,6 @@ export default function PasskeyRegister() {
     onClose();
     registerMutation.mutate({ name });
   };
-  const user = useUserState(s => s.user);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -118,17 +120,6 @@ export default function PasskeyRegister() {
       </PopoverTrigger>
       <PopoverContent side={'bottom'} className={'w-full p-4'}>
         <form onSubmit={handleSubmit} className={'flex gap-2'}>
-          <input
-            type={'text'}
-            value={user?.username}
-            readOnly
-            disabled
-            name={'username'}
-            id={'username'}
-            placeholder={'Username*'}
-            autoComplete={'username'}
-            className={'hidden'}
-          />
           <Input
             type={'text'}
             name={'name'}
