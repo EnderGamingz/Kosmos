@@ -101,12 +101,16 @@ export default function Login() {
           required
         />
       </label>
-      <Button
-        disabled={isPending}
-        type={'submit'}
-        className={'lg:text-lg cursor-pointer animate-fade-in-top delay-400'}>
-        Login
-      </Button>
+      <div className={'animate-fade-in-top delay-400'}>
+        <Button
+          disabled={isPending}
+          type={'submit'}
+          className={
+            'lg:text-lg cursor-pointer w-full group-invalid:cursor-not-allowed group-invalid:opacity-50'
+          }>
+          Login
+        </Button>
+      </div>
       <div className={'relative animate-fade-in-left delay-500'}>
         <hr className={'my-2 border-stone-800/30 dark:border-stone-300/50'} />
         <p

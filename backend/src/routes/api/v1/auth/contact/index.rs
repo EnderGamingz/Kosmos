@@ -25,7 +25,7 @@ pub async fn get_unhandled_contact_requests(
 
     let requests_send = state
         .contact_service
-        .get_send_requests_profiles(user_id)
+        .get_sent_requests_profiles(user_id)
         .await?
         .into_iter()
         .map(|r| r.into())

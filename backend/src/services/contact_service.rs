@@ -37,6 +37,26 @@ impl ContactService {
             .map(|r| r.exists.unwrap_or(false))
     }
 
+    pub async fn check_users_have_pending_request(
+        &self,
+        user_id_1: i64,
+        user_id_2: i64,
+    ) -> Result<bool, AppError> {
+        sqlx::query!(
+            "SELECT EXISTS(SELECT 1 FROM contact_requests WHERE (user_id = $1 AND request_user_id = $2) OR (user_id = $2 AND request_user_id = $1) AND status = $3)",
+            user_id_1,
+            user_id_2,
+            ContactRequestStatus::Pending.to_string()
+        )
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error checking if users have pending requests: {}", e);
+                AppError::InternalError
+            })
+            .map(|r| r.exists.unwrap_or(false))
+    }
+
     pub async fn check_user_has_contact_request(
         &self,
         from_user_id: i64,
@@ -114,7 +134,7 @@ impl ContactService {
         Ok(())
     }
 
-    pub async fn get_send_requests_profiles(
+    pub async fn get_sent_requests_profiles(
         &self,
         from_user_id: i64,
     ) -> Result<Vec<ProfileContactPendingModel>, AppError> {

@@ -56,9 +56,7 @@ export function PasswordChange() {
   return (
     <section className={'space-y-3'}>
       <SettingsSubtitle title={'Change password'} />
-      <form
-        className={'grid grid-cols-1 gap-4 md:grid-cols-2'}
-        onSubmit={handleSubmit}>
+      <form className={'flex flex-col gap-2'} onSubmit={handleSubmit}>
         <Input
           type={'password'}
           placeholder={'Enter old password'}

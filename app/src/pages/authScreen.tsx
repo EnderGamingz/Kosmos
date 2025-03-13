@@ -51,7 +51,7 @@ export function AuthScreen({
           <form
             onSubmit={onSubmit}
             className={cn(
-              'mt-10 flex flex-col gap-4',
+              'mt-10 flex flex-col gap-4 group',
               '[&>label>svg]:absolute [&>label>svg]:h-5 [&>label>svg]:w-5 [&_input]:pl-8 [&_label]:relative',
               '[&>label>svg]:left-2 [&>label>svg]:top-1/2 [&>label>svg]:-translate-y-1/2 [&>label>svg]:text-stone-700',
               '[&_button]:justify-center [&_input]:w-full lg:[&_label]:text-lg',

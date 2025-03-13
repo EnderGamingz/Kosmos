@@ -42,6 +42,17 @@ pub async fn send_contact_request(
         });
     }
 
+    let is_request_sent = state
+        .contact_service
+        .check_users_have_pending_request(from_user_id, to_user.id)
+        .await?;
+
+    if is_request_sent {
+        return Err(AppError::BadRequest {
+            error: Some("Contact request already sent".to_string()),
+        });
+    }
+
     state
         .contact_service
         .create_contact_request(from_user_id, to_user.id)

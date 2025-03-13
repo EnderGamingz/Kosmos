@@ -24,6 +24,7 @@ export default function ProfilePictureSettings() {
           userId={user.id}
           username={user.username}
           fetchedAt={user.fetched_at}
+          disabled={!user.has_avatar}
           className={
             'w-32 h-32 ring ring-primary/50 ring-offset-4 shadow-lg animate-fade-in-left delay-50'
           }

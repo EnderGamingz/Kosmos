@@ -8,8 +8,10 @@ export default function SecuritySettings() {
     <div className={'space-y-3'}>
       <SettingsTitle title={'Security'} />
       <SettingsPageMetadata title={'Security'} />
-      <PasswordChange />
-      <PasskeyList />
+      <div className={'grid grid-cols-1 gap-4 sm:grid-cols-2'}>
+        <PasswordChange />
+        <PasskeyList />
+      </div>
     </div>
   );
 }

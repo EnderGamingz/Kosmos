@@ -46,21 +46,24 @@ export default function PasskeyList() {
   });
 
   return (
-    <section className={'space-y-3'}>
+    <section className={'space-y-2'}>
       <div className={'flex'}>
         <SettingsSubtitle title={'Passkeys'} />
         {!!passkeys.data?.length && (
           <span
             className={
-              'ml-1 text-sm font-normal text-stone-500 dark:text-stone-400'
+              'ml-1 animate-fade-in-left delay-200 text-sm text-stone-500 dark:text-stone-400'
             }>
             ({passkeys.data?.length})
           </span>
         )}
+        <div className={'ml-auto animate-fade-in-right delay-300'}>
+          <PasskeyRegister />
+        </div>
       </div>
       <ul
         className={
-          'max-w-md rounded-xl bg-popover p-2 border animate-fade-in-top delay-300'
+          'rounded-md bg-popover p-2 border animate-fade-in-top delay-300'
         }>
         {!passkeys.data?.length && (
           <EmptyList noIcon message={'No passkeys added'} />
@@ -73,9 +76,6 @@ export default function PasskeyList() {
             onDelete={() => deleteAction.mutate({ id: item.id })}
           />
         ))}
-        <motion.li layout className={'flex justify-center pt-3'}>
-          <PasskeyRegister />
-        </motion.li>
       </ul>
     </section>
   );

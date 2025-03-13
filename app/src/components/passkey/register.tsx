@@ -3,7 +3,6 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { PlusIcon } from '@heroicons/react/24/solid';
 import { invalidatePasskeys } from '@lib/query.ts';
 import { FormEvent } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
@@ -13,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
+import { KeyRound } from 'lucide-react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
@@ -108,8 +108,11 @@ export default function PasskeyRegister() {
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <Button disabled={registerMutation.isPending}>
-          <PlusIcon />
+        <Button
+          disabled={registerMutation.isPending}
+          variant={'outline'}
+          size={'sm'}>
+          <KeyRound />
           Create Passkey
         </Button>
       </PopoverTrigger>

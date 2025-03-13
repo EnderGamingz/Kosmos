@@ -91,12 +91,16 @@ export default function Register() {
           required
         />
       </label>
-      <Button
-        className={'lg:text-lg animate-fade-in-top delay-400 cursor-pointer'}
-        disabled={isPending}
-        type={'submit'}>
-        Register
-      </Button>
+      <div className={'animate-fade-in-top delay-400'}>
+        <Button
+          className={
+            'lg:text-lg w-full cursor-pointer group-invalid:cursor-not-allowed group-invalid:opacity-50'
+          }
+          disabled={isPending}
+          type={'submit'}>
+          Register
+        </Button>
+      </div>
     </AuthScreen>
   );
 }
