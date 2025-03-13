@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import {
+  ArrowLeftIcon,
   ChatBubbleLeftRightIcon,
   ClockIcon,
   CloudIcon,
@@ -102,5 +103,10 @@ export const getSocialLinks = (): ExplorerLink[] => [
     name: 'Contacts',
     href: '/social/contacts',
     icon: <UserGroupIcon />,
+  },
+  {
+    name: 'Back',
+    href: '/home',
+    icon: <ArrowLeftIcon />,
   },
 ];
