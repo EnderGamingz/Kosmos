@@ -4,6 +4,7 @@ use crate::model::folder::{FolderModel, ShareFolderModelDTO, SimpleDirectoryDTO}
 use crate::model::share::{ExtendedShareModel, ExtendedShareModelDTO};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::routes::api::v1::auth::file::zip::get_zip_information_for_file;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use crate::utils::auth;
@@ -12,7 +13,6 @@ use axum::Json;
 use serde::Serialize;
 use tower_sessions::Session;
 use ts_rs::TS;
-use crate::routes::api::v1::auth::file::zip::get_zip_information_for_file;
 
 pub async fn get_file_shares_for_user(
     State(state): KosmosState,
@@ -294,7 +294,9 @@ pub async fn is_allowed_to_access_share(
     }
 
     //Check password
-    if share.password.is_some() && !SessionService::check_share_access(&session, &share.uuid.to_string()).await {
+    if share.password.is_some()
+        && !SessionService::check_share_access(&session, &share.uuid.to_string()).await
+    {
         Err(AppError::Locked {
             error: "Password protected".to_string(),
         })?;
