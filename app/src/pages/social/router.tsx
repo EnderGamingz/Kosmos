@@ -4,6 +4,7 @@ import { SocialSideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import ContactsPage from '@pages/social/contacts';
 import SocialHomePage from '@pages/social/home';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
+import ChatsPage from '@pages/social/chats';
 
 export default function SocialRouter() {
   return (
@@ -16,6 +17,7 @@ export default function SocialRouter() {
           </div>
           <div className={'grow'}>
             <Routes>
+              <Route path={'chats/*'} element={<ChatsPage />} />
               <Route path={'contacts'} element={<ContactsPage />} />
               <Route index element={<SocialHomePage />} />
             </Routes>

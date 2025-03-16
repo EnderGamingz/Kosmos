@@ -68,6 +68,18 @@ impl ChatService {
             })
     }
 
+    pub async fn delete_message(&self, message_id: i64) -> Result<(), AppError> {
+        sqlx::query!("DELETE FROM messages WHERE id = $1", message_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error deleting message: {}", e);
+                AppError::InternalError
+            })?;
+
+        Ok(())
+    }
+
     pub async fn get_personal_chat_optional(
         &self,
         user_id: i64,
@@ -280,7 +292,7 @@ impl ChatService {
 
         sqlx::query_as!(
             DbChatMessageModel,
-            r#"SELECT * FROM messages WHERE chat_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"#,
+            r#"SELECT * FROM messages WHERE chat_id = $1 ORDER BY created_at LIMIT $2 OFFSET $3"#,
             chat_id,
             limit,
             offset
