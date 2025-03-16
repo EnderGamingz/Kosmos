@@ -163,6 +163,12 @@ fn get_profile_router() -> KosmosRouter {
         .route("/", patch(crate::routes::api::v1::auth::profile::update::update_profile))
 }
 
+fn get_chat_router() -> KosmosRouter {
+    Router::new()
+        .route("/", get(crate::routes::api::v1::auth::chat::index::get_chats))
+        .route("/:other_user_id", get(crate::routes::api::v1::auth::chat::index::get_personal_chat))
+}
+
 fn get_contact_router() -> KosmosRouter {
     Router::new()
         .route("/ping", get(crate::routes::api::v1::auth::contact::index::get_requires_attention))
@@ -177,6 +183,7 @@ fn get_contact_router() -> KosmosRouter {
 fn get_social_router() -> KosmosRouter {
     Router::new()
         .nest("/contact", get_contact_router())
+        .nest("/chat", get_chat_router())
 }
 
 fn get_auth_router() -> KosmosRouter {

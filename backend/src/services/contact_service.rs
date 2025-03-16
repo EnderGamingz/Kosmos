@@ -3,6 +3,7 @@ use crate::model::internal::contact_request_status::ContactRequestStatus;
 use crate::model::profile::{ProfileContactModel, ProfileContactPendingModel};
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::contact::index::GetContactProfilesParamsDTO;
+use crate::services::chat_service::ChatService;
 use crate::KosmosPool;
 use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
@@ -11,11 +12,16 @@ use sqlx::QueryBuilder;
 pub struct ContactService {
     db_pool: KosmosPool,
     sf: Sonyflake,
+    pub chat_service: ChatService,
 }
 
 impl ContactService {
     pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
-        ContactService { db_pool, sf }
+        ContactService {
+            db_pool: db_pool.clone(),
+            sf: sf.clone(),
+            chat_service: ChatService::new(db_pool, sf),
+        }
     }
 
     pub async fn check_users_are_contacts(
@@ -288,10 +294,12 @@ impl ContactService {
             .push(") AND profiles.user_id != ")
             .push_bind(user_id);
 
-        let like_query = params.query.as_ref().map(|search_query| format!("%{}%", search_query));
+        let like_query = params
+            .query
+            .as_ref()
+            .map(|search_query| format!("%{}%", search_query));
 
         if let Some(ref like_query) = like_query {
-
             query
                 .push(" AND (profiles.full_name ILIKE ")
                 .push_bind(like_query)
@@ -307,7 +315,6 @@ impl ContactService {
             .push_bind(&params.limit)
             .push(" OFFSET ")
             .push_bind(params.page * params.limit);
-
 
         query
             .build_query_as::<ProfileContactModel>()

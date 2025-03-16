@@ -12,3 +12,4 @@ pub mod album_service;
 pub mod passkey_service;
 pub mod profile_service;
 pub mod contact_service;
+pub mod chat_service;

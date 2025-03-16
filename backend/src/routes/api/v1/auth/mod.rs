@@ -21,3 +21,4 @@ pub mod passkey;
 pub mod content;
 pub mod profile;
 pub mod contact;
+pub mod chat;
