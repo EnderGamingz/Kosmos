@@ -76,13 +76,20 @@ export class ChatQuery {
     isPersonalChat: boolean,
   ) {
     return useMutation({
-      mutationFn: (content: string) =>
+      mutationFn: ({
+        content,
+        parentId,
+      }: {
+        content: string;
+        parentId?: string;
+      }) =>
         ChatQuery.sendMessageRequest({
           chatId,
           content,
           isPersonalChat,
+          parentId,
         }),
-      onMutate: async (content: string) => {
+      onMutate: async ({ content, parentId }) => {
         await queryClient.cancelQueries({
           queryKey: ['chat', chatId],
         });
@@ -91,6 +98,21 @@ export class ChatQuery {
           'chat',
           chatId,
         ]) as ChatMessageModelDTO[];
+
+        let parent = null;
+        if (parentId) {
+          parent = {
+            id: parentId,
+            chat_id: chatId,
+            content: '',
+            is_edited: false,
+            created_at: new Date().toISOString(),
+            parent: null,
+            author: null,
+            loading: true,
+          } satisfies OptimisticMessage as ChatMessageModelDTO;
+        }
+
         queryClient.setQueryData(
           ['chat', chatId],
           [
@@ -100,7 +122,7 @@ export class ChatQuery {
               content,
               is_edited: false,
               created_at: new Date().toISOString(),
-              parent: null,
+              parent: parent,
               author: null,
               loading: true,
             } satisfies OptimisticMessage,

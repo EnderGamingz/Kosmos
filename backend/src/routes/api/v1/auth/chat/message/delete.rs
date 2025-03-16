@@ -13,11 +13,12 @@ async fn delete_message(
     state: &AppState,
     chat: &DbChatModel,
     message_id: i64,
+    user_id: i64,
 ) -> Result<(), AppError> {
     let is_valid_message = state
         .contact_service
         .chat_service
-        .check_message_id_exists_in_chat(message_id, chat.id)
+        .check_message_id_exists_in_chat_by_user_id(message_id, chat.id, user_id)
         .await?;
 
     if !is_valid_message {
@@ -57,7 +58,7 @@ pub async fn delete_personal_message(
             error: "Chat not found".to_string(),
         })?;
 
-    delete_message(&state, &chat, payload.message_id.into()).await?;
+    delete_message(&state, &chat, payload.message_id.into(), user_id).await?;
 
     Ok(AppSuccess::DELETED)
 }

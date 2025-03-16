@@ -1,7 +1,8 @@
-import React, { ReactNode, use } from 'react';
+import React, { ReactNode, use, useEffect, useState } from 'react';
 import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import { ChatMemberModelDTO } from '@bindings/ChatMemberModelDTO.ts';
+import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
 
 export type ChatContext = {
   chatId: string;
@@ -9,6 +10,10 @@ export type ChatContext = {
   isPersonalChat: boolean;
   user: UserModelDTO;
   getPartner: () => ChatMemberModelDTO | undefined;
+  replyTo?: ChatMessageModelDTO;
+  setReplyTo: (message?: ChatMessageModelDTO) => void;
+  editMessage?: ChatMessageModelDTO;
+  setEditMessage: (message?: ChatMessageModelDTO) => void;
 };
 
 const ChatContext = React.createContext<ChatContext | undefined>(undefined);
@@ -34,6 +39,21 @@ export default function ChatProvider({
   isPersonalChat: boolean;
   user: UserModelDTO;
 }) {
+  const [replyTo, setReplyTo] = useState<ChatMessageModelDTO | undefined>(
+    undefined,
+  );
+  const [editMessage, setEditMessage] = useState<
+    ChatMessageModelDTO | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (replyTo) setEditMessage(undefined);
+  }, [replyTo]);
+
+  useEffect(() => {
+    if (editMessage) setReplyTo(undefined);
+  }, [editMessage]);
+
   return (
     <ChatContext
       value={{
@@ -46,6 +66,10 @@ export default function ChatProvider({
             throw new Error('Cannot get partner of group chat');
           return chat.members.find(u => u.user_id !== user.id);
         },
+        replyTo,
+        setReplyTo,
+        editMessage,
+        setEditMessage,
       }}>
       {children}
     </ChatContext>

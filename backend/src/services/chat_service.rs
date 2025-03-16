@@ -394,4 +394,26 @@ impl ChatService {
 
         Ok(exists.exists.unwrap_or(false))
     }
+
+    pub async fn check_message_id_exists_in_chat_by_user_id(
+        &self,
+        message_id: i64,
+        chat_id: i64,
+        user_id: i64,
+    ) -> Result<bool, AppError> {
+        let exists = sqlx::query!(
+            r#"SELECT EXISTS(SELECT 1 FROM messages WHERE id = $1 AND chat_id = $2 AND user_id = $3)"#,
+            message_id,
+            chat_id,
+            user_id
+        )
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error checking message ID existence by user ID: {}", e);
+                AppError::InternalError
+            })?;
+
+        Ok(exists.exists.unwrap_or(false))
+    }
 }
