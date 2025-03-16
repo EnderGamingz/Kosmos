@@ -166,7 +166,9 @@ fn get_profile_router() -> KosmosRouter {
 fn get_chat_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::chat::index::get_chats))
-        .route("/:other_user_id", get(crate::routes::api::v1::auth::chat::index::get_personal_chat))
+        .route("/user/:other_user_id", get(crate::routes::api::v1::auth::chat::index::get_personal_chat))
+        .route("/user/:other_user_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_personal_chat))
+
 }
 
 fn get_contact_router() -> KosmosRouter {

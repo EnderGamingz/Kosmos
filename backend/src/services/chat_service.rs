@@ -286,7 +286,7 @@ impl ChatService {
     ) -> Result<Vec<DbChatAuthorModel>, AppError> {
         sqlx::query_as!(
             DbChatAuthorModel,
-            r#"SELECT users.id as user_id, users.avatar_image_id, profiles.full_name
+            r#"SELECT users.id as user_id, users.avatar_image_id, users.username, profiles.full_name
             FROM users
                      INNER JOIN profiles ON users.id = profiles.user_id
             WHERE users.id = ANY($1);
