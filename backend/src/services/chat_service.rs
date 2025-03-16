@@ -80,6 +80,25 @@ impl ChatService {
         Ok(())
     }
 
+    pub async fn update_message(
+        &self,
+        message_id: i64,
+        content: String,
+    ) -> Result<DbChatMessageModel, AppError> {
+        sqlx::query_as!(
+            DbChatMessageModel,
+            "UPDATE messages SET content = $1 WHERE id = $2 RETURNING *",
+            content,
+            message_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating message: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn get_personal_chat_optional(
         &self,
         user_id: i64,

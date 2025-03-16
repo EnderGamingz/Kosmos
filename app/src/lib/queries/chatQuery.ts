@@ -58,13 +58,23 @@ export class ChatQuery {
     content,
     parentId,
     isPersonalChat,
+    editMessageId,
   }: {
     chatId: string;
     content: string;
     parentId?: string;
     isPersonalChat?: boolean;
+    editMessageId?: string;
   }) => {
     const section = isPersonalChat ? 'user' : 'group';
+
+    if (editMessageId) {
+      return axios.patch(`${BASE_URL}auth/social/chat/${section}/${chatId}`, {
+        content,
+        message_id: editMessageId,
+      });
+    }
+
     return axios.post(`${BASE_URL}auth/social/chat/${section}/${chatId}`, {
       content,
       parent_id: parentId,
@@ -79,17 +89,20 @@ export class ChatQuery {
       mutationFn: ({
         content,
         parentId,
+        editMessageId,
       }: {
         content: string;
         parentId?: string;
+        editMessageId?: string;
       }) =>
         ChatQuery.sendMessageRequest({
           chatId,
           content,
           isPersonalChat,
           parentId,
+          editMessageId,
         }),
-      onMutate: async ({ content, parentId }) => {
+      onMutate: async ({ content, parentId, editMessageId }) => {
         await queryClient.cancelQueries({
           queryKey: ['chat', chatId],
         });
@@ -112,23 +125,37 @@ export class ChatQuery {
             loading: true,
           } satisfies OptimisticMessage as ChatMessageModelDTO;
         }
-
-        queryClient.setQueryData(
-          ['chat', chatId],
-          [
-            {
-              id: `${Math.random() * 1000}`,
-              chat_id: chatId,
-              content,
-              is_edited: false,
-              created_at: new Date().toISOString(),
-              parent: parent,
-              author: null,
-              loading: true,
-            } satisfies OptimisticMessage,
-            ...previousMessages,
-          ],
-        );
+        if (editMessageId) {
+          queryClient.setQueryData(
+            ['chat', chatId],
+            previousMessages.map(m =>
+              m.id === editMessageId
+                ? {
+                    ...m,
+                    content,
+                    loading: true,
+                  }
+                : m,
+            ),
+          );
+        } else {
+          queryClient.setQueryData(
+            ['chat', chatId],
+            [
+              {
+                id: `${Math.random() * 1000}`,
+                chat_id: chatId,
+                content,
+                is_edited: false,
+                created_at: new Date().toISOString(),
+                parent: parent,
+                author: null,
+                loading: true,
+              } satisfies OptimisticMessage,
+              ...previousMessages,
+            ],
+          );
+        }
 
         return { previousMessages };
       },

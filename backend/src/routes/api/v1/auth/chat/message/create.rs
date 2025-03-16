@@ -1,5 +1,6 @@
 use crate::model::chat::author::{ChatAuthorModelDTO, DbChatAuthorModel};
 use crate::model::chat::message::ChatMessageModelDTO;
+use crate::model::internal::entity_id::EntityId;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
@@ -7,20 +8,19 @@ use axum::extract::{Path, State};
 use axum::Json;
 use axum_valid::Valid;
 use serde::Deserialize;
+use serde_trim::string_trim;
 use tower_sessions::Session;
 use validator::Validate;
-use crate::model::internal::entity_id::EntityId;
-use serde_trim::string_trim;
 
-async fn send_message(
+pub async fn resolve_message_dependencies(
     state: &AppState,
     user_id: i64,
     chat_id: i64,
-    payload: &CreateChatMessageDTO,
-) -> Result<ChatMessageModelDTO, AppError> {
+    parent_id: Option<i64>,
+) -> Result<(Option<ChatMessageModelDTO>, ChatAuthorModelDTO), AppError> {
     let mut author_cache: Option<DbChatAuthorModel> = None;
 
-    let parent = if let Some(parent_id) = payload.parent_id.map(|id| id.into()) {
+    let parent = if let Some(parent_id) = parent_id.map(|id| id.into()) {
         let is_valid_message = state
             .contact_service
             .chat_service
@@ -65,6 +65,18 @@ async fn send_message(
 
         author.into()
     };
+    Ok((parent, author))
+}
+
+async fn send_message(
+    state: &AppState,
+    user_id: i64,
+    chat_id: i64,
+    payload: &CreateChatMessageDTO,
+) -> Result<ChatMessageModelDTO, AppError> {
+    let (parent, author) =
+        resolve_message_dependencies(state, user_id, chat_id, payload.parent_id.map(|id| id.into()))
+            .await?;
 
     let message = state
         .contact_service

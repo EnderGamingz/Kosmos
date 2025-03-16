@@ -168,6 +168,7 @@ fn get_chat_router() -> KosmosRouter {
         .route("/", get(crate::routes::api::v1::auth::chat::index::get_chats))
         .route("/user/:other_user_id", get(crate::routes::api::v1::auth::chat::index::get_personal_chat)
                    .post(crate::routes::api::v1::auth::chat::message::create::send_personal_message)
+            .patch(crate::routes::api::v1::auth::chat::message::update::update_personal_message)
             .delete(crate::routes::api::v1::auth::chat::message::delete::delete_personal_message))
         .route("/user/:other_user_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_personal_chat))
 }

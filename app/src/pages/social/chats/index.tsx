@@ -129,7 +129,8 @@ function ChatMessage({
         'group relative px-2 py-0.5 transition-all hover:bg-border/50 rounded-md',
         'outline -outline-offset-2',
         !isPrevSameUser && 'mt-2',
-        message.loading && 'animate-pulse !mt-0',
+        message.loading && 'animate-pulse',
+        message.loading && isPrevSameUser && '!mt-0',
         activeReply || activeEdit ? 'outline-border' : 'outline-transparent',
       )}>
       <AnimatePresence>
@@ -197,7 +198,11 @@ function ChatMessage({
                 <p
                   className={'text-muted-foreground text-xs'}
                   title={message.created_at}>
-                  {format(new Date(message.created_at), 'P HH:mm')}
+                  {message.loading ? (
+                    <Loader2 className={'h-3 w-3 animate-spin mb-1'} />
+                  ) : (
+                    format(new Date(message.created_at), 'P HH:mm')
+                  )}
                 </p>
               </div>
               <div className={'select-text break-all'}>{message.content}</div>
@@ -327,6 +332,9 @@ function WriteMessageForm() {
   useEffect(() => {
     if (!inputRef.current) return;
     if (!!editMessage || !!replyTo) inputRef.current.focus();
+
+    if (editMessage) inputRef.current.value = editMessage.content;
+    else inputRef.current.value = '';
   }, [editMessage, replyTo]);
 
   function handleSubmit(e: FormEvent) {
@@ -339,7 +347,7 @@ function WriteMessageForm() {
       return;
     }
 
-    mutate({ content, parentId: replyTo?.id });
+    mutate({ content, parentId: replyTo?.id, editMessageId: editMessage?.id });
     form.reset();
     setReplyTo(undefined);
     setEditMessage(undefined);
