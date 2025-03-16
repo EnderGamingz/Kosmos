@@ -1,10 +1,34 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
+import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+
+export type OptimisticMessage = ChatMessageModelDTO & {
+  loading?: boolean;
+};
 
 export class ChatQuery {
+  public static useChatSuspense = ({
+    chatId,
+    isPersonalChat,
+  }: {
+    chatId: string;
+    isPersonalChat: boolean;
+  }) =>
+    useSuspenseQuery({
+      queryFn: () =>
+        axios
+          .get(
+            `${BASE_URL}auth/social/chat/${
+              isPersonalChat ? 'user' : 'group'
+            }/${chatId}`,
+          )
+          .then(res => res.data as ChatModelDTO),
+      queryKey: ['chat', 'info', chatId],
+    });
+
   public static useMessages = ({
     chatId,
     page = 0,
@@ -23,12 +47,13 @@ export class ChatQuery {
               page,
             },
           })
-          .then(res => res.data as ChatMessageModelDTO[]),
+          .then(res => res.data as ChatMessageModelDTO[])
+          .then(messages => messages.reverse()),
       queryKey: ['chat', chatId],
     });
   };
 
-  public static sendMessageRequest = ({
+  private static sendMessageRequest = ({
     chatId,
     content,
     parentId,
@@ -46,7 +71,55 @@ export class ChatQuery {
     });
   };
 
-  public static deleteMessageRequest = ({
+  public static useSendMessageMutationOptimistic(
+    chatId: string,
+    isPersonalChat: boolean,
+  ) {
+    return useMutation({
+      mutationFn: (content: string) =>
+        ChatQuery.sendMessageRequest({
+          chatId,
+          content,
+          isPersonalChat,
+        }),
+      onMutate: async (content: string) => {
+        await queryClient.cancelQueries({
+          queryKey: ['chat', chatId],
+        });
+
+        const previousMessages = queryClient.getQueryData([
+          'chat',
+          chatId,
+        ]) as ChatMessageModelDTO[];
+        queryClient.setQueryData(
+          ['chat', chatId],
+          [
+            {
+              id: `${Math.random() * 1000}`,
+              chat_id: chatId,
+              content,
+              is_edited: false,
+              created_at: new Date().toISOString(),
+              parent: null,
+              author: null,
+              loading: true,
+            } satisfies OptimisticMessage,
+            ...previousMessages,
+          ],
+        );
+
+        return { previousMessages };
+      },
+      onError: (_err, _variables, context) => {
+        queryClient.setQueryData(['chat', chatId], context);
+      },
+      onSettled: async () => {
+        await ChatQuery.invalidateChat(chatId);
+      },
+    });
+  }
+
+  private static deleteMessageRequest = ({
     chatId,
     messageId,
     isPersonalChat,
@@ -62,6 +135,43 @@ export class ChatQuery {
       },
     });
   };
+
+  public static useDeleteMessageMutationOptimistic(
+    message: ChatMessageModelDTO,
+    isPersonalChat: boolean,
+    chatId: string,
+  ) {
+    return useMutation({
+      mutationFn: () =>
+        ChatQuery.deleteMessageRequest({
+          chatId: message.chat_id,
+          messageId: message.id,
+          isPersonalChat: isPersonalChat,
+        }),
+      onMutate: async () => {
+        await queryClient.cancelQueries({
+          queryKey: ['chat', chatId],
+        });
+
+        const previousMessages = queryClient.getQueryData([
+          'chat',
+          chatId,
+        ]) as ChatMessageModelDTO[];
+        queryClient.setQueryData(
+          ['chat', chatId],
+          previousMessages.filter(m => m.id !== message.id),
+        );
+
+        return { previousMessages };
+      },
+      onError: (_err, _variables, context) => {
+        queryClient.setQueryData(['chat', chatId], context);
+      },
+      onSettled: async () => {
+        await ChatQuery.invalidateChat(chatId);
+      },
+    });
+  }
 
   public static invalidateChat = (id: string) => {
     return queryClient.invalidateQueries({

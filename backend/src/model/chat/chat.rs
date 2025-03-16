@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
+use ts_rs::TS;
 use crate::model::chat::members::ChatMemberModelDTO;
 use crate::model::internal::chat_type::ChatType;
 
@@ -14,7 +15,8 @@ pub struct DbChatModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
 pub struct ChatModelDTO {
     pub id: i64,
     pub members: Vec<ChatMemberModelDTO>,

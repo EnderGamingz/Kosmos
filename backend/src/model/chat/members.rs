@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
+use ts_rs::TS;
 
 #[derive(Clone, FromRow, Debug, Serialize)]
 pub struct DbChatMemberModel {
@@ -17,7 +18,8 @@ pub struct DbChatMemberProfileModel {
     pub avatar_image_id: Option<i64>,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone, TS)]
+#[ts(export)]
 pub struct ChatMemberModelDTO {
     pub chat_id: String,
     pub user_id: String,

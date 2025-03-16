@@ -292,7 +292,7 @@ impl ChatService {
 
         sqlx::query_as!(
             DbChatMessageModel,
-            r#"SELECT * FROM messages WHERE chat_id = $1 ORDER BY created_at LIMIT $2 OFFSET $3"#,
+            r#"SELECT * FROM messages WHERE chat_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"#,
             chat_id,
             limit,
             offset

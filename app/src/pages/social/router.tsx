@@ -11,11 +11,11 @@ export default function SocialRouter() {
     <>
       <div className={'max-w-6xl w-full mx-auto p-5 grow flex flex-col'}>
         <SocialPageMetadata />
-        <div className={'flex grow'}>
+        <div className={'flex grow gap-5'}>
           <div className={'w-64 hidden md:flex'}>
             <SocialSideNav />
           </div>
-          <div className={'grow'}>
+          <div className={'flex flex-col grow'}>
             <Routes>
               <Route path={'chats/*'} element={<ChatsPage />} />
               <Route path={'contacts'} element={<ContactsPage />} />
