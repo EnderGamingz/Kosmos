@@ -10,7 +10,7 @@ pub struct DbChatAuthorModel {
     pub username: String,
 }
 
-#[derive(Serialize, Debug, TS)]
+#[derive(Serialize, Debug, TS, Clone)]
 #[ts(export)]
 pub struct ChatAuthorModelDTO {
     pub user_id: String,

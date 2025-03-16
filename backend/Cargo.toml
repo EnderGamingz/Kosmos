@@ -17,15 +17,16 @@ axum = { version = "0.7.5", features = ["json", "multipart"] }
 # Image
 # photon-rs = { version = "0.3.2" }
 image = "0.25.2"
-kamadak-exif = "0.5.5"
+kamadak-exif = "0.6.1"
 
 # Serialization
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = { version = "1.0.128" }
+serde_trim = "1.1.0"
 
 # Database
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono", "bigdecimal", "uuid"] }
-sonyflake = "0.2.0"
+sonyflake = "0.3.0"
 bigdecimal = "0.4.5"
 
 # Tracing
@@ -35,15 +36,15 @@ log = "0.4.22"
 
 # Session
 tower-sessions = "0.13.0"
-tower-http = { version = "0.5.2", features = ["cors", "trace", "fs"] }
+tower-http = { version = "0.6.2", features = ["cors", "trace", "fs"] }
 
 # Auth
-bcrypt = "0.15.1"
+bcrypt = "0.17.0"
 webauthn-rs = { version = "0.5.0", features = ["danger-allow-state-serialisation", "conditional-ui"] }
 
 # Utils
 lazy_static = "1.4.0"
-itertools = "0.13.0"
+itertools = "0.14.0"
 chrono = { version = "0.4.38", features = ["serde"] }
 
 # Validation
@@ -56,4 +57,4 @@ dotenvy = "0.15.7"
 
 # Misc
 zip = "2.2.0"
-ts-rs = { version = "9.0.1",features = ["chrono-impl", "serde-json-impl"] }
+ts-rs = { version = "10.1.0",features = ["chrono-impl", "serde-json-impl"] }

@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use crate::model::chat::message::ChatMessageModelDTO;
 use crate::response::error_handling::AppError;
 use crate::services::chat_service::MessageQueryDTO;
@@ -6,6 +5,8 @@ use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, Query, State};
 use axum::Json;
+use std::collections::HashMap;
+use axum_valid::Valid;
 use tower_sessions::Session;
 
 async fn get_messages_by_chat(
@@ -19,10 +20,7 @@ async fn get_messages_by_chat(
         .get_messages(chat_id, params)
         .await?;
 
-    let parent_ids = messages
-        .iter()
-        .filter_map(|m| m.parent_id)
-        .collect();
+    let parent_ids = messages.iter().filter_map(|m| m.parent_id).collect();
 
     let parents = state
         .contact_service
@@ -78,7 +76,7 @@ pub async fn get_messages_for_personal_chat(
     State(state): KosmosState,
     session: Session,
     Path(other_person_id): Path<i64>,
-    Query(params): Query<MessageQueryDTO>,
+    Valid(Query(params)): Valid<Query<MessageQueryDTO>>,
 ) -> Result<Json<Vec<ChatMessageModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
@@ -95,3 +93,4 @@ pub async fn get_messages_for_personal_chat(
 
     Ok(Json(messages))
 }
+

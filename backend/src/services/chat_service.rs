@@ -7,6 +7,7 @@ use crate::model::chat::members::{
 use crate::model::chat::message::DbChatMessageModel;
 use crate::model::internal::chat_type::ChatType;
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::chat::message::create::CreateChatMessageDTO;
 use serde::Deserialize;
 use sonyflake::Sonyflake;
 use std::collections::HashMap;
@@ -40,6 +41,31 @@ pub struct ChatService {
 impl ChatService {
     pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
         ChatService { db_pool, sf }
+    }
+
+    pub async fn create_message(
+        &self,
+        user_id: i64,
+        chat_id: i64,
+        payload: &CreateChatMessageDTO,
+    ) -> Result<DbChatMessageModel, AppError> {
+        let id = self.sf.next_id().map_err(|_| AppError::InternalError)? as i64;
+        let parent_id: Option<i64> = payload.parent_id.map(|id| id.into());
+        sqlx::query_as!(
+            DbChatMessageModel,
+            "INSERT INTO messages (id, chat_id, user_id, content, parent_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            id,
+            chat_id,
+            user_id,
+            payload.content,
+            parent_id
+        )
+            .fetch_one(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error creating message: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn get_personal_chat_optional(
@@ -267,6 +293,20 @@ impl ChatService {
             })
     }
 
+    pub async fn get_message_by_id(&self, message_id: i64) -> Result<DbChatMessageModel, AppError> {
+        sqlx::query_as!(
+            DbChatMessageModel,
+            "SELECT * FROM messages WHERE id = $1",
+            message_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching message: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn get_messages_by_message_ids(
         &self,
         message_ids: Vec<i64>,
@@ -303,5 +343,43 @@ impl ChatService {
             tracing::error!("Error fetching chat authors: {}", e);
             AppError::InternalError
         })
+    }
+
+    pub async fn get_author_by_user_id(&self, user_id: i64) -> Result<DbChatAuthorModel, AppError> {
+        sqlx::query_as!(
+            DbChatAuthorModel,
+            r#"SELECT users.id as user_id, users.avatar_image_id, users.username, profiles.full_name
+            FROM users
+                     INNER JOIN profiles ON users.id = profiles.user_id
+            WHERE users.id = $1;
+            "#,
+            user_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching chat author: {}", e);
+            AppError::InternalError
+        })
+    }
+
+    pub async fn check_message_id_exists_in_chat(
+        &self,
+        message_id: i64,
+        chat_id: i64,
+    ) -> Result<bool, AppError> {
+        let exists = sqlx::query!(
+            r#"SELECT EXISTS(SELECT 1 FROM messages WHERE id = $1 AND chat_id = $2)"#,
+            message_id,
+            chat_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error checking message ID existence: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(exists.exists.unwrap_or(false))
     }
 }
