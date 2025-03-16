@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::model::chat::message::ChatMessageModelDTO;
 use crate::response::error_handling::AppError;
 use crate::services::chat_service::MessageQueryDTO;
@@ -21,7 +22,7 @@ async fn get_messages_by_chat(
     let parent_ids = messages
         .iter()
         .filter_map(|m| m.parent_id)
-        .collect::<Vec<i64>>();
+        .collect();
 
     let parents = state
         .contact_service
@@ -31,13 +32,13 @@ async fn get_messages_by_chat(
     let parent_map = parents
         .into_iter()
         .map(|m| (m.id, m))
-        .collect::<std::collections::HashMap<i64, _>>();
+        .collect::<HashMap<i64, _>>();
 
     let author_ids = messages
         .iter()
         .map(|m| m.user_id)
         .chain(parent_map.keys().cloned())
-        .collect::<Vec<i64>>();
+        .collect();
 
     let authors = state
         .contact_service

@@ -47,6 +47,10 @@ impl ChatService {
         user_id: i64,
         other_user_id: i64,
     ) -> Result<Option<DbChatModel>, AppError> {
+        if user_id == other_user_id {
+            return Ok(None);
+        }
+
         sqlx::query_as!(
             DbChatModel,
             r#"SELECT * FROM chats WHERE chat_type = $3 AND id IN (
