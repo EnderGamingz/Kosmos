@@ -1,5 +1,5 @@
 import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
-import Illustration from '@components/Illustration.tsx';
+import Illustration from '@components/defaults/Illustration.tsx';
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';

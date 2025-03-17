@@ -8,3 +8,4 @@ pub mod zip;
 pub mod entity_id;
 pub mod contact_request_status;
 pub mod chat_type;
+pub mod presence_message;

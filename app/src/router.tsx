@@ -36,6 +36,7 @@ import QuickSharePage from '@pages/explorer/pages/quick';
 import { DefaultMetadata } from '@components/metadata.tsx';
 import ProfileSettings from '@pages/settings/profile';
 import SocialRouter from '@pages/social/router.tsx';
+import Websocket from '@components/socket/Websocket.tsx';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -117,6 +118,7 @@ export default function Router() {
       </main>
       <NotificationIndicator />
       <SystemMessage />
+      <Websocket />
     </BrowserRouter>
   );
 }

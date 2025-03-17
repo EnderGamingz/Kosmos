@@ -1,6 +1,3 @@
-use axum::extract::State;
-use sonyflake::Sonyflake;
-use webauthn_rs::Webauthn;
 use crate::db::KosmosPool;
 use crate::response::error_handling::AppError;
 use crate::services::album_service::AlbumService;
@@ -11,11 +8,15 @@ use crate::services::image_service::ImageService;
 use crate::services::operation_service::OperationService;
 use crate::services::passkey_service::PasskeyService;
 use crate::services::permission_service::PermissionService;
+use crate::services::presence_handler::PresenceHandler;
 use crate::services::profile_service::ProfileService;
 use crate::services::search_service::SearchService;
 use crate::services::share_service::ShareService;
 use crate::services::usage_service::UsageService;
 use crate::services::user_service::UserService;
+use axum::extract::State;
+use sonyflake::Sonyflake;
+use webauthn_rs::Webauthn;
 
 pub type KosmosState = State<AppState>;
 
@@ -35,17 +36,15 @@ pub struct AppState {
     pub album_service: AlbumService,
     pub passkey_service: PasskeyService,
     pub sf: Sonyflake,
+    pub presence_handler: PresenceHandler,
 }
 
 impl AppState {
     pub fn get_safe_id(&self) -> Result<i64, AppError> {
-        self.sf
-            .next_id()
-            .map(|id| id as i64)
-            .map_err(|e| {
-                tracing::error!("Error getting next id: {}", e);
-                AppError::InternalError
-            })
+        self.sf.next_id().map(|id| id as i64).map_err(|e| {
+            tracing::error!("Error getting next id: {}", e);
+            AppError::InternalError
+        })
     }
 }
 
@@ -65,6 +64,8 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
     let album_service = AlbumService::new(db.clone(), sf.clone());
     let passkey_service = PasskeyService::new(db.clone(), webauthn.clone());
 
+    let presence_handler = PresenceHandler::new();
+
     AppState {
         user_service,
         profile_service,
@@ -80,5 +81,6 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
         album_service,
         passkey_service,
         sf,
+        presence_handler,
     }
 }

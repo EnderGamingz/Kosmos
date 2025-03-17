@@ -45,6 +45,7 @@
     "react-qr-code": "^2.0.15",
     "react-responsive-masonry": "^2.7.1",
     "react-router-dom": "^7.3.0",
+    "react-use-websocket": "^4.13.0",
     "react-window": "^1.8.11",
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",

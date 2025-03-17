@@ -190,6 +190,11 @@ fn get_social_router() -> KosmosRouter {
         .nest("/chat", get_chat_router())
 }
 
+fn get_presence_router() -> KosmosRouter{
+    Router::new()
+        .route("/", get(crate::routes::api::v1::auth::presence::handler::presence_handler))
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -210,6 +215,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/user", get_user_router())
         .nest("/profile", get_profile_router())
         .nest("/social", get_social_router())
+        .nest("/presence", get_presence_router())
         .nest("/admin", get_admin_router())
 }
 

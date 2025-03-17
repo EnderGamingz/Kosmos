@@ -254,6 +254,23 @@ impl ChatService {
         })
     }
 
+    pub async fn get_chat_members_by_chat_id(
+        &self,
+        chat_id: i64,
+    ) -> Result<Vec<DbChatMemberModel>, AppError> {
+        sqlx::query_as!(
+            DbChatMemberModel,
+            "SELECT * FROM chat_members WHERE chat_id = $1",
+            chat_id
+        )
+        .fetch_all(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching chat members by chat ID: {}", e);
+            AppError::InternalError
+        })
+    }
+
     pub async fn get_chat_members_profiles(
         &self,
         user_ids: Vec<i64>,

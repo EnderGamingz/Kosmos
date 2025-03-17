@@ -13,3 +13,4 @@ pub mod passkey_service;
 pub mod profile_service;
 pub mod contact_service;
 pub mod chat_service;
+pub mod presence_handler;
