@@ -4,9 +4,11 @@ use crate::response::error_handling::AppError;
 use crate::services::chat_service::ChatService;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::Json;
+use serde::Deserialize;
 use tower_sessions::Session;
+use validator::Validate;
 use crate::model::internal::chat_type::ChatType;
 
 async fn get_chat_members(
@@ -35,16 +37,36 @@ async fn get_chat_members(
     ))
 }
 
+#[derive(Deserialize, Validate, Debug)]
+pub struct GetChatsQueryDTO {
+    #[serde(default = "get_default_chats_limit")]
+    #[validate(range(min = 1, max = 500))]
+    pub limit: i64,
+
+    #[serde(default = "get_default_page")]
+    #[validate(range(min = 0))]
+    pub page: i64,
+}
+
+fn get_default_chats_limit() -> i64 {
+    50
+}
+
+fn get_default_page() -> i64 {
+    0
+}
+
 pub async fn get_chats(
     State(state): KosmosState,
     session: Session,
+    Query(params): Query<GetChatsQueryDTO>,
 ) -> Result<Json<Vec<ChatModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let chat = state
         .contact_service
         .chat_service
-        .get_chats(user_id)
+        .get_chats(user_id, &params)
         .await?;
 
     let chat_ids = chat.iter().map(|c| c.id).collect();
