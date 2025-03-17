@@ -7,6 +7,7 @@ use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
 use crate::model::internal::entity_id::EntityId;
+use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 
 #[derive(Deserialize)]
 pub struct CancelContactRequestDTO {
@@ -38,6 +39,8 @@ pub async fn cancel_sent_contact_request(
         .contact_service
         .delete_contact_request(request.id)
         .await?;
+
+    notify_attention_status_for_user(&state, request.request_user_id).await?;
 
     Ok(AppSuccess::DELETED)
 }

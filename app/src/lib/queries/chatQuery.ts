@@ -233,7 +233,6 @@ export class ChatQuery {
         'chat',
         payload.chat_id,
       ]) as ChatMessageModelDTO[];
-      console.log(old);
       if (!old) return [payload.content];
       return [...old, payload.content];
     });

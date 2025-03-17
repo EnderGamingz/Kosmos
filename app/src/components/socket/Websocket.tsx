@@ -10,6 +10,8 @@ import { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage
 import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage';
 import { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate';
 import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
+import { ContactQuery } from '@lib/queries/contactQuery.ts';
+import { handlePresenceOperationsUpdate } from '@lib/query.ts';
 
 export default function Websocket() {
   const user = useUserState(s => s.user);
@@ -66,13 +68,15 @@ function handleServerAction(data: PresenceMessage) {
   if ('SocialUpdate' in action) {
     const socialUpdate = action.SocialUpdate as PresenceSocialUpdate;
 
-    //TODO handle socialUpdate
+    ContactQuery.handlePresenceSocialUpdate(socialUpdate);
     return;
   }
 
   if ('OperationsUpdate' in action) {
     const operationsUpdate =
       action.OperationsUpdate as PresenceOperationsUpdate;
+
+    handlePresenceOperationsUpdate(operationsUpdate);
 
     //TODO handle operationsUpdate
   }

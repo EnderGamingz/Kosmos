@@ -4,6 +4,7 @@ import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { ContactRequestsResponse } from '@bindings/ContactRequestsResponse.ts';
+import { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate.ts';
 
 type UseProfilesSuspenseParams = {
   limit?: number;
@@ -19,9 +20,11 @@ export class ContactQuery {
           .get(`${BASE_URL}auth/social/contact/ping`)
           .then(res => res.data as boolean),
       queryKey: ['social', 'contact', 'ping'],
-      // Refetch every 1 minute
-      refetchInterval: 60 * 1000,
     });
+  };
+
+  public static handlePresenceSocialUpdate = (data: PresenceSocialUpdate) => {
+    queryClient.setQueryData(['social', 'contact', 'ping'], data.content);
   };
 
   public static useProfilesSuspense = (props?: UseProfilesSuspenseParams) => {

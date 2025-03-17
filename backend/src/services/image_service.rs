@@ -15,6 +15,9 @@ use crate::model::internal::preview_status::PreviewStatus;
 use crate::model::internal::image_format::ImageFormat;
 use crate::model::internal::operation_type::OperationType;
 use crate::model::internal::operation_status::OperationStatus;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceOperationsUpdate;
+use crate::model::operation::OperationModelDTO;
 use crate::response::error_handling::AppError;
 use crate::state::AppState;
 
@@ -90,6 +93,8 @@ impl ImageService {
                 Some(JsonValue::from(file_ids.clone())),
             )
             .await?;
+
+        Self::update_client_operations(user_id, &state).await?;
 
         let mut pending_insert_handles = file_ids
             .into_iter()
@@ -214,6 +219,23 @@ impl ImageService {
             .update_preview_status_for_file_ids(&successes, PreviewStatus::Ready)
             .await?;
 
+        Self::update_client_operations(user_id, &state).await?;
+
+        Ok(())
+    }
+
+    async fn update_client_operations(user_id: i64, state: &Arc<AppState>) -> Result<(), AppError> {
+        let operations = state.operation_service.get_operations_by_user_id(user_id, 20).await?
+            .into_iter()
+            .map(|o| o.into())
+            .collect::<Vec<OperationModelDTO>>();
+
+
+        state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+            action: PresenceAction::OperationsUpdate(PresenceOperationsUpdate {
+                content: operations
+            })
+        }).await;
         Ok(())
     }
 

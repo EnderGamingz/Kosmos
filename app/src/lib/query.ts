@@ -26,6 +26,7 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
 import { createZipInformationUrl } from '@lib/file.ts';
 import { ZipInformation } from '@bindings/ZipInformation.ts';
+import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
 
 export const queryClient = new QueryClient();
 
@@ -247,11 +248,13 @@ export const useOperations = (onUnauthorized?: () => void) => {
           return [] as OperationModelDTO[];
         }),
     queryKey: ['operations'],
-    // 20 seconds
-    refetchInterval: 20_000,
     refetchOnWindowFocus: true,
   });
 };
+
+export function handlePresenceOperationsUpdate(data: PresenceOperationsUpdate) {
+  queryClient.setQueryData(['operations'], data.content);
+}
 
 export const useSharedItems = (forUser?: boolean) => {
   const userSpecificEndpoint = forUser ? '/me' : '';

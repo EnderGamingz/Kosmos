@@ -1,5 +1,6 @@
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
+use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::State;
@@ -57,6 +58,8 @@ pub async fn send_contact_request(
         .contact_service
         .create_contact_request(from_user_id, to_user.id)
         .await?;
+
+    notify_attention_status_for_user(&state, to_user.id).await?;
 
     Ok(AppSuccess::OK { data: None })
 }

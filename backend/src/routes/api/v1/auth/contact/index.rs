@@ -1,7 +1,7 @@
 use crate::model::profile::{ProfileContactModelDTO, ProfileContactPendingModelDTO};
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
-use crate::state::KosmosState;
+use crate::services::session_service::{SessionService, UserId};
+use crate::state::{AppState, KosmosState};
 use axum::extract::{State, Query};
 use axum::Json;
 use axum_valid::Valid;
@@ -9,6 +9,26 @@ use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
 use ts_rs::TS;
 use validator::Validate;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceSocialUpdate;
+
+pub async fn notify_attention_status_for_user(
+    state: &AppState,
+    user_id: UserId,
+) -> Result<(), AppError> {
+    let requires_attention = state
+        .contact_service
+        .has_unhandled_requests(user_id)
+        .await?;
+
+    let presence_message = PresenceMessage {
+        action: PresenceAction::SocialUpdate(PresenceSocialUpdate {
+            content: requires_attention,
+        }),
+    };
+    state.presence_handler.broadcast_to_user(user_id, presence_message).await;
+    Ok(())
+}
 
 #[derive(Serialize, TS)]
 #[ts(export)]
