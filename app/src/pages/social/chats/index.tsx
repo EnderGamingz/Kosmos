@@ -203,6 +203,13 @@ function ChatMessage({
                   ) : (
                     format(new Date(message.created_at), 'P HH:mm')
                   )}
+                  {message.is_edited && (
+                    <span
+                      className={'text-muted-foreground text-xs select-none'}>
+                      {' '}
+                      (edited)
+                    </span>
+                  )}
                 </p>
               </div>
               <div className={'select-text break-all'}>{message.content}</div>
@@ -221,7 +228,15 @@ function ChatMessage({
                 <p>{format(new Date(message.created_at), 'HH:mm')}</p>
               )}
             </div>
-            <div className={'select-text break-all'}>{message.content}</div>
+            <div className={'select-text break-all'}>
+              {message.content}
+              {message.is_edited && (
+                <span className={'text-muted-foreground text-xs select-none'}>
+                  {' '}
+                  (edited)
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -373,7 +388,7 @@ function WriteMessageForm() {
         type={'text'}
         name={'content'}
         className={
-          'absolute inset-0 pr-24 p-2 !text-lg placeholder:text-sm z-10 bg-background'
+          'absolute inset-0 p-2 pr-24 !text-lg placeholder:text-sm z-10 bg-background'
         }
         placeholder={
           !!replyTo ? `Write a reply` : `Write a message to ${chat.name}`

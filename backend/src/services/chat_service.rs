@@ -87,7 +87,7 @@ impl ChatService {
     ) -> Result<DbChatMessageModel, AppError> {
         sqlx::query_as!(
             DbChatMessageModel,
-            "UPDATE messages SET content = $1 WHERE id = $2 RETURNING *",
+            "UPDATE messages SET content = $1, is_edited = true WHERE id = $2 RETURNING *",
             content,
             message_id
         )
