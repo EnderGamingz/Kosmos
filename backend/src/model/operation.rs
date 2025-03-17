@@ -20,7 +20,7 @@ pub struct OperationModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize, TS)]
+#[derive(Clone, Serialize, TS)]
 #[ts(export)]
 pub struct OperationModelDTO {
     pub id: String,

@@ -1,6 +1,8 @@
 use crate::model::chat::author::{ChatAuthorModelDTO, DbChatAuthorModel};
 use crate::model::chat::message::ChatMessageModelDTO;
 use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceNewChatMessage;
 use crate::response::error_handling::AppError;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
@@ -74,9 +76,13 @@ async fn send_message(
     chat_id: i64,
     payload: &CreateChatMessageDTO,
 ) -> Result<ChatMessageModelDTO, AppError> {
-    let (parent, author) =
-        resolve_message_dependencies(state, user_id, chat_id, payload.parent_id.map(|id| id.into()))
-            .await?;
+    let (parent, author) = resolve_message_dependencies(
+        state,
+        user_id,
+        chat_id,
+        payload.parent_id.map(|id| id.into()),
+    )
+    .await?;
 
     let message = state
         .contact_service
@@ -113,6 +119,18 @@ pub async fn send_personal_message(
         })?;
 
     let message = send_message(&state, user_id, chat.id, &payload).await?;
+
+    // Personal chat, only one partner, chat_id for other user is self user id
+    let presence_message = PresenceMessage {
+        action: PresenceAction::NewChatMessage(PresenceNewChatMessage {
+            chat_id: user_id.to_string(),
+            content: message.clone(),
+        }),
+    };
+    state
+        .presence_handler
+        .broadcast_to_user(other_user_id, presence_message)
+        .await;
 
     Ok(Json(message))
 }

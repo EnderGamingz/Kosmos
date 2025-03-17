@@ -1,4 +1,4 @@
-use crate::model::internal::presence_message::PresenceMessage;
+use crate::model::internal::presence::index::PresenceMessage;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::presence::ping::socket_ping;
 use crate::services::session_service::SessionService;
@@ -22,12 +22,12 @@ pub async fn presence_handler(
 }
 
 async fn handle_presence_socket(mut socket: WebSocket, user_id: i64, state: AppState) {
-    let connection_id = format!("presence-{}-{}", user_id, Uuid::new_v4());
+    let connection_id = Uuid::new_v4().to_string();
     socket_ping(&mut socket).await.unwrap_or_else(|_| {
         return;
     });
 
-    let (mut ws_tx, mut ws_rx) = socket.split();
+    let (mut ws_tx, _ws_rx) = socket.split();
     let (tx, mut rx) = mpsc::channel::<PresenceMessage>(32);
 
     state

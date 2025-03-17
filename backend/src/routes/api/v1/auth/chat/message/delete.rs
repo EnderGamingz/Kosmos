@@ -1,5 +1,9 @@
 use crate::model::chat::chat::DbChatModel;
 use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::{
+    PresenceDeletedChatMessage,
+};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
@@ -58,7 +62,20 @@ pub async fn delete_personal_message(
             error: "Chat not found".to_string(),
         })?;
 
-    delete_message(&state, &chat, payload.message_id.into(), user_id).await?;
+    let message_id = payload.message_id.into();
+    delete_message(&state, &chat, message_id, user_id).await?;
+
+    // Personal chat, only one partner,  chat_id for other user is self user id
+    let presence_message = PresenceMessage {
+        action: PresenceAction::DeletedChatMessage(PresenceDeletedChatMessage {
+            chat_id: user_id.to_string(),
+            message_id: message_id.to_string(),
+        }),
+    };
+    state
+        .presence_handler
+        .broadcast_to_user(other_user_id, presence_message)
+        .await;
 
     Ok(AppSuccess::DELETED)
 }

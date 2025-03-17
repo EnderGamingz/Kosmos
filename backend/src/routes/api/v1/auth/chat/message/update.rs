@@ -11,6 +11,8 @@ use serde::Deserialize;
 use serde_trim::string_trim;
 use tower_sessions::Session;
 use validator::Validate;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::{PresenceUpdatedChatMessage};
 
 async fn update_message(
     state: &AppState,
@@ -70,14 +72,29 @@ pub async fn update_personal_message(
             error: "Chat not found".to_string(),
         })?;
 
+    let message_id = payload.message_id.into();
+
     let message = update_message(
         &state,
         user_id,
         chat.id,
-        payload.message_id.into(),
+        message_id,
         &payload,
     )
     .await?;
+
+    // Personal chat, only one partner, chat_id for other user is self user id
+    let presence_message = PresenceMessage {
+        action: PresenceAction::UpdatedChatMessage(PresenceUpdatedChatMessage {
+            chat_id: user_id.to_string(),
+            message_id: message_id.to_string(),
+            content: message.clone(),
+        }),
+    };
+    state
+        .presence_handler
+        .broadcast_to_user(other_user_id, presence_message)
+        .await;
 
     Ok(Json(message))
 }

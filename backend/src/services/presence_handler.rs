@@ -1,20 +1,19 @@
-use crate::model::internal::presence_message::PresenceMessage;
-use crate::response::error_handling::AppError;
+use crate::model::internal::presence::index::PresenceMessage;
+use crate::services::session_service::UserId;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::mpsc;
 use tokio::sync::Mutex;
-use crate::services::session_service::UserId;
 
 #[derive(Debug)]
-pub struct Sender {
+pub struct PresenceInstance {
     pub connection_id: String,
     pub sender: mpsc::Sender<PresenceMessage>,
 }
 
 #[derive(Clone)]
 pub struct PresenceHandler {
-    pub presence_users: Arc<Mutex<HashMap<UserId, Vec<Sender>>>>,
+    pub presence_users: Arc<Mutex<HashMap<UserId, Vec<PresenceInstance>>>>,
 }
 
 impl PresenceHandler {
@@ -24,11 +23,7 @@ impl PresenceHandler {
         }
     }
 
-    pub async fn broadcast_to_user(
-        &self,
-        user_id: UserId,
-        message: PresenceMessage,
-    ) -> Result<(), AppError> {
+    pub async fn broadcast_to_user(&self, user_id: UserId, message: PresenceMessage) {
         let presence_users = self.presence_users.lock().await;
         if let Some(senders) = presence_users.get(&user_id) {
             for sender in senders {
@@ -37,31 +32,29 @@ impl PresenceHandler {
                         "[Presence] Failed to send message to user {}: {:?}",
                         user_id,
                         e
-                    );
+                    )
                 });
             }
         }
-        Ok(())
     }
 
-    pub async fn add_user(&self, user_id: UserId, sender: mpsc::Sender<PresenceMessage>, connection_id: String) {
+    pub async fn add_user(
+        &self,
+        user_id: UserId,
+        sender: mpsc::Sender<PresenceMessage>,
+        connection_id: String,
+    ) {
         let mut presence_users = self.presence_users.lock().await;
         presence_users
             .entry(user_id)
             .or_insert_with(Vec::new)
-            .push(
-                Sender {
-                    connection_id,
-                    sender,
-                },
-            );
+            .push(PresenceInstance {
+                connection_id,
+                sender,
+            });
     }
 
-    pub async fn remove_user_sender(
-        &self,
-        user_id: i64,
-        connection_id: String,
-    ) {
+    pub async fn remove_user_sender(&self, user_id: i64, connection_id: String) {
         let mut presence_users = self.presence_users.lock().await;
         if let Some(senders) = presence_users.get_mut(&user_id) {
             senders.retain(|sender| sender.connection_id != connection_id);
@@ -69,10 +62,7 @@ impl PresenceHandler {
                 presence_users.remove(&user_id);
             }
         } else {
-            tracing::warn!(
-                "[Presence] User {} not found in presence_users",
-                user_id
-            );
+            tracing::warn!("[Presence] User {} not found in presence_users", user_id);
         }
     }
 

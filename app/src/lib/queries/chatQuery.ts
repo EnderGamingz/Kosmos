@@ -4,6 +4,9 @@ import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
 import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
+import { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage.ts';
+import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage.ts';
 
 export type OptimisticMessage = ChatMessageModelDTO & {
   loading?: boolean;
@@ -193,7 +196,7 @@ export class ChatQuery {
     return useMutation({
       mutationFn: () =>
         ChatQuery.deleteMessageRequest({
-          chatId: message.chat_id,
+          chatId: chatId,
           messageId: message.id,
           isPersonalChat: isPersonalChat,
         }),
@@ -221,6 +224,48 @@ export class ChatQuery {
       },
     });
   }
+
+  public static handlePresenceNewMessage = (
+    payload: PresenceNewChatMessage,
+  ) => {
+    queryClient.setQueryData(['chat', payload.chat_id], () => {
+      const old = queryClient.getQueryData([
+        'chat',
+        payload.chat_id,
+      ]) as ChatMessageModelDTO[];
+      console.log(old);
+      if (!old) return [payload.content];
+      return [...old, payload.content];
+    });
+  };
+
+  public static handlePresenceDeletedMessage = (
+    payload: PresenceDeletedChatMessage,
+  ) => {
+    queryClient.setQueryData(['chat', payload.chat_id], () => {
+      const old = queryClient.getQueryData([
+        'chat',
+        payload.chat_id,
+      ]) as ChatMessageModelDTO[];
+      if (!old) return [];
+      return old.filter(m => m.id !== payload.message_id);
+    });
+  };
+
+  public static handlePresenceUpdatedMessage = (
+    payload: PresenceUpdatedChatMessage,
+  ) => {
+    queryClient.setQueryData(['chat', payload.chat_id], () => {
+      const old = queryClient.getQueryData([
+        'chat',
+        payload.chat_id,
+      ]) as ChatMessageModelDTO[];
+      if (!old) return [];
+      return old.map(m =>
+        m.id === payload.message_id ? { ...m, ...payload.content } : m,
+      );
+    });
+  };
 
   public static invalidateChat = (id: string) => {
     return queryClient.invalidateQueries({

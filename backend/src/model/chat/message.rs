@@ -16,7 +16,7 @@ pub struct DbChatMessageModel {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Serialize, Debug, TS)]
+#[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 pub struct ChatMessageModelDTO {
     pub id: String,
