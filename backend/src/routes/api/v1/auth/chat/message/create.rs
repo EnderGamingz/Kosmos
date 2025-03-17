@@ -90,6 +90,8 @@ async fn send_message(
         .create_message(user_id, chat_id, &payload)
         .await?;
 
+    state.contact_service.chat_service.set_latest_message_at_now(chat_id).await?;
+
     Ok(message.to_dto(Some(author), parent))
 }
 

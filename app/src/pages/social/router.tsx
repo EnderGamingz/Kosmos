@@ -4,7 +4,7 @@ import { SocialSideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import ContactsPage from '@pages/social/contacts';
 import SocialHomePage from '@pages/social/home';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
-import ChatsPage from '@pages/social/chats';
+import ChatsRouter from '@pages/social/chats';
 
 export default function SocialRouter() {
   return (
@@ -12,12 +12,12 @@ export default function SocialRouter() {
       <div className={'max-w-6xl w-full mx-auto p-5 grow flex flex-col'}>
         <SocialPageMetadata />
         <div className={'flex grow gap-5'}>
-          <div className={'w-64 hidden md:flex'}>
+          <div className={'max-w-64 w-full hidden md:flex'}>
             <SocialSideNav />
           </div>
           <div className={'flex flex-col grow'}>
             <Routes>
-              <Route path={'chats/*'} element={<ChatsPage />} />
+              <Route path={'chats/*'} element={<ChatsRouter />} />
               <Route path={'contacts'} element={<ContactsPage />} />
               <Route index element={<SocialHomePage />} />
             </Routes>

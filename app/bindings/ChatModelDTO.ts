@@ -2,4 +2,4 @@
 import type { ChatMemberModelDTO } from "./ChatMemberModelDTO";
 import type { ChatType } from "./ChatType";
 
-export type ChatModelDTO = { id: bigint, members: Array<ChatMemberModelDTO>, name: string, description: string | null, chat_type: ChatType, created_at: string, updated_at: string, };
+export type ChatModelDTO = { id: bigint, members: Array<ChatMemberModelDTO>, name: string, description: string | null, chat_type: ChatType, created_at: string, updated_at: string, latest_message_at: string | null, };

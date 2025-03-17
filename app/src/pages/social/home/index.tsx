@@ -5,6 +5,7 @@ import {
   UnhandledRequestLoading,
   UnhandledRequests,
 } from '@pages/social/home/unhandledRequests.tsx';
+import { ChatList } from '../chats';
 
 export default function SocialHomePage() {
   const user = useUserState(s => s.user);
@@ -12,7 +13,7 @@ export default function SocialHomePage() {
   const name = user?.full_name?.split(' ').at(0);
 
   return (
-    <div className={'space-y-4'}>
+    <div className={'space-y-5'}>
       <h1 className={'text-3xl font-bold animate-fade-in-top'}>
         Good {getCurrentTimeSection()}
         {name && ' ' + name}!
@@ -22,6 +23,11 @@ export default function SocialHomePage() {
         fallback={<UnhandledRequestLoading />}>
         <UnhandledRequests />
       </FetchBoundary>
+      <div>
+        <FetchBoundary fetchGoal={'chats'}>
+          <ChatList preview />
+        </FetchBoundary>
+      </div>
     </div>
   );
 }

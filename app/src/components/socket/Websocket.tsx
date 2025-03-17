@@ -77,7 +77,5 @@ function handleServerAction(data: PresenceMessage) {
       action.OperationsUpdate as PresenceOperationsUpdate;
 
     handlePresenceOperationsUpdate(operationsUpdate);
-
-    //TODO handle operationsUpdate
   }
 }

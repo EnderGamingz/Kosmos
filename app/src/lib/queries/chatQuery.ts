@@ -13,6 +13,19 @@ export type OptimisticMessage = ChatMessageModelDTO & {
 };
 
 export class ChatQuery {
+  public static useChatsSuspense = ({ limit }: { limit?: number }) =>
+    useSuspenseQuery({
+      queryFn: () =>
+        axios
+          .get(`${BASE_URL}auth/social/chat`, {
+            params: {
+              limit,
+            },
+          })
+          .then(res => res.data as ChatModelDTO[]),
+      queryKey: ['chats'],
+    });
+
   public static useChatSuspense = ({
     chatId,
     isPersonalChat,
@@ -145,6 +158,7 @@ export class ChatQuery {
           queryClient.setQueryData(
             ['chat', chatId],
             [
+              ...previousMessages,
               {
                 id: `${Math.random() * 1000}`,
                 chat_id: chatId,
@@ -155,7 +169,6 @@ export class ChatQuery {
                 author: null,
                 loading: true,
               } satisfies OptimisticMessage,
-              ...previousMessages,
             ],
           );
         }
@@ -228,6 +241,7 @@ export class ChatQuery {
   public static handlePresenceNewMessage = (
     payload: PresenceNewChatMessage,
   ) => {
+    queryClient.invalidateQueries({ queryKey: ['chats'] }).then();
     queryClient.setQueryData(['chat', payload.chat_id], () => {
       const old = queryClient.getQueryData([
         'chat',
@@ -254,6 +268,7 @@ export class ChatQuery {
   public static handlePresenceUpdatedMessage = (
     payload: PresenceUpdatedChatMessage,
   ) => {
+    queryClient.invalidateQueries({ queryKey: ['chats'] }).then();
     queryClient.setQueryData(['chat', payload.chat_id], () => {
       const old = queryClient.getQueryData([
         'chat',

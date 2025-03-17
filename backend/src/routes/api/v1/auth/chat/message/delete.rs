@@ -64,6 +64,7 @@ pub async fn delete_personal_message(
 
     let message_id = payload.message_id.into();
     delete_message(&state, &chat, message_id, user_id).await?;
+    state.contact_service.chat_service.set_latest_message_at_now(chat.id).await?;
 
     // Personal chat, only one partner,  chat_id for other user is self user id
     let presence_message = PresenceMessage {

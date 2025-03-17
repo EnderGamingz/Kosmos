@@ -13,6 +13,7 @@ pub struct DbChatModel {
     pub chat_type: ChatType,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub latest_message_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Debug, TS)]
@@ -25,6 +26,7 @@ pub struct ChatModelDTO {
     pub chat_type: ChatType,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub latest_message_at: Option<DateTime<Utc>>,
 }
 
 impl DbChatModel {
@@ -37,6 +39,7 @@ impl DbChatModel {
             chat_type: self.chat_type.clone(),
             created_at: self.created_at.clone(),
             updated_at: self.updated_at.clone(),
+            latest_message_at: self.latest_message_at.clone(),
         }
     }
 
@@ -57,6 +60,7 @@ impl DbChatModel {
             chat_type: self.chat_type.clone(),
             created_at: self.created_at.clone(),
             updated_at: self.updated_at.clone(),
+            latest_message_at: self.latest_message_at.clone(),
         }
     }
 }

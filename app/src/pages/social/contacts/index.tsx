@@ -9,7 +9,10 @@ import { AnimatePresence } from 'framer-motion';
 
 export default function ContactsPage() {
   return (
-    <div className={'space-y-4'}>
+    <div
+      className={
+        'space-y-4 max-h-[calc(100dvh-90px-2.5rem-1rem)] max-md:max-h-[calc(100dvh-90px-2.5rem-1rem-80px)] overflow-y-auto grow'
+      }>
       <SocialPageMetadata title={'Contacts'} />
       <div className={'flex items-center gap-2 justify-between'}>
         <h1 className={'text-3xl animate-fade-in-top'}>Contacts</h1>

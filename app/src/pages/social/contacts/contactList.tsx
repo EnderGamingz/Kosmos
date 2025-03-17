@@ -4,6 +4,8 @@ import UserAvatar from '@components/UserAvatar.tsx';
 import { ContactActionMenu } from '@pages/social/contacts/actions/contactActionMenu.tsx';
 import { cn } from '@lib/utils.ts';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { MessageSquareShare } from 'lucide-react';
 
 export function ContactList() {
   const { data } = ContactQuery.useProfilesSuspense();
@@ -47,7 +49,10 @@ function ContactListItem({ profile }: { profile: ProfileContactModelDTO }) {
             <p className={'text-muted-foreground text-sm'}>{profile.email}</p>
           )}
         </div>
-        <div className={'ml-auto'}>
+        <div className={'ml-auto flex gap-2 items-start'}>
+          <Link to={`/social/chats/user/${profile.user_id}`}>
+            <MessageSquareShare className={'w-6 h-6'} />
+          </Link>
           <ContactActionMenu profile={profile} />
         </div>
       </div>

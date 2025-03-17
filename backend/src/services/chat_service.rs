@@ -7,9 +7,11 @@ use crate::model::chat::members::{
 use crate::model::chat::message::DbChatMessageModel;
 use crate::model::internal::chat_type::ChatType;
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::chat::index::GetChatsQueryDTO;
 use crate::routes::api::v1::auth::chat::message::create::CreateChatMessageDTO;
 use serde::Deserialize;
 use sonyflake::Sonyflake;
+use sqlx::QueryBuilder;
 use std::collections::HashMap;
 use validator::Validate;
 
@@ -68,6 +70,21 @@ impl ChatService {
             })
     }
 
+    pub async fn set_latest_message_at_now(&self, chat_id: i64) -> Result<(), AppError> {
+        sqlx::query!(
+            "UPDATE chats SET latest_message_at = NOW() WHERE id = $1",
+            chat_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error updating latest message time: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(())
+    }
+
     pub async fn delete_message(&self, message_id: i64) -> Result<(), AppError> {
         sqlx::query!("DELETE FROM messages WHERE id = $1", message_id)
             .execute(&self.db_pool)
@@ -111,7 +128,9 @@ impl ChatService {
         sqlx::query_as!(
             DbChatModel,
             r#"SELECT * FROM chats WHERE chat_type = $3 AND id IN (
-                SELECT chat_id FROM chat_members WHERE user_id = $1 OR user_id = $2
+                SELECT chat_id FROM chat_members WHERE user_id = $1
+                INTERSECT
+                SELECT chat_id FROM chat_members WHERE user_id = $2
             )"#,
             user_id,
             other_user_id,
@@ -199,18 +218,30 @@ impl ChatService {
         Ok(())
     }
 
-    pub async fn get_chats(&self, user_id: i64) -> Result<Vec<DbChatModel>, AppError> {
-        sqlx::query_as!(
-            DbChatModel,
-            "SELECT * FROM chats WHERE id IN (SELECT chat_id FROM chat_members WHERE user_id = $1)",
-            user_id
-        )
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error fetching chats: {}", e);
-            AppError::InternalError
-        })
+    pub async fn get_chats(
+        &self,
+        user_id: i64,
+        params: &GetChatsQueryDTO,
+    ) -> Result<Vec<DbChatModel>, AppError> {
+        let mut query = QueryBuilder::new(
+            "SELECT * FROM chats WHERE id IN (SELECT chat_id FROM chat_members WHERE user_id = ",
+        );
+        query.push_bind(user_id).push(")");
+
+        query
+            .push(" LIMIT ")
+            .push_bind(&params.limit)
+            .push(" OFFSET ")
+            .push_bind(params.page * params.limit);
+
+        query
+            .build_query_as::<DbChatModel>()
+            .fetch_all(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error fetching chats: {}", e);
+                AppError::InternalError
+            })
     }
 
     pub async fn get_chat(&self, chat_id: i64) -> Result<DbChatModel, AppError> {

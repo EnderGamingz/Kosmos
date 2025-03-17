@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
 import { AuthScreen } from '@pages/authScreen.tsx';
@@ -15,14 +15,18 @@ import { Input } from '@components/ui/input.tsx';
 type LoginData = { username: string; password: string };
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const willRedirect = useRef(false);
   const navigate = useNavigate();
   const userState = useUserState();
   const notification = useNotifications(s => s.actions);
   const controller = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    if (userState.user) navigate('/home');
-  }, [navigate, userState.user]);
+    if (userState.user && !willRedirect.current) {
+      navigate('/home');
+    }
+  }, [userState.user]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async ({ username, password }: LoginData) => {
@@ -39,8 +43,12 @@ export default function Login() {
           password,
         })
         .then(res => {
+          willRedirect.current = true;
           userState.setUser(res.data);
-          navigate('/home');
+
+          const returnPath = searchParams.get('return');
+          navigate(returnPath ?? '/home');
+
           notification.clearNotifications();
         })
         .catch(err => {

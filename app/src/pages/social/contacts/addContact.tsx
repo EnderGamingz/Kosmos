@@ -44,7 +44,7 @@ export function AddContact() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button size={'sm'} className={'animate-fade-in-right delay-200'}>
+        <Button size={'sm'} className={'animate-fade-in-top delay-200'}>
           <Plus />
           Add Contact
         </Button>

@@ -82,6 +82,8 @@ pub async fn update_personal_message(
         &payload,
     )
     .await?;
+    
+    state.contact_service.chat_service.set_latest_message_at_now(chat.id).await?;
 
     // Personal chat, only one partner, chat_id for other user is self user id
     let presence_message = PresenceMessage {

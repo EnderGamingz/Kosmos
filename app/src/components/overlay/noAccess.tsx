@@ -3,7 +3,7 @@ import {
   ExclamationCircleIcon,
   KeyIcon,
 } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 import { buttonVariants } from '@components/ui/button.tsx';
 
@@ -18,6 +18,7 @@ export function NoAccess({
   error?: string;
   isLoggedIn?: boolean;
 }) {
+  const { pathname } = useLocation();
   const noAccessText = `You dont have access to ${page ? `the ${page}` : 'this'} page.`;
   const noAccessSubText = isLoggedIn
     ? 'Please return to the previous page'
@@ -73,7 +74,9 @@ export function NoAccess({
               buttonVariants({ size: 'lg' }),
               'w-full max-w-2xl mx-auto',
             )}
-            to={'/auth/login'}>
+            to={
+              '/auth/login' + (pathname !== '/' ? `?return=${pathname}` : '')
+            }>
             Login
           </Link>
         </div>
