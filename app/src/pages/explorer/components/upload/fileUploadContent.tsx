@@ -14,11 +14,6 @@ import {
 } from '@pages/explorer/components/upload/uploadFile.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import {
-  invalidateFiles,
-  invalidateFolders,
-  invalidateUsage,
-} from '@lib/query.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import { Collapse } from 'react-collapse';
 import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
@@ -138,9 +133,6 @@ export function FileUploadContent({
       setSelectForUpload(null);
       setToUpload(null);
       formRef.current?.reset();
-      invalidateFiles().then();
-      invalidateFolders().then();
-      invalidateUsage().then();
       return;
     }
 
@@ -276,15 +268,15 @@ export function FileUploadContent({
       <div
         {...getRootProps()}
         className={cn(
-          'hidden h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 md:flex',
-          'items-center justify-center text-center text-2xl font-bold text-stone-500 cursor-pointer',
+          'max-sm:h-36 h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 flex',
+          'items-center justify-center text-center text-xl md:text-2xl font-bold text-stone-500 cursor-pointer',
           isDragActive && 'border-blue-400/50 bg-blue-100',
         )}>
         <input {...getInputProps({ id: 'files' })} />
         {isDragActive ? (
           <p>Release the files here</p>
         ) : (
-          <p>Drop some files here</p>
+          <p>Click to select or drop some files here</p>
         )}
       </div>
       <DialogFooter

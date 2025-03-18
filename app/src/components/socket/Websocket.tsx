@@ -11,7 +11,12 @@ import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage
 import { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate';
 import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
-import { handlePresenceOperationsUpdate } from '@lib/query.ts';
+import {
+  handlePresenceOperationsUpdate,
+  invalidateFiles,
+  invalidateFolder,
+  invalidateUsage,
+} from '@lib/query.ts';
 import {
   SocialUpdateState,
   useSocialUpdate,
@@ -38,8 +43,6 @@ function Connector() {
     if (lastJsonMessage)
       handleServerAction(lastJsonMessage as PresenceMessage, socialUpdate);
   }, [lastJsonMessage]);
-
-  //TODO handle lastJsonMessage
 
   return null;
 }
@@ -87,5 +90,12 @@ function handleServerAction(
       action.OperationsUpdate as PresenceOperationsUpdate;
 
     handlePresenceOperationsUpdate(operationsUpdate);
+  }
+
+  if ('ExplorerUpdate' in action) {
+    //const explorerUpdate = action.ExplorerUpdate as PresenceExplorerUpdate;
+    invalidateFiles().then();
+    invalidateFolder().then();
+    invalidateUsage().then();
   }
 }

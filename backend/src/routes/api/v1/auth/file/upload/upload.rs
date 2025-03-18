@@ -21,6 +21,8 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::Arc;
 use tower_sessions::Session;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::{PresenceExplorerUpdate};
 
 #[derive(Deserialize)]
 pub struct FileUploadParams {
@@ -68,10 +70,7 @@ pub async fn upload_file(
     mut multipart: Multipart,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let folder = match folder_id {
-        Ok(Path(id)) => Some(id),
-        Err(_) => None,
-    };
+    let folder = folder_id.ok().map(|Path(id)| id);
 
     let user = state.user_service.get_auth_user(user_id).await?;
 
@@ -217,6 +216,12 @@ pub async fn upload_file(
     } else {
         None
     };
+
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: folder.map(|f| f.to_string()),
+        })
+    }).await;
 
     tracing::debug!("Pending {}", pending_image_formats.len());
 

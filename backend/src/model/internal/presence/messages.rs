@@ -38,3 +38,9 @@ pub struct PresenceSocialUpdate {
 pub struct PresenceOperationsUpdate {
     pub content: Vec<OperationModelDTO>,
 }
+
+#[derive(Serialize, Clone, TS)]
+#[ts(export)]
+pub struct PresenceExplorerUpdate {
+    pub folder_id: Option<String>
+}
