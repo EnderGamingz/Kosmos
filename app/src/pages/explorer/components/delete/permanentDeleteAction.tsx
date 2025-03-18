@@ -1,10 +1,4 @@
-import {
-  invalidateData,
-  invalidateFiles,
-  invalidateFolders,
-  invalidateShares,
-  invalidateUsage,
-} from '@lib/query.ts';
+import { invalidateShares } from '@lib/query.ts';
 import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -49,8 +43,9 @@ export function PermanentDeleteAction({
             canDismiss: true,
           });
 
-          invalidateData(deleteData.type).then();
-          invalidateUsage().then();
+          // Handled by presence
+          // invalidateData(deleteData.type).then();
+          // invalidateUsage().then();
         })
         .catch(err => {
           notification.updateNotification(deleteId, {
@@ -119,11 +114,12 @@ export function MultiPermanentDelete({
             canDismiss: true,
           });
 
-          if (deleteData.files.length) invalidateFiles().then();
-          if (deleteData.folders.length) invalidateFolders().then();
+          // Handled by presence
+          //if (deleteData.files.length) invalidateFiles().then();
+          //if (deleteData.folders.length) invalidateFolders().then();
           invalidateShares().then();
 
-          invalidateUsage().then();
+          //invalidateUsage().then();
           setSelectedNone();
         })
         .catch(err => {

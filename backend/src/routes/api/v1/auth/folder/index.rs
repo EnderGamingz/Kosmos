@@ -8,6 +8,9 @@ use ts_rs::TS;
 use validator::Validate;
 
 use crate::model::folder::{FolderModelDTO, SimpleDirectoryDTO};
+use crate::model::internal::entity_id::{EntityId, OptionEntityId};
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::{GetFilesSortParams, MoveParams, RenameParams};
@@ -113,6 +116,13 @@ pub async fn create_folder(
         .await?
         .to_string();
 
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: folder_id.map(|f| f.to_string()),
+        })
+    }).await;
+
+
     Ok(AppSuccess::CREATED { id: Some(folder) })
 }
 
@@ -168,51 +178,20 @@ pub async fn move_folder(
         .move_folder(user_id, folder_id, move_to_folder)
         .await?;
 
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: None,
+        })
+    }).await;
+
     Ok(AppSuccess::MOVED)
 }
 
 #[derive(Deserialize)]
 pub struct MultiMovePayload {
-    files: Vec<String>,
-    folders: Vec<String>,
-    target_folder: Option<String>,
-}
-
-impl MultiMovePayload {
-    pub fn get_file_ids(&self) -> Result<Vec<i64>, AppError> {
-        self.files
-            .iter()
-            .map(|id| {
-                id.parse::<i64>().map_err(|_| AppError::BadRequest {
-                    error: Some("Invalid file id".to_string()),
-                })
-            })
-            .collect()
-    }
-
-    pub fn get_folder_ids(&self) -> Result<Vec<i64>, AppError> {
-        self.folders
-            .iter()
-            .map(|id| {
-                id.parse::<i64>().map_err(|_| AppError::BadRequest {
-                    error: Some("Invalid folder id".to_string()),
-                })
-            })
-            .collect()
-    }
-
-    pub fn get_target_folder_id(&self) -> Result<Option<i64>, AppError> {
-        if let Some(target_folder) = &self.target_folder {
-            return Ok(target_folder
-                .parse::<i64>()
-                .map(Some)
-                .map_err(|_| AppError::BadRequest {
-                    error: Some("Invalid target folder id".to_string()),
-                }))?;
-        }
-
-        Ok(None)
-    }
+    files: Vec<EntityId>,
+    folders: Vec<EntityId>,
+    target_folder: OptionEntityId,
 }
 
 pub async fn multi_move(
@@ -222,9 +201,9 @@ pub async fn multi_move(
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let file_ids = payload.get_file_ids()?;
-    let folder_ids = payload.get_folder_ids()?;
-    let target_folder_id = payload.get_target_folder_id()?;
+    let file_ids = payload.files.into_iter().map(|f| f.into()).collect::<Vec<i64>>();
+    let folder_ids = payload.folders.into_iter().map(|f| f.into()).collect::<Vec<i64>>();
+    let target_folder_id = payload.target_folder.into();
 
     if let Some(target_folder_id) = target_folder_id {
         if folder_ids.contains(&target_folder_id) {
@@ -244,6 +223,13 @@ pub async fn multi_move(
             &state.file_service,
         )
         .await?;
+
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: target_folder_id.map(|f| f.to_string()),
+        })
+    }).await;
+
 
     Ok(AppSuccess::MOVED)
 }
@@ -268,6 +254,13 @@ pub async fn rename_folder(
         .folder_service
         .rename_folder(user_id, folder_id, payload.name, folder.parent_id)
         .await?;
+
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: folder.parent_id.map(|f| f.to_string()),
+        })
+    }).await;
+
 
     Ok(AppSuccess::UPDATED)
 }

@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { invalidateData } from '@lib/query.ts';
 import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -52,8 +51,8 @@ export function RenameModalContent({
             status: 'Renamed',
             timeout: 1000,
           });
-
-          invalidateData(renameData.type).then();
+          // Handled by presence
+          //invalidateData(renameData.type).then();
           onClose();
         })
         .catch(e => {

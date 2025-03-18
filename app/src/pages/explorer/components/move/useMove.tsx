@@ -6,7 +6,6 @@ import {
   MoveData,
   MultiMoveData,
 } from '@pages/explorer/components/move/moveModalContent.tsx';
-import { invalidateData } from '@lib/query.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 
 export function useMove(
@@ -60,7 +59,8 @@ export function useMove(
           if (moveData.id) itemsMoved.push(moveData.id);
 
           unselect(itemsMoved);
-          invalidateData(moveData.type).then();
+          // Handled by presence
+          //invalidateData(moveData.type).then();
           onClose?.();
         })
         .catch(e => {

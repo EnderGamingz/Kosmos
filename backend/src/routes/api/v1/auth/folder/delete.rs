@@ -1,4 +1,6 @@
 use crate::model::internal::file_type::FileType;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::{SessionService, UserId};
@@ -68,6 +70,16 @@ pub async fn multi_delete(
             .permanently_delete_file(file_id, Some(file.file_type))
             .await?;
     }
+
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+            },
+        )
+        .await;
 
     Ok(AppSuccess::DELETED)
 }
@@ -141,6 +153,16 @@ pub async fn delete_folder(
     }
 
     state.folder_service.delete_folder(folder_id).await?;
+
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+            },
+        )
+        .await;
 
     Ok(AppSuccess::DELETED)
 }

@@ -1,3 +1,6 @@
+use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
@@ -6,9 +9,6 @@ use axum::extract::{Path, State};
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
-use crate::model::internal::entity_id::EntityId;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 
 pub async fn mark_file_for_deletion(
     State(state): KosmosState,
@@ -36,11 +36,17 @@ pub async fn mark_file_for_deletion(
         .mark_file_for_deletion(file_id, user_id)
         .await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: file.parent_folder_id.map(|f| f.to_string()),
-        })
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: file.parent_folder_id.map(|f| f.to_string()),
+                }),
+            },
+        )
+        .await;
 
     Ok(AppSuccess::UPDATED)
 }
@@ -57,22 +63,22 @@ pub async fn mark_files_for_deletion(
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let file_ids = payload
-        .files
-        .iter()
-        .map(|f| f.into())
-        .collect();
+    let file_ids: Vec<i64> = payload.files.into_iter().map(|f| f.into()).collect();
 
     state
         .file_service
         .mark_files_for_deletion(file_ids, user_id)
         .await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: None,
-        })
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+            },
+        )
+        .await;
 
     Ok(AppSuccess::UPDATED)
 }
@@ -100,11 +106,17 @@ pub async fn restore_file(
 
     state.file_service.restore_file(file_id).await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: file.parent_folder_id.map(|f| f.to_string()),
-        })
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: file.parent_folder_id.map(|f| f.to_string()),
+                }),
+            },
+        )
+        .await;
 
     Ok(AppSuccess::UPDATED)
 }
@@ -137,11 +149,17 @@ pub async fn permanently_delete_file(
         .permanently_delete_file(file.id, Some(file.file_type))
         .await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: file.parent_folder_id.map(|f| f.to_string()),
-        })
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: file.parent_folder_id.map(|f| f.to_string()),
+                }),
+            },
+        )
+        .await;
 
     Ok(AppSuccess::DELETED)
 }

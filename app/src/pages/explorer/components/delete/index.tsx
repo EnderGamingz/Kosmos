@@ -2,7 +2,6 @@ import { PermanentDeleteAction } from './permanentDeleteAction.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { invalidateFiles, invalidateUsage } from '@lib/query.ts';
 import { ArchiveBoxXMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext } from 'react';
@@ -25,8 +24,9 @@ export function MoveToTrash({
   const trashAction = useMutation({
     mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/bin`),
     onSuccess: () => {
-      invalidateFiles().then();
-      invalidateUsage().then();
+      // Handled by presence
+      //invalidateFiles().then();
+      //invalidateUsage().then();
     },
   });
 
@@ -74,8 +74,9 @@ export function MultiMoveToTrash({
           files: deleteData.files.map(file => file.id),
         })
         .then(async () => {
-          invalidateFiles().then();
-          invalidateUsage().then();
+          // Handled by presence
+          //invalidateFiles().then();
+          //invalidateUsage().then();
 
           onClose();
           setSelectedNone();
