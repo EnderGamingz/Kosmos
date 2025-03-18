@@ -45,27 +45,38 @@ export default function FileDisplay({
     setFile(undefined);
   };
 
+  const disabled = scopedIndex === -1;
+
   useArrowKeys({
-    left: () =>
+    left: () => {
+      if (disabled) return;
       setScopedIndex(prev => {
-        if (prev - 1 < 0) return -1;
+        if (prev - 1 < 0) {
+          close();
+          return -1;
+        }
         return prev - 1;
-      }),
-    right: () =>
+      });
+    },
+    right: () => {
+      if (disabled) return;
       setScopedIndex(prev => {
-        if (prev + 1 > filesInScope.length) return filesInScope.length;
+        if (prev + 1 > filesInScope.length) {
+          close();
+          return -1;
+        }
         return prev + 1;
-      }),
-    deps: [filesInScope.length],
+      });
+    },
+    deps: [filesInScope.length, disabled],
   });
 
   useEffect(() => {
-    setScopedIndex(fileIndex ?? -1);
+    if (fileIndex === undefined) close();
+    else setScopedIndex(fileIndex !== -1 ? fileIndex : -1);
   }, [fileIndex]);
 
-  useEffect(() => {
-    setScopedIndex(-1);
-  }, [currentFolder]);
+  useEffect(close, [currentFolder]);
 
   const file = useMemo(() => {
     if (scopedIndex === -1) return undefined;
@@ -82,7 +93,7 @@ export default function FileDisplay({
       file={file}
       isSelected={isSelected}
       onSelect={onSelect}
-      onClose={() => close()}
+      onClose={close}
       shareUuid={shareUuid}
     />
   );
