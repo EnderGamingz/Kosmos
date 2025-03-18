@@ -7,7 +7,10 @@ use tower_sessions::Session;
 use validator::Validate;
 
 use crate::model::file::FileModelDTO;
+use crate::model::internal::entity_id::EntityId;
 use crate::model::internal::file_type::FileType;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::folder::SortByFolders;
@@ -193,15 +196,7 @@ pub async fn get_file_by_type(
 #[derive(Deserialize)]
 pub struct CreateMarkdownFilePayload {
     pub name: String,
-    pub parent_folder_id: Option<String>,
-}
-
-impl CreateMarkdownFilePayload {
-    pub fn get_folder_id(&self) -> Option<i64> {
-        self.parent_folder_id
-            .as_ref()
-            .and_then(|id| id.parse::<i64>().ok())
-    }
+    pub parent_folder_id: Option<EntityId>,
 }
 
 pub async fn create_markdown_file(
@@ -210,8 +205,9 @@ pub async fn create_markdown_file(
     Json(payload): Json<CreateMarkdownFilePayload>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
-    let parent_folder_id = payload.get_folder_id();
     let file_name = payload.name.trim().to_string();
+    let parent_folder_id = payload.parent_folder_id.into();
+
     let file_exists = state
         .file_service
         .check_file_exists_in_folder(&file_name, parent_folder_id)
@@ -228,6 +224,12 @@ pub async fn create_markdown_file(
         .create_empty_markdown_file(user_id, parent_folder_id, file_name)
         .await?
         .id;
+
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: parent_folder_id.map(|f| f.to_string()),
+        })
+    }).await;
 
     Ok(AppSuccess::CREATED {
         id: Some(id.to_string()),
@@ -286,6 +288,12 @@ pub async fn move_file(
         .move_file(user_id, file_id, move_to_folder)
         .await?;
 
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: None,
+        })
+    }).await;
+
     Ok(AppSuccess::MOVED)
 }
 
@@ -315,6 +323,12 @@ pub async fn rename_file(
         .file_service
         .rename_file(user_id, file.id, params.name, file.parent_folder_id)
         .await?;
+
+    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
+        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+            folder_id: file.parent_folder_id.map(|f| f.to_string()),
+        })
+    }).await;
 
     Ok(AppSuccess::UPDATED)
 }

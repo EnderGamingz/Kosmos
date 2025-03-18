@@ -21,5 +21,7 @@ pub async fn favorite_file(
 
     state.file_service.set_favorite(file.id, !file.favorite).await?;
 
+
+
     Ok(AppSuccess::UPDATED)
 }
