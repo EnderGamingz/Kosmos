@@ -126,6 +126,7 @@ pub async fn send_personal_message(
     let presence_message = PresenceMessage {
         action: PresenceAction::NewChatMessage(PresenceNewChatMessage {
             chat_id: user_id.to_string(),
+            chat_type: chat.chat_type,
             content: message.clone(),
         }),
     };

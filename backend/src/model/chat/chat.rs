@@ -19,7 +19,7 @@ pub struct DbChatModel {
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
 pub struct ChatModelDTO {
-    pub id: i64,
+    pub id: String,
     pub members: Vec<ChatMemberModelDTO>,
     pub name: String,
     pub description: Option<String>,
@@ -32,7 +32,7 @@ pub struct ChatModelDTO {
 impl DbChatModel {
     pub fn to_dto(&self, members: Vec<ChatMemberModelDTO>) -> ChatModelDTO {
         ChatModelDTO {
-            id: self.id,
+            id: self.id.to_string(),
             members,
             name: self.name.clone(),
             description: self.description.clone(),
@@ -53,7 +53,7 @@ impl DbChatModel {
             .map(|c| c.full_name.clone().unwrap_or(c.username.clone()));
 
         ChatModelDTO {
-            id: self.id,
+            id: self.id.to_string(),
             members,
             name: member_not_self.unwrap_or(self.name.clone()),
             description: None,

@@ -3,6 +3,7 @@ import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import { ChatMemberModelDTO } from '@bindings/ChatMemberModelDTO.ts';
 import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
+import { getPartner } from '@utils/social/getPartner.ts';
 
 export type ChatContext = {
   chatId: string;
@@ -61,11 +62,7 @@ export default function ChatProvider({
         isPersonalChat,
         chat,
         user,
-        getPartner: () => {
-          if (!isPersonalChat)
-            throw new Error('Cannot get partner of group chat');
-          return chat.members.find(u => u.user_id !== user.id);
-        },
+        getPartner: getPartner(isPersonalChat, chat, user),
         replyTo,
         setReplyTo,
         editMessage,

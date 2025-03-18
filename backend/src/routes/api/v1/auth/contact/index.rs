@@ -1,16 +1,16 @@
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceSocialUpdate;
 use crate::model::profile::{ProfileContactModelDTO, ProfileContactPendingModelDTO};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
-use axum::extract::{State, Query};
+use axum::extract::{Query, State};
 use axum::Json;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
 use ts_rs::TS;
 use validator::Validate;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::model::internal::presence::messages::PresenceSocialUpdate;
 
 pub async fn notify_attention_status_for_user(
     state: &AppState,
@@ -26,7 +26,10 @@ pub async fn notify_attention_status_for_user(
             content: requires_attention,
         }),
     };
-    state.presence_handler.broadcast_to_user(user_id, presence_message).await;
+    state
+        .presence_handler
+        .broadcast_to_user(user_id, presence_message)
+        .await;
     Ok(())
 }
 
@@ -103,7 +106,7 @@ fn get_default_page() -> i64 {
 pub async fn get_contacts_profiles(
     State(state): KosmosState,
     session: Session,
-    Valid(Query(query)): Valid<Query<GetContactProfilesParamsDTO>>
+    Valid(Query(query)): Valid<Query<GetContactProfilesParamsDTO>>,
 ) -> Result<Json<Vec<ProfileContactModelDTO>>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
 

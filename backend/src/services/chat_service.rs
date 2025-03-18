@@ -224,7 +224,8 @@ impl ChatService {
         params: &GetChatsQueryDTO,
     ) -> Result<Vec<DbChatModel>, AppError> {
         let mut query = QueryBuilder::new(
-            "SELECT * FROM chats WHERE id IN (SELECT chat_id FROM chat_members WHERE user_id = ",
+            "SELECT * FROM chats WHERE id IN (SELECT chat_id FROM chat_members cm
+                      JOIN contacts c ON cm.user_id = c.user_id_1 OR cm.user_id = c.user_id_2 WHERE user_id = ",
         );
         query.push_bind(user_id).push(")");
 

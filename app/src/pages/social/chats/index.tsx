@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from '@components/ui/popover.tsx';
 import { PopoverClose } from '@radix-ui/react-popover';
+import { getChatUrl } from '@utils/social/getChatUrl.ts';
 
 export default function ChatsRouter() {
   return (
@@ -122,11 +123,9 @@ function ChatItem({
   const partnerInfo = useMemo(() => {
     if (!isPersonalChat) return undefined;
     return chat.members.find(u => u.user_id !== userId);
-  }, []);
+  }, [chat.members, isPersonalChat, userId]);
 
-  const url = isPersonalChat
-    ? `/social/chats/user/${partnerInfo?.user_id}`
-    : `/social/chats/group/${chat.id}`;
+  const url = getChatUrl(isPersonalChat, chat.id, partnerInfo?.user_id ?? '');
 
   return (
     <li>

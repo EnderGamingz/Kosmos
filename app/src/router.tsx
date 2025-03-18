@@ -37,6 +37,7 @@ import { DefaultMetadata } from '@components/metadata.tsx';
 import ProfileSettings from '@pages/settings/profile';
 import SocialRouter from '@pages/social/router.tsx';
 import Websocket from '@components/socket/Websocket.tsx';
+import SocialUpdateOverlay from '@components/notifications/socialUpdate';
 
 export default function Router() {
   const fetchUser = useUserState(s => s.fetchUser);
@@ -119,6 +120,7 @@ export default function Router() {
       <NotificationIndicator />
       <SystemMessage />
       <Websocket />
+      <SocialUpdateOverlay />
     </BrowserRouter>
   );
 }

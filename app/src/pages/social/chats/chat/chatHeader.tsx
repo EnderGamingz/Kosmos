@@ -4,7 +4,7 @@ import UserAvatar from '@components/UserAvatar.tsx';
 
 export function ChatHeader() {
   const { chat, getPartner } = useChatContext();
-  const partner = useMemo(getPartner, [chat]);
+  const partner = useMemo(getPartner, [getPartner, chat]);
 
   return (
     <div

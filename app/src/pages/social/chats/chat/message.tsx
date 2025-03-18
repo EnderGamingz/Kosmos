@@ -71,7 +71,7 @@ export function ChatMessages() {
   );
 }
 
-function ChatMessage({
+export function ChatMessage({
   message,
   isPrevSameUser,
   isHover,
@@ -83,19 +83,19 @@ function ChatMessage({
   onEdit,
 }: {
   message: OptimisticMessage;
-  isPrevSameUser: boolean;
-  isHover: boolean;
-  setHover: (id?: string) => void;
-  isFromCurrentUser: boolean;
-  onReplyTo: () => void;
-  activeReply: boolean;
-  activeEdit: boolean;
-  onEdit: () => void;
+  isPrevSameUser?: boolean;
+  isHover?: boolean;
+  setHover?: (id?: string) => void;
+  isFromCurrentUser?: boolean;
+  onReplyTo?: () => void;
+  activeReply?: boolean;
+  activeEdit?: boolean;
+  onEdit?: () => void;
 }) {
   return (
     <motion.li
-      onMouseEnter={() => setHover(message.id)}
-      onMouseLeave={() => setHover(undefined)}
+      onMouseEnter={() => setHover?.(message.id)}
+      onMouseLeave={() => setHover?.(undefined)}
       className={cn(
         'group relative px-2 py-0.5 transition-all hover:bg-border/50 rounded-md',
         'outline -outline-offset-2',
@@ -162,7 +162,10 @@ function ChatMessage({
               className={'w-12 h-12 my-1'}
             />
             <div className={'space-y-1'}>
-              <div className={'flex gap-2 items-end'}>
+              <div
+                className={
+                  'flex gap-2 items-end max-sm:flex-col max-sm:items-start'
+                }>
                 <p className={'leading-5 font-medium'}>
                   {message.author.full_name || message.author.username}
                 </p>
@@ -219,8 +222,8 @@ function EditMessageButton({
   onClick,
   active,
 }: {
-  onClick: () => void;
-  active: boolean;
+  onClick?: () => void;
+  active?: boolean;
 }) {
   return (
     <Button
@@ -237,8 +240,8 @@ function ReplyToButton({
   onClick,
   active,
 }: {
-  onClick: () => void;
-  active: boolean;
+  onClick?: () => void;
+  active?: boolean;
 }) {
   return (
     <Button

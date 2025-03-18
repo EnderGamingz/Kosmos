@@ -12,6 +12,10 @@ import { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate';
 import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
 import { handlePresenceOperationsUpdate } from '@lib/query.ts';
+import {
+  SocialUpdateState,
+  useSocialUpdate,
+} from '@stores/socialUpdateStore.ts';
 
 export default function Websocket() {
   const user = useUserState(s => s.user);
@@ -22,6 +26,7 @@ export default function Websocket() {
 }
 
 function Connector() {
+  const socialUpdate = useSocialUpdate();
   const { lastJsonMessage } = useWebSocket(BASE_URL + WEBSOCKET_ENDPOINT, {
     onOpen: () => console.log('[Presence] Connection established'),
     onClose: () => console.log('[Presence] Connection closed'),
@@ -30,7 +35,8 @@ function Connector() {
   });
 
   useEffect(() => {
-    if (lastJsonMessage) handleServerAction(lastJsonMessage as PresenceMessage);
+    if (lastJsonMessage)
+      handleServerAction(lastJsonMessage as PresenceMessage, socialUpdate);
   }, [lastJsonMessage]);
 
   //TODO handle lastJsonMessage
@@ -38,13 +44,17 @@ function Connector() {
   return null;
 }
 
-function handleServerAction(data: PresenceMessage) {
+function handleServerAction(
+  data: PresenceMessage,
+  socialUpdate: SocialUpdateState,
+) {
   const action = data?.action;
   if (!action) return;
 
   if ('NewChatMessage' in action) {
     const newChatMessage = action.NewChatMessage as PresenceNewChatMessage;
 
+    socialUpdate.setChatMessage(newChatMessage);
     ChatQuery.handlePresenceNewMessage(newChatMessage);
     return;
   }
@@ -66,9 +76,9 @@ function handleServerAction(data: PresenceMessage) {
   }
 
   if ('SocialUpdate' in action) {
-    const socialUpdate = action.SocialUpdate as PresenceSocialUpdate;
+    const data = action.SocialUpdate as PresenceSocialUpdate;
 
-    ContactQuery.handlePresenceSocialUpdate(socialUpdate);
+    ContactQuery.handlePresenceSocialUpdate(data);
     return;
   }
 
