@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT users.id as user_id, users.avatar_image_id, users.username, profiles.full_name\n            FROM users\n                     INNER JOIN profiles ON users.id = profiles.user_id\n            WHERE users.id = $1;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "avatar_image_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "username",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "full_name",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "c6cdbb9840940933820b433e6f1876ce37f6253065c3bf119ac7489d1ec30921"
+}

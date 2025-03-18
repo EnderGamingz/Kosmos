@@ -1,5 +1,5 @@
 # Switching from alpine to debian as openssl comilation issues for webauthn
-FROM rust:1.80.1-bookworm AS builder
+FROM rust:bookworm AS builder
 
 WORKDIR /usr/src
 
