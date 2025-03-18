@@ -75,6 +75,11 @@ pub async fn authentication_complete(
         .get_user_from_passkey_credential_id(auth_result.cred_id())
         .await?;
 
+    let has_profile = state.profile_service.check_profile_exists(user.id).await?;
+    if !has_profile {
+        state.profile_service.create_empty_profile(user.id).await?;
+    }
+
     session
         .insert(SESSION_USER_ID_KEY, user.id)
         .await
