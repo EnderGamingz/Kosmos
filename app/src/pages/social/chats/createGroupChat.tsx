@@ -26,7 +26,6 @@ export default function CreateGroupChat() {
     },
   });
 
-  //TODO: fix creation
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     const form = new FormData(event.currentTarget);

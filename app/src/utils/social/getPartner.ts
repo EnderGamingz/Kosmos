@@ -6,8 +6,6 @@ export function getPartner(
   chat: ChatModelDTO,
   user: UserModelDTO,
 ) {
-  return () => {
-    if (!isPersonalChat) throw new Error('Cannot get partner of group chat');
-    return chat.members.find(u => u.user_id !== user.id);
-  };
+  if (!isPersonalChat) return undefined;
+  return chat.members.find(u => u.user_id !== user.id);
 }

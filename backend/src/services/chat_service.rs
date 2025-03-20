@@ -280,6 +280,11 @@ impl ChatService {
             AppError::InternalError
         })?;
 
+        tx.commit().await.map_err(|e| {
+            tracing::error!("Error committing transaction: {}", e);
+            AppError::InternalError
+        })?;
+
         Ok(chat)
     }
 

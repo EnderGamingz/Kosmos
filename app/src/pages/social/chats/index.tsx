@@ -25,6 +25,10 @@ export default function ChatsRouter() {
     <div className={'flex flex-col grow'}>
       <Routes>
         <Route path={'user/:userId'} element={<UserChatPage personalChat />} />
+        <Route
+          path={'group/:chatId'}
+          element={<UserChatPage personalChat={false} />}
+        />
         <Route index element={<ChatsHome />} />
       </Routes>
     </div>

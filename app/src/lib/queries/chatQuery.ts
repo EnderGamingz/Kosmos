@@ -36,7 +36,7 @@ export class ChatQuery {
     isPersonalChat,
   }: {
     chatId: string;
-    isPersonalChat: boolean;
+    isPersonalChat?: boolean;
   }) =>
     useSuspenseQuery({
       queryFn: () =>

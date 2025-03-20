@@ -7,18 +7,19 @@ import { ChatMessages } from '@pages/social/chats/chat/message.tsx';
 import { WriteMessageForm } from '@pages/social/chats/chat/writeMessageForm.tsx';
 
 export function UserChatPage({ personalChat }: { personalChat: boolean }) {
-  const { userId } = useParams();
+  const { userId, chatId } = useParams();
+  const id = personalChat ? userId : chatId;
   const user = useUserState(s => s.user);
-  if (!userId || !user) return <Navigate to={'/social/chats'} />;
+  if (!id || !user) return <Navigate to={'/social/chats'} />;
 
   const { data } = ChatQuery.useChatSuspense({
-    chatId: userId,
+    chatId: id,
     isPersonalChat: personalChat,
   });
 
   return (
     <ChatProvider
-      chatId={userId}
+      chatId={id}
       isPersonalChat={personalChat}
       chat={data}
       user={user}>

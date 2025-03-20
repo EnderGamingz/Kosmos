@@ -62,7 +62,7 @@ export default function ChatProvider({
         isPersonalChat,
         chat,
         user,
-        getPartner: getPartner(isPersonalChat, chat, user),
+        getPartner: () => getPartner(isPersonalChat, chat, user),
         replyTo,
         setReplyTo,
         editMessage,

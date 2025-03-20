@@ -1,6 +1,7 @@
 import { useChatContext } from '@pages/social/chats/context.tsx';
 import { useMemo } from 'react';
 import UserAvatar from '@components/UserAvatar.tsx';
+import { cn } from '@lib/utils.ts';
 
 export function ChatHeader() {
   const { chat, getPartner } = useChatContext();
@@ -21,11 +22,17 @@ export function ChatHeader() {
           />
         </div>
       )}
-      <p className={'text-xl animate-fade-in-left delay-200'}>{chat.name}</p>
+      <p
+        className={cn(
+          'text-xl animate-fade-in-left delay-200',
+          !partner && 'ml-2',
+        )}>
+        {chat.name}
+      </p>
       <div className={'ml-auto mr-3'}>
         {!partner && (
           <p className={'text-sm text-muted-foreground'}>
-            {chat.members.length} members
+            {chat.members.length} member{chat.members.length > 1 ? 's' : ''}
           </p>
         )}
       </div>
