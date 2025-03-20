@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO files_on_album (album_id, file_id) SELECT * FROM UNNEST($1::BIGINT[], $2::BIGINT[])",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8Array",
+        "Int8Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c576e8e8d15dafdb1633dcd52b14bb98b7b7e705550b71853ef46df0703ea876"
+}

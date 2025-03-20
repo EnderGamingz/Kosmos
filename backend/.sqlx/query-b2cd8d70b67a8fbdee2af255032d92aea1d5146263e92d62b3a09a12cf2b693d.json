@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE files SET preview_status = $1 WHERE preview_status = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int2",
+        "Int2"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b2cd8d70b67a8fbdee2af255032d92aea1d5146263e92d62b3a09a12cf2b693d"
+}

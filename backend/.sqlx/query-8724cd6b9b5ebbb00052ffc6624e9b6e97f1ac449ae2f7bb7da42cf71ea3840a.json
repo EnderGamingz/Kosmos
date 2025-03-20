@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE shares SET last_access = now() WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8724cd6b9b5ebbb00052ffc6624e9b6e97f1ac449ae2f7bb7da42cf71ea3840a"
+}

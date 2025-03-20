@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE folder SET parent_id = $1 WHERE id = ANY($2) AND user_id = $3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8Array",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fa0593ed9eeca709e77d1c471f55b15b7d25c57e7f08c1c1385cb08daf06ffe3"
+}
