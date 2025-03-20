@@ -46,16 +46,56 @@ impl ChatService {
         ChatService { db_pool, sf }
     }
 
+    pub async fn rename_group_chat(&self, chat_id: i64, name: String) -> Result<(), AppError> {
+        sqlx::query!("UPDATE chats SET name = $1 WHERE id = $2", name, chat_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error renaming group chat: {}", e);
+                AppError::InternalError
+            })?;
+        Ok(())
+    }
+
     pub async fn remove_user_from_chat(
         &self,
         user_id: UserId,
         chat_id: i64,
     ) -> Result<(), AppError> {
-        sqlx::query!("DELETE FROM chat_members WHERE user_id = $1 AND chat_id = $2", user_id, chat_id)
+        sqlx::query!(
+            "DELETE FROM chat_members WHERE user_id = $1 AND chat_id = $2",
+            user_id,
+            chat_id
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error removing user from chat: {}", e);
+            AppError::InternalError
+        })?;
+        Ok(())
+    }
+
+    pub async fn get_chat_member_count(&self, chat_id: i64) -> Result<i64, AppError> {
+        sqlx::query!(
+            "SELECT COUNT(*) FROM chat_members WHERE chat_id = $1",
+            chat_id
+        )
+        .fetch_one(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error fetching chat member count: {}", e);
+            AppError::InternalError
+        })
+        .map(|row| row.count.unwrap_or(0))
+    }
+
+    pub async fn delete_chat(&self, chat_id: i64) -> Result<(), AppError> {
+        sqlx::query!("DELETE FROM chats WHERE id = $1", chat_id)
             .execute(&self.db_pool)
             .await
             .map_err(|e| {
-                tracing::error!("Error removing user from chat: {}", e);
+                tracing::error!("Error deleting chat: {}", e);
                 AppError::InternalError
             })?;
         Ok(())
@@ -139,21 +179,18 @@ impl ChatService {
     ) -> Result<Option<DbChatModel>, AppError> {
         sqlx::query_as!(
             DbChatModel,
-            r#"SELECT * FROM chats WHERE chat_type = $3 AND id = $1
-                      AND EXISTS (SELECT 1
-                                  FROM chat_members
-                                  WHERE user_id = $2
-                                    AND chat_id = $1);"#,
+            r#"SELECT * FROM chats WHERE chat_type = $3 AND id = $1 AND EXISTS
+                (SELECT 1 FROM chat_members WHERE user_id = $2 AND chat_id = $1);"#,
             chat_id,
             user_id,
             ChatType::Group.to_string()
         )
-            .fetch_optional(&self.db_pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Error checking personal chat: {}", e);
-                AppError::InternalError
-            })
+        .fetch_optional(&self.db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error checking personal chat: {}", e);
+            AppError::InternalError
+        })
     }
 
     pub async fn get_personal_chat_optional(
@@ -309,13 +346,38 @@ impl ChatService {
         user_id: i64,
         params: &GetChatsQueryDTO,
     ) -> Result<Vec<DbChatModel>, AppError> {
-        let mut query = QueryBuilder::new(
-            "SELECT * FROM chats WHERE id IN (SELECT chat_id FROM chat_members cm
-                      JOIN contacts c ON cm.user_id = c.user_id_1 OR cm.user_id = c.user_id_2 WHERE user_id = ",
-        );
-        query.push_bind(user_id).push(")");
-
+        // SELECT c.*
+        // FROM chats c
+        // WHERE (c.chat_type = 'personal'
+        //     AND EXISTS (SELECT 1
+        //                 FROM chat_members AS cm
+        //                          JOIN chat_members AS cm2 ON cm.chat_id = cm2.chat_id AND cm.user_id != cm2.user_id
+        //                          JOIN contacts AS con
+        //                               ON ((con.user_id_1 = <id> AND con.user_id_2 = cm2.user_id) OR
+        //                                   (con.user_id_1 = cm2.user_id AND con.user_id_2 = <id>))
+        //                 WHERE cm.user_id = <id>
+        //                   AND c.id = cm.chat_id))
+        //    OR (c.chat_type = 'group'
+        //     AND EXISTS (SELECT 1
+        //                 FROM chat_members AS cm
+        //                 WHERE cm.user_id = <id>
+        //                   AND c.id = cm.chat_id));
+        let mut query = QueryBuilder::new("SELECT c.* FROM chats c WHERE (c.chat_type = ");
         query
+            .push_bind(ChatType::Personal.to_string())
+            .push(" AND EXISTS (SELECT 1 FROM chat_members AS cm
+                         JOIN chat_members AS cm2 ON cm.chat_id = cm2.chat_id AND cm.user_id != cm2.user_id
+                         JOIN contacts AS con ON ((con.user_id_1 =")
+            .push_bind(user_id)
+            .push(" AND con.user_id_2 = cm2.user_id) OR (con.user_id_1 = cm2.user_id AND con.user_id_2 = ")
+            .push_bind(user_id)
+            .push(" )) WHERE cm.user_id = ")
+            .push_bind(user_id)
+            .push(" AND c.id = cm.chat_id)) OR (c.chat_type = ")
+            .push_bind(ChatType::Group.to_string())
+            .push(" AND EXISTS (SELECT 1 FROM chat_members AS cm WHERE cm.user_id = ")
+            .push_bind(user_id)
+            .push(" AND c.id = cm.chat_id))")
             .push(" LIMIT ")
             .push_bind(&params.limit)
             .push(" OFFSET ")

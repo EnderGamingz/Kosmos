@@ -1,6 +1,7 @@
 use crate::model::chat::chat::ChatModelDTO;
 use crate::model::internal::chat_type::ChatType;
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::chat::utils;
 use crate::services::chat_service::ChatService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
@@ -9,7 +10,7 @@ use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
-use crate::routes::api::v1::auth::chat::utils;
+use crate::model::profile::ProfileContactModelDTO;
 
 #[derive(Deserialize, Validate, Debug)]
 pub struct GetChatsQueryDTO {
@@ -98,4 +99,37 @@ pub async fn get_group_chat(
     let members = utils::get_chat_members_dto(&state, chat.clone()).await?;
     let chat = chat.to_group_chat_dto(members);
     Ok(Json(chat))
+}
+
+pub async fn get_available_users_for_group_chat(
+    State(state): KosmosState,
+    session: Session,
+    Path(chat_id): Path<i64>,
+) -> Result<Json<Vec<ProfileContactModelDTO>>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    state
+        .contact_service
+        .chat_service
+        .get_group_chat_optional_from_user(user_id, chat_id)
+        .await?
+        .ok_or_else(|| AppError::BadRequest {
+            error: Some("Chat not found".to_string()),
+        })?;
+
+    let contacts = state
+        .contact_service
+        .get_contacts_profiles(user_id)
+        .await?;
+
+    let members = state.contact_service.chat_service.get_chat_members_by_chat_id(chat_id).await?;
+
+    let members_ids = members.iter().map(|m| m.user_id).collect::<Vec<_>>();
+    let available_users = contacts
+        .into_iter()
+        .filter(|c| !members_ids.contains(&c.user_id))
+        .map(|c|c.into())
+        .collect();
+
+    Ok(Json(available_users))
 }

@@ -1,8 +1,8 @@
+use crate::model::internal::contact_request_status::ContactRequestStatus;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::FromRow;
 use ts_rs::TS;
-use crate::model::internal::contact_request_status::ContactRequestStatus;
 
 // Start: Profile Model
 #[derive(Clone, FromRow, Debug, Serialize)]
@@ -51,6 +51,7 @@ impl From<ProfileModel> for ProfileModelDTO {
 pub struct ProfileContactModel {
     pub id: i64,
     pub user_id: i64,
+    pub avatar_image_id: Option<i64>,
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
@@ -66,7 +67,7 @@ pub struct ProfileContactModel {
 pub struct ProfileContactPendingModel {
     pub id: i64,
     pub user_id: i64,
-    pub status:ContactRequestStatus,
+    pub status: ContactRequestStatus,
     pub username: String,
     pub full_name: Option<String>,
 }
@@ -75,6 +76,7 @@ pub struct ProfileContactPendingModel {
 #[ts(export)]
 pub struct ProfileContactModelDTO {
     pub user_id: String,
+    pub has_avatar: bool,
     pub username: String,
     pub full_name: Option<String>,
     pub email: Option<String>,
@@ -88,6 +90,7 @@ impl From<ProfileContactModel> for ProfileContactModelDTO {
     fn from(model: ProfileContactModel) -> Self {
         ProfileContactModelDTO {
             user_id: model.user_id.to_string(),
+            has_avatar: model.avatar_image_id.is_some(),
             username: model.username,
             full_name: model.full_name,
             email: model.email,

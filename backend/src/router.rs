@@ -179,6 +179,9 @@ fn get_chat_router() -> KosmosRouter {
         )
         .route("/group/:chat_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_group_chat))
         .route("/group/:chat_id/leave", post(crate::routes::api::v1::auth::chat::leave::leave_group_chat))
+        .route("/group/:chat_id/rename", post(crate::routes::api::v1::auth::chat::update::rename_group_chat))
+        .route("/group/:chat_id/invite", post(crate::routes::api::v1::auth::chat::invite::invite_user_to_group_chat))
+        .route("/group/:chat_id/available", get(crate::routes::api::v1::auth::chat::index::get_available_users_for_group_chat))
 }
 
 fn get_contact_router() -> KosmosRouter {

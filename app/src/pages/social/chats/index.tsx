@@ -89,7 +89,7 @@ export function ChatList({ preview }: { preview?: boolean }) {
           'animate-fade-in-top delay-200',
           preview
             ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
-            : 'space-y-2 max-h-[calc(100dvh-90px-2.5rem-36px-1rem)] max-md:max-h-[calc(100dvh-90px-2.5rem-36px-1rem-80px)] overflow-y-auto divide-y grow',
+            : 'max-h-[calc(100dvh-90px-2.5rem-36px-1rem)] max-md:max-h-[calc(100dvh-90px-2.5rem-36px-1rem-80px)] overflow-y-auto divide-y grow',
         )}>
         {data?.map(chat => (
           <ChatItem
@@ -127,7 +127,7 @@ function ChatItem({
       <Link
         to={url}
         className={cn(
-          'p-2 flex gap-3 hover:bg-border rounded-md shadow transition-colors',
+          'p-2 flex gap-3 hover:bg-border rounded-md transition-colors',
           small && 'flex-col border',
         )}>
         {partnerInfo && (
@@ -140,16 +140,23 @@ function ChatItem({
         )}
         <div className={cn('flex justify-between w-full', small && 'flex-col')}>
           <p className={'text-xl truncate'}>{chat.name}</p>
-          <p className={'text-sm text-muted-foreground'}>
-            {chat.latest_message_at
-              ? `${!small ? 'Active' : ''} ${formatDistanceToNow(
-                  new Date(chat.latest_message_at),
-                  {
-                    addSuffix: true,
-                  },
-                )}`
-              : 'No messages yet'}
-          </p>
+          <div className={'flex flex-col items-end'}>
+            <p className={'text-sm text-muted-foreground'}>
+              {chat.latest_message_at
+                ? `${!small ? 'Active' : ''} ${formatDistanceToNow(
+                    new Date(chat.latest_message_at),
+                    {
+                      addSuffix: true,
+                    },
+                  )}`
+                : 'No messages yet'}
+            </p>
+            {chat.chat_type === 'Group' && (
+              <p className={'text-sm'}>
+                {chat.members.length} member{chat.members.length > 1 && 's'}
+              </p>
+            )}
+          </div>
         </div>
       </Link>
     </li>

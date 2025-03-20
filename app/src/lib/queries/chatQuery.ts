@@ -7,6 +7,7 @@ import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
 import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
 import { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage.ts';
 import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage.ts';
+import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 
 export type OptimisticMessage = ChatMessageModelDTO & {
   loading?: boolean;
@@ -102,11 +103,44 @@ export class ChatQuery {
     });
   };
 
-  public static createGroupChatRequest = ({ name }: { name: string }) => {
-    return axios.post(`${BASE_URL}auth/social/chat/group`, {
-      name,
+  public static useAvailableUsersForGroupChatSuspense = ({
+    chatId,
+  }: {
+    chatId: string;
+  }) =>
+    useSuspenseQuery({
+      queryFn: () =>
+        axios
+          .get(`${BASE_URL}auth/social/chat/group/${chatId}/available`)
+          .then(res => res.data as ProfileContactModelDTO[]),
+      queryKey: ['chat', chatId, 'available'],
     });
-  };
+
+  public static invalidateAvailableUsersForGroupChat = (chatId: string) =>
+    queryClient.invalidateQueries({
+      queryKey: ['chat', chatId, 'available'],
+    });
+
+  public static createGroupChatRequest = ({ name }: { name: string }) =>
+    axios
+      .post(`${BASE_URL}auth/social/chat/group`, {
+        name,
+      })
+      .then(res => res.data as ChatModelDTO);
+
+  public static inviteUserToGroupChatRequest = ({
+    chatId,
+    userId,
+  }: {
+    chatId: string;
+    userId: string;
+  }) =>
+    axios.post(`${BASE_URL}auth/social/chat/group/${chatId}/invite`, {
+      user_id: userId,
+    });
+
+  public static leaveGroupChatRequest = ({ chatId }: { chatId: string }) =>
+    axios.post(`${BASE_URL}auth/social/chat/group/${chatId}/leave`);
 
   public static useSendMessageMutationOptimistic(
     chatId: string,
@@ -292,9 +326,13 @@ export class ChatQuery {
     });
   };
 
-  public static invalidateChat = (id: string) => {
-    return queryClient.invalidateQueries({
+  public static invalidateChat = (id: string) =>
+    queryClient.invalidateQueries({
       queryKey: ['chat', id],
     });
-  };
+
+  public static invalidateChatInfo = (id: string) =>
+    queryClient.invalidateQueries({
+      queryKey: ['chat', 'info', id],
+    });
 }

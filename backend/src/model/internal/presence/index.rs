@@ -12,6 +12,7 @@ pub enum PresenceAction {
     SocialUpdate(PresenceSocialUpdate),
     OperationsUpdate(PresenceOperationsUpdate),
     ExplorerUpdate(PresenceExplorerUpdate),
+    ChatsUpdate,
 }
 
 #[derive(Clone, TS, Serialize)]

@@ -263,7 +263,7 @@ impl ContactService {
     ) -> Result<Vec<ProfileContactModel>, AppError> {
         sqlx::query_as!(
             ProfileContactModel,
-            "SELECT profiles.*, users.username FROM profiles
+            "SELECT profiles.*, users.username, users.avatar_image_id FROM profiles
             INNER JOIN contacts ON contacts.user_id_1 = profiles.user_id OR contacts.user_id_2 = profiles.user_id
             INNER JOIN users ON users.id = profiles.user_id
             WHERE (contacts.user_id_1 = $1 OR contacts.user_id_2 = $1) AND profiles.user_id != $1",
@@ -282,7 +282,7 @@ impl ContactService {
         user_id: i64,
         params: GetContactProfilesParamsDTO,
     ) -> Result<Vec<ProfileContactModel>, AppError> {
-        let mut query = QueryBuilder::new("SELECT profiles.*, users.username FROM profiles
+        let mut query = QueryBuilder::new("SELECT profiles.*, users.avatar_image_id, users.username FROM profiles
             INNER JOIN contacts ON contacts.user_id_1 = profiles.user_id OR contacts.user_id_2 = profiles.user_id
             INNER JOIN users ON users.id = profiles.user_id
             WHERE (contacts.user_id_1 = ");

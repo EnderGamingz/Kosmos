@@ -46,9 +46,20 @@ function ActionBanner({ message }: { message: ChatMessageModelDTO }) {
 }
 
 export function WriteMessageForm() {
-  const { chatId, chat, replyTo, setReplyTo, editMessage, setEditMessage } =
-    useChatContext();
-  const { mutate } = ChatQuery.useSendMessageMutationOptimistic(chatId, true);
+  const {
+    chatId,
+    chat,
+    replyTo,
+    setReplyTo,
+    editMessage,
+    setEditMessage,
+    isPersonalChat,
+  } = useChatContext();
+
+  const { mutate } = ChatQuery.useSendMessageMutationOptimistic(
+    chatId,
+    isPersonalChat,
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

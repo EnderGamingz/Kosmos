@@ -14,15 +14,18 @@ import { FormEvent, useState } from 'react';
 import { Input } from '@components/ui/input.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateGroupChat() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const { mutate } = useMutation({
     mutationFn: ({ name }: { name: string }) =>
       ChatQuery.createGroupChatRequest({ name }),
-    onSuccess: () => {
+    onSuccess: res => {
       ChatQuery.invalidateChats().then();
       setOpen(false);
+      navigate(`/social/chats/group/${res.id}`);
     },
   });
 

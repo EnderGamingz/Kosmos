@@ -3,16 +3,25 @@ use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
+use axum::Json;
+use serde::Deserialize;
 use tower_sessions::Session;
 
-pub async fn leave_group_chat(
+
+#[derive(Deserialize)]
+pub struct RenameGroupDTO {
+    pub name: String,
+}
+
+pub async fn rename_group_chat(
     State(state): KosmosState,
     session: Session,
     Path(chat_id): Path<i64>,
+    Json(payload): Json<RenameGroupDTO>,
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    state
+    let chat = state
         .contact_service
         .chat_service
         .get_group_chat_optional_from_user(user_id, chat_id)
@@ -24,22 +33,8 @@ pub async fn leave_group_chat(
     state
         .contact_service
         .chat_service
-        .remove_user_from_chat(user_id, chat_id)
+        .rename_group_chat(chat.id, payload.name)
         .await?;
 
-    let remaining_members = state
-        .contact_service
-        .chat_service
-        .get_chat_member_count(chat_id)
-        .await?;
-
-    if remaining_members == 0 {
-        state
-            .contact_service
-            .chat_service
-            .delete_chat(chat_id)
-            .await?;
-    }
-
-    Ok(AppSuccess::OK { data: None })
+    Ok(AppSuccess::UPDATED)
 }
