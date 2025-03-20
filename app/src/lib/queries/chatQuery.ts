@@ -26,6 +26,11 @@ export class ChatQuery {
       queryKey: ['chats'],
     });
 
+  public static invalidateChats = () =>
+    queryClient.invalidateQueries({
+      queryKey: ['chats'],
+    });
+
   public static useChatSuspense = ({
     chatId,
     isPersonalChat,
@@ -94,6 +99,12 @@ export class ChatQuery {
     return axios.post(`${BASE_URL}auth/social/chat/${section}/${chatId}`, {
       content,
       parent_id: parentId,
+    });
+  };
+
+  public static createGroupChatRequest = ({ name }: { name: string }) => {
+    return axios.post(`${BASE_URL}auth/social/chat/group`, {
+      name,
     });
   };
 

@@ -4,6 +4,7 @@ use crate::model::internal::entity_id::EntityId;
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceNewChatMessage;
 use crate::response::error_handling::AppError;
+use crate::routes::api::v1::auth::chat::utils::notify_group_chat_members;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, State};
@@ -90,7 +91,11 @@ async fn send_message(
         .create_message(user_id, chat_id, &payload)
         .await?;
 
-    state.contact_service.chat_service.set_latest_message_at_now(chat_id).await?;
+    state
+        .contact_service
+        .chat_service
+        .set_latest_message_at_now(chat_id)
+        .await?;
 
     Ok(message.to_dto(Some(author), parent))
 }
@@ -134,6 +139,38 @@ pub async fn send_personal_message(
         .presence_handler
         .broadcast_to_user(other_user_id, presence_message)
         .await;
+
+    Ok(Json(message))
+}
+
+pub async fn send_group_message(
+    State(state): KosmosState,
+    session: Session,
+    Path(chat_id): Path<i64>,
+    Valid(Json(payload)): Valid<Json<CreateChatMessageDTO>>,
+) -> Result<Json<ChatMessageModelDTO>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let chat = state
+        .contact_service
+        .chat_service
+        .get_group_chat_optional_from_user(user_id, chat_id)
+        .await?
+        .ok_or_else(|| AppError::NotFound {
+            error: "Chat not found".to_string(),
+        })?;
+
+    let message = send_message(&state, user_id, chat.id, &payload).await?;
+
+    // Group chat, broadcast to all members
+    let presence_message = PresenceMessage {
+        action: PresenceAction::NewChatMessage(PresenceNewChatMessage {
+            chat_id: chat_id.to_string(),
+            chat_type: chat.chat_type,
+            content: message.clone(),
+        }),
+    };
+    notify_group_chat_members(&state, chat.id, user_id, presence_message).await?;
 
     Ok(Json(message))
 }

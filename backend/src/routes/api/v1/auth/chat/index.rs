@@ -1,41 +1,15 @@
-use crate::model::chat::chat::{ChatModelDTO, DbChatModel};
-use crate::model::chat::members::ChatMemberModelDTO;
+use crate::model::chat::chat::ChatModelDTO;
+use crate::model::internal::chat_type::ChatType;
 use crate::response::error_handling::AppError;
 use crate::services::chat_service::ChatService;
 use crate::services::session_service::SessionService;
-use crate::state::{AppState, KosmosState};
+use crate::state::KosmosState;
 use axum::extract::{Path, Query, State};
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
 use validator::Validate;
-use crate::model::internal::chat_type::ChatType;
-
-async fn get_chat_members(
-    state: &AppState,
-    chat: DbChatModel,
-) -> Result<Vec<ChatMemberModelDTO>, AppError> {
-    let members = state
-        .contact_service
-        .chat_service
-        .get_chat_members(chat.id)
-        .await?;
-    let member_ids = members
-        .clone()
-        .into_iter()
-        .map(|c| c.user_id)
-        .collect::<Vec<i64>>();
-    let member_profiles = state
-        .contact_service
-        .chat_service
-        .get_chat_members_profiles(member_ids)
-        .await?;
-
-    Ok(ChatService::zip_chat_members_profiles(
-        members,
-        member_profiles,
-    ))
-}
+use crate::routes::api::v1::auth::chat::utils;
 
 #[derive(Deserialize, Validate, Debug)]
 pub struct GetChatsQueryDTO {
@@ -105,48 +79,23 @@ pub async fn get_chats(
     Ok(Json(chats))
 }
 
-pub async fn get_personal_chat(
+pub async fn get_group_chat(
     State(state): KosmosState,
     session: Session,
-    Path(other_user_id): Path<i64>,
+    Path(chat_id): Path<i64>,
 ) -> Result<Json<ChatModelDTO>, AppError> {
     let user_id = SessionService::check_logged_in(&session).await?;
-
-    if user_id == other_user_id {
-        return Err(AppError::BadRequest {
-            error: Some("Cannot create a chat with yourself".to_string()),
-        });
-    }
-
-    let are_contact = state
-        .contact_service
-        .check_users_are_contacts(user_id, other_user_id)
-        .await?;
-
-    if !are_contact {
-        return Err(AppError::BadRequest {
-            error: Some("Cannot create a chat with a stranger".to_string()),
-        });
-    }
 
     let chat = state
         .contact_service
         .chat_service
-        .get_personal_chat_optional(user_id, other_user_id)
-        .await?;
+        .get_group_chat_optional_from_user(user_id, chat_id)
+        .await?
+        .ok_or_else(|| AppError::BadRequest {
+            error: Some("Chat not found".to_string()),
+        })?;
 
-    let chat = match chat {
-        Some(existing) => existing,
-        None => {
-            state
-                .contact_service
-                .chat_service
-                .create_personal_chat(user_id, other_user_id)
-                .await?
-        }
-    };
-
-    let members = get_chat_members(&state, chat.clone()).await?;
-    let chat = chat.to_personal_chat_dto(user_id, members);
+    let members = utils::get_chat_members_dto(&state, chat.clone()).await?;
+    let chat = chat.to_group_chat_dto(members);
     Ok(Json(chat))
 }

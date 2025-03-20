@@ -9,6 +9,7 @@ use crate::model::internal::chat_type::ChatType;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::chat::index::GetChatsQueryDTO;
 use crate::routes::api::v1::auth::chat::message::create::CreateChatMessageDTO;
+use crate::services::session_service::UserId;
 use serde::Deserialize;
 use sonyflake::Sonyflake;
 use sqlx::QueryBuilder;
@@ -43,6 +44,21 @@ pub struct ChatService {
 impl ChatService {
     pub fn new(db_pool: KosmosPool, sf: Sonyflake) -> Self {
         ChatService { db_pool, sf }
+    }
+
+    pub async fn remove_user_from_chat(
+        &self,
+        user_id: UserId,
+        chat_id: i64,
+    ) -> Result<(), AppError> {
+        sqlx::query!("DELETE FROM chat_members WHERE user_id = $1 AND chat_id = $2", user_id, chat_id)
+            .execute(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error removing user from chat: {}", e);
+                AppError::InternalError
+            })?;
+        Ok(())
     }
 
     pub async fn create_message(
@@ -116,6 +132,30 @@ impl ChatService {
         })
     }
 
+    pub async fn get_group_chat_optional_from_user(
+        &self,
+        user_id: UserId,
+        chat_id: i64,
+    ) -> Result<Option<DbChatModel>, AppError> {
+        sqlx::query_as!(
+            DbChatModel,
+            r#"SELECT * FROM chats WHERE chat_type = $3 AND id = $1
+                      AND EXISTS (SELECT 1
+                                  FROM chat_members
+                                  WHERE user_id = $2
+                                    AND chat_id = $1);"#,
+            chat_id,
+            user_id,
+            ChatType::Group.to_string()
+        )
+            .fetch_optional(&self.db_pool)
+            .await
+            .map_err(|e| {
+                tracing::error!("Error checking personal chat: {}", e);
+                AppError::InternalError
+            })
+    }
+
     pub async fn get_personal_chat_optional(
         &self,
         user_id: i64,
@@ -178,7 +218,7 @@ impl ChatService {
         .execute(&mut *tx)
         .await
         .map_err(|e| {
-            tracing::error!("Error adding member to chat: {}", e);
+            tracing::error!("Error adding member to personal chat: {}", e);
             AppError::InternalError
         })?;
 
@@ -190,12 +230,53 @@ impl ChatService {
         .execute(&mut *tx)
         .await
         .map_err(|e| {
-            tracing::error!("Error adding member to chat: {}", e);
+            tracing::error!("Error adding member to personal chat: {}", e);
             AppError::InternalError
         })?;
 
         tx.commit().await.map_err(|e| {
             tracing::error!("Error committing transaction: {}", e);
+            AppError::InternalError
+        })?;
+
+        Ok(chat)
+    }
+
+    pub async fn create_group_chat(
+        &self,
+        chat_name: String,
+        user_id: UserId,
+    ) -> Result<DbChatModel, AppError> {
+        let chat_id = self.sf.next_id().map_err(|_| AppError::InternalError)? as i64;
+
+        let mut tx = self.db_pool.begin().await.map_err(|e| {
+            tracing::error!("Error starting transaction: {}", e);
+            AppError::InternalError
+        })?;
+
+        let chat = sqlx::query_as!(
+            DbChatModel,
+            "INSERT INTO chats (id, name, chat_type) VALUES ($1, $2, $3) RETURNING *",
+            chat_id,
+            chat_name,
+            ChatType::Group.to_string()
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating group chat: {}", e);
+            AppError::InternalError
+        })?;
+
+        sqlx::query!(
+            "INSERT INTO chat_members (chat_id, user_id) VALUES ($1, $2)",
+            chat_id,
+            user_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error adding member to group chat: {}", e);
             AppError::InternalError
         })?;
 
@@ -253,20 +334,6 @@ impl ChatService {
                 tracing::error!("Error fetching chat: {}", e);
                 AppError::InternalError
             })
-    }
-
-    pub async fn get_chat_members(&self, chat_id: i64) -> Result<Vec<DbChatMemberModel>, AppError> {
-        sqlx::query_as!(
-            DbChatMemberModel,
-            "SELECT * FROM chat_members WHERE chat_id = $1",
-            chat_id
-        )
-        .fetch_all(&self.db_pool)
-        .await
-        .map_err(|e| {
-            tracing::error!("Error fetching chat members: {}", e);
-            AppError::InternalError
-        })
     }
 
     pub async fn get_chat_members_by_chat_ids(

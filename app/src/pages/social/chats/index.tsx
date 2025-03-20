@@ -10,7 +10,7 @@ import UserAvatar from '@components/UserAvatar.tsx';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@lib/utils.ts';
 import { Button } from '@components/ui/button.tsx';
-import { Plus, User, Users } from 'lucide-react';
+import { Plus, User } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -18,6 +18,7 @@ import {
 } from '@components/ui/popover.tsx';
 import { PopoverClose } from '@radix-ui/react-popover';
 import { getChatUrl } from '@utils/social/getChatUrl.ts';
+import CreateGroupChat from './createGroupChat';
 
 export default function ChatsRouter() {
   return (
@@ -54,18 +55,8 @@ function ChatsHome() {
                 Contact
               </Link>
             </PopoverClose>
-            <PopoverClose>
-              <div
-                className={
-                  'menu-button text-muted-foreground opacity-50 bg-border hover:bg-border cursor-not-allowed'
-                }>
-                <Users />
-                <div className={'text-start -space-y-2.5'}>
-                  <p>Group</p>
-                  <small>Coming soon</small>
-                </div>
-              </div>
-            </PopoverClose>
+
+            <CreateGroupChat />
           </PopoverContent>
         </Popover>
       </div>

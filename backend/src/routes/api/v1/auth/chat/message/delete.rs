@@ -12,6 +12,7 @@ use axum::extract::{Path, State};
 use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
+use crate::routes::api::v1::auth::chat::utils::notify_group_chat_members;
 
 async fn delete_message(
     state: &AppState,
@@ -77,6 +78,40 @@ pub async fn delete_personal_message(
         .presence_handler
         .broadcast_to_user(other_user_id, presence_message)
         .await;
+
+    Ok(AppSuccess::DELETED)
+}
+
+pub async fn delete_group_message(
+    State(state): KosmosState,
+    session: Session,
+    Path(chat_id): Path<i64>,
+    Json(payload): Json<DeleteChatMessageDTO>,
+) -> ResponseResult {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let chat = state
+        .contact_service
+        .chat_service
+        .get_group_chat_optional_from_user(user_id, chat_id)
+        .await?
+        .ok_or_else(|| AppError::NotFound {
+            error: "Chat not found".to_string(),
+        })?;
+
+    let message_id = payload.message_id.into();
+    delete_message(&state, &chat, message_id, user_id).await?;
+    state.contact_service.chat_service.set_latest_message_at_now(chat.id).await?;
+
+    // Group chat, broadcast to all members
+    let presence_message = PresenceMessage {
+        action: PresenceAction::DeletedChatMessage(PresenceDeletedChatMessage {
+            chat_id: chat_id.to_string(),
+            message_id: message_id.to_string(),
+        }),
+    };
+
+    notify_group_chat_members(&state,chat.id, user_id, presence_message).await?;
 
     Ok(AppSuccess::DELETED)
 }

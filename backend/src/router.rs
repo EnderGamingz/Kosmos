@@ -166,11 +166,19 @@ fn get_profile_router() -> KosmosRouter {
 fn get_chat_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::chat::index::get_chats))
-        .route("/user/:other_user_id", get(crate::routes::api::v1::auth::chat::index::get_personal_chat)
+        .route("/user/:other_user_id", get(crate::routes::api::v1::auth::chat::create::get_create_personal_chat)
                    .post(crate::routes::api::v1::auth::chat::message::create::send_personal_message)
             .patch(crate::routes::api::v1::auth::chat::message::update::update_personal_message)
             .delete(crate::routes::api::v1::auth::chat::message::delete::delete_personal_message))
         .route("/user/:other_user_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_personal_chat))
+        .route("/group", post(crate::routes::api::v1::auth::chat::create::create_group_chat))
+        .route("/group/:chat_id", get(crate::routes::api::v1::auth::chat::index::get_group_chat)
+                .post(crate::routes::api::v1::auth::chat::message::create::send_group_message)
+                .delete(crate::routes::api::v1::auth::chat::message::delete::delete_group_message)
+                .patch(crate::routes::api::v1::auth::chat::message::update::update_group_message)
+        )
+        .route("/group/:chat_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_group_chat))
+        .route("/group/:chat_id/leave", post(crate::routes::api::v1::auth::chat::leave::leave_group_chat))
 }
 
 fn get_contact_router() -> KosmosRouter {

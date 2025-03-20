@@ -63,4 +63,20 @@ impl DbChatModel {
             latest_message_at: self.latest_message_at.clone(),
         }
     }
+
+    pub fn to_group_chat_dto(
+        &self,
+        members: Vec<ChatMemberModelDTO>,
+    ) -> ChatModelDTO {
+        ChatModelDTO {
+            id: self.id.to_string(),
+            members,
+            name: self.name.clone(),
+            description: self.description.clone(),
+            chat_type: self.chat_type.clone(),
+            created_at: self.created_at.clone(),
+            updated_at: self.updated_at.clone(),
+            latest_message_at: self.latest_message_at.clone(),
+        }
+    }
 }

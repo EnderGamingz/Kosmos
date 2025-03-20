@@ -94,3 +94,25 @@ pub async fn get_messages_for_personal_chat(
     Ok(Json(messages))
 }
 
+pub async fn get_messages_for_group_chat(
+    State(state): KosmosState,
+    session: Session,
+    Path(chat_id): Path<i64>,
+    Valid(Query(params)): Valid<Query<MessageQueryDTO>>,
+) -> Result<Json<Vec<ChatMessageModelDTO>>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let chat = state
+        .contact_service
+        .chat_service
+        .get_group_chat_optional_from_user(user_id, chat_id)
+        .await?
+        .ok_or_else(|| AppError::BadRequest {
+            error: Some("Chat not found".to_string()),
+        })?;
+
+    let messages = get_messages_by_chat(&state, chat.id, params).await?;
+
+    Ok(Json(messages))
+}
+

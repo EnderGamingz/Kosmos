@@ -1,7 +1,10 @@
 use crate::model::chat::message::ChatMessageModelDTO;
 use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceUpdatedChatMessage;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::chat::message::create::resolve_message_dependencies;
+use crate::routes::api::v1::auth::chat::utils::notify_group_chat_members;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, State};
@@ -11,8 +14,6 @@ use serde::Deserialize;
 use serde_trim::string_trim;
 use tower_sessions::Session;
 use validator::Validate;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::model::internal::presence::messages::{PresenceUpdatedChatMessage};
 
 async fn update_message(
     state: &AppState,
@@ -74,16 +75,13 @@ pub async fn update_personal_message(
 
     let message_id = payload.message_id.into();
 
-    let message = update_message(
-        &state,
-        user_id,
-        chat.id,
-        message_id,
-        &payload,
-    )
-    .await?;
-    
-    state.contact_service.chat_service.set_latest_message_at_now(chat.id).await?;
+    let message = update_message(&state, user_id, chat.id, message_id, &payload).await?;
+
+    state
+        .contact_service
+        .chat_service
+        .set_latest_message_at_now(chat.id)
+        .await?;
 
     // Personal chat, only one partner, chat_id for other user is self user id
     let presence_message = PresenceMessage {
@@ -97,6 +95,45 @@ pub async fn update_personal_message(
         .presence_handler
         .broadcast_to_user(other_user_id, presence_message)
         .await;
+
+    Ok(Json(message))
+}
+
+pub async fn update_group_message(
+    State(state): KosmosState,
+    session: Session,
+    Path(chat_id): Path<i64>,
+    Valid(Json(payload)): Valid<Json<UpdateChatMessageDTO>>,
+) -> Result<Json<ChatMessageModelDTO>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let message_id = payload.message_id.into();
+
+    let message = update_message(&state, user_id, chat_id, message_id, &payload).await?;
+
+    state
+        .contact_service
+        .chat_service
+        .set_latest_message_at_now(chat_id)
+        .await?;
+
+    let chat = state
+        .contact_service
+        .chat_service
+        .get_group_chat_optional_from_user(user_id, chat_id)
+        .await?
+        .ok_or_else(|| AppError::NotFound {
+            error: "Chat not found".to_string(),
+        })?;
+
+    let presence_message = PresenceMessage {
+        action: PresenceAction::UpdatedChatMessage(PresenceUpdatedChatMessage {
+            chat_id: chat_id.to_string(),
+            message_id: message_id.to_string(),
+            content: message.clone(),
+        }),
+    };
+    notify_group_chat_members(&state, chat.id, user_id, presence_message).await?;
 
     Ok(Json(message))
 }
