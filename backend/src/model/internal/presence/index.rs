@@ -1,4 +1,4 @@
-use crate::model::internal::presence::messages::{PresenceDeletedChatMessage, PresenceExplorerUpdate, PresenceNewChatMessage, PresenceOperationsUpdate, PresenceSocialUpdate, PresenceUpdatedChatMessage};
+use crate::model::internal::presence::messages::{PresenceChatUpdate, PresenceDeletedChatMessage, PresenceExplorerUpdate, PresenceNewChatMessage, PresenceOperationsUpdate, PresenceSocialUpdate, PresenceUpdatedChatMessage};
 use axum::extract::ws;
 use serde::Serialize;
 use ts_rs::TS;
@@ -12,7 +12,8 @@ pub enum PresenceAction {
     SocialUpdate(PresenceSocialUpdate),
     OperationsUpdate(PresenceOperationsUpdate),
     ExplorerUpdate(PresenceExplorerUpdate),
-    ChatsUpdate,
+    ChatUpdate(PresenceChatUpdate),
+    ChatsUpdate(),
 }
 
 #[derive(Clone, TS, Serialize)]

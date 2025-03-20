@@ -44,3 +44,8 @@ pub struct PresenceOperationsUpdate {
 pub struct PresenceExplorerUpdate {
     pub folder_id: Option<String>
 }
+
+#[derive(Serialize, Clone, TS)]
+pub struct PresenceChatUpdate{
+    pub chat_id: String,
+}

@@ -8,6 +8,7 @@ use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
 use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 
 #[derive(Deserialize)]
@@ -62,6 +63,12 @@ pub async fn update_received_contact_request(
         .await?;
 
     notify_attention_status_for_user(&state, request.request_user_id).await?;
+
+    let presence_message_to_new_member = PresenceMessage{
+        action: PresenceAction::ChatsUpdate()
+    };
+    state.presence_handler.broadcast_to_user(request.user_id, presence_message_to_new_member.clone()).await;
+    state.presence_handler.broadcast_to_user(request.request_user_id, presence_message_to_new_member).await;
 
     Ok(AppSuccess::UPDATED)
 }

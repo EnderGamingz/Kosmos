@@ -21,6 +21,7 @@ import {
   SocialUpdateState,
   useSocialUpdate,
 } from '@stores/socialUpdateStore.ts';
+import { PresenceChatUpdate } from '@bindings/PresenceChatUpdate';
 
 export default function Websocket() {
   const user = useUserState(s => s.user);
@@ -97,5 +98,14 @@ function handleServerAction(
     invalidateFiles().then();
     invalidateFolder().then();
     invalidateUsage().then();
+  }
+
+  if ('ChatUpdate' in action) {
+    const chatUpdate = action.ChatUpdate as PresenceChatUpdate;
+    ChatQuery.invalidateChatInfo(chatUpdate.chat_id).then();
+  }
+
+  if ('ChatsUpdate' in action) {
+    ChatQuery.invalidateChats().then();
   }
 }

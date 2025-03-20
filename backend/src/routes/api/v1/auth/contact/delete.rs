@@ -7,6 +7,7 @@ use axum::Json;
 use serde::Deserialize;
 use tower_sessions::Session;
 use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 
 #[derive(Deserialize)]
@@ -61,6 +62,11 @@ pub async fn delete_contact_link(
         .contact_service
         .delete_contact_link(user_id, payload.user_id.into())
         .await?;
+
+    let presence_message_to_new_member = PresenceMessage{
+        action: PresenceAction::ChatsUpdate()
+    };
+    state.presence_handler.broadcast_to_user(payload.user_id.into(), presence_message_to_new_member).await;
 
     Ok(AppSuccess::DELETED)
 }
