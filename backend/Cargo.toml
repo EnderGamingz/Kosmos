@@ -25,7 +25,7 @@ serde_json = { version = "1.0.140" }
 serde_trim = "1.1.0"
 
 # Database
-sqlx = { version = "0.8.3", features = ["runtime-tokio", "postgres", "chrono", "bigdecimal", "uuid"] }
+sqlx = { version = "0.8.3", features = ["runtime-tokio", "postgres", "chrono", "bigdecimal", "uuid", "tls-native-tls"] }
 sonyflake = "0.3.0"
 bigdecimal = "0.4.7"
 
@@ -57,4 +57,4 @@ dotenvy = "0.15.7"
 
 # Misc
 zip = "2.3.0"
-ts-rs = { version = "10.1.0",features = ["chrono-impl", "serde-json-impl"] }
+ts-rs = { version = "10.1.0", features = ["chrono-impl", "serde-json-impl"] }
