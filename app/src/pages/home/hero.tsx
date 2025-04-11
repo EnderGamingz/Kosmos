@@ -58,7 +58,7 @@ export function Hero() {
               <UserAvatar
                 username={user.username}
                 userId={user.id}
-                className={'w-24 h-24 animate-fade-in-left'}
+                className={'w-24 h-24 animate-fade-in-left max-sm:hidden'}
               />
             )}
             <div>
