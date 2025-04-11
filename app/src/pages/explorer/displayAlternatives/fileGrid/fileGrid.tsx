@@ -13,6 +13,7 @@ import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';
 import {
   createContext,
   ReactNode,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -222,6 +223,7 @@ function VirtualGrid({
     <VirtualGridContext.Provider value={{ top, setTop, header, footer }}>
       <FixedSizeList
         {...rest}
+        innerElementType={Inner}
         onItemsRendered={props => {
           const style =
             listRef.current &&
@@ -238,6 +240,19 @@ function VirtualGrid({
     </VirtualGridContext.Provider>
   );
 }
+
+const Inner = ({ children }: { children: ReactNode }) => {
+  const { header, top, footer } = useContext(VirtualGridContext);
+  return (
+    <div
+      className={'overflow-hidden text-left'}
+      style={{ top, position: 'absolute', width: '100%' }}>
+      {header}
+      {children}
+      {footer}
+    </div>
+  );
+};
 
 function Row({ index, data }: { index: number; data: VirtualGridRowData }) {
   const { columnCount, selectedFiles, onSelectFile, details, folderLength } =
