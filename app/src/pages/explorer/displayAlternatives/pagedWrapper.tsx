@@ -27,7 +27,7 @@ export function PagedWrapper({
           Loading ...
         </div>
       }>
-      {children}
+      <>{children}</>
     </InfiniteScroll>
   );
 }

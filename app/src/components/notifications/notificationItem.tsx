@@ -81,7 +81,9 @@ export function NotificationItem({
           </div>
           <p className={'text-sm font-light'}>{data.description}</p>
           {data.child && (
-            <Collapse isOpened={!data.loading}>{data.child}</Collapse>
+            <Collapse isOpened={!data.loading}>
+              <>{data.child}</>
+            </Collapse>
           )}
         </div>
         {data.canDismiss && (

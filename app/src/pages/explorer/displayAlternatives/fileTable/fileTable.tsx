@@ -1,14 +1,6 @@
 import { motion } from 'framer-motion';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
-import {
-  createContext,
-  forwardRef,
-  HTMLProps,
-  ReactNode,
-  useContext,
-  useRef,
-  useState,
-} from 'react';
+import { createContext, ReactNode, useRef, useState } from 'react';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { FixedSizeList, FixedSizeListProps } from 'react-window';
 import { FILE_TABLE_ITEM_HEIGHT } from '@lib/constants.ts';
@@ -51,7 +43,6 @@ function VirtualTable({
     <VirtualTableContext.Provider value={{ top, setTop, header, footer }}>
       <FixedSizeList
         {...rest}
-        innerElementType={Inner}
         onItemsRendered={props => {
           const style =
             listRef.current &&
@@ -68,23 +59,6 @@ function VirtualTable({
     </VirtualTableContext.Provider>
   );
 }
-
-const Inner = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
-  function Inner({ children, ...rest }, ref) {
-    const { header, top, footer } = useContext(VirtualTableContext);
-    return (
-      <div {...rest} ref={ref}>
-        <table
-          className={'overflow-hidden text-left'}
-          style={{ top, position: 'absolute', width: '100%' }}>
-          {header}
-          <tbody>{children}</tbody>
-          {footer}
-        </table>
-      </div>
-    );
-  },
-);
 
 function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
   const {
