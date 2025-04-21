@@ -4,11 +4,11 @@ import { FileShareDisplay } from '@pages/share/shareTypes/fileShareDisplay.tsx';
 import { FolderShareDisplay } from '@pages/share/shareTypes/folderShareDisplay.tsx';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import Preferences from '@pages/settings/preferences';
-import { WindowIcon } from '@heroicons/react/24/outline';
 import { AlbumShareDisplay } from '@pages/share/shareTypes/albumShareDisplay.tsx';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { PopoverTrigger } from '@components/ui/popover.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { AppWindow } from 'lucide-react';
 
 function SharePreferences() {
   return (
@@ -16,7 +16,7 @@ function SharePreferences() {
       <Popover>
         <PopoverTrigger asChild>
           <Button>
-            <WindowIcon className={'h-6 w-6'} />
+            <AppWindow className={'h-6 w-6'} />
             <span>Preferences</span>
           </Button>
         </PopoverTrigger>

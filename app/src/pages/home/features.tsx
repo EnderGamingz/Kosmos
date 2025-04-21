@@ -1,10 +1,6 @@
-import {
-  ChartPieIcon,
-  LinkIcon,
-  WindowIcon,
-} from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
+import { CircleGauge, LayoutTemplate, Link as LinkIcon } from 'lucide-react';
 
 type Feature = {
   icon: ReactNode;
@@ -15,7 +11,7 @@ type Feature = {
 const features: Feature[] = [
   {
     label: 'Performance',
-    icon: <ChartPieIcon />,
+    icon: <CircleGauge />,
     description:
       'Kosmos is build with performance in mind allowing for fast navigation, file downloads and uploads',
   },
@@ -27,7 +23,7 @@ const features: Feature[] = [
   },
   {
     label: 'Display options',
-    icon: <WindowIcon />,
+    icon: <LayoutTemplate />,
     description:
       'There are a variety of display options to choose from, allowing files to be displayed in different ways',
   },
@@ -70,7 +66,7 @@ function Feature({
       <div className={'flex items-center gap-2'}>
         <div
           className={
-            'rounded-full bg-stone-200 p-2 dark:bg-stone-800 [&_svg]:h-8 [&_svg]:w-8'
+            'rounded-full bg-stone-200 p-2 dark:bg-stone-800 [&_svg]:h-7 [&_svg]:w-7'
           }>
           {Icon}
         </div>

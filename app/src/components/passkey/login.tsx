@@ -1,12 +1,12 @@
 import { useUserState } from '@stores/userStore.ts';
 import { useNavigate } from 'react-router-dom';
-import { CheckBadgeIcon } from '@heroicons/react/24/outline';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
 import { Button } from '../ui/button';
 import { RefObject } from 'react';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
+import { BadgeCheck } from 'lucide-react';
 
 export default function PasskeyLogin({
   conditionalAbortController,
@@ -57,7 +57,7 @@ export default function PasskeyLogin({
       onClick={() => loginMutation.mutate()}
       className={'w-full cursor-pointer'}
       disabled={loginMutation.isPending}>
-      <CheckBadgeIcon />
+      <BadgeCheck />
       Use Passkey
     </Button>
   );

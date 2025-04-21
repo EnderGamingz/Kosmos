@@ -1,7 +1,7 @@
 import { SortBy, SortOrder } from '@models/sort.ts';
 import { useSearchState } from '@stores/searchStore.ts';
-import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { cn } from '@lib/utils.ts';
+import { ChevronUp } from 'lucide-react';
 
 export function ExplorerSort({
   name,
@@ -54,7 +54,7 @@ function SortIcon({ desc }: { desc: boolean }) {
         'ml-2 inline-block transition-transform',
         desc ? 'rotate-0' : 'rotate-180',
       )}>
-      <ChevronUpIcon className={'h-3 w-3'} />
+      <ChevronUp className={'h-3.5 w-3.5'} />
     </span>
   );
 }

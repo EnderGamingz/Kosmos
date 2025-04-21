@@ -1,18 +1,18 @@
 import { ReactNode } from 'react';
 import {
-  ArrowLeftIcon,
-  ChatBubbleLeftRightIcon,
-  ClockIcon,
-  CloudIcon,
-  EllipsisHorizontalIcon,
-  HomeIcon,
-  ShareIcon,
-  Square2StackIcon,
-  StarIcon,
-  TrashIcon,
-  UserGroupIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline';
+  ArrowLeft,
+  BookUser,
+  Clock,
+  Cloud,
+  Ellipsis,
+  Home,
+  Images,
+  MessageSquare,
+  Share2,
+  Star,
+  Trash2,
+  User,
+} from 'lucide-react';
 
 export type ExplorerLink = {
   name: string;
@@ -29,39 +29,39 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
   {
     name: 'Home',
     href: '/home',
-    icon: <HomeIcon />,
+    icon: <Home />,
     exact: true,
   },
   {
     name: 'Albums',
     href: '/home/album',
-    icon: <Square2StackIcon />,
+    icon: <Images />,
   },
   {
     name: 'Recent',
     href: '/home/recent',
-    icon: <ClockIcon />,
+    icon: <Clock />,
     lessPriority: true,
   },
   {
     name: 'Favorites',
     href: '/home/favorites',
-    icon: <StarIcon />,
+    icon: <Star />,
     lessPriority: true,
   },
   {
     name: 'Share',
-    icon: <ShareIcon />,
+    icon: <Share2 />,
     items: [
       {
         name: 'Shared with me',
         href: '/home/shares',
-        icon: <UserIcon />,
+        icon: <User />,
       },
       {
         name: 'My shares',
         href: '/home/shared',
-        icon: <CloudIcon />,
+        icon: <Cloud />,
       },
     ],
   },
@@ -69,14 +69,14 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
     name: 'Bin',
     href: '/home/bin',
     description: binUsage,
-    icon: <TrashIcon />,
+    icon: <Trash2 />,
     lessPriority: true,
   },
 ];
 
 export const getBottomMoreLinks = (links: ExplorerLink[]): ExplorerLink => ({
   name: 'More',
-  icon: <EllipsisHorizontalIcon />,
+  icon: <Ellipsis />,
   items: links.filter(link => link.lessPriority === true),
 });
 
@@ -84,7 +84,7 @@ export const getAdminLinks = (): ExplorerLink[] => [
   {
     name: 'User',
     href: '/admin/user',
-    icon: <UserIcon />,
+    icon: <User />,
   },
 ];
 
@@ -92,23 +92,23 @@ export const getSocialLinks = (): ExplorerLink[] => [
   {
     name: 'Home',
     href: '/social',
-    icon: <HomeIcon />,
+    icon: <Home />,
     exact: true,
   },
   {
     name: 'Chats',
     href: '/social/chats',
-    icon: <ChatBubbleLeftRightIcon />,
+    icon: <MessageSquare />,
   },
   {
     name: 'Contacts',
     href: '/social/contacts',
-    icon: <UserGroupIcon />,
+    icon: <BookUser />,
   },
   {
     name: 'Back',
     href: '/home',
-    icon: <ArrowLeftIcon />,
+    icon: <ArrowLeft />,
     onlyBottom: true,
   },
 ];

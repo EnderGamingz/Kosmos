@@ -1,7 +1,7 @@
 import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 import { Button } from '@components/ui/button.tsx';
+import { X } from 'lucide-react';
 
 export function DismissButton({
   id,
@@ -21,7 +21,7 @@ export function DismissButton({
       className={'cursor-pointer bg-transparent border-primary'}
       onClick={dismissHandler}
       variant={'outline'}>
-      <XMarkIcon />
+      <X />
       Dismiss
     </Button>
   );

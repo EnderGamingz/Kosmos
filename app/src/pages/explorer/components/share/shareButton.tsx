@@ -1,9 +1,9 @@
 import { ShareOperationType } from '@models/file.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { ShareIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { cn } from '@lib/utils.ts';
+import { Share2 } from 'lucide-react';
 
 export default function ShareButton({
   id,
@@ -34,7 +34,7 @@ export default function ShareButton({
         onClose?.();
         setShare(id, type);
       }}>
-      <ShareIcon className={'h-6 w-6'} />
+      <Share2 className={'h-6 w-6'} />
       {!iconOnly && 'Share'}
     </button>
   );

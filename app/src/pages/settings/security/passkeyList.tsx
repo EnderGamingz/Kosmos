@@ -4,12 +4,12 @@ import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { TrashIcon } from '@heroicons/react/24/outline';
 import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
 import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { Trash2 } from 'lucide-react';
 
 export default function PasskeyList() {
   const notifications = useNotifications(s => s.actions);
@@ -98,7 +98,7 @@ function PasskeyItem({
         last && 'border-transparent dark:border-transparent',
       )}>
       <span>{passkey.name}</span>
-      <TrashIcon
+      <Trash2
         className={'h-5 w-5 cursor-pointer text-red-500'}
         onClick={onDelete}
       />

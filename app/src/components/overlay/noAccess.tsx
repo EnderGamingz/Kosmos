@@ -1,11 +1,7 @@
-import {
-  ChevronLeftIcon,
-  ExclamationCircleIcon,
-  KeyIcon,
-} from '@heroicons/react/24/outline';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 import { buttonVariants } from '@components/ui/button.tsx';
+import { ChevronLeft, Key, OctagonAlert } from 'lucide-react';
 
 export function NoAccess({
   page,
@@ -39,7 +35,7 @@ export function NoAccess({
           'mr-auto flex items-center gap-1 animate-fade-in-left delay-300'
         }
         onClick={() => window.history.back()}>
-        <ChevronLeftIcon className={'h-4 w-4'} />
+        <ChevronLeft className={'h-4 w-4'} />
         Back
       </button>
       <div className={'my-auto flex flex-col items-center gap-3'}>
@@ -52,9 +48,9 @@ export function NoAccess({
               className={'app-loading-indicator h-12 w-12 !border-t-stone-200'}
             />
           ) : error ? (
-            <ExclamationCircleIcon className={'h-12 w-12'} />
+            <OctagonAlert className={'h-12 w-12'} />
           ) : (
-            <KeyIcon className={'h-12 w-12'} />
+            <Key className={'h-12 w-12'} />
           )}
         </div>
         <p className={'text-center font-medium animate-fade-in-top delay-100'}>

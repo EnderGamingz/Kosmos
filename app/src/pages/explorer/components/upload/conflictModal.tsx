@@ -3,8 +3,6 @@ import {
   UploadFile,
 } from '@pages/explorer/components/upload/uploadFile.ts';
 import { useEffect, useState } from 'react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-
 import { cn } from '@lib/utils.ts';
 import {
   Dialog,
@@ -15,6 +13,7 @@ import {
 } from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Badge } from '@components/ui/badge.tsx';
+import { TriangleAlert } from 'lucide-react';
 
 const actions = [
   {
@@ -111,7 +110,7 @@ export function ConflictModal({
       <DialogContent className={'!max-w-2xl space-y-2 p-4'}>
         <DialogHeader>
           <DialogTitle className={'flex items-center gap-2'}>
-            <ExclamationTriangleIcon className={'h-6 w-6'} />
+            <TriangleAlert className={'h-6 w-6'} />
             File conflicts
           </DialogTitle>
           <DialogDescription>

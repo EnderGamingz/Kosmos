@@ -7,15 +7,15 @@ import {
   getExplorerLoading,
   PreferenceState,
 } from '@stores/preferenceStore.ts';
-import {
-  ArrowPathIcon,
-  DocumentDuplicateIcon,
-  ListBulletIcon,
-  PhotoIcon,
-  RectangleGroupIcon,
-  Square2StackIcon,
-} from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
+import {
+  CircleEllipsis,
+  Files,
+  Image,
+  LayoutDashboard,
+  LayoutGrid,
+  TableProperties,
+} from 'lucide-react';
 
 export type PreferenceOption = {
   name: string;
@@ -46,7 +46,7 @@ export const selections = (
 ): ExplorerStylePreference[] => [
   {
     name: 'Loading Style',
-    icon: <ArrowPathIcon />,
+    icon: <CircleEllipsis />,
     type: {
       current: pref.loading.type,
       onChange: pref.loading.setType,
@@ -55,19 +55,19 @@ export const selections = (
         {
           name: 'Table',
           value: ExplorerLoading.Table,
-          icon: <ListBulletIcon />,
+          icon: <TableProperties />,
         },
         {
           name: 'Grid',
           value: ExplorerLoading.Grid,
-          icon: <Square2StackIcon />,
+          icon: <LayoutGrid />,
         },
       ],
     },
   },
   {
     name: 'Image Only',
-    icon: <PhotoIcon />,
+    icon: <Image />,
     type: {
       current: pref.imageOnly.type,
       onChange: pref.imageOnly.setType,
@@ -76,17 +76,17 @@ export const selections = (
         {
           name: 'Table',
           value: ExplorerDisplay.Table,
-          icon: <ListBulletIcon />,
+          icon: <TableProperties />,
         },
         {
           name: 'Static Grid',
           value: ExplorerDisplay.StaticGrid,
-          icon: <Square2StackIcon />,
+          icon: <LayoutGrid />,
         },
         {
           name: 'Dynamic Grid',
           value: ExplorerDisplay.DynamicGrid,
-          icon: <RectangleGroupIcon />,
+          icon: <LayoutDashboard />,
         },
       ],
     },
@@ -112,7 +112,7 @@ export const selections = (
   },
   {
     name: 'Mixed Files',
-    icon: <DocumentDuplicateIcon />,
+    icon: <Files />,
     type: {
       current: pref.mixed.type,
       onChange: pref.mixed.setType,
@@ -121,17 +121,17 @@ export const selections = (
         {
           name: 'Table',
           value: ExplorerDisplay.Table,
-          icon: <ListBulletIcon />,
+          icon: <TableProperties />,
         },
         {
           name: 'Static Grid',
           value: ExplorerDisplay.StaticGrid,
-          icon: <Square2StackIcon />,
+          icon: <LayoutGrid />,
         },
         {
           name: 'Dynamic Grid',
           value: ExplorerDisplay.DynamicGrid,
-          icon: <RectangleGroupIcon />,
+          icon: <LayoutDashboard />,
         },
       ],
     },

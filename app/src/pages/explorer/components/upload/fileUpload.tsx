@@ -1,4 +1,3 @@
-import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 import { useUsageStats } from '@lib/query.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
@@ -11,6 +10,7 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import useDisclosure from '@hooks/useDisclosure.ts';
+import { CloudUpload } from 'lucide-react';
 
 export function FileUploadModal({
   open,
@@ -51,7 +51,7 @@ export function FileUpload({ onClick }: { onClick: () => void }) {
   const full = (data?.limit || 0) - (data?.total || 0) <= 0;
   return (
     <button className={'no-pre menu-button w-full py-2'} onClick={onClick}>
-      <ArrowUpTrayIcon className={'h-5 w-5'} />
+      <CloudUpload className={'h-5 w-5'} />
       <div className={'flex flex-col text-start'}>
         Upload
         {full && (

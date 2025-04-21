@@ -3,9 +3,9 @@ import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useContext, useState } from 'react';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { createDownloadUrl } from '@lib/file.ts';
+import { Download } from 'lucide-react';
 
 export function DownloadSingleAction({
   id,
@@ -120,7 +120,7 @@ export function DownloadSingleAction({
         onClose?.();
       }}
       disabled={downloadAction.isPending}>
-      <ArrowDownTrayIcon />
+      <Download />
       Download
     </button>
   );

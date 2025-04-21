@@ -5,12 +5,12 @@ import {
   PreferenceOption,
   selections,
 } from '@pages/settings/preferences/selections.tsx';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
 import { cn } from '@lib/utils.ts';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { ChevronDown } from 'lucide-react';
 
 export default function ExplorerPreferences({
   inPopup,
@@ -64,7 +64,7 @@ export function Preference({
         className={'flex cursor-pointer items-center justify-between'}>
         <div
           className={cn(
-            'flex items-center gap-3 text-stone-600 [&_svg]:h-8 [&_svg]:w-8',
+            'flex items-center gap-3 text-stone-600 [&_svg]:h-6 [&_svg]:w-6',
             Boolean(small) && 'gap-2 [&_svg]:h-6 [&_svg]:w-6',
             'dark:text-stone-300',
           )}>
@@ -82,7 +82,7 @@ export function Preference({
             </p>
           </div>
         </div>
-        <ChevronDownIcon
+        <ChevronDown
           className={cn('h-5 w-5 transition-transform', open && 'rotate-180')}
         />
       </div>

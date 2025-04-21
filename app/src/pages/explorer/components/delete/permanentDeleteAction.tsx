@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext, useState } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
@@ -12,6 +11,7 @@ import { DisplayContext } from '@lib/contexts.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Shredder } from 'lucide-react';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -71,7 +71,7 @@ export function PermanentDeleteAction({
       className={
         'text-red-500 hover:!text-red-800 dark:text-red-300 dark:hover:!text-red-300'
       }>
-      <TrashIcon />
+      <Shredder />
       {short ? 'Delete' : 'Delete Permanently'}
     </button>
   );
@@ -154,7 +154,7 @@ export function MultiPermanentDelete({
           ? 'text-gray-400 hover:!text-gray-400'
           : 'bg-red-400 !text-white hover:!bg-red-500',
       )}>
-      <TrashIcon />
+      <Shredder />
       Delete {deleteType}
     </button>
   );

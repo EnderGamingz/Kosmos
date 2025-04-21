@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateShares } from '@lib/query.ts';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { Trash } from 'lucide-react';
 
 export function DeleteShare({ id }: { id: string }) {
   const notifications = useNotifications(s => s.actions);
@@ -41,7 +41,7 @@ export function DeleteShare({ id }: { id: string }) {
       className={'flex'}
       onClick={() => action.mutate()}
       disabled={action.isPending}>
-      <TrashIcon className={'w-4 text-red-400'} />
+      <Trash className={'w-4 text-red-400'} />
     </button>
   );
 }

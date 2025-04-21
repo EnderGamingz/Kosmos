@@ -1,7 +1,7 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
-import { HomeIcon } from '@heroicons/react/24/outline';
 import { SimpleDirectoryDTO } from '@bindings/SimpleDirectoryDTO.ts';
+import { Home } from 'lucide-react';
 
 export function FileListBreadCrumbs({
   crumbs,
@@ -30,7 +30,7 @@ export function FileListBreadCrumbs({
     <BreadCrumbs>
       {!firstHome && (
         <BreadCrumbItem
-          name={<HomeIcon />}
+          name={<Home className={'!w-4.5 !h-4.5'} />}
           href={!clickOverwrite ? '/home' : undefined}
           onClick={() => clickOverwrite?.(undefined)}
           last={!crumbs.length}

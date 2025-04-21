@@ -5,12 +5,12 @@ import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
 import { AuthScreen } from '@pages/authScreen.tsx';
 import PasskeyLogin from '@components/passkey/login.tsx';
 import { useConditionalPasskeyLogin } from '@components/passkey/useConditionalPasskeyLogin.ts';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
+import { KeyRound, User } from 'lucide-react';
 
 type LoginData = { username: string; password: string };
 
@@ -86,7 +86,7 @@ export default function Login() {
         link: '/auth/register',
       }}>
       <label htmlFor={'username'} className={'animate-fade-in-top delay-200'}>
-        <UserIcon />
+        <User />
         <Input
           id={'username'}
           placeholder={'Username'}
@@ -98,7 +98,7 @@ export default function Login() {
         />
       </label>
       <label htmlFor={'password'} className={'animate-fade-in-top delay-300'}>
-        <KeyIcon />
+        <KeyRound />
         <Input
           id={'password'}
           placeholder={'Password'}

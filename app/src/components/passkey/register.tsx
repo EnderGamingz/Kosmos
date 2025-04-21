@@ -5,13 +5,12 @@ import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { invalidatePasskeys } from '@lib/query.ts';
 import { FormEvent } from 'react';
-import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
-import { KeyRound } from 'lucide-react';
+import { KeyRound, Send } from 'lucide-react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
@@ -128,7 +127,7 @@ export default function PasskeyRegister() {
             required
           />
           <Button type={'submit'}>
-            <PaperAirplaneIcon className={'h-5 w-5'} />
+            <Send className={'h-5 w-5'} />
           </Button>
         </form>
       </PopoverContent>

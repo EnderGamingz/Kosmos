@@ -1,7 +1,7 @@
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { Link } from 'react-router-dom';
 import { BuildTagDisplay } from '@pages/settings/appInfo.tsx';
-import { HeartIcon } from '@heroicons/react/24/outline';
+import { Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -25,7 +25,7 @@ export default function Footer() {
           to={'https://aka.setilic.com/l/portfolio?ref=kosmos'}
           target={'_blank'}
           className={'hover:underline'}>
-          Made with <HeartIcon className={'inline h-5 w-5'} />
+          Made with <Heart className={'inline h-5 w-5'} />
         </Link>
       </div>
       <div

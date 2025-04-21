@@ -1,4 +1,3 @@
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { SearchForm } from '@components/header/search/searchForm.tsx';
 import {
   Popover,
@@ -6,6 +5,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import useDisclosure from '@/hooks/useDisclosure';
+import { Search } from 'lucide-react';
 
 export function SearchBar() {
   return (
@@ -26,7 +26,7 @@ export function SearchPopup() {
       onOpenChange={searchDisclosure.onOpenChange}>
       <PopoverTrigger asChild>
         <button className={'block p-2 sm:hidden'}>
-          <MagnifyingGlassIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
+          <Search className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
         </button>
       </PopoverTrigger>
       <PopoverContent side={'bottom'}>

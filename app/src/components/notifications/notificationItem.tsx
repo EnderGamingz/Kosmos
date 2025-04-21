@@ -1,11 +1,11 @@
 import { Notification, useNotifications } from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import { NotificationStatus } from './notificationStatus.tsx';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
 import { Collapse } from 'react-collapse';
 import { cn } from '@lib/utils.ts';
+import { X } from 'lucide-react';
 
 const ExpandedNotificationHeight = 56;
 
@@ -95,7 +95,7 @@ export function NotificationItem({
             className={
               'ml-auto cursor-pointer self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
             }>
-            <XMarkIcon className={'h-5 w-5'} />
+            <X className={'h-5 w-5'} />
           </div>
         )}
       </div>

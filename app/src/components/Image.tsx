@@ -1,14 +1,11 @@
 import { useContext, useState } from 'react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
-import {
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { createPreviewUrl } from '@lib/file.ts';
 import { cn } from '@lib/utils.ts';
 import { Skeleton } from '@components/ui/skeleton.tsx';
+import { OctagonAlert, TriangleAlert } from 'lucide-react';
 
 export function PreviewImage({
   id,
@@ -69,11 +66,9 @@ export function PreviewImage({
         <Skeleton className={cn('h-full w-full', 'rounded-lg shadow-inner')} />
       )}
 
-      {isFailed && (
-        <ExclamationCircleIcon className={'h-8 w-8 text-red-500/20'} />
-      )}
+      {isFailed && <OctagonAlert className={'h-8 w-8 text-red-500/20'} />}
       {isUnavailable && (
-        <ExclamationTriangleIcon className={'h-8 w-8 text-gray-500/20'} />
+        <TriangleAlert className={'h-8 w-8 text-gray-500/20'} />
       )}
     </motion.div>
   );

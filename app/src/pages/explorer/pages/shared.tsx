@@ -11,7 +11,6 @@ import {
 } from '@components/defaults/transition.ts';
 import { useNavigate } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
@@ -24,6 +23,7 @@ import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Progress } from '@/components/ui/progress';
 import { PageMetadata } from '@components/metadata.tsx';
+import { SquareArrowOutUpRight } from 'lucide-react';
 
 export default function SharedItems({
   itemsForUser,
@@ -155,7 +155,7 @@ function ShareForMeItem({
             by @{share.share_target_username}
           </p>
         )}
-        <ArrowTopRightOnSquareIcon className={'h-4 w-4'} />
+        <SquareArrowOutUpRight className={'h-4 w-4'} />
       </div>
     </motion.li>
   );

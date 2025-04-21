@@ -1,5 +1,5 @@
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Button } from '@components/ui/button.tsx';
+import { X } from 'lucide-react';
 
 export function ModalCloseButton({ onClick }: { onClick: () => void }) {
   return (
@@ -7,7 +7,7 @@ export function ModalCloseButton({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       variant={'secondary'}
       className={'w-full cursor-pointer'}>
-      <XMarkIcon className={'h-4 w-4'} /> Close
+      <X className={'h-4 w-4'} /> Close
     </Button>
   );
 }

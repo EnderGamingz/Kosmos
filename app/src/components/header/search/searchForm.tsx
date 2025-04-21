@@ -1,11 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ArrowTurnDownRightIcon,
-  MagnifyingGlassIcon,
-} from '@heroicons/react/24/outline';
-
 import { cn } from '@lib/utils.ts';
+import { CornerDownRight, Search } from 'lucide-react';
 
 export function SearchForm({ onClose }: { onClose?: () => void }) {
   const [value, setValue] = useState('');
@@ -26,7 +22,7 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
   return (
     <form onSubmit={handleSubmit}>
       <div className={'relative'}>
-        <MagnifyingGlassIcon
+        <Search
           className={
             'absolute left-2 top-1/2 h-5 w-5 -translate-y-1/2 text-stone-500'
           }
@@ -50,7 +46,7 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
             'text-stone-500 transition-opacity',
             !value && 'opacity-0',
           )}>
-          <ArrowTurnDownRightIcon className={'h-5 w-5'} />
+          <CornerDownRight className={'h-5 w-5'} />
         </button>
       </div>
     </form>

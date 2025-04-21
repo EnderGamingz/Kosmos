@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-import { DocumentIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MAX_QUICK_SHARE_FILES } from '@lib/constants.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
@@ -11,6 +10,7 @@ import { quickShareUploadFn } from '@pages/explorer/pages/quick/quickShareUpload
 import { QuickShareResult } from '@pages/explorer/pages/quick/quickShareResult.tsx';
 import { cn } from '@lib/utils.ts';
 import { PageMetadata } from '@components/metadata.tsx';
+import { File as FileIcon, X } from 'lucide-react';
 
 export default function QuickSharePage() {
   const [shareUuid, setShareUuid] = useState<string | undefined>(undefined);
@@ -172,13 +172,15 @@ function FileItem({ file, onRemove }: { file: File; onRemove: () => void }) {
       layout
       onClick={e => e.stopPropagation()}
       className={
-        'flex w-full items-center gap-2 rounded-md p-1 transition-colors hover:bg-stone-200/50'
+        'flex w-full items-center gap-2 rounded-md p-1 hover:ring transition-all'
       }
       onDoubleClick={onRemove}>
-      <DocumentIcon className={'h-5 min-w-5'} />
+      <FileIcon className={'h-5 min-w-5'} />
       <p className={'col-span-2 truncate'}>{file.name}</p>
-      <button className={'ml-auto p-1 text-red-500'} onClick={onRemove}>
-        <XMarkIcon className={'h-4 w-4'} />
+      <button
+        className={'ml-auto p-1 text-red-500 cursor-pointer'}
+        onClick={onRemove}>
+        <X className={'h-4 w-4'} />
       </button>
     </motion.li>
   );

@@ -1,8 +1,8 @@
 import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
 import { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
-import { ServerIcon, ServerStackIcon } from '@heroicons/react/24/outline';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { Container, Cuboid } from 'lucide-react';
 
 export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {
   const unitPref = usePreferenceStore(s => s.unit);
@@ -12,13 +12,13 @@ export function UnitPreferences({ inPopup }: { inPopup?: boolean }) {
       name: 'SI',
       description: 'KB / MB',
       value: Unit.SI,
-      icon: <ServerIcon />,
+      icon: <Cuboid />,
     },
     {
       name: 'IEC',
       description: 'KiB / MiB',
       value: Unit.IEC,
-      icon: <ServerStackIcon />,
+      icon: <Container />,
     },
   ];
   return (

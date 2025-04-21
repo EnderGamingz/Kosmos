@@ -1,8 +1,3 @@
-import {
-  ArrowLeftIcon,
-  ArrowTopRightOnSquareIcon,
-  CloudIcon,
-} from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { useUsageStats } from '@lib/query.ts';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
@@ -11,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ReactNode, useMemo } from 'react';
 import { cn } from '@lib/utils.ts';
 import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
+import { ArrowLeft, Cloud, SquareArrowOutUpRight } from 'lucide-react';
 
 function SideNavWrapper({
   children,
@@ -56,9 +52,9 @@ export function ExplorerSideNav({ source }: { source: LinkSource }) {
             'flex items-center gap-2 rounded-lg px-2 py-1 font-light',
             'hover:bg-stone-800/10 dark:hover:bg-stone-300/10',
           )}>
-          <CloudIcon className={'h-5 w-5'} />
+          <Cloud className={'h-5 w-5'} />
           Account Storage
-          <ArrowTopRightOnSquareIcon className={'h-3 w-3'} />
+          <SquareArrowOutUpRight className={'h-3 w-3'} />
         </Link>
         <UsageIndicator data={usage.data} loading={usage.isLoading} />
         <div
@@ -91,7 +87,7 @@ export function SocialSideNav() {
           link={{
             href: '/home',
             name: 'Back to Dashboard',
-            icon: <ArrowLeftIcon className={'h-5 w-5'} />,
+            icon: <ArrowLeft className={'h-5 w-5'} />,
           }}
         />
       </div>

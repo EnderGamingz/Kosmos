@@ -1,18 +1,14 @@
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { Link } from 'react-router-dom';
-import {
-  CloudIcon,
-  FingerPrintIcon,
-  TagIcon,
-} from '@heroicons/react/24/outline';
 import { BUILD_ID, BUILD_TAG } from '@lib/env.ts';
 import { SettingsPageMetadata } from '@components/metadata.tsx';
+import { CodeXml, Fingerprint, Tag } from 'lucide-react';
 
 const links = [
   {
     name: 'Source',
     href: 'https://git.flouet.com/philipp.hergenhahn/kosmos',
-    icon: CloudIcon,
+    icon: CodeXml,
   },
 ];
 
@@ -23,7 +19,7 @@ export function BuildIdDisplay() {
         <div
           title={'Build ID'}
           className={'flex items-center gap-1 text-sm font-light'}>
-          <FingerPrintIcon className={'h-5 w-5'} />
+          <Fingerprint className={'h-5 w-5'} />
           {BUILD_ID}
         </div>
       )}
@@ -38,7 +34,7 @@ export function BuildTagDisplay({ noIcon }: { noIcon?: boolean }) {
         <div
           title={'Build Tag'}
           className={'flex items-center gap-1 text-sm font-light'}>
-          {!noIcon && <TagIcon className={'h-5 w-5'} />} {BUILD_TAG}
+          {!noIcon && <Tag className={'h-5 w-5'} />} {BUILD_TAG}
         </div>
       )}
     </>

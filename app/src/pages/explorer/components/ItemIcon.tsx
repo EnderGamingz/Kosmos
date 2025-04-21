@@ -1,18 +1,17 @@
 import { FilePreviewStatus, FileType } from '@models/file.ts';
-import {
-  ArchiveBoxIcon,
-  DocumentIcon,
-  DocumentTextIcon,
-  FilmIcon,
-  FolderIcon,
-  MusicalNoteIcon,
-  PhotoIcon,
-  Square2StackIcon,
-} from '@heroicons/react/24/outline';
 import { PreviewImage } from '@components/Image.tsx';
 import { motion } from 'framer-motion';
-
 import { cn } from '@lib/utils.ts';
+import {
+  File,
+  FileAudio,
+  FileImage,
+  FileText,
+  FileVideo,
+  FolderArchive,
+  FolderClosed,
+  Images,
+} from 'lucide-react';
 
 type FileIcon = FileType | 'folder' | 'album';
 
@@ -27,7 +26,7 @@ function getFileIcon(
   switch (type) {
     case FileType.Image:
     case FileType.RawImage:
-      if (disablePreview) return <PhotoIcon />;
+      if (disablePreview) return <FileImage />;
       return (
         <PreviewImage
           id={id}
@@ -38,22 +37,22 @@ function getFileIcon(
         />
       );
     case FileType.Video:
-      return <FilmIcon />;
+      return <FileVideo />;
     case FileType.Editable:
     case FileType.Document:
-      return <DocumentTextIcon />;
+      return <FileText />;
     case FileType.Audio:
-      return <MusicalNoteIcon />;
+      return <FileAudio />;
     case FileType.LargeImage:
-      return <PhotoIcon />;
+      return <FileImage />;
     case FileType.Archive:
-      return <ArchiveBoxIcon />;
+      return <FolderArchive />;
     case 'folder':
-      return <FolderIcon />;
+      return <FolderClosed />;
     case 'album':
-      return <Square2StackIcon />;
+      return <Images />;
     default:
-      return <DocumentIcon />;
+      return <File />;
   }
 }
 

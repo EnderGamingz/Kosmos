@@ -1,6 +1,5 @@
 import { DataOperationType } from '@models/file.ts';
 import { RenameModalContent } from './renameModalContent.tsx';
-import { PencilIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import useDisclosure from '@/hooks/useDisclosure.ts';
@@ -9,6 +8,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
+import { Pencil } from 'lucide-react';
 
 export function RenameAction({
   type,
@@ -29,7 +29,7 @@ export function RenameAction({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger>
-        <PencilIcon />
+        <Pencil />
         Rename
       </DialogTrigger>
       <DialogContent className={'!max-w-sm'}>

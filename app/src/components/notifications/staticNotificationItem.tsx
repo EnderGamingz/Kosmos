@@ -1,7 +1,7 @@
 import { Notification } from '@stores/notificationStore.ts';
 import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
 import { NotificationStatus } from '@components/notifications/notificationStatus.tsx';
-import { Bars3BottomLeftIcon, ForwardIcon } from '@heroicons/react/24/outline';
+import { Forward, TextQuote } from 'lucide-react';
 
 export function StaticNotificationItem({
   data,
@@ -25,13 +25,13 @@ export function StaticNotificationItem({
       <div className={'mb-1 grid text-sm font-light'}>
         {data.description && (
           <p>
-            <Bars3BottomLeftIcon className={'ml-0.5 mr-1.5 inline h-4 w-4'} />
+            <TextQuote className={'ml-0.5 mr-1.5 inline h-4 w-4'} />
             {data.description}
           </p>
         )}
         {data.status && (
           <span>
-            <ForwardIcon className={'ml-0.5 mr-1.5 inline h-4 w-4'} />
+            <Forward className={'ml-0.5 mr-1.5 inline h-4 w-4'} />
             {data.status}
           </span>
         )}

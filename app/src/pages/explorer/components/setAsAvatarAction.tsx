@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircle } from 'lucide-react';
 
 export default function SetAsAvatarAction({
   file,
@@ -40,7 +40,7 @@ export default function SetAsAvatarAction({
 
   return (
     <button onClick={handleClick}>
-      <UserCircleIcon />
+      <UserCircle />
       {dense ? 'Set Avatar' : 'Set as Avatar'}
     </button>
   );

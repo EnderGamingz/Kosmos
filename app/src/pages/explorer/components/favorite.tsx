@@ -1,10 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { StarIcon } from '@heroicons/react/24/outline';
 import { DataOperationType } from '@models/file.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { motion } from 'framer-motion';
 import {
   invalidateData,
   invalidateFavorites,
@@ -13,6 +11,7 @@ import {
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { cn } from '@lib/utils.ts';
+import { Star } from 'lucide-react';
 
 export default function Favorite({
   id,
@@ -57,25 +56,26 @@ export default function Favorite({
   if (context.shareUuid) return null;
 
   return (
-    <motion.button
-      //layoutId={`favorite-${id}`}
-      className={cn('flex items-center gap-1', iconOnly ? 'p-2' : '')}
+    <button
+      className={cn(
+        'flex items-center gap-1 cursor-pointer',
+        iconOnly && 'p-2',
+        action.isPending && 'animate-pulse cursor-wait',
+      )}
       onClick={e => {
         e.stopPropagation();
         action.mutate();
       }}>
-      <StarIcon
+      <Star
         className={cn(
-          'h-6 w-6 transition-all',
+          'h-5 w-5 transition-all stroke-1',
           active
-            ? 'fill-amber-400 stroke-amber-400 dark:fill-amber-500 dark:stroke-amber-500'
-            : 'fill-transparent stroke-stone-400 dark:stroke-stone-300',
-          white && !active
-            ? 'fill-stone-50/60 stroke-stone-300 dark:fill-stone-600/60'
-            : '',
+            ? 'fill-amber-400 stroke-amber-700'
+            : 'fill-transparent stroke-primary',
+          white && !active && 'fill-border',
         )}
       />
       {!iconOnly && 'Favorite'}
-    </motion.button>
+    </button>
   );
 }

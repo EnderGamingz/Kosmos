@@ -1,21 +1,16 @@
 import { Severity } from '@stores/notificationStore.ts';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-} from '@heroicons/react/24/outline';
+import { CircleCheck, Info, OctagonAlert, TriangleAlert } from 'lucide-react';
 
 export function getSeverityIcon(severity: Severity) {
   switch (severity) {
     case Severity.SUCCESS:
-      return <CheckCircleIcon className={'text-green-400'} />;
+      return <CircleCheck className={'text-green-400'} />;
     case Severity.ERROR:
-      return <ExclamationCircleIcon className={'text-red-400'} />;
+      return <OctagonAlert className={'text-red-400'} />;
     case Severity.WARN:
-      return <ExclamationTriangleIcon className={'text-amber-500'} />;
+      return <TriangleAlert className={'text-amber-500'} />;
     case Severity.INFO:
     default:
-      return <InformationCircleIcon />;
+      return <Info />;
   }
 }

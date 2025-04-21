@@ -1,5 +1,4 @@
 import { invalidateFiles, useOperations } from '@lib/query.ts';
-import { BellIcon } from '@heroicons/react/24/outline';
 import { OperationStatus, OperationType } from '@models/operation.ts';
 import { useEffect, useRef, useState } from 'react';
 import objectHash from 'object-hash';
@@ -14,6 +13,7 @@ import {
   PopoverTrigger,
 } from '@components/ui/popover.tsx';
 import { AttentionDot } from '@components/header/attentionDot.tsx';
+import { Bell } from 'lucide-react';
 
 export function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
@@ -78,7 +78,7 @@ export function NotificationsMenu() {
       <PopoverTrigger asChild>
         <button className={'flex p-2 relative cursor-pointer'}>
           {!seen && <AttentionDot />}
-          <BellIcon className={'h-6 w-6'} />
+          <Bell className={'h-6 w-6'} />
         </button>
       </PopoverTrigger>
       <PopoverContent

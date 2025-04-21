@@ -1,21 +1,21 @@
 import { Theme, usePreferenceStore } from '@stores/preferenceStore.ts';
 import { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
-import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { Moon, Sun } from 'lucide-react';
 
 export const themeChoices: PreferenceOption[] = [
   {
     name: 'Light Theme',
     value: Theme.Light,
-    icon: <SunIcon />,
+    icon: <Sun />,
   },
   {
     name: 'Dark Theme',
     value: Theme.Dark,
-    icon: <MoonIcon />,
+    icon: <Moon />,
   },
 ];
 

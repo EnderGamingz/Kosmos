@@ -1,10 +1,4 @@
 import { useSearchState } from '@stores/searchStore.ts';
-import {
-  Bars3BottomLeftIcon,
-  BarsArrowDownIcon,
-  BarsArrowUpIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
 import { getSortString, SortBy, SortOrder } from '@models/sort.ts';
 import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
 import { cn } from '@lib/utils.ts';
@@ -13,6 +7,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  ArrowDownNarrowWide,
+  ArrowUpDown,
+  ArrowUpNarrowWide,
+  X,
+} from 'lucide-react';
 
 export function FileGridSort() {
   const currentSort = useSearchState(s => s.sort);
@@ -20,12 +20,12 @@ export function FileGridSort() {
 
   const sortIcon = () => {
     if (currentSort.sort_order === undefined) {
-      return <Bars3BottomLeftIcon />;
+      return <ArrowUpDown />;
     }
     if (currentSort.sort_order !== SortOrder.Asc) {
-      return <BarsArrowUpIcon />;
+      return <ArrowUpNarrowWide />;
     }
-    return <BarsArrowDownIcon />;
+    return <ArrowDownNarrowWide />;
   };
 
   return (
@@ -66,7 +66,7 @@ export function FileGridSort() {
         <hr className={'my-1 border-stone-200 !p-0'} />
         <button onClick={() => clear()} className={'w-full'}>
           Clear
-          <XMarkIcon className={'h-3 w-3'} />
+          <X className={'h-3 w-3'} />
         </button>
       </PopoverContent>
     </Popover>

@@ -3,11 +3,6 @@ import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import {
-  ArrowRightStartOnRectangleIcon,
-  CodeBracketIcon,
-  Cog6ToothIcon,
-} from '@heroicons/react/24/outline';
 import useLogout from '@hooks/useLogout.ts';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useMemo, useState } from 'react';
@@ -18,6 +13,7 @@ import { Button } from '@components/ui/button.tsx';
 import UserAvatar from '@components/UserAvatar.tsx';
 import { usePreferenceStore } from '@stores/preferenceStore.ts';
 import { themeChoices } from '@pages/settings/preferences/themePreferences.tsx';
+import { Bolt, Code, LogOut } from 'lucide-react';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -80,7 +76,7 @@ export function UserMenu() {
               to={'/admin/user'}
               className={'menu-button animate-fade-in-top delay-100'}
               onClick={handleClose}>
-              <CodeBracketIcon className={'h-5 w-5'} />
+              <Code className={'h-5 w-5'} />
               Admin
             </Link>
           )}
@@ -88,7 +84,7 @@ export function UserMenu() {
             to={'/settings/account'}
             className={'menu-button animate-fade-in-top delay-200'}
             onClick={handleClose}>
-            <Cog6ToothIcon className={'h-5 w-5'} />
+            <Bolt className={'h-5 w-5'} />
             Settings
           </Link>
           <hr className={'my-2 animate-fade-in-top delay-200'} />
@@ -102,7 +98,7 @@ export function UserMenu() {
             }
             size={'sm'}
             onClick={() => logoutAction.mutate()}>
-            <ArrowRightStartOnRectangleIcon className={'h-5 w-5'} />
+            <LogOut className={'h-5 w-5'} />
             Logout
           </Button>
         </div>

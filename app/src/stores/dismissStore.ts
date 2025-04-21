@@ -2,10 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { merge } from 'lodash';
 import { ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react';
-import {
-  ChatBubbleLeftEllipsisIcon,
-  CircleStackIcon,
-} from '@heroicons/react/24/outline';
+import { HardDrive, MessageCircleWarning } from 'lucide-react';
 
 export enum Dismiss {
   StorageLimit = 'storage_limit',
@@ -27,13 +24,13 @@ type DismissItem = {
 const dismissible: DismissItem[] = [
   {
     id: Dismiss.SystemMessage,
-    icon: ChatBubbleLeftEllipsisIcon,
+    icon: MessageCircleWarning,
     name: 'System Message',
     dismissed: false,
   },
   {
     id: Dismiss.StorageLimit,
-    icon: CircleStackIcon,
+    icon: HardDrive,
     name: 'Storage Limit Warning',
     dismissed: false,
   },

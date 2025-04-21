@@ -16,14 +16,13 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import { Collapse } from 'react-collapse';
-import { DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 import { useByteFormatter } from '@utils/fileSize.ts';
 import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
 import { cn } from '@lib/utils.ts';
 import { DialogClose, DialogFooter } from '@components/ui/dialog.tsx';
 import { Button, buttonVariants } from '@components/ui/button.tsx';
-import { X } from 'lucide-react';
+import { FileUp, FolderUp, X } from 'lucide-react';
 
 export function FileUploadContent({
   folder,
@@ -288,11 +287,11 @@ export function FileUploadContent({
         </DialogClose>
         <div className={'flex flex-col gap-1 sm:flex-row'}>
           <label htmlFor={'folders'} className={buttonVariants()}>
-            <FolderIcon />
+            <FolderUp />
             Select Folder
           </label>
           <label htmlFor={'files'} className={buttonVariants()}>
-            <DocumentIcon />
+            <FileUp />
             Select Files(s)
           </label>
         </div>

@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { TrashIcon } from '@heroicons/react/24/outline';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import { Trash } from 'lucide-react';
 
 export function AlbumDelete({
   id,
@@ -59,7 +59,7 @@ export function AlbumDelete({
       }
       disabled={deleteAction.isPending}
       onClick={() => deleteAction.mutate()}>
-      <TrashIcon className={'h-5 w-5'} />
+      <Trash className={'h-5 w-5'} />
       Delete
     </button>
   );

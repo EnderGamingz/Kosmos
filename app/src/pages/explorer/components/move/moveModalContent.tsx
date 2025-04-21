@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useFolders } from '@lib/query.ts';
 import { motion } from 'framer-motion';
 import { ContextOperationType } from '@models/file.ts';
-import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
@@ -14,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
-import { LoaderCircle } from 'lucide-react';
+import { ArrowRight, LoaderCircle } from 'lucide-react';
 import { Button } from '@components/ui/button.tsx';
 
 export type MoveData = {
@@ -80,7 +79,7 @@ export function MoveModalContent({
             'flex justify-between gap-1 text-sm font-normal text-muted-foreground'
           }>
           <span>
-            Moving to <ArrowRightIcon className={'inline h-3 w-3'} />{' '}
+            Moving to <ArrowRight className={'inline h-3 w-3'} />{' '}
             {data?.folder?.folder_name || 'Home'}{' '}
           </span>
           {isLoading && (

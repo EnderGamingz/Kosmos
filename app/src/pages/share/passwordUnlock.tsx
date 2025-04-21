@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { FormEvent, useState } from 'react';
-import { CheckIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
@@ -8,6 +7,7 @@ import { BASE_URL } from '@lib/env.ts';
 import { invalidateShareAccess } from '@lib/query.ts';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { Check } from 'lucide-react';
 
 export function PasswordUnlock() {
   const [value, setValue] = useState('');
@@ -79,7 +79,7 @@ export function PasswordUnlock() {
             className={
               'grid min-w-10 place-items-center p-2 animate-fade-in-right delay-500'
             }>
-            <CheckIcon className={'h-5 w-5'} />
+            <Check className={'h-5 w-5'} />
           </Button>
         </form>
       </div>

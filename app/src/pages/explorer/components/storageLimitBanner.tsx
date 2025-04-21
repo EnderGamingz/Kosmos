@@ -2,13 +2,13 @@ import { useUsageStats } from '@lib/query.ts';
 import { getPercentageStats } from '@components/usage/getPercentage.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { Link } from 'react-router-dom';
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
 import { cn } from '@lib/utils.ts';
 import { buttonVariants } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 export default function StorageLimitBanner() {
   const usage = useUsageStats();
@@ -67,7 +67,7 @@ export default function StorageLimitBanner() {
             </p>
             <div className={'flex flex-col gap-4 sm:flex-row'}>
               <Link className={cn(buttonVariants())} to={'/usage/report'}>
-                <ArrowTopRightOnSquareIcon />
+                <ArrowRight />
                 Usage Report
               </Link>
               <DismissButton id={Dismiss.StorageLimit} />

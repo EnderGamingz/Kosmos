@@ -1,44 +1,45 @@
-import {
-  CheckBadgeIcon,
-  InformationCircleIcon,
-  KeyIcon,
-  UserIcon,
-  WindowIcon,
-} from '@heroicons/react/24/outline';
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
+import {
+  AppWindow,
+  BadgeCheck,
+  Info,
+  KeyRound,
+  User,
+  UserPen,
+} from 'lucide-react';
 
 export const getSettingsLinks = (): ExplorerLink[] => [
   {
     name: 'Account',
     href: '/settings/account',
-    icon: <UserIcon />,
+    icon: <User />,
   },
   {
     name: 'Security',
     href: '/settings/security',
-    icon: <KeyIcon />,
+    icon: <KeyRound />,
   },
   {
     name: 'Profile',
     href: '/settings/profile',
-    icon: <UserIcon />,
+    icon: <UserPen />,
     lessPriority: true,
   },
   {
     name: 'Preferences',
     href: '/settings/preferences',
-    icon: <WindowIcon />,
+    icon: <AppWindow />,
   },
   {
     name: 'Dismissed',
     href: '/settings/dismissed',
-    icon: <CheckBadgeIcon />,
+    icon: <BadgeCheck />,
     lessPriority: true,
   },
   {
     name: 'Kosmos',
     href: '/settings/info',
-    icon: <InformationCircleIcon />,
+    icon: <Info />,
     lessPriority: true,
   },
 ];

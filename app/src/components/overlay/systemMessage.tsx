@@ -1,9 +1,8 @@
 import { Dismiss, useDismissStore } from '@stores/dismissStore.ts';
 import { SYSTEM_MESSAGE } from '@lib/env.ts';
 import { DismissButton } from '@pages/explorer/components/dismissButton.tsx';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-
 import { cn } from '@lib/utils.ts';
+import { X } from 'lucide-react';
 
 export default function SystemMessage() {
   const isDismissed = useDismissStore(s =>
@@ -20,7 +19,7 @@ export default function SystemMessage() {
       )}>
       {SYSTEM_MESSAGE}
       <DismissButton id={Dismiss.SystemMessage}>
-        <XMarkIcon className={'h-5 w-5'} />
+        <X className={'h-5 w-5'} />
       </DismissButton>
     </div>
   );

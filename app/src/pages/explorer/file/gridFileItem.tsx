@@ -8,7 +8,6 @@ import { DisplayContext } from '@lib/contexts.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
 import { useFormatBytes } from '@utils/fileSize.ts';
-import { ClockIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow } from 'date-fns';
 import { DetailType } from '@stores/preferenceStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
@@ -18,6 +17,7 @@ import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMulti
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
+import { Clock, EllipsisVertical } from 'lucide-react';
 
 export default function GridFileItem({
   index,
@@ -131,13 +131,13 @@ export default function GridFileItem({
             '[&>button>svg]:w-5 [&>button]:-mt-0.5 [&>button]:p-0',
             'left-1.5 top-1.5 h-20 overflow-hidden rounded-t-lg',
             isDefaultDisplay &&
-              'gap-3 pl-1.5 pt-2.5 [&>button>svg]:w-6 [&>button]:-mt-1',
+              'gap-2 pl-1.5 pt-2.5 [&>button>svg]:w-6 [&>button]:-mt-1',
             isHidden && 'left-0 top-0',
           )}>
           {!context.viewSettings?.noSelect && onSelect && (
-            <div className={'-mt-1 h-4 w-4'}>
+            <div className={'-mt-[4px] h-4 w-4'}>
               <Checkbox
-                className={'h-4 w-4'}
+                className={'h-4 w-4 bg-border'}
                 checked={isSelected}
                 onClick={() => onSelect(file)}
               />
@@ -179,36 +179,34 @@ export default function GridFileItem({
               noText
             />
           )}
-          <AnimatePresence>
-            {!isHidden && (
-              <div
-                key={`size-${file.id}`}
-                className={
-                  'absolute right-1.5 top-1.5 z-30 rounded-full bg-stone-200 !px-1.5 !py-0.5 text-xs dark:bg-stone-700'
-                }>
-                <p>{formattedSize}</p>
-              </div>
-            )}
-            {isCompact && (
-              <div
-                key={`compact-${file.id}`}
+          {!isHidden && (
+            <p
+              key={`size-${file.id}`}
+              className={
+                'absolute right-1.5 top-1.5 z-30 rounded-full bg-border !px-1.5 !py-0.5 text-xs'
+              }>
+              {formattedSize}
+            </p>
+          )}
+          {isCompact && (
+            <div
+              key={`compact-${file.id}`}
+              className={cn(
+                'absolute inset-0 z-20 flex rounded-lg !px-1.5 !py-1',
+                'bg-gradient-to-t from-stone-800/70 to-stone-800/0',
+              )}>
+              <p
+                onClick={handleClick}
+                key={`title-${file.id}`}
                 className={cn(
-                  'absolute inset-0 z-20 flex rounded-lg !px-1.5 !py-1',
-                  'bg-gradient-to-t from-stone-800/70 to-stone-800/0',
+                  'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
+                  'mt-auto text-sm',
+                  !isCompact && 'lg:text-base',
                 )}>
-                <p
-                  onClick={handleClick}
-                  key={`title-${file.id}`}
-                  className={cn(
-                    'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
-                    'mt-auto text-sm text-stone-100',
-                    !isCompact && 'lg:text-base',
-                  )}>
-                  {file.file_name}
-                </p>
-              </div>
-            )}
-          </AnimatePresence>
+                {file.file_name}
+              </p>
+            </div>
+          )}
         </div>
         <AnimatePresence>
           {isDefaultDisplay && (
@@ -232,18 +230,16 @@ export default function GridFileItem({
                       );
                     }}
                     className={'cursor-pointer'}>
-                    <EllipsisVerticalIcon
-                      className={'h-6 w-6 text-stone-700 dark:text-stone-300'}
-                    />
+                    <EllipsisVertical className={'h-5 w-5'} />
                   </button>
                 )}
               </div>
               <p
                 key={`updated-${file.updated_at}`}
                 className={
-                  'whitespace-nowrap text-xs font-light text-stone-500 dark:text-stone-400'
+                  'flex items-center gap-1 whitespace-nowrap text-xs font-light text-muted-foreground'
                 }>
-                <ClockIcon className={'inline h-3.5 w-3.5'} />{' '}
+                <Clock className={'h-3 w-3'} />{' '}
                 {formatDistanceToNow(file.updated_at)} ago
               </p>
             </div>

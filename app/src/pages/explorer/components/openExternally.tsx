@@ -1,7 +1,7 @@
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { createServeUrl } from '@lib/file.ts';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { useContext } from 'react';
+import { SquareArrowOutUpRight } from 'lucide-react';
 
 export default function OpenExternally({
   id,
@@ -23,7 +23,7 @@ export default function OpenExternally({
 
   return (
     <button onClick={openInNew}>
-      <ArrowTopRightOnSquareIcon />
+      <SquareArrowOutUpRight />
       Open
     </button>
   );

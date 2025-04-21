@@ -5,7 +5,6 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import { useState } from 'react';
 import MarkdownEditor from '@uiw/react-markdown-editor';
-import { CheckIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
@@ -25,6 +24,7 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { Check, FilePenLine } from 'lucide-react';
 
 function MarkdownEditorContent({
   file,
@@ -115,7 +115,7 @@ function MarkdownEditorContent({
       </div>
       <DialogFooter>
         <Button onClick={() => saveAction.mutate()}>
-          <CheckIcon /> Save
+          <Check /> Save
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -147,7 +147,7 @@ export function EditMarkdownFile({
   return (
     <>
       <button onClick={onOpen}>
-        <PencilSquareIcon />
+        <FilePenLine />
         Edit File
       </button>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>

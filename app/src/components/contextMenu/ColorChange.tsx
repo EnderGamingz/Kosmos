@@ -1,4 +1,3 @@
-import { BackspaceIcon, SwatchIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -8,6 +7,7 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { hexToHsva, hsvaToHex, ShadeSlider, Wheel } from '@uiw/react-color';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import useDisclosure from '@/hooks/useDisclosure';
+import { Delete, SwatchBook } from 'lucide-react';
 
 const definedColors = [
   '#f44336',
@@ -104,7 +104,7 @@ export function FolderColorChange({
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger>
-        <SwatchIcon /> Folder Color
+        <SwatchBook /> Folder Color
       </PopoverTrigger>
       <PopoverContent className={'max-w-52'}>
         <div className={'flex flex-wrap gap-2 justify-center'}>
@@ -138,9 +138,9 @@ export function FolderColorChange({
             <button
               onClick={() => recolorAction.mutate({ remove: true })}
               className={
-                'flex gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
+                'flex items-center gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
               }>
-              <BackspaceIcon className={'h-5 w-5'} />
+              <Delete className={'h-5 w-5'} />
               Remove
             </button>
           )}

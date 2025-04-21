@@ -3,14 +3,10 @@ import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
-import {
-  CircleStackIcon,
-  DocumentIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
 import { DiskUsageReport } from '@bindings/DiskUsageReport.ts';
 import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 import { cn } from '@lib/utils.ts';
+import { Files, HardDrive, Trash2 } from 'lucide-react';
 
 export function UsageReportStats({
   report,
@@ -43,7 +39,7 @@ export function UsageReportStats({
           <UsageReportItem
             sum={report.active_storage.sum}
             count={report.active_storage.count}
-            icon={<DocumentIcon />}
+            icon={<Files />}
             label={'Files'}
             index={0}
           />
@@ -51,13 +47,13 @@ export function UsageReportStats({
             sum={report.bin_storage.sum}
             count={report.bin_storage.count}
             link={'/home/bin'}
-            icon={<TrashIcon />}
+            icon={<Trash2 />}
             label={'Files in Bin'}
             index={1}
           />
           <UsageReportItem
             sum={usage.limit - usage.total}
-            icon={<CircleStackIcon />}
+            icon={<HardDrive />}
             label={'Free Space'}
             index={2}
           />

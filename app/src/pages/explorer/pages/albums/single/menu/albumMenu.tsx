@@ -1,4 +1,3 @@
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { AlbumDelete } from '@pages/explorer/pages/albums/single/menu/albumDelete.tsx';
 import { ReactNode } from 'react';
@@ -10,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { EllipsisVertical } from 'lucide-react';
 
 export function AlbumMenu({
   album,
@@ -23,7 +23,7 @@ export function AlbumMenu({
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <button className={'text-stone-800 dark:text-stone-100'}>
-          <EllipsisVerticalIcon className={'h-8 w-8'} />
+          <EllipsisVertical className={'h-6 w-6'} />
         </button>
       </PopoverTrigger>
       <PopoverContent side={'bottom'} className={'min-w-32 max-w-52 space-y-2'}>

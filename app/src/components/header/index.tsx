@@ -1,9 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useUserState } from '@stores/userStore';
-import {
-  ArrowRightEndOnRectangleIcon,
-  UserPlusIcon,
-} from '@heroicons/react/24/outline';
 import { UserMenu } from './userMenu.tsx';
 import { NewMenu } from './new/newMenu.tsx';
 import { NotificationsMenu } from '@components/header/notifications/notificationsMenu.tsx';
@@ -15,6 +11,7 @@ import {
 } from '@components/header/search/searchBar.tsx';
 import { cn } from '@lib/utils.ts';
 import { SocialHeaderLink } from '@components/header/socialHeaderLink.tsx';
+import { LogIn } from 'lucide-react';
 
 export default function Header() {
   const location = useLocation();
@@ -38,6 +35,7 @@ export default function Header() {
           'dark:bg-stone-700/30',
           '[&>button:hover]:bg-stone-600/10 dark:[&>button:hover]:bg-stone-300/20 [&>button]:rounded-lg [&>button]:transition-colors [&>button]:duration-150',
           '[&>a:hover]:bg-stone-600/10 dark:[&>a:hover]:bg-stone-300/20 [&>a]:rounded-lg [&>a]:transition-colors [&>a]:duration-150',
+          '[&_svg]:h-5 [&_svg]:w-5',
           !user && 'ml-auto',
         )}>
         {user ? (
@@ -51,7 +49,7 @@ export default function Header() {
         ) : (
           <>
             <Link to={'/auth/login'} className={'header-login-btn'}>
-              <ArrowRightEndOnRectangleIcon /> Login
+              <LogIn /> Login
             </Link>
             {ALLOW_REGISTER && (
               <Link
@@ -59,7 +57,7 @@ export default function Header() {
                 className={
                   'header-login-btn bg-stone-700/80 text-stone-200 hover:bg-stone-700 dark:bg-stone-300/20 dark:text-stone-300'
                 }>
-                <UserPlusIcon /> Register
+                Register
               </Link>
             )}
           </>

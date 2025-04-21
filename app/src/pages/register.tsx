@@ -5,9 +5,9 @@ import { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { AuthScreen } from '@pages/authScreen.tsx';
-import { KeyIcon, UserIcon } from '@heroicons/react/24/outline';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
+import { KeyRound, User } from 'lucide-react';
 
 type RegisterData = { username: string; password: string };
 
@@ -70,7 +70,7 @@ export default function Register() {
         link: '/auth/login',
       }}>
       <label htmlFor={'username'} className={'animate-fade-in-top delay-200'}>
-        <UserIcon />
+        <User />
         <Input
           id={'username'}
           placeholder={'Username'}
@@ -81,7 +81,7 @@ export default function Register() {
         />
       </label>
       <label htmlFor={'password'} className={'animate-fade-in-top delay-300'}>
-        <KeyIcon />
+        <KeyRound />
         <Input
           id={'password'}
           placeholder={'Password'}

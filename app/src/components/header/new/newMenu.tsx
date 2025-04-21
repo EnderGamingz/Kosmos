@@ -1,4 +1,3 @@
-import { PlusIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import {
   FileUpload,
@@ -7,7 +6,6 @@ import {
 import { CreateFolder } from '@pages/explorer/folder/createFolder.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { CreateMarkdownFile } from '@components/header/new/createMarkdownFile.tsx';
-import { ClockIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import {
   Popover,
@@ -15,6 +13,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import useDisclosure from '@hooks/useDisclosure.ts';
+import { Clock, Plus } from 'lucide-react';
 
 export function NewMenu() {
   const [open, setOpen] = useState(false);
@@ -27,8 +26,9 @@ export function NewMenu() {
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button className={'flex items-center gap-1 p-2 cursor-pointer'}>
-            <PlusIcon className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
+          <button
+            className={'flex items-center gap-1 py-1.5 px-2 cursor-pointer'}>
+            <Plus className={'h-5 w-5 sm:mr-1'} />
             <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>
         </PopoverTrigger>
@@ -48,7 +48,7 @@ export function NewMenu() {
                 to={'/home/quick'}
                 onClick={handleClose}
                 className={'menu-button py-2 animate-fade-in-top delay-75'}>
-                <ClockIcon className={'h-5 w-5'} />
+                <Clock className={'h-5 w-5'} />
               </Link>
             </div>
             <div className={'animate-fade-in-top delay-100'}>

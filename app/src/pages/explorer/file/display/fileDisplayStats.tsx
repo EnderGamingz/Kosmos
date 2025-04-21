@@ -4,13 +4,10 @@ import {
   containerVariant,
   itemTransitionVariantFadeInFromTop,
 } from '@components/defaults/transition.ts';
-import {
-  CircleStackIcon,
-  InformationCircleIcon,
-} from '@heroicons/react/24/outline';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { HardDrive, Info } from 'lucide-react';
 
 export function FileDisplayStats({ file }: { file: FileModelDTO }) {
   return (
@@ -22,14 +19,13 @@ export function FileDisplayStats({ file }: { file: FileModelDTO }) {
       className={cn(
         'flex flex-wrap gap-1',
         '[&>*]:flex [&>*]:flex-1 [&>*]:items-center [&>*]:gap-2 [&_svg]:h-4 [&_svg]:w-4',
-        '[&>*]:rounded-full [&>*]:bg-stone-200/70 [&>*]:px-3 [&>*]:py-1',
-        '[&>*]:text-sm [&>*]:outline [&>*]:outline-1 [&>*]:outline-stone-600/20',
-        'dark:[&>*]:bg-stone-700 dark:[&>*]:text-stone-100 dark:[&>*]:outline-stone-500/20',
+        '[&>*]:rounded-full [&>*]:px-3 [&>*]:py-1',
+        '[&>*]:text-sm [&>*]:bg-border',
       )}>
       <motion.div
         layoutId={'fileType-display'}
         variants={itemTransitionVariantFadeInFromTop}>
-        <InformationCircleIcon />
+        <Info />
         <motion.span layoutId={'fileType-display-text'}>
           {getFileTypeString(file.file_type)}
         </motion.span>
@@ -37,7 +33,7 @@ export function FileDisplayStats({ file }: { file: FileModelDTO }) {
       <motion.div
         layoutId={'fileSize-display'}
         variants={itemTransitionVariantFadeInFromTop}>
-        <CircleStackIcon />
+        <HardDrive />
         <motion.span layoutId={'fileSize-display-text'}>
           {useFormatBytes(file.file_size)}
         </motion.span>

@@ -1,11 +1,10 @@
 import QRCode from 'react-qr-code';
-import { QrCodeIcon } from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
-
 import { cn } from '@lib/utils.ts';
 import { Popover, PopoverContent } from '@/components/ui/popover';
 import { PopoverTrigger } from '@components/ui/popover.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { QrCode } from 'lucide-react';
 
 export default function QrCodeModal({
   value,
@@ -25,9 +24,7 @@ export default function QrCodeModal({
             'bg-transparent',
             button ? 'border-primary' : 'h-5 w-5 hover:bg-transparent',
           )}>
-          <QrCodeIcon
-            className={'h-5 w-5 text-stone-700 dark:text-stone-300'}
-          />
+          <QrCode className={'h-5 w-5 text-stone-700 dark:text-stone-300'} />
           {children}
         </Button>
       </PopoverTrigger>

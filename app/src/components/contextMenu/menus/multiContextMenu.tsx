@@ -22,7 +22,7 @@ export function MultiContextMenu({
   return (
     <>
       <ContextMenuTitle type={'multi'} title={title} />
-      {data.files.length && !data.folders.length && (
+      {!!(data.files.length && !data.folders.length) && (
         <AlbumAction files={data.files} onClose={onClose} />
       )}
       <MultiDownload
@@ -39,7 +39,7 @@ export function MultiContextMenu({
       />
       <ContextMenuDivider />
 
-      {!!data.files.length && !data.folders.length && (
+      {!!(data.files.length && !data.folders.length) && (
         <MultiMoveToTrash
           deleteData={{ files: data.files }}
           onClose={onClose}

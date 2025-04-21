@@ -1,8 +1,4 @@
 import { motion } from 'framer-motion';
-import {
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-} from '@heroicons/react/24/outline';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
@@ -12,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 export function ImageFullscreenView({
   open,
@@ -79,7 +76,7 @@ export function FullscreenToggle({
         isFullscreen || noOffset ? 'right-3' : 'right-3 md:right-8',
         '[&>svg]:text-stone-800',
       )}>
-      {isFullscreen ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
+      {isFullscreen ? <Minimize2 /> : <Maximize2 />}
     </motion.div>
   );
 }

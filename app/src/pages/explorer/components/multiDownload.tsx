@@ -4,10 +4,10 @@ import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { useContext, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
 import { DisplayContext } from '@lib/contexts.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { FolderDown } from 'lucide-react';
 
 export function MultiDownload({
   files,
@@ -155,7 +155,7 @@ export function MultiDownload({
           onClose && onClose();
         }}
         disabled={downloadAction.isPending}>
-        <FolderArrowDownIcon />
+        <FolderDown />
         Download
       </button>
     );

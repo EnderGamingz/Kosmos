@@ -2,12 +2,12 @@ import { PermanentDeleteAction } from './permanentDeleteAction.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { ArchiveBoxXMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { Trash } from 'lucide-react';
 
 export function MoveToTrash({
   id,
@@ -52,7 +52,7 @@ export function MoveToTrash({
       className={
         'text-red-500 hover:!text-red-800 dark:text-red-300 dark:hover:!text-red-300'
       }>
-      <ArchiveBoxXMarkIcon />
+      <Trash />
       {short ? 'Trash' : 'Move to Trash'}
     </button>
   );
@@ -95,7 +95,7 @@ export function MultiMoveToTrash({
       onClick={handleDelete}
       disabled={trashAction.isPending}
       type={'button'}>
-      <TrashIcon />
+      <Trash />
       Move to trash
     </button>
   );

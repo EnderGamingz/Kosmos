@@ -4,9 +4,9 @@ import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileD
 import { ZipInformation } from '@bindings/ZipInformation.ts';
 import { useState } from 'react';
 import { Collapse } from 'react-collapse';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
 
 export default function ArchiveDisplay({
   file,
@@ -75,7 +75,7 @@ function ArchiveItem({
           'cursor-pointer bg-stone-600/60 hover:bg-stone-600/40 dark:bg-stone-700/60',
       )}>
       {onClick && (
-        <ChevronDownIcon
+        <ChevronDown
           className={cn(
             '!h-4 !w-4 transition-all',
             active ? 'rotate-180' : 'rotate-0',

@@ -9,10 +9,10 @@ import { Copy } from '@pages/explorer/components/share/copy.tsx';
 import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 import { getShareUrl } from '@lib/share/url.ts';
-import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
 import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Share } from 'lucide-react';
 
 function ShareItemIndicator({ active }: { active: boolean }) {
   return (
@@ -122,7 +122,7 @@ export function ShareItem({
               {navigator.share !== undefined &&
                 navigator.canShare(shareData) && (
                   <button onClick={() => navigator.share(shareData)}>
-                    <ArrowUpOnSquareIcon className={'h-5 w-5'} />
+                    <Share className={'h-5 w-5'} />
                   </button>
                 )}
               <Copy text={shareData.url} notify={notifications.notify} />

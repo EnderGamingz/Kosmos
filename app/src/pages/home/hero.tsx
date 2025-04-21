@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom';
-import {
-  ArrowRightEndOnRectangleIcon,
-  ClockIcon,
-  HomeIcon,
-} from '@heroicons/react/24/outline';
 import { ALLOW_REGISTER } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
 import UserAvatar from '@components/UserAvatar.tsx';
 import getCurrentTimeSection from '@utils/getCurrentTimeSection.ts';
+import { FileClock, Home, LogIn } from 'lucide-react';
 
 function HeroLink({
   to,
@@ -18,7 +14,7 @@ function HeroLink({
   className = '',
 }: {
   to: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   children: ReactNode;
   className?: string;
 }) {
@@ -93,13 +89,13 @@ export function Hero() {
                 <HeroLink
                   className={'animate-fade-in-bottom delay-300'}
                   to={'/home'}
-                  icon={<HomeIcon className={'h-8 w-8'} />}>
+                  icon={<Home className={'h-7 w-7'} />}>
                   Dashboard
                 </HeroLink>
                 <HeroLink
                   className={'animate-fade-in-bottom delay-400'}
                   to={'/home/quick'}
-                  icon={<ClockIcon className={'h-8 w-8'} />}>
+                  icon={<FileClock className={'h-7 w-7'} />}>
                   Quick Share
                 </HeroLink>
               </>
@@ -107,15 +103,14 @@ export function Hero() {
               <HeroLink
                 className={'animate-fade-in-bottom delay-300'}
                 to={'/auth/login'}
-                icon={<ArrowRightEndOnRectangleIcon className={'h-8 w-8'} />}>
+                icon={<LogIn className={'h-8 w-8'} />}>
                 Login
               </HeroLink>
             )}
             {ALLOW_REGISTER && !user && (
               <HeroLink
                 className={'animate-fade-in-bottom delay-400'}
-                to={'/auth/register'}
-                icon={<ArrowRightEndOnRectangleIcon className={'h-8 w-8'} />}>
+                to={'/auth/register'}>
                 Register
               </HeroLink>
             )}

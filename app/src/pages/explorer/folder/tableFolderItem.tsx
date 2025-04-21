@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
@@ -15,6 +14,7 @@ import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMulti
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
+import { EllipsisVertical } from 'lucide-react';
 
 export function TableFolderItem({
   i,
@@ -157,7 +157,7 @@ export function TableFolderItem({
                 context.handleContext({ x: e.clientX, y: e.clientY }, folder);
               }}
               className={'cursor-pointer p-2'}>
-              <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+              <EllipsisVertical className={'h-5 w-5'} />
             </button>
           )}
         </div>

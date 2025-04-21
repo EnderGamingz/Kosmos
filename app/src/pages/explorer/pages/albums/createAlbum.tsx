@@ -4,8 +4,6 @@ import { CreateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { FormEvent } from 'react';
-import { PlusIcon } from '@heroicons/react/24/solid';
-import { CheckIcon } from '@heroicons/react/24/outline';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import {
   Dialog,
@@ -18,6 +16,7 @@ import {
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
+import { Check, Plus } from 'lucide-react';
 
 export function CreateAlbum() {
   const notifications = useNotifications(s => s.actions);
@@ -68,7 +67,7 @@ export function CreateAlbum() {
   return (
     <>
       <Button size={'sm'} onClick={onOpen}>
-        <PlusIcon />
+        <Plus />
         Create Album
       </Button>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -115,7 +114,7 @@ export function CreateAlbum() {
                 </Button>
               </DialogClose>
               <Button type={'submit'}>
-                <CheckIcon />
+                <Check />
                 Create
               </Button>
             </DialogFooter>

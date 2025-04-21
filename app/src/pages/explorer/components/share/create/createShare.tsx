@@ -2,13 +2,6 @@ import { useState } from 'react';
 import { getShareTypeString, ShareType } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { TypeButton } from '@pages/explorer/components/share/create/typeButton.tsx';
-import {
-  CheckIcon,
-  ClockIcon,
-  CursorArrowRippleIcon,
-  KeyIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { getLocalTimeZone, now } from '@internationalized/date';
 import { useMutation } from '@tanstack/react-query';
@@ -24,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@components/ui/input.tsx';
 import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { ContactSelector } from '@pages/social/contacts/contactSelector.tsx';
+import { Check, Clock, KeyRound, MousePointerClick, User } from 'lucide-react';
 
 export function CreateShare({
   dataType,
@@ -149,7 +143,7 @@ export function CreateShare({
           <Collapse isOpened={type === ShareType.Private}>
             <div className={'p-2 space-y-2'}>
               <label htmlFor={'username'}>
-                <UserIcon />
+                <User />
                 User to share with*
                 {privateContact && (
                   <div className={'ml-auto text-sm'}>Active</div>
@@ -164,7 +158,7 @@ export function CreateShare({
         </div>
         <div>
           <label htmlFor={'password'}>
-            <KeyIcon />
+            <KeyRound />
             Password
             {password && <div className={'ml-auto text-sm'}>Active</div>}
           </label>
@@ -179,7 +173,7 @@ export function CreateShare({
         </div>
         <div>
           <label htmlFor={'custom-expires'}>
-            <ClockIcon />
+            <Clock />
             Expiration
           </label>
           <div className={'flex flex-wrap gap-2 p-2 [&_div]:text-sm'}>
@@ -255,7 +249,7 @@ export function CreateShare({
         </div>
         <div>
           <label htmlFor={'limit'}>
-            <CursorArrowRippleIcon />
+            <MousePointerClick />
             Access limit
             {limit && <div className={'ml-auto text-sm'}>Active</div>}
           </label>
@@ -298,7 +292,7 @@ export function CreateShare({
           }
           onClick={() => createAction.mutate()}
           className={'cursor-pointer'}>
-          <CheckIcon />
+          <Check />
           {createButtonText}
         </Button>
       </div>

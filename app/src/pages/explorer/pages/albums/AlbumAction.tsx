@@ -1,9 +1,3 @@
-import {
-  ArrowTopRightOnSquareIcon,
-  CheckIcon,
-  MinusCircleIcon,
-  SquaresPlusIcon,
-} from '@heroicons/react/24/outline';
 import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
 import { isValidFileForAlbum } from '@models/album.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
@@ -24,6 +18,12 @@ import {
 } from '@components/ui/dialog.tsx';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Button } from '@components/ui/button.tsx';
+import {
+  Check,
+  ImageMinus,
+  ImagePlus,
+  SquareArrowOutUpRight,
+} from 'lucide-react';
 
 function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
   const [loading, setLoading] = useState<string[]>([]);
@@ -91,10 +91,10 @@ function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
               transition={{ duration: 0.2, bounce: 0.1 }}
               key={album.id}
               className={'added flex items-center gap-2 text-muted-foreground'}>
-              <CheckIcon className={'h-4 w-4'} />
+              <Check className={'h-4 w-4'} />
               {album.name}
               <Link className={'ml-auto'} to={`/home/album/${album.id}`}>
-                <ArrowTopRightOnSquareIcon
+                <SquareArrowOutUpRight
                   className={'h-4 w-4 text-muted-foreground'}
                 />
               </Link>
@@ -157,8 +157,8 @@ export default function AlbumAction({
           <AddToAlbumModalContent files={files} />
         </DialogContent>
       </Dialog>
-      <button onClick={handleClick}>
-        {albumId ? <MinusCircleIcon /> : <SquaresPlusIcon />}
+      <button onClick={handleClick} className={'[&>svg]:w-5 [&>svg]:h-5'}>
+        {albumId ? <ImageMinus /> : <ImagePlus />}
         {dense ? 'Album' : albumId ? 'Remove from album' : 'Add to album'}
       </button>
     </>

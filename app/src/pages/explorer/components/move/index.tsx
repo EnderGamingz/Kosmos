@@ -1,6 +1,5 @@
 import { MoveModalContent } from './moveModalContent.tsx';
 import { ContextOperationType } from '@models/file.ts';
-import { FolderOpenIcon } from '@heroicons/react/24/outline';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -11,6 +10,7 @@ import {
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
 import useDisclosure from '@hooks/useDisclosure.ts';
+import { FolderOpen } from 'lucide-react';
 
 export function MoveAction({
   type,
@@ -37,7 +37,7 @@ export function MoveAction({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger>
-        <FolderOpenIcon />
+        <FolderOpen />
         Move
       </DialogTrigger>
       <DialogContent>

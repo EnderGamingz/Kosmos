@@ -7,8 +7,8 @@ import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
-import { PlusIcon } from '@heroicons/react/24/solid';
 import { cn } from '@lib/utils.ts';
+import { Plus } from 'lucide-react';
 
 export default function ShareModal() {
   const { shareElementId, shareElementType, clearShareElement } =
@@ -79,7 +79,7 @@ export function ShareModalContent({
               <button
                 onClick={() => setCreate(prev => !prev)}
                 className={'flex items-center gap-2 font-bold'}>
-                <PlusIcon
+                <Plus
                   className={cn(
                     'h-4 w-4 fill-stone-800 transition-all',
                     create && 'rotate-45',

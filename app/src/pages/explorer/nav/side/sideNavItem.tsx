@@ -1,9 +1,9 @@
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { MouseEvent, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { Collapse } from 'react-collapse';
 import { cn } from '@lib/utils.ts';
+import { ChevronUp } from 'lucide-react';
 
 export function SideNavItem({
   link,
@@ -22,7 +22,7 @@ export function SideNavItem({
   return (
     <div
       className={cn(
-        'rounded-lg transition-all',
+        'rounded-lg transition-colors',
         open && 'bg-stone-300/30 dark:bg-stone-700/30',
       )}>
       <NavLink
@@ -31,7 +31,7 @@ export function SideNavItem({
         end={link.exact}
         className={({ isActive }) =>
           cn(
-            'flex items-center gap-3 rounded-lg px-5 py-2 transition-background',
+            'flex items-center gap-3 rounded-lg px-5 py-2 transition-colors',
             'cursor-pointer hover:bg-stone-300 md:text-lg dark:text-stone-300 dark:hover:bg-stone-500/20',
             open && 'shadow-md',
             small
@@ -49,7 +49,7 @@ export function SideNavItem({
             </p>
           )}
           {link.items && (
-            <ChevronUpIcon
+            <ChevronUp
               className={cn(
                 '!h-4 !w-4 rotate-180 transition-transform',
                 open && 'rotate-0',

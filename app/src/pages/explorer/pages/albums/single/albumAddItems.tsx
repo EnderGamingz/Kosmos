@@ -1,7 +1,5 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect, useState } from 'react';
-import { CheckIcon } from '@heroicons/react/24/outline';
-import { PlusIcon } from '@heroicons/react/24/solid';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay';
 import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
@@ -19,6 +17,7 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { Check, Plus } from 'lucide-react';
 
 function AlbumAddItemsContent({
   addTo,
@@ -109,7 +108,7 @@ function AlbumAddItemsContent({
       </div>
       <DialogFooter>
         <Button onClick={submit} className={'mt-5 px-10'}>
-          <CheckIcon />
+          <Check />
           Save
         </Button>
       </DialogFooter>
@@ -130,7 +129,7 @@ export function AlbumAddItems({
   return (
     <>
       <Button size={small ? 'sm' : 'default'} onClick={onOpen}>
-        <PlusIcon />
+        <Plus />
         Add Items
       </Button>
       <Dialog open={isOpen} onOpenChange={onClose}>

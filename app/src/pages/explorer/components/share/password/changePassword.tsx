@@ -1,4 +1,3 @@
-import { KeyIcon } from '@heroicons/react/24/outline';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -13,6 +12,7 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
+import { KeyRound } from 'lucide-react';
 
 function ChangePasswordForm({
   id,
@@ -93,7 +93,7 @@ export function ChangePassword({ id }: { id: string }) {
             onClick={() => {}}
             content={
               <>
-                <KeyIcon /> Password
+                <KeyRound /> Password
               </>
             }
           />

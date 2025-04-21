@@ -3,11 +3,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import {
-  ArrowPathIcon,
-  EllipsisVerticalIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext, useState } from 'react';
@@ -24,6 +19,7 @@ import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMulti
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
+import { EllipsisVertical, RotateCcw, Shredder } from 'lucide-react';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
@@ -43,18 +39,18 @@ function TableFileItemBinActions({ id }: { id: string }) {
   });
 
   return (
-    <div className={'flex items-center gap-5'}>
+    <div className={'flex items-center gap-5 [&>button]:cursor-pointer'}>
       <button
         title={'Restore'}
         className={'text-blue-500'}
         onClick={() => restoreAction.mutate()}>
-        <ArrowPathIcon className={'h-5 w-5'} />
+        <RotateCcw className={'h-5 w-5'} />
       </button>
       <button
         title={'Delete'}
         className={'text-red-500'}
         onClick={() => deleteAction.mutate()}>
-        <TrashIcon className={'h-5 w-5'} />
+        <Shredder className={'h-5 w-5'} />
       </button>
     </div>
   );
@@ -176,13 +172,12 @@ export function TableFileItem({
             type={normalizeFileType(file.file_type)}
             status={file.preview_status}
           />
-          <motion.p
-            exit={{ opacity: 0 }}
+          <p
             className={
               'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-3'
             }>
             {file.file_name}
-          </motion.p>
+          </p>
         </motion.div>
         {!context.viewSettings?.binView && (
           <Favorite
@@ -198,21 +193,14 @@ export function TableFileItem({
               context.handleContext({ x: e.clientX, y: e.clientY }, file);
             }}
             className={'cursor-pointer p-2'}>
-            <EllipsisVerticalIcon className={'h-6 w-6 text-stone-700'} />
+            <EllipsisVertical className={'h-5 w-5'} />
           </button>
         )}
       </td>
-      <motion.td
-        /*layoutId={`size-${file.id}`}*/
-        align={'right'}>
-        {useFormatBytes(file.file_size)}
-      </motion.td>
-      <motion.td
-        /*layoutId={`updated-${file.id}`}*/
-        align={'right'}
-        className={'whitespace-nowrap text-sm font-light'}>
+      <td align={'right'}>{useFormatBytes(file.file_size)}</td>
+      <td align={'right'} className={'whitespace-nowrap text-sm font-light'}>
         {formatDistanceToNow(file.updated_at)}
-      </motion.td>
+      </td>
       {context.viewSettings?.binView && (
         <td>
           <TableFileItemBinActions id={file.id} />

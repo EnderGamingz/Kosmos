@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateFilesInFolder, invalidateFolders } from '@lib/query.ts';
 import { ButtonForm } from '@pages/explorer/folder/createFolder.tsx';
-import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import { FilePlus2 } from 'lucide-react';
 
 export function CreateMarkdownFile({
   folder,
@@ -52,7 +52,7 @@ export function CreateMarkdownFile({
   return (
     <ButtonForm
       label={'Create Text File'}
-      icon={<DocumentTextIcon />}
+      icon={<FilePlus2 />}
       suffix={'.md'}
       onSubmit={value => mutate({ value })}
     />

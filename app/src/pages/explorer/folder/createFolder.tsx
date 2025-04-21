@@ -3,11 +3,9 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolders } from '@lib/query.ts';
-import { CheckIcon, FolderIcon } from '@heroicons/react/24/outline';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { itemTransitionVariantFadeInFromTopSmall } from '@components/defaults/transition.ts';
-import { motion } from 'framer-motion';
 import { cn } from '@lib/utils.ts';
+import { Check, FolderClosed } from 'lucide-react';
 
 export function CreateFolder({
   folder,
@@ -53,7 +51,7 @@ export function CreateFolder({
   return (
     <ButtonForm
       label={'Create Folder'}
-      icon={<FolderIcon />}
+      icon={<FolderClosed />}
       onSubmit={value => mutate({ value })}
     />
   );
@@ -88,15 +86,14 @@ export function ButtonForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <motion.div
-        variants={itemTransitionVariantFadeInFromTopSmall}
+      <div
         className={'menu-button relative flex items-center py-2'}
         onClick={handleActivate}>
         <button
           disabled={!active || !value}
           type={'submit'}
           className={'no-pre [&>svg]:h-5 [&>svg]:w-5 [&>svg]:min-w-5'}>
-          {active ? <CheckIcon className={'h-5 w-5'} /> : icon}
+          {active ? <Check className={'h-5 w-5'} /> : icon}
         </button>
         <div className={'relative flex'}>
           <input
@@ -119,7 +116,7 @@ export function ButtonForm({
             </span>
           )}
         </div>
-      </motion.div>
+      </div>
     </form>
   );
 }

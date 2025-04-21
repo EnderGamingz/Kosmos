@@ -1,19 +1,14 @@
 import { ContextOperationType } from '@models/file.ts';
-import {
-  DocumentIcon,
-  FolderIcon,
-  Square2StackIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
+import { File, Folder, Images, Plus, Shapes } from 'lucide-react';
 
 const iconMap = {
-  folder: <FolderIcon />,
-  multi: <Square2StackIcon />,
-  album: <Square2StackIcon />,
-  create: <PlusIcon />,
-  default: <DocumentIcon />,
+  folder: Folder,
+  multi: Shapes,
+  album: Images,
+  create: Plus,
+  default: File,
 };
 
 export function ContextMenuTitle({
@@ -25,9 +20,7 @@ export function ContextMenuTitle({
   type: ContextOperationType | 'album' | 'create';
   children?: ReactNode;
 }) {
-  function renderIcon() {
-    return iconMap[type as keyof typeof iconMap] || iconMap.default;
-  }
+  const Icon = iconMap[type as keyof typeof iconMap] || iconMap.default;
 
   return (
     <div
@@ -42,7 +35,9 @@ export function ContextMenuTitle({
         )}>
         {children}
         <span className={'truncate'}>{title}</span>
-        <span className={'ml-auto min-w-4'}>{renderIcon()}</span>
+        <span className={'ml-auto min-w-4'}>
+          <Icon className={'h-4 w-4'} />
+        </span>
       </div>
     </div>
   );
