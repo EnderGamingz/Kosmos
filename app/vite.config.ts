@@ -41,19 +41,6 @@ export default defineConfig({
       manifest: Manifest as never,
     }),
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: id => {
-          if (id.includes('node_modules')) {
-            const parts = id.split('node_modules/');
-            const moduleName = parts[1].split('/')[0];
-            return `vendor-${moduleName}`;
-          }
-        },
-      },
-    },
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
