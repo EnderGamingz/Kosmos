@@ -27,7 +27,7 @@ export type DisplayContextType = {
     resetDrag: () => void;
   };
   shareUuid?: string;
-  onScroll: (props: ListOnScrollProps) => void;
+  onScroll?: (props: ListOnScrollProps) => void;
 };
 
 export const DisplayContext = createContext<DisplayContextType>({

@@ -41,7 +41,7 @@ export function ExplorerDisplayWrapper({
   viewSettings?: ViewSettings;
   overwriteDisplay?: OverwriteDisplay;
 }) {
-  const [showFab, setShowFab] = useState(true);
+  const [showFab, setShowFab] = useState(false);
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const [dragged, setDragged] = useState<
     undefined | { type: DataOperationType; id: string }
@@ -123,6 +123,8 @@ export function ExplorerDisplayWrapper({
   }, [setDisplayHeight, displayRef]);
 
   const handleScroll = (props: ListOnScrollProps) => {
+    if (props.scrollDirection === 'forward' && props.scrollOffset === 0)
+      setShowFab(true);
     if (props.scrollDirection === 'backward') setShowFab(true);
     else if (props.scrollDirection === 'forward' && props.scrollOffset !== 0)
       setShowFab(false);
