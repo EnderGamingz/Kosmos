@@ -27,7 +27,13 @@ export default function Header() {
         'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5 dark:border-stone-300/10'
       }>
       {!isAuthPage && <HeaderBranding user={user} />}
-      {user && <SearchBar />}
+      {user && (
+        <div className={'mx-auto w-full max-w-md px-3 md:px-10'}>
+          <div className={'max-md:hidden'}>
+            <SearchBar />
+          </div>
+        </div>
+      )}
       <div
         className={cn(
           'rounded-lg bg-stone-700/5 px-2 py-1',
@@ -40,10 +46,14 @@ export default function Header() {
         )}>
         {user ? (
           <>
-            <SearchPopup />
+            <div className={'max-md:hidden'}>
+              <SearchPopup />
+            </div>
             <NewMenu />
             <NotificationsMenu />
-            <SocialHeaderLink />
+            <div className={'max-md:hidden'}>
+              <SocialHeaderLink />
+            </div>
             <UserMenu />
           </>
         ) : (

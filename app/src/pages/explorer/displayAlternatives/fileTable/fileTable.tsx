@@ -134,6 +134,7 @@ export function FileTable() {
     files,
     folders,
     totalFileSize,
+    onScroll,
   } = useExplorerData();
 
   const itemData: VirtualTableItemData = {
@@ -149,6 +150,7 @@ export function FileTable() {
   return (
     <PagedWrapper viewSettings={viewSettings}>
       <VirtualTable
+        onScroll={onScroll}
         height={display.height || 500}
         width={'100%'}
         itemCount={folders.length + files.length}

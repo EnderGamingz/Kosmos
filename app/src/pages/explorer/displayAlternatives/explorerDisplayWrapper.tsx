@@ -21,6 +21,8 @@ import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { createPortal } from 'react-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
+import { ListOnScrollProps } from 'react-window';
+import { FileListFab } from '@pages/explorer/fileListFab.tsx';
 
 export type Vec2 = { x: number; y: number };
 
@@ -39,6 +41,7 @@ export function ExplorerDisplayWrapper({
   viewSettings?: ViewSettings;
   overwriteDisplay?: OverwriteDisplay;
 }) {
+  const [showFab, setShowFab] = useState(true);
   const [rangeStart, setRangeStart] = useState<number | undefined>(undefined);
   const [dragged, setDragged] = useState<
     undefined | { type: DataOperationType; id: string }
@@ -85,11 +88,8 @@ export function ExplorerDisplayWrapper({
   const handleContext = (pos: Vec2, data?: ContextData) => {
     context.setPos({ x: pos.x, y: pos.y });
     context.setClicked(true);
-    if (isPartialSelected || isAllSelected) {
-      context.setData(selectedData);
-    } else {
-      context.setData(data);
-    }
+    if (isPartialSelected || isAllSelected) context.setData(selectedData);
+    else context.setData(data);
   };
 
   const handleRangeSelect = (start?: number, end?: number) => {
@@ -106,32 +106,30 @@ export function ExplorerDisplayWrapper({
   };
 
   const handleRangeChange = (index: number) => {
-    if (rangeStart !== undefined) {
-      handleRangeSelect(rangeStart, index);
-    } else {
-      setRangeStart(index);
-    }
+    if (rangeStart !== undefined) handleRangeSelect(rangeStart, index);
+    else setRangeStart(index);
   };
 
-  const handleDrag = (type: DataOperationType, id: string) => {
+  const handleDrag = (type: DataOperationType, id: string) =>
     setDragged({ type, id });
-  };
 
   useEffect(() => {
     const handleHeight = () => {
-      if (displayRef.current) {
-        setDisplayHeight(displayRef.current.clientHeight);
-      }
+      if (displayRef.current) setDisplayHeight(displayRef.current.clientHeight);
     };
     handleHeight();
     window.addEventListener('resize', handleHeight);
-    return () => {
-      window.removeEventListener('resize', handleHeight);
-    };
+    return () => window.removeEventListener('resize', handleHeight);
   }, [setDisplayHeight, displayRef]);
 
+  const handleScroll = (props: ListOnScrollProps) => {
+    if (props.scrollDirection === 'backward') setShowFab(true);
+    else if (props.scrollDirection === 'forward' && props.scrollOffset !== 0)
+      setShowFab(false);
+  };
+
   return (
-    <DisplayContext.Provider
+    <DisplayContext
       value={{
         viewSettings,
         overwriteDisplay,
@@ -147,6 +145,7 @@ export function ExplorerDisplayWrapper({
         select: { setRange: handleRangeChange, rangeStart },
         // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
+        onScroll: handleScroll,
       }}>
       {!viewSettings?.scrollControlMissing && !viewSettings?.noActions && (
         <MultipleActionButton
@@ -170,6 +169,7 @@ export function ExplorerDisplayWrapper({
           {children}
         </FileUploadContent>
       </div>
+      {viewSettings?.isCreateAllowed && <FileListFab hide={!showFab} />}
       {!viewSettings?.noDisplay && (
         <FileDisplay
           onSelect={selectFile}
@@ -199,6 +199,6 @@ export function ExplorerDisplayWrapper({
           </AnimatePresence>,
           document.body,
         )}
-    </DisplayContext.Provider>
+    </DisplayContext>
   );
 }

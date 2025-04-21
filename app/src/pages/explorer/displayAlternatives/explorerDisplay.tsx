@@ -113,13 +113,9 @@ export default function ExplorerDataDisplay({
     return getLoadingComponent(preferences.loading.type);
 
   const displayMode = () => {
-    if (overwriteDisplay?.displayMode) {
-      return overwriteDisplay.displayMode;
-    } else if (viewSettings?.binView) {
-      return ExplorerDisplay.Table;
-    } else {
-      return displayType.type;
-    }
+    if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
+    else if (viewSettings?.binView) return ExplorerDisplay.Table;
+    else return displayType.type;
   };
 
   return (

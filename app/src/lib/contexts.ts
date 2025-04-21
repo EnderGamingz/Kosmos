@@ -8,6 +8,7 @@ import {
 } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { ListOnScrollProps } from 'react-window';
 
 export type DisplayContextType = {
   viewSettings?: ViewSettings;
@@ -26,12 +27,14 @@ export type DisplayContextType = {
     resetDrag: () => void;
   };
   shareUuid?: string;
+  onScroll: (props: ListOnScrollProps) => void;
 };
 
 export const DisplayContext = createContext<DisplayContextType>({
   handleContext: () => {},
   files: [],
   folders: [],
+  onScroll: () => {},
   select: {
     setRange: () => {},
   },

@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { useContext } from 'react';
+import { use } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 
@@ -16,8 +16,8 @@ export default function useExplorerData() {
       })),
     );
 
-  const { viewSettings, files, folders, shareUuid } =
-    useContext(DisplayContext);
+  const { viewSettings, files, folders, shareUuid, onScroll } =
+    use(DisplayContext);
 
   const totalFileSize = useFormatBytes(
     files.reduce((a, b) => a + b.file_size, 0),
@@ -33,5 +33,6 @@ export default function useExplorerData() {
     folders,
     totalFileSize,
     shareUuid,
+    onScroll,
   };
 }

@@ -8,13 +8,7 @@ import useDisclosure from '@/hooks/useDisclosure';
 import { Search } from 'lucide-react';
 
 export function SearchBar() {
-  return (
-    <div className={'mx-auto w-full max-w-md px-3 md:px-10'}>
-      <div className={'hidden sm:block'}>
-        <SearchForm />
-      </div>
-    </div>
-  );
+  return <SearchForm />;
 }
 
 export function SearchPopup() {
