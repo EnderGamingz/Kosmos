@@ -36,12 +36,7 @@ export default function ArchiveDisplay({
           className={
             'flex items-center pb-2 text-xl [&_svg]:!h-10 [&_svg]:!w-10'
           }>
-          <ItemIcon
-            id={file.id}
-            name={file.file_name}
-            type={file.file_type}
-            keySuffix={'display'}
-          />
+          <ItemIcon id={file.id} name={file.file_name} type={file.file_type} />
           <span
             className={
               'overflow-hidden whitespace-nowrap animate-fade-in-left delay-300'

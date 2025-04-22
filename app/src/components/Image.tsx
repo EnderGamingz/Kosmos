@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
-import { motion } from 'framer-motion';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { createPreviewUrl } from '@lib/file.ts';
 import { cn } from '@lib/utils.ts';
@@ -36,8 +35,7 @@ export function PreviewImage({
   );
 
   return (
-    <motion.div
-      /*layoutId={`image-${id}`}*/
+    <div
       className={cn(
         'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
         'shadow-inherit',
@@ -45,7 +43,7 @@ export function PreviewImage({
         isUnavailable && 'rounded-xl outline outline-stone-400/50',
       )}>
       {(isReady || type === FileType.RawImage) && (
-        <motion.img
+        <img
           loading={'lazy'}
           onLoad={() => setLoaded(true)}
           onError={() => setLoaded(true)}
@@ -70,6 +68,6 @@ export function PreviewImage({
       {isUnavailable && (
         <TriangleAlert className={'h-8 w-8 text-gray-500/20'} />
       )}
-    </motion.div>
+    </div>
   );
 }

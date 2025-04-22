@@ -174,6 +174,7 @@ export default function FileGrid({
                     selected={selectedFiles.map(file => file.id)}
                     dynamic={dynamic}
                     details={details}
+                    outerDisabled
                   />
                 ))}
               </Masonry>

@@ -99,6 +99,7 @@ export default function GridFileItem({
         isShift && 'cursor-pointer',
         context.select.rangeStart === index &&
           'bg-indigo-50 dark:bg-indigo-900/50',
+        dynamic && 'w-full',
       )}>
       <motion.div
         drag={

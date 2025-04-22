@@ -47,9 +47,7 @@ export function FileTypeDisplay({
             <div className={'app-loading-indicator !h-16 !w-16'} />
           </div>
         )}
-        {!shouldShowChildren && (
-          <ItemIcon id={id} name={name} type={type} keySuffix={'display'} />
-        )}
+        {!shouldShowChildren && <ItemIcon id={id} name={name} type={type} />}
       </div>
       {!noText && !shouldShowChildren && (
         <p className={'animate-fade-in-top delay-100'}>
