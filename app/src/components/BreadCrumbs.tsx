@@ -7,7 +7,7 @@ import { cn } from '@lib/utils.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (
-    <div className={'flex flex-wrap items-center gap-2 px-5 py-2'}>
+    <div className={'flex flex-wrap items-center gap-2 p-2'}>
       <AnimatePresence>{children}</AnimatePresence>
     </div>
   );

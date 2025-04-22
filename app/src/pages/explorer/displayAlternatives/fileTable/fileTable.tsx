@@ -1,68 +1,22 @@
 import { motion } from 'framer-motion';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
-import { createContext, ReactNode, useContext, useRef, useState } from 'react';
+import { ReactNode, useContext } from 'react';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
-import { FixedSizeList, FixedSizeListProps } from 'react-window';
-import { FILE_TABLE_ITEM_HEIGHT } from '@lib/constants.ts';
 import { isFileModel } from '@models/file.ts';
 import { TableFolderItem } from '@pages/explorer/folder/tableFolderItem.tsx';
 import { TableFileItem } from '@pages/explorer/file/tableFileItem.tsx';
-import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
-
-const VirtualTableContext = createContext<{
-  top: number;
-  setTop: (top: number) => void;
-  header: ReactNode;
-  footer: ReactNode;
-}>({
-  top: 0,
-  setTop: () => {},
-  header: <></>,
-  footer: <></>,
-});
-
-function VirtualTable({
-  row,
-  header,
-  footer,
-  ...rest
-}: {
-  header?: ReactNode;
-  children?: ReactNode;
-  footer?: ReactNode;
-  row: FixedSizeListProps['children'];
-} & Omit<FixedSizeListProps, 'children' | 'innerElementType'>) {
-  const listRef = useRef<FixedSizeList | null>(null);
-  const [top, setTop] = useState(0);
-
-  return (
-    <VirtualTableContext.Provider value={{ top, setTop, header, footer }}>
-      <FixedSizeList
-        {...rest}
-        innerElementType={Inner}
-        onItemsRendered={props => {
-          const style =
-            listRef.current &&
-            // @ts-expect-error private method access
-            listRef.current._getItemStyle(props.overscanStartIndex);
-          setTop((style && style.top) || 0);
-
-          // Call the original callback
-          rest.onItemsRendered && rest.onItemsRendered(props);
-        }}
-        ref={listRef}>
-        {row}
-      </FixedSizeList>
-    </VirtualTableContext.Provider>
-  );
-}
+import {
+  getVirtualRowData,
+  PagedVirtualDisplay,
+  PagedVirtualDisplayContext,
+  VirtualDisplayItemData,
+} from '@pages/explorer/displayAlternatives/pagedVirtualDisplay.tsx';
+import { FILE_TABLE_ITEM_HEIGHT } from '@lib/constants.ts';
 
 const Inner = ({ children }: { children: ReactNode }) => {
-  const { header, top, footer } = useContext(VirtualTableContext);
+  const { header, top, footer } = useContext(PagedVirtualDisplayContext);
   return (
     <table
       className={'overflow-hidden text-left'}
@@ -74,18 +28,14 @@ const Inner = ({ children }: { children: ReactNode }) => {
   );
 };
 
-function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
+function Row({ index, data }: { index: number; data: VirtualDisplayItemData }) {
   const {
-    files,
-    folders,
-    totalFolder,
     onSelectFolder,
     onSelectFile,
     selectedFolders,
     selectedFiles,
-  } = data;
-  const itemData =
-    index < totalFolder ? folders[index] : files[index - totalFolder];
+    itemData,
+  } = getVirtualRowData({ index, data });
 
   if (isFileModel(itemData)) {
     return (
@@ -112,73 +62,36 @@ function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
   );
 }
 
-export type VirtualTableItemData = {
-  folders: FolderModelDTO[];
-  files: FileModelDTO[];
-  totalFolder: number;
-  onSelectFile: (file: FileModelDTO) => void;
-  onSelectFolder: (folder: FolderModelDTO) => void;
-  selectedFiles: FileModelDTO[];
-  selectedFolders: FolderModelDTO[];
-};
-
 export function FileTable() {
-  const {
-    selectedFolders,
-    selectedFiles,
-    selectFile,
-    selectFolder,
-    display,
-    viewSettings,
-    files,
-    folders,
-    totalFileSize,
-    onScroll,
-  } = useExplorerData();
-
-  const itemData: VirtualTableItemData = {
-    folders,
-    files,
-    totalFolder: folders.length,
-    onSelectFile: selectFile,
-    onSelectFolder: selectFolder,
-    selectedFiles,
-    selectedFolders,
-  };
+  const { viewSettings, files, folders, totalFileSize } = useExplorerData();
 
   return (
-    <PagedWrapper viewSettings={viewSettings}>
-      <VirtualTable
-        onScroll={onScroll}
-        height={display.height || 500}
-        width={'100%'}
-        itemCount={folders.length + files.length}
-        itemData={itemData}
-        itemSize={FILE_TABLE_ITEM_HEIGHT}
-        header={<TableHeader files={files} folders={folders} />}
-        row={Row}
-        footer={
-          !files.length && !folders.length ? (
-            <EmptyList table />
-          ) : (
-            <motion.tfoot
-              layout
-              className={
-                'cursor-default select-none border-none text-sm text-stone-500/50 [&_td]:py-5 [&_td]:pb-32 dark:[&_td]:text-stone-400'
-              }>
-              <tr>
-                {!viewSettings?.binView && <td />}
-                <td className={cn(!!viewSettings?.binView && 'pl-4')}>
-                  {folders.length} Folders <br />
-                  {files.length} Files
-                </td>
-                <td align={'right'}>{totalFileSize}</td>
-                <td />
-              </tr>
-            </motion.tfoot>
-          )
-        }
-      />
-    </PagedWrapper>
+    <PagedVirtualDisplay
+      itemSize={FILE_TABLE_ITEM_HEIGHT}
+      inner={Inner}
+      header={<TableHeader files={files} folders={folders} />}
+      footer={
+        !files.length && !folders.length ? (
+          <EmptyList table />
+        ) : (
+          <motion.tfoot
+            layout
+            className={
+              'cursor-default select-none border-none text-sm text-stone-500/50 [&_td]:py-5 [&_td]:pb-32 dark:[&_td]:text-stone-400'
+            }>
+            <tr>
+              {!viewSettings?.binView && <td />}
+              <td className={cn(!!viewSettings?.binView && 'pl-4')}>
+                {folders.length} Folders <br />
+                {files.length} Files
+              </td>
+              <td align={'right'}>{totalFileSize}</td>
+              <td />
+            </tr>
+          </motion.tfoot>
+        )
+      }
+      row={Row}
+    />
   );
 }

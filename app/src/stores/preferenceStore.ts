@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { merge } from 'lodash';
 
 export enum ExplorerDisplay {
+  Mobile,
   Table,
   StaticGrid,
   DynamicGrid,
@@ -85,12 +86,32 @@ export type ThemeType = {
   setType: (type: Theme) => void;
 };
 
+export enum MobileViewType {
+  Enabled,
+  Disabled,
+}
+
+export type MobileView = {
+  type: MobileViewType;
+  setEnabled: (enabled: MobileViewType) => void;
+};
+
+export function getMobileView(type: MobileViewType) {
+  switch (type) {
+    case MobileViewType.Enabled:
+      return 'Enabled';
+    case MobileViewType.Disabled:
+      return 'Disabled';
+  }
+}
+
 export type PreferenceState = {
   loading: LoadingType;
   imageOnly: DisplayType;
   mixed: DisplayType;
   unit: UnitType;
   theme: ThemeType;
+  mobileView: MobileView;
 };
 
 export const usePreferenceStore = create<PreferenceState>()(
@@ -139,6 +160,13 @@ export const usePreferenceStore = create<PreferenceState>()(
         setDetails: (details: DetailType) =>
           set({
             mixed: { ...get().mixed, details },
+          }),
+      },
+      mobileView: {
+        type: MobileViewType.Enabled,
+        setEnabled: (type: MobileViewType) =>
+          set({
+            mobileView: { ...get().mobileView, type },
           }),
       },
     }),

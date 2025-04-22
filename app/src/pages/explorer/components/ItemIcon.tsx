@@ -9,6 +9,7 @@ import {
   FileVideo,
   FolderArchive,
   FolderClosed,
+  FolderOpen,
   Images,
 } from 'lucide-react';
 
@@ -47,7 +48,12 @@ function getFileIcon(
     case FileType.Archive:
       return <FolderArchive />;
     case 'folder':
-      return <FolderClosed />;
+      return (
+        <>
+          <FolderClosed className={'group-hover/listItem:hidden'} />
+          <FolderOpen className={'hidden group-hover/listItem:block'} />
+        </>
+      );
     case 'album':
       return <Images />;
     default:

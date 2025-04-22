@@ -68,7 +68,7 @@ export default function Favorite({
       }}>
       <Star
         className={cn(
-          'h-5 w-5 transition-all stroke-1',
+          'h-6 w-6 transition-all stroke-1',
           active
             ? 'fill-amber-400 stroke-amber-700'
             : 'fill-transparent stroke-primary',

@@ -15,6 +15,8 @@ import AlbumDisplay from '@pages/explorer/displayAlternatives/album/albumDisplay
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import useLayoutOptions from '@hooks/useLayoutOptions.ts';
+import { MobileList } from './mobileList';
 
 function getLoadingComponent(id: ExplorerLoading) {
   switch (id) {
@@ -34,6 +36,8 @@ function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
       return <FileGrid dynamic details={details} />;
     case ExplorerDisplay.StaticGrid:
       return <FileGrid details={details} />;
+    case ExplorerDisplay.Mobile:
+      return <MobileList />;
     case ExplorerDisplay.Table:
     default:
       return <FileTable />;
@@ -86,6 +90,7 @@ export default function ExplorerDataDisplay({
   overwriteDisplay?: OverwriteDisplay;
 }) {
   const preferences = usePreferenceStore();
+  const shouldUseMobileView = useLayoutOptions().shouldUseMobileView;
 
   const displayType = useMemo(() => {
     const isOnlyImages =
@@ -99,6 +104,7 @@ export default function ExplorerDataDisplay({
   }, [files, preferences]);
 
   const displayMode = () => {
+    if (shouldUseMobileView) return ExplorerDisplay.Mobile;
     if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
     else if (viewSettings?.binView) return ExplorerDisplay.Table;
     else return displayType.type;

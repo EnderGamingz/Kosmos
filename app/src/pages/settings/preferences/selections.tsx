@@ -5,15 +5,20 @@ import {
   getDetailType,
   getExplorerDisplay,
   getExplorerLoading,
+  getMobileView,
+  MobileViewType,
   PreferenceState,
 } from '@stores/preferenceStore.ts';
 import { ReactNode } from 'react';
 import {
+  BringToFront,
   CircleEllipsis,
   Files,
   Image,
   LayoutDashboard,
   LayoutGrid,
+  LayoutList,
+  Proportions,
   TableProperties,
 } from 'lucide-react';
 
@@ -44,6 +49,29 @@ export type ExplorerStylePreference = {
 export const selections = (
   pref: PreferenceState,
 ): ExplorerStylePreference[] => [
+  {
+    name: 'Mobile explorer view',
+    icon: <Proportions />,
+    type: {
+      current: pref.mobileView.type,
+      onChange: pref.mobileView.setEnabled,
+      getName: getMobileView,
+      options: [
+        {
+          name: 'Enabled',
+          description: 'Use optimized layout on smaller screens',
+          value: MobileViewType.Enabled,
+          icon: <LayoutList />,
+        },
+        {
+          name: 'Disabled',
+          description: 'Uses selected display type',
+          value: MobileViewType.Disabled,
+          icon: <BringToFront />,
+        },
+      ],
+    },
+  },
   {
     name: 'Loading Style',
     icon: <CircleEllipsis />,

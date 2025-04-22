@@ -9,6 +9,7 @@ import { MoveToTrash } from '@pages/explorer/components/delete';
 import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx';
 import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
 import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
+import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export function FileContextMenu({
   data,
@@ -23,6 +24,12 @@ export function FileContextMenu({
     <>
       <ContextMenuTitle type={'file'} title={data.file_name} />
       <AlbumAction files={[data]} onClose={onClose} />
+      <Favorite
+        id={data.id}
+        type={'file'}
+        active={data.favorite}
+        onUpdate={onClose}
+      />
       <SetAsAvatarAction file={data} onClose={onClose} />
       {isImage && <ContextMenuDivider />}
       <DownloadSingleAction

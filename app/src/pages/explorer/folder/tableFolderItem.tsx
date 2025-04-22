@@ -85,11 +85,12 @@ export function TableFolderItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={cn(
-        'group transition-colors [&_td]:p-3 [&_th]:p-3',
-        'hover:bg-stone-500/10 hover:shadow-sm',
-        isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
+        'group/listItem group transition-colors hover:bg-border [&_td]:p-3 [&_th]:p-3',
+        isSelected &&
+          'bg-indigo-100 dark:bg-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-600/50',
         isShift && 'cursor-pointer',
-        context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
+        context.select.rangeStart === i &&
+          'bg-indigo-50 dark:bg-indigo-600/60 hover:bg-indigo-100 dark:hover:bg-indigo-700/60',
       )}>
       {!context.viewSettings?.noSelect && (
         <th>

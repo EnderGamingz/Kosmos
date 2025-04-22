@@ -18,7 +18,7 @@ export function MultipleActionButton({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className={cn(
-            'absolute right-2 top-1 flex items-center gap-1 rounded-full bg-stone-400/50',
+            'z-20 absolute right-2 top-1 flex items-center gap-1 rounded-full bg-stone-400/50',
             'transition-all hover:bg-stone-400/80 hover:text-stone-800 hover:shadow-sm',
             'px-2 py-1 pr-4 backdrop-blur-lg',
           )}>

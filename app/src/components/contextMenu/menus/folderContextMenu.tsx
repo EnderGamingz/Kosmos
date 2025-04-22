@@ -13,6 +13,7 @@ import {
   PermanentDeleteAction,
 } from '@pages/explorer/components/delete/permanentDeleteAction.tsx';
 import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
+import Favorite from '@pages/explorer/components/favorite.tsx';
 
 export function FolderContextMenu({
   data,
@@ -26,6 +27,12 @@ export function FolderContextMenu({
       <ContextMenuTitle type={'folder'} title={data.folder_name}>
         <ColorDisplay color={data.color || 'lightgray'} />
       </ContextMenuTitle>
+      <Favorite
+        id={data.id}
+        type={'folder'}
+        active={data.favorite}
+        onUpdate={onClose}
+      />
       <MultiDownload
         files={[]}
         folders={[data]}

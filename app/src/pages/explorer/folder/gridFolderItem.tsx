@@ -86,7 +86,7 @@ export default function GridFolderItem({
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
-      className={'group w-full cursor-pointer'}>
+      className={'group/listItem group w-full cursor-pointer'}>
       <motion.div
         onClick={() => {
           if (isControl && !context.viewSettings?.noSelect && !selectDisabled)
