@@ -63,7 +63,7 @@ function HeaderLinksMenu({
             link={{
               name: 'Cloud',
               href: '/home',
-              icon: <Cloud />,
+              icon: Cloud,
             }}
             onClick={() => setOpen(false)}
           />
@@ -72,7 +72,7 @@ function HeaderLinksMenu({
             link={{
               name: 'Social',
               href: '/social',
-              icon: <MessageSquare />,
+              icon: MessageSquare,
             }}
             onClick={() => setOpen(false)}
           />

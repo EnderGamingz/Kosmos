@@ -1,14 +1,6 @@
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
-import { MouseEvent, ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
-
 import { cn } from '@lib/utils.ts';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import useDisclosure from '@hooks/useDisclosure.ts';
 
 export function BottomNavItem({
   link,
@@ -20,62 +12,30 @@ export function BottomNavItem({
   noPriority?: boolean;
 }) {
   if (link.lessPriority && !noPriority) return null;
-  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    if (link.items) e.preventDefault();
-    onClose?.();
-  };
+
+  const Icon = link.icon;
 
   return (
-    <BottomNavPopoverWrapper noPriority={noPriority} link={link}>
-      <NavLink
-        onClick={handleClick}
-        to={link.href || ''}
-        end={link.exact}
-        className={({ isActive }) =>
-          cn(
-            'grid cursor-pointer place-items-center px-2 py-2',
-            'rounded-xl transition-colors hover:bg-stone-500/20',
-            isActive && !!link.href && 'bg-stone-300/50 dark:bg-stone-700/40',
-          )
+    <NavLink
+      onClick={() => onClose?.()}
+      to={link.href || ''}
+      end={link.exact}
+      className={({ isActive }) =>
+        cn(
+          'group grid cursor-pointer place-items-center px-2 py-1',
+          'rounded-md',
+          isActive &&
+            !!link.href &&
+            '[&>.icon-wrapper]:bg-gradient-to-br [&>.icon-wrapper]:ring-border',
+        )
+      }>
+      <div
+        className={
+          'py-1 px-5 rounded-full icon-wrapper group-hover:ring ring-stone-600 transition-all from-primary/5 to-primary/20'
         }>
-        <div className={'h-5 w-5'}>{link.icon}</div>
-        <p className={'py-0.5 text-center sm:px-4'}>{link.name}</p>
-      </NavLink>
-    </BottomNavPopoverWrapper>
-  );
-}
-
-function BottomNavPopoverWrapper({
-  link,
-  children,
-  noPriority,
-}: {
-  link: ExplorerLink;
-  children: ReactNode;
-  noPriority?: boolean;
-}) {
-  const { isOpen, onOpenChange, onClose, onOpen } = useDisclosure();
-  if (!link.items) return children;
-
-  return (
-    <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <button onClick={onOpen}>{children}</button>
-      </PopoverTrigger>
-      <PopoverContent
-        className={'w-full grid gap-1 p-2'}
-        style={{
-          gridTemplateColumns: `repeat(${link.items.length}, minmax(0, 1fr))`,
-        }}>
-        {link.items.map(item => (
-          <BottomNavItem
-            noPriority={noPriority}
-            link={item}
-            key={item.name}
-            onClose={onClose}
-          />
-        ))}
-      </PopoverContent>
-    </Popover>
+        <Icon className={'h-5 w-5'} />
+      </div>
+      <p className={'py-0.5 text-center sm:px-4 text-sm'}>{link.name}</p>
+    </NavLink>
   );
 }

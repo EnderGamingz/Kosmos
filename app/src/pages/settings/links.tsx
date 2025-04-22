@@ -12,33 +12,33 @@ export const getSettingsLinks = (): ExplorerLink[] => [
   {
     name: 'Account',
     href: '/settings/account',
-    icon: <User />,
+    icon: User,
   },
   {
     name: 'Security',
     href: '/settings/security',
-    icon: <KeyRound />,
+    icon: KeyRound,
   },
   {
     name: 'Profile',
     href: '/settings/profile',
-    icon: <UserPen />,
+    icon: UserPen,
   },
   {
     name: 'Preferences',
     href: '/settings/preferences',
-    icon: <AppWindow />,
+    icon: AppWindow,
   },
   {
     name: 'Dismissed',
     href: '/settings/dismissed',
-    icon: <BadgeCheck />,
+    icon: BadgeCheck,
     lessPriority: true,
   },
   {
     name: 'Kosmos',
     href: '/settings/info',
-    icon: <Info />,
+    icon: Info,
     lessPriority: true,
   },
 ];

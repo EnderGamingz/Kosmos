@@ -5,7 +5,7 @@ import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
 import { ReactNode, useMemo } from 'react';
 import { cn } from '@lib/utils.ts';
-import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
+import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.ts';
 import { ArrowLeft, Cloud, SquareArrowOutUpRight } from 'lucide-react';
 
 function SideNavWrapper({
@@ -95,7 +95,7 @@ export function SocialSideNav() {
           link={{
             href: '/home',
             name: 'Back to Dashboard',
-            icon: <ArrowLeft className={'h-5 w-5'} />,
+            icon: ArrowLeft,
           }}
         />
       </div>

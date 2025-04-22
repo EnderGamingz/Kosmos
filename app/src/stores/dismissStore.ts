@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { merge } from 'lodash';
-import { ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react';
 import { HardDrive, MessageCircleWarning } from 'lucide-react';
+import { Icon } from '@/types/icon.ts';
 
 export enum Dismiss {
   StorageLimit = 'storage_limit',
@@ -11,12 +11,7 @@ export enum Dismiss {
 
 type DismissItem = {
   id: Dismiss;
-  icon: ForwardRefExoticComponent<
-    Omit<SVGProps<SVGSVGElement>, 'ref'> & {
-      title?: string | undefined;
-      titleId?: string | undefined;
-    } & RefAttributes<SVGSVGElement>
-  >;
+  icon: Icon;
   name: string;
   dismissed: boolean;
 };

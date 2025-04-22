@@ -1,6 +1,6 @@
 import { BottomNavItem } from '@pages/explorer/nav/bottom/bottomNavItem.tsx';
 import { useEffect, useMemo } from 'react';
-import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
+import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.ts';
 import { useAppState } from '@stores/appStateStore.ts';
 import {
   ExplorerLink,
@@ -13,10 +13,7 @@ export default function BottomNav({ source }: { source: LinkSource }) {
   useHeaderMenu({ links });
 
   return (
-    <aside
-      className={
-        'h-[80px] overflow-hidden bg-stone-100 shadow-[0_-5px_10px_0_rgba(0,0,0,0.1)] dark:bg-stone-800'
-      }>
+    <aside className={'h-[80px] overflow-hidden bg-popover border-t'}>
       <div className={'grid grid-cols-4 gap-2 p-2'}>
         {links.map(link => (
           <BottomNavItem key={`bottom-nav-${link.name}`} link={link} />
