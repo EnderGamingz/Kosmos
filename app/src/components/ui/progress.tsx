@@ -19,14 +19,14 @@ export function Progress({
     <ProgressPrimitive.Root
       data-slot='progress'
       className={cn(
-        'bg-primary/20 relative h-2 w-full overflow-hidden rounded-full',
+        'bg-blue-200 relative h-2 w-full overflow-hidden rounded-full',
         className,
       )}
       {...props}>
       <ProgressPrimitive.Indicator
         data-slot='progress-indicator'
         className={cn(
-          'bg-primary h-full w-full flex-1 transition-all',
+          'bg-blue-200 h-full w-full flex-1 transition-all',
           indicatorClassName,
           indeterminate && 'animate-progress origin-left',
         )}

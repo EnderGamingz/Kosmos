@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   BookUser,
   Clock,
-  Cloud,
   Ellipsis,
   Home,
   Images,
@@ -50,20 +49,9 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
     lessPriority: true,
   },
   {
-    name: 'Share',
+    name: 'Shares',
     icon: <Share2 />,
-    items: [
-      {
-        name: 'Shared with me',
-        href: '/home/shares',
-        icon: <User />,
-      },
-      {
-        name: 'My shares',
-        href: '/home/shared',
-        icon: <Cloud />,
-      },
-    ],
+    href: '/home/share/shared',
   },
   {
     name: 'Bin',

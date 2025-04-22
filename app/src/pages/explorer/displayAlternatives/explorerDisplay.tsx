@@ -9,10 +9,8 @@ import {
   usePreferenceStore,
 } from '@stores/preferenceStore.ts';
 import { FileGridLoading } from '@pages/explorer/displayAlternatives/fileGrid/fileGridLoading.tsx';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx';
-import { useSearchState } from '@stores/searchStore.ts';
-import objectHash from 'object-hash';
 import AlbumDisplay from '@pages/explorer/displayAlternatives/album/albumDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
@@ -87,9 +85,7 @@ export default function ExplorerDataDisplay({
   viewSettings?: ViewSettings;
   overwriteDisplay?: OverwriteDisplay;
 }) {
-  const [prevSort, setPrevSort] = useState('');
   const preferences = usePreferenceStore();
-  const sort = useSearchState(s => objectHash(s.sort));
 
   const displayType = useMemo(() => {
     const isOnlyImages =
@@ -102,21 +98,13 @@ export default function ExplorerDataDisplay({
     return preferences.mixed;
   }, [files, preferences]);
 
-  // Needed because when the query client returns a cached result, framer motion
-  // will try to reorder the items that cause issues when too many
-  useEffect(() => {
-    const t = setTimeout(() => setPrevSort(sort), 1);
-    return () => clearTimeout(t);
-  }, [sort, displayType]);
-
-  if (isLoading || prevSort !== sort)
-    return getLoadingComponent(preferences.loading.type);
-
   const displayMode = () => {
     if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
     else if (viewSettings?.binView) return ExplorerDisplay.Table;
     else return displayType.type;
   };
+
+  if (isLoading) return getLoadingComponent(preferences.loading.type);
 
   return (
     <ExplorerDisplayWrapper

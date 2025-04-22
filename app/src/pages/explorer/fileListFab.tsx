@@ -27,11 +27,30 @@ export function FileListFab({ hide }: { hide: boolean }) {
           hide && '!opacity-0 !pointer-events-none',
         )}>
         <AnimatePresence>
-          <SocialFab key={'fab-social'} />
-          <CreateFab open={create} onOpenChange={setCreate} />
+          <motion.div key={'fab-social'} layout>
+            <SocialFab />
+          </motion.div>
+
+          <div
+            key={'fab-create'}
+            className={'animate-fade-in-bottom delay-100'}>
+            <CreateFab open={create} onOpenChange={setCreate} />
+          </div>
         </AnimatePresence>
       </div>
     </AnimatePresence>
+  );
+}
+
+function SocialFab() {
+  return (
+    <Link
+      to={'/social'}
+      className={cn(
+        'animate-fade-in-bottom delay-200 flex bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-3 rounded-md hover:from-secondary transition-colors cursor-pointer',
+      )}>
+      <MessageSquare className={'w-5 h-5'} />
+    </Link>
   );
 }
 
@@ -65,19 +84,5 @@ function CreateFab({
       )}>
       <Plus className={'w-8 h-8'} />
     </motion.button>
-  );
-}
-
-function SocialFab() {
-  return (
-    <motion.div layout>
-      <Link
-        to={'/social'}
-        className={cn(
-          'flex bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-3 rounded-md hover:from-secondary transition-colors cursor-pointer',
-        )}>
-        <MessageSquare className={'w-5 h-5'} />
-      </Link>
-    </motion.div>
   );
 }

@@ -1,13 +1,9 @@
-import { motion } from 'framer-motion';
-import {
-  containerVariant,
-  itemTransitionVariant,
-} from '@components/defaults/transition.ts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@lib/utils.ts';
 
 export function FileTableLoading() {
   return (
-    <>
+    <div className={cn('absolute inset-0 flex overflow-hidden')}>
       <style>
         {`
         .file-list {
@@ -24,43 +20,45 @@ export function FileTableLoading() {
                 <Skeleton className={'h-5 w-5 rounded-md'} />
               </div>
             </th>
-            <th className={'w-full'}>Name</th>
+            <th className={'w-full'}>
+              <Skeleton className={'h-5 w-1/5'} />
+            </th>
             <th align={'right'} className={'min-w-[100px]'}>
-              Size
+              <Skeleton className={'h-5 w-full'} />
             </th>
             <th align={'right'} className={'min-w-[155px]'}>
-              Modified
+              <Skeleton className={'h-5 w-2/3'} />
             </th>
           </tr>
         </thead>
-        <motion.tbody
-          variants={containerVariant()}
-          initial='hidden'
-          animate='show'
-          className={'divide-y divide-stone-300/50 overflow-hidden'}>
-          {Array.from({ length: 30 }).map((_, i) => (
-            <motion.tr
-              variants={itemTransitionVariant}
+        <tbody className={'overflow-hidden'}>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <tr
               key={i}
-              className={'[&_td]:p-3  [&_td]:font-bold [&_td]:text-stone-700'}>
+              className={
+                '[&_td]:p-3 [&_td]:font-bold [&_td]:text-stone-700 animate-fade-in-top'
+              }
+              style={{
+                animationDelay: `${i * 30}ms`,
+              }}>
               <td className={'p-3'}>
                 <div className={'w-7'}>
-                  <Skeleton className={'h-5 w-5 rounded-md opacity-50'} />
+                  <Skeleton className={'h-5 w-5 rounded-md'} />
                 </div>
               </td>
               <td className={'w-full'}>
-                <Skeleton className={'h-5 w-full opacity-50'} />
+                <Skeleton className={'h-5 w-full'} />
               </td>
               <td align={'right'}>
-                <Skeleton className={'h-5 w-full opacity-50'} />
+                <Skeleton className={'h-5 w-full'} />
               </td>
               <td align={'right'}>
-                <Skeleton className={'h-5 w-full opacity-50'} />
+                <Skeleton className={'h-5 w-full'} />
               </td>
-            </motion.tr>
+            </tr>
           ))}
-        </motion.tbody>
+        </tbody>
       </table>
-    </>
+    </div>
   );
 }

@@ -22,7 +22,7 @@ const RecentFiles = lazy(() => import('@pages/explorer/pages/recent.tsx'));
 const Preferences = lazy(() => import('@pages/settings/preferences'));
 const AccountSettings = lazy(() => import('@pages/settings/account'));
 const SharePage = lazy(() => import('@pages/share'));
-const SharedItems = lazy(() => import('@pages/explorer/pages/shared.tsx'));
+const ExplorerSharePage = lazy(() => import('@pages/explorer/pages/shared'));
 const SecuritySettings = lazy(() => import('@pages/settings/security'));
 const AppInfo = lazy(() => import('@pages/settings/appInfo.tsx'));
 const UsageReport = lazy(() => import('@pages/usage/report'));
@@ -73,14 +73,8 @@ export default function Router() {
             <Route path={'album/:albumId'} element={<AlbumPage />} />
 
             <Route path={'recent'} element={<RecentFiles />} />
-            <Route
-              path={'shared'}
-              element={<SharedItems itemsForUser={false} />}
-            />
-            <Route
-              path={'shares'}
-              element={<SharedItems itemsForUser={true} />}
-            />
+            <Route path={'recent'} element={<RecentFiles />} />
+            <Route path={'share/*'} element={<ExplorerSharePage />} />
             <Route path={'bin'} element={<BinPage />} />
             <Route path={'favorites'} element={<FavoritesPage />} />
             <Route path={'search'} element={<SearchPage />} />

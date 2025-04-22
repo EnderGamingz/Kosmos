@@ -9,7 +9,13 @@ import {
   containerVariant,
   itemTransitionVariant,
 } from '@components/defaults/transition.ts';
-import { useNavigate } from 'react-router-dom';
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
@@ -24,50 +30,77 @@ import { cn } from '@lib/utils.ts';
 import { Progress } from '@/components/ui/progress';
 import { PageMetadata } from '@components/metadata.tsx';
 import { SquareArrowOutUpRight } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@components/ui/tabs.tsx';
 
-export default function SharedItems({
-  itemsForUser,
-}: {
-  itemsForUser: boolean;
-}) {
+export default function ExplorerSharePage() {
+  const { pathname } = useLocation();
+
+  const active = pathname.split('/').pop() || '';
+
+  return (
+    <div className={'flex flex-col p-5 grow'}>
+      <div className={'mx-auto pb-4'}>
+        <Tabs value={active} className={'max-w-md w-full mx-auto'}>
+          <TabsList className={'w-full [&>*]:grow [&>*]:text-center flex-wrap'}>
+            <Link to={'/home/share/shared'}>
+              <TabsTrigger value={'shared'}>Shared Items</TabsTrigger>
+            </Link>
+            <Link to={'/home/share/shares'}>
+              <TabsTrigger value={'shares'}>Shared with me</TabsTrigger>
+            </Link>
+          </TabsList>
+        </Tabs>
+      </div>
+      <Routes>
+        <Route path={'shared'} element={<SharedItems itemsForUser={false} />} />
+        <Route path={'shares'} element={<SharedItems itemsForUser={true} />} />
+      </Routes>
+    </div>
+  );
+}
+
+function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
   const items = useSharedItems(itemsForUser);
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
 
-  useEffect(() => {
-    setFilesInScope(
-      ((items.data as SharedItemsDTO)?.files as FileModelDTO[]) || [],
-    );
-  }, [items, setFilesInScope]);
+  useEffect(
+    () =>
+      setFilesInScope(
+        ((items.data as SharedItemsDTO)?.files as FileModelDTO[]) || [],
+      ),
+    [items, setFilesInScope],
+  );
 
+  const sharingType = itemsForUser ? 'with me' : 'by me';
   return (
-    <div className={'relative h-full'}>
-      <PageMetadata title={itemsForUser ? 'Shared with me' : 'Shared by me'} />
-      <div
-        className={
-          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-        }>
+    <div className={'relative grow flex flex-col'}>
+      <PageMetadata title={`Shared ${sharingType}`} />
+      <div className={'file-list relative flex flex-col overflow-y-auto grow'}>
         <Progress
-          aria-label={'Recent Files loading...'}
+          aria-label={'Shared items loading...'}
           indeterminate={!items?.data || items.isLoading}
           value={100}
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}
         />
-        <div className={'px-5 pt-5'}>
-          <SubPageTitle>
-            Shared Items {itemsForUser ? 'with me' : 'by me'}
-          </SubPageTitle>
+        <div className={'px-2 pt-5'}>
+          <SubPageTitle>{'Shared Items ' + sharingType}</SubPageTitle>
         </div>
-        {itemsForUser ? (
-          <SharedForMe shares={items.data} />
-        ) : (
-          <ExplorerDataDisplay
-            isLoading={items.isLoading}
-            files={(items.data?.files as FileModelDTO[]) || []}
-            folders={(items.data?.folders as FolderModelDTO[]) || []}
-            viewSettings={{ limitedView: true }}
-          />
-        )}
+        <div
+          className={
+            'flex flex-col relative grow max-h-[calc(100dvh-90px-2.5rem-52px-56px)] max-md:max-h-[calc(100dvh-90px-2.5rem-52px-56px-80px)]'
+          }>
+          {itemsForUser ? (
+            <SharedForMe shares={items.data} />
+          ) : (
+            <ExplorerDataDisplay
+              isLoading={items.isLoading}
+              files={(items.data?.files as FileModelDTO[]) || []}
+              folders={(items.data?.folders as FolderModelDTO[]) || []}
+              viewSettings={{ limitedView: true }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

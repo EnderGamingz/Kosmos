@@ -52,20 +52,22 @@ export default function FileList() {
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />
-      <ExplorerDataDisplay
-        isLoading={isLoading}
-        files={files.data?.pages.flat() || []}
-        folders={folders.data?.folders || []}
-        viewSettings={{
-          paged: true,
-          isCreateAllowed: true,
-          hasNextPage: files.hasNextPage,
-          onLoadNextPage: async () => {
-            if (files.isFetching) return;
-            await files.fetchNextPage();
-          },
-        }}
-      />
+      <div className={'relative grow'}>
+        <ExplorerDataDisplay
+          isLoading={isLoading}
+          files={files.data?.pages.flat() || []}
+          folders={folders.data?.folders || []}
+          viewSettings={{
+            paged: true,
+            isCreateAllowed: true,
+            hasNextPage: files.hasNextPage,
+            onLoadNextPage: async () => {
+              if (files.isFetching) return;
+              await files.fetchNextPage();
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }
