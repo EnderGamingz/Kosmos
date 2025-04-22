@@ -120,7 +120,7 @@ body {
 }
 
 #root {
-    min-height: 100dvh;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     /* Unselectable */
