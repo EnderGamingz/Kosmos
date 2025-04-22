@@ -40,12 +40,14 @@ export default function FileDisplay({
   const sort = useSearchState(s => s.sort);
 
   const close = () => {
-    if (params.get('f') === null) return;
     setScopedIndex(-1);
-    setParams(prev => {
-      prev.delete('f');
-      return prev;
-    });
+    setParams(
+      prev => {
+        prev.delete('f');
+        return prev;
+      },
+      { replace: true },
+    );
   };
 
   const disabled = scopedIndex === -1;
@@ -76,14 +78,24 @@ export default function FileDisplay({
 
   useEffect(() => {
     const fileId = params.get('f');
-    if (!fileId) return;
+    if (fileId === null && scopedIndex === -1) return;
+    if (fileId === null && scopedIndex !== -1) {
+      close();
+      return;
+    }
 
     const index = filesInScope.findIndex(f => f.id === fileId);
-    if (index === -1) close();
+    if (index === -1) {
+      close();
+      return;
+    }
     setScopedIndex(index !== -1 ? index : -1);
   }, [params]);
 
-  useEffect(close, [currentFolder]);
+  useEffect(() => {
+    if (params.get('f') === null) return;
+    close();
+  }, [currentFolder]);
 
   const file = useMemo(() => {
     if (scopedIndex === -1) return undefined;
