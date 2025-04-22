@@ -20,6 +20,8 @@ export function getExplorerDisplay(type: ExplorerDisplay) {
       return 'Static Grid';
     case ExplorerDisplay.DynamicGrid:
       return 'Dynamic Grid';
+    case ExplorerDisplay.Mobile:
+      return 'Mobile';
   }
 }
 
