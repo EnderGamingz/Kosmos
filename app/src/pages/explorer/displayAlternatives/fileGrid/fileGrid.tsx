@@ -170,7 +170,6 @@ export default function FileGrid({
                     key={file.id}
                     file={file}
                     index={folders.length + i}
-                    fileIndex={i}
                     onSelect={selectFile}
                     selected={selectedFiles.map(file => file.id)}
                     dynamic={dynamic}
@@ -269,7 +268,6 @@ function Row({ index, data }: { index: number; data: VirtualGridRowData }) {
           key={file.id}
           file={file}
           index={index * columnCount + j + folderLength}
-          fileIndex={index * columnCount + j}
           onSelect={onSelectFile}
           selected={selectedFiles.map(file => file.id)}
           details={details}

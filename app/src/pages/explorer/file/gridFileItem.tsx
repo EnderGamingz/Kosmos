@@ -18,10 +18,10 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { Clock, EllipsisVertical } from 'lucide-react';
+import useSelectFile from '@utils/selectFile.ts';
 
 export default function GridFileItem({
   index,
-  fileIndex,
   file,
   selected,
   onSelect,
@@ -30,7 +30,6 @@ export default function GridFileItem({
   outerDisabled,
 }: {
   index: number;
-  fileIndex: number;
   file: FileModelDTO;
   selected?: string[];
   onSelect?: (file: FileModelDTO) => void;
@@ -54,15 +53,15 @@ export default function GridFileItem({
   const isCompact = details === DetailType.Compact;
   const isHidden = details === DetailType.Hidden;
 
-  const { selectFile, dragDestination, setDestination, selectedItems } =
-    useExplorerStore(
-      useShallow(s => ({
-        selectFile: s.current.selectCurrentFile,
-        dragDestination: s.dragMove.destination,
-        setDestination: s.dragMove.setDestination,
-        selectedItems: s.selectedResources,
-      })),
-    );
+  const selectFile = useSelectFile();
+
+  const { dragDestination, setDestination, selectedItems } = useExplorerStore(
+    useShallow(s => ({
+      dragDestination: s.dragMove.destination,
+      setDestination: s.dragMove.setDestination,
+      selectedItems: s.selectedResources,
+    })),
+  );
   const context = useContext(DisplayContext);
 
   const handleClick = () => {
@@ -70,7 +69,7 @@ export default function GridFileItem({
     if (isControl && !context.viewSettings?.noSelect) onSelect?.(file);
     else if (isShift && !context.viewSettings?.noSelect)
       context.select.setRange(index);
-    else if (!context.viewSettings?.noDisplay) selectFile(fileIndex);
+    else if (!context.viewSettings?.noDisplay) selectFile(file.id);
   };
 
   const moveAction = useMove(

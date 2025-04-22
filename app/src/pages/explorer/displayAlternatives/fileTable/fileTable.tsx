@@ -91,7 +91,6 @@ function Row({ index, data }: { index: number; data: VirtualTableItemData }) {
     return (
       <TableFileItem
         i={index}
-        fileIndex={index - totalFolder}
         selected={selectedFiles.map(file => file.id)}
         onSelect={onSelectFile}
         key={itemData.id}

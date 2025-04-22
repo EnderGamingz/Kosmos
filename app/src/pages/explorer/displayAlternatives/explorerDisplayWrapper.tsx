@@ -55,7 +55,6 @@ export function ExplorerDisplayWrapper({
     selectFolder,
     selectNone,
     currentFolder,
-    selectedFileIndex,
     setDisplayHeight,
   } = useExplorerStore(
     useShallow(s => ({
@@ -65,7 +64,6 @@ export function ExplorerDisplayWrapper({
       selectFolder: s.selectedResources.selectFolder,
       selectNone: s.selectedResources.selectNone,
       currentFolder: s.current.folder,
-      selectedFileIndex: s.current.selectedFileIndex,
       setDisplayHeight: s.display.setHeight,
     })),
   );
@@ -175,7 +173,6 @@ export function ExplorerDisplayWrapper({
       {!viewSettings?.noDisplay && (
         <FileDisplay
           onSelect={selectFile}
-          fileIndex={selectedFileIndex}
           selected={selectedFiles}
           shareUuid={shareUuid}
         />

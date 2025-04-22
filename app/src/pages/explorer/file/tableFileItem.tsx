@@ -20,6 +20,7 @@ import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { EllipsisVertical, RotateCcw, Shredder } from 'lucide-react';
+import useSelectFile from '@utils/selectFile.ts';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
@@ -58,14 +59,12 @@ function TableFileItemBinActions({ id }: { id: string }) {
 
 export function TableFileItem({
   i,
-  fileIndex,
   file,
   selected,
   onSelect,
   outerDisabled,
 }: {
   i: number;
-  fileIndex: number;
   file: FileModelDTO;
   selected: string[];
   onSelect: (file: FileModelDTO) => void;
@@ -79,15 +78,15 @@ export function TableFileItem({
     })),
   );
 
-  const { selectFile, dragDestination, setDestination, selectedItems } =
-    useExplorerStore(
-      useShallow(s => ({
-        selectFile: s.current.selectCurrentFile,
-        dragDestination: s.dragMove.destination,
-        setDestination: s.dragMove.setDestination,
-        selectedItems: s.selectedResources,
-      })),
-    );
+  const selectFile = useSelectFile();
+
+  const { dragDestination, setDestination, selectedItems } = useExplorerStore(
+    useShallow(s => ({
+      dragDestination: s.dragMove.destination,
+      setDestination: s.dragMove.setDestination,
+      selectedItems: s.selectedResources,
+    })),
+  );
 
   const isSelected = selected.includes(file.id);
 
@@ -164,7 +163,7 @@ export function TableFileItem({
               context.viewSettings?.noDisplay
             )
               return;
-            selectFile(fileIndex);
+            selectFile(file.id);
           }}>
           <ItemIcon
             id={file.id}

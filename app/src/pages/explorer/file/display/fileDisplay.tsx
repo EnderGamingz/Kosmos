@@ -17,22 +17,21 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@lib/utils.ts';
+import { useSearchParams } from 'react-router-dom';
 
 export default function FileDisplay({
-  fileIndex,
   onSelect,
   selected,
   shareUuid,
 }: {
-  fileIndex?: number;
   onSelect: (file: FileModelDTO) => void;
   selected: FileModelDTO[];
   shareUuid?: string;
 }) {
-  const [scopedIndex, setScopedIndex] = useState(fileIndex ?? -1);
-  const { setFile, currentFolder, filesInScope } = useExplorerStore(
+  const [params, setParams] = useSearchParams();
+  const [scopedIndex, setScopedIndex] = useState(-1);
+  const { currentFolder, filesInScope } = useExplorerStore(
     useShallow(s => ({
-      setFile: s.current.selectCurrentFile,
       currentFolder: s.current.folder,
       filesInScope: s.current.filesInScope,
     })),
@@ -42,7 +41,10 @@ export default function FileDisplay({
 
   const close = () => {
     setScopedIndex(-1);
-    setFile(undefined);
+    setParams(prev => {
+      prev.delete('f');
+      return prev;
+    });
   };
 
   const disabled = scopedIndex === -1;
@@ -72,9 +74,16 @@ export default function FileDisplay({
   });
 
   useEffect(() => {
-    if (fileIndex === undefined) close();
-    else setScopedIndex(fileIndex !== -1 ? fileIndex : -1);
-  }, [fileIndex]);
+    const fileId = params.get('f');
+    if (fileId === undefined) {
+      close();
+      return;
+    }
+
+    const index = filesInScope.findIndex(f => f.id === fileId);
+    if (index === -1) close();
+    setScopedIndex(index !== -1 ? index : -1);
+  }, [params]);
 
   useEffect(close, [currentFolder]);
 

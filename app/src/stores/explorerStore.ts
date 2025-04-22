@@ -15,8 +15,6 @@ export type SelectedResources = {
 export type ExplorerState = {
   current: {
     folder?: string;
-    selectedFileIndex?: number;
-    selectCurrentFile: (current?: number) => void;
     selectCurrentFolder: (current?: string) => void;
     filesInScope: FileModelDTO[];
     setFilesInScope: (current: FileModelDTO[]) => void;
@@ -40,14 +38,6 @@ export type ExplorerState = {
 
 export const useExplorerStore = create<ExplorerState>(set => ({
   current: {
-    selectCurrentFile: (current?: number) => {
-      set(prev => ({
-        current: {
-          ...prev.current,
-          selectedFileIndex: current,
-        },
-      }));
-    },
     selectCurrentFolder: (current?: string) => {
       set(prev => ({
         current: {
