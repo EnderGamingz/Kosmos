@@ -7,7 +7,7 @@ import { cn } from '@lib/utils.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (
-    <div className={'flex flex-wrap items-center gap-2 p-2'}>
+    <div className={'flex flex-wrap items-center gap-1 p-2'}>
       <AnimatePresence>{children}</AnimatePresence>
     </div>
   );
@@ -21,6 +21,7 @@ export function BreadCrumbItem({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  initial,
 }: {
   name: ReactNode;
   href?: string;
@@ -29,6 +30,7 @@ export function BreadCrumbItem({
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onClick?: () => void;
+  initial?: boolean;
 }) {
   return (
     <motion.div
@@ -36,7 +38,7 @@ export function BreadCrumbItem({
       onMouseLeave={onMouseLeave}
       onClick={onClick}
       className={
-        'flex items-center gap-2 text-stone-800 dark:text-stone-200 [&_svg]:h-5 [&_svg]:w-5'
+        'flex items-center gap-1 text-stone-800 dark:text-stone-200 [&_svg]:h-5 [&_svg]:w-5'
       }
       initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
@@ -46,9 +48,10 @@ export function BreadCrumbItem({
         condition={!!href}
         wrapper={c => (
           <Link
-            className={
-              'rounded-md px-1 transition-colors hover:!bg-stone-500/10 dark:hover:!bg-stone-700/60'
-            }
+            className={cn(
+              'rounded-md px-1 transition-colors ',
+              !initial && 'hover:!bg-stone-500/10 dark:hover:!bg-stone-700/60',
+            )}
             style={{
               backgroundColor: color
                 ? `rgba(${hexToRGB(color).join(',')}, 0.2)`
@@ -62,7 +65,7 @@ export function BreadCrumbItem({
       </ConditionalWrapper>
       <span
         className={cn(
-          'text-stone-500/70 transition-opacity',
+          'text-muted-foreground transition-opacity',
           last ? 'opacity-0' : 'opacity-100',
         )}>
         /

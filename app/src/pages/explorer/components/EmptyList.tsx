@@ -1,6 +1,5 @@
 import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 import Illustration from '@components/defaults/Illustration.tsx';
-import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
 
@@ -21,11 +20,11 @@ export default function EmptyList({
     <ConditionalWrapper
       condition={table}
       wrapper={c => (
-        <motion.tfoot layout>
+        <tfoot>
           <tr>
             <td colSpan={5}>{c}</td>
           </tr>
-        </motion.tfoot>
+        </tfoot>
       )}>
       <div
         className={cn(

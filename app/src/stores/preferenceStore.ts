@@ -10,6 +10,12 @@ export enum ExplorerDisplay {
   Album,
 }
 
+export const mobileListIgnoreTypes = [ExplorerDisplay.Album];
+
+export function isTypeIgnoredForMobile(type: ExplorerDisplay) {
+  return mobileListIgnoreTypes.includes(type);
+}
+
 export function getExplorerDisplay(type: ExplorerDisplay) {
   switch (type) {
     case ExplorerDisplay.Album:

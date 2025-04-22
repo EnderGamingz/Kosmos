@@ -14,6 +14,7 @@ import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { Shredder } from 'lucide-react';
 
 export default function BinPage() {
   const { data: usageData } = useUsageStats();
@@ -50,7 +51,9 @@ export default function BinPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
             className={'text-stone-800 dark:text-stone-400'}>
-            {usageData?.bin !== undefined ? binUsage : 'Loading...'}
+            {usageData?.bin !== undefined
+              ? `${binUsage} of files`
+              : 'Loading...'}
           </motion.p>
         </div>
         {!!deletedFiles.data?.length && (
@@ -61,6 +64,7 @@ export default function BinPage() {
             }
             onClick={() => deleteAll.mutate()}
             disabled={deleteAll.isPending || !deletedFiles.data?.length}>
+            <Shredder />
             Clear Trash
           </Button>
         )}

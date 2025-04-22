@@ -76,7 +76,7 @@ export function NotificationsMenu() {
   return (
     <Popover onOpenChange={b => b && setSeen(true)}>
       <PopoverTrigger asChild>
-        <button className={'flex p-2 relative cursor-pointer'}>
+        <button className={'flex p-2.5 sm:p-3 relative cursor-pointer'}>
           {!seen && <AttentionDot />}
           <Bell className={'h-6 w-6'} />
         </button>

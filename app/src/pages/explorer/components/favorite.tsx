@@ -68,10 +68,10 @@ export default function Favorite({
       }}>
       <Star
         className={cn(
-          'h-6 w-6 transition-all stroke-1',
+          'h-6 w-6 transition-all',
           active
-            ? 'fill-amber-400 stroke-amber-700'
-            : 'fill-transparent stroke-primary',
+            ? 'fill-amber-400 stroke-amber-600'
+            : 'fill-transparent stroke-primary/80',
           white && !active && 'fill-border',
         )}
       />

@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { TableHeader } from '@pages/explorer/displayAlternatives/fileTable/tableHeader.tsx';
 import { ReactNode, useContext } from 'react';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
@@ -74,8 +73,7 @@ export function FileTable() {
         !files.length && !folders.length ? (
           <EmptyList table />
         ) : (
-          <motion.tfoot
-            layout
+          <tfoot
             className={
               'cursor-default select-none border-none text-sm text-stone-500/50 [&_td]:py-5 [&_td]:pb-32 dark:[&_td]:text-stone-400'
             }>
@@ -88,7 +86,7 @@ export function FileTable() {
               <td align={'right'}>{totalFileSize}</td>
               <td />
             </tr>
-          </motion.tfoot>
+          </tfoot>
         )
       }
       row={Row}

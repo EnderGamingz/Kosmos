@@ -35,24 +35,26 @@ export function UserMenu() {
       <PopoverTrigger asChild>
         <button
           className={
-            'cursor-pointer p-2 flex items-center gap-2 rounded-full sm:p-1 outline-none'
+            'cursor-pointer p-1 flex items-center gap-2 rounded-full outline-none'
           }>
           <UserAvatar
             disabled={!user.user?.has_avatar}
             userId={user.user?.id}
             fetchedAt={user.user?.fetched_at}
             username={user.user?.username}
-            className={'h-6 w-6 sm:h-8 sm:w-8'}
+            className={'h-8 w-8'}
           />
           <div
             className={cn(
               'hidden max-w-32 flex-col overflow-hidden whitespace-nowrap pr-2 text-left sm:flex',
               '[&_*]:overflow-hidden [&_*]:overflow-ellipsis',
             )}>
-            <p className={'text-sm font-semibold'}>
+            <p className={'text-sm font-semibold max-w-[120px] truncate'}>
               {user.user?.full_name?.split(' ')[0] || user.user?.username}
             </p>
-            <span className={'text-xs font-light'}>@{user.user?.username}</span>
+            <span className={'text-xs font-light max-w-[120px] truncate'}>
+              {`@${user.user?.username}`}
+            </span>
           </div>
         </button>
       </PopoverTrigger>

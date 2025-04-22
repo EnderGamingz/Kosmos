@@ -19,7 +19,7 @@ export function SearchPopup() {
       open={searchDisclosure.isOpen}
       onOpenChange={searchDisclosure.onOpenChange}>
       <PopoverTrigger asChild>
-        <button className={'block p-2 sm:hidden'}>
+        <button className={'block p-2 sm:hidden max-md:hidden'}>
           <Search className={'h-6 w-6 sm:mr-1 sm:h-5 sm:w-5'} />
         </button>
       </PopoverTrigger>

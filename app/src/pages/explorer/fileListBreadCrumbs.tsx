@@ -30,6 +30,7 @@ export function FileListBreadCrumbs({
     <BreadCrumbs>
       {!firstHome && (
         <BreadCrumbItem
+          initial
           name={<Home className={'!w-4.5 !h-4.5'} />}
           href={!clickOverwrite ? '/home' : undefined}
           onClick={() => clickOverwrite?.(undefined)}

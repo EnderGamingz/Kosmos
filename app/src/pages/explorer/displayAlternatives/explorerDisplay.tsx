@@ -6,6 +6,7 @@ import {
   DetailType,
   ExplorerDisplay,
   ExplorerLoading,
+  isTypeIgnoredForMobile,
   usePreferenceStore,
 } from '@stores/preferenceStore.ts';
 import { FileGridLoading } from '@pages/explorer/displayAlternatives/fileGrid/fileGridLoading.tsx';
@@ -104,7 +105,8 @@ export default function ExplorerDataDisplay({
   }, [files, preferences]);
 
   const displayMode = () => {
-    if (shouldUseMobileView) return ExplorerDisplay.Mobile;
+    if (shouldUseMobileView && isTypeIgnoredForMobile(displayType.type))
+      return ExplorerDisplay.Mobile;
     if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
     else if (viewSettings?.binView) return ExplorerDisplay.Table;
     else return displayType.type;

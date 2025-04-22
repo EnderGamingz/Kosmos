@@ -35,7 +35,7 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
           onChange={e => setValue(e.target.value)}
           autoComplete={'off'}
           className={
-            'w-full truncate rounded-md bg-transparent p-3 px-9 outline outline-1 outline-stone-400/50 placeholder:text-sm'
+            'w-full truncate rounded-md bg-transparent p-2.5 px-9 border placeholder:text-sm'
           }
         />
         <button

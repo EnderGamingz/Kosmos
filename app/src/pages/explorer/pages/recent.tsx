@@ -13,7 +13,7 @@ export default function RecentFiles() {
   useEffect(() => setFilesInScope(files.data || []), [files, setFilesInScope]);
 
   return (
-    <div className={'relative'}>
+    <>
       <PageMetadata title={'Recent Files'} />
       <div
         className={
@@ -26,10 +26,10 @@ export default function RecentFiles() {
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}
         />
-        <div className={'px-5 pt-5'}>
+        <div className={'p-5'}>
           <SubPageTitle>Recent Files</SubPageTitle>
         </div>
-        <div>
+        <div className={'relative grow'}>
           <ExplorerDataDisplay
             isLoading={files.isLoading}
             files={files.data || []}
@@ -38,6 +38,6 @@ export default function RecentFiles() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }

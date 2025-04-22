@@ -34,14 +34,16 @@ import { Tabs, TabsList, TabsTrigger } from '@components/ui/tabs.tsx';
 
 export default function ExplorerSharePage() {
   const { pathname } = useLocation();
-
   const active = pathname.split('/').pop() || '';
 
   return (
     <div className={'flex flex-col py-5 grow'}>
-      <div className={'mx-auto pb-4'}>
-        <Tabs value={active} className={'max-w-md w-full mx-auto'}>
-          <TabsList className={'w-full [&>*]:grow [&>*]:text-center flex-wrap'}>
+      <div className={'pb-4'}>
+        <Tabs value={active} className={'max-w-sm w-full mx-auto'}>
+          <TabsList
+            className={
+              'w-full [&>*]:grow [&>*]:text-center flex-wrap [&_button]:w-full'
+            }>
             <Link to={'/home/share/shared'}>
               <TabsTrigger value={'shared'}>Shared Items</TabsTrigger>
             </Link>
