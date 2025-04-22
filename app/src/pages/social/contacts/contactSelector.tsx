@@ -13,7 +13,7 @@ import UserAvatar from '@components/UserAvatar.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { cn } from '@lib/utils.ts';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { Link } from 'react-router-dom';
 
@@ -37,7 +37,7 @@ export function ContactSelector({
 
   return (
     <div className={'p-2 border border-muted-foreground/20 rounded-md'}>
-      <div className={'flex gap-2 justify-between items-center'}>
+      <div className={'flex gap-2 justify-between'}>
         <div className={'-space-y-1'}>
           <p>Select a contact</p>
           <Link
@@ -59,7 +59,7 @@ export function ContactSelector({
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button variant={'secondary'} size={'sm'}>
-                Select Contact
+                Select Contact <ChevronDown />
               </Button>
             </PopoverTrigger>
             <PopoverContent className={'p-3'}>

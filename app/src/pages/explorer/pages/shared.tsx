@@ -38,7 +38,7 @@ export default function ExplorerSharePage() {
   const active = pathname.split('/').pop() || '';
 
   return (
-    <div className={'flex flex-col p-5 grow'}>
+    <div className={'flex flex-col py-5 grow'}>
       <div className={'mx-auto pb-4'}>
         <Tabs value={active} className={'max-w-md w-full mx-auto'}>
           <TabsList className={'w-full [&>*]:grow [&>*]:text-center flex-wrap'}>
@@ -83,8 +83,8 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
           className={'absolute left-0 top-0 h-1 opacity-50'}
           color={'default'}
         />
-        <div className={'px-2 pt-5'}>
-          <SubPageTitle>{'Shared Items ' + sharingType}</SubPageTitle>
+        <div className={'px-5 pt-5'}>
+          <SubPageTitle>{`Shared Items ${sharingType}`}</SubPageTitle>
         </div>
         <div
           className={

@@ -59,18 +59,23 @@ function Row({ index, data }: { index: number; data: VirtualDisplayItemData }) {
 }
 
 function MobileListHeader() {
-  const { shareUuid, viewSettings, files, folders } = useExplorerData();
+  const { shareUuid, viewSettings, files, folders, currentFolder } =
+    useExplorerData();
   return (
     <div className={'my-[12px] px-5'}>
       <div className={' flex items-center gap-2'}>
         {!viewSettings?.noSelect && (
           <SelectAllCheckBox files={files} folders={folders} />
         )}
-        <p className={'text-sm text-stone-500 animate-fade-in-right'}>
+        <p
+          key={`mobile-info-${currentFolder}`}
+          className={'text-sm text-stone-500 animate-fade-in-right'}>
           {folders.length} Folders &bull; {files.length} Files
         </p>
         {!viewSettings?.limitedView && !shareUuid && (
-          <div className={'animate-fade-in-right delay-100'}>
+          <div
+            key={`mobile-sort-${currentFolder}`}
+            className={'animate-fade-in-right delay-100'}>
             <FileGridSort />
           </div>
         )}

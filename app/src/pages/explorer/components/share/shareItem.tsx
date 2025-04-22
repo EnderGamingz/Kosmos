@@ -14,18 +14,6 @@ import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Share } from 'lucide-react';
 
-function ShareItemIndicator({ active }: { active: boolean }) {
-  return (
-    <div
-      title={active ? 'Active' : 'Expired'}
-      className={cn(
-        'hidden h-3 min-h-3 w-3 min-w-3 rounded-full shadow transition-colors sm:block',
-        active ? 'bg-green-300 shadow-green-300' : 'bg-red-300 shadow-red-300',
-      )}
-    />
-  );
-}
-
 export function ShareItem({
   share,
   type,
@@ -54,14 +42,13 @@ export function ShareItem({
     <motion.li
       layout
       className={cn(
-        'relative gap-2 rounded-lg bg-stone-300/30 px-3 py-2 sm:flex sm:flex-row sm:items-center',
-        'sm:bg-stone-300/30 outline sm:outline-transparent animate-fade-in-top',
-        isActive ? 'outline-green-300/70' : 'outline-red-300/70',
+        'relative gap-2 rounded-md px-3 py-2 shadow-sm',
+        'border-l-3 animate-fade-in-top bg-gradient-to-br from-popover to-primary/5',
+        isActive ? 'border-l-green-300' : 'border-l-red-300',
       )}
       style={{
         animationDelay: `${index * 50}ms`,
       }}>
-      <ShareItemIndicator active={isActive} />
       <div>
         <p className={'font-medium'}>
           {getShareTypeString(share.share_type)}ly shared
@@ -79,7 +66,9 @@ export function ShareItem({
             }
           />
           {share.access_limit !== null && (
-            <Chip content={`${share.access_limit} uses left`} />
+            <Chip
+              content={`${share.access_limit} use${share.access_limit > 1 ? 's' : ''} left`}
+            />
           )}
           {share.expires_at && !isExpired && (
             <Chip
@@ -93,32 +82,27 @@ export function ShareItem({
           {share.password && <ChangePassword id={share.id} />}
         </div>
       </div>
-      <div
-        className={
-          'ml-auto mt-2 flex justify-center gap-1 sm:mt-0 sm:flex-col sm:items-end'
-        }>
-        <div className={'mr-auto sm:mr-[unset]'}>
+      <div className={'ml-auto mt-2 flex justify-center gap-1'}>
+        <div className={'mr-auto flex items-center gap-2'}>
           <DeleteShare id={share.id} />
-        </div>
-        <div
-          className={
-            'flex items-center gap-1 text-xs text-stone-500/90 dark:text-stone-400'
-          }>
-          {share.share_target_username ? (
-            <p
-              title={share.share_target_username}
-              className={'max-w-[100px] truncate'}>
-              @{share.share_target_username}
-            </p>
-          ) : (
-            'Public'
-          )}
-          {getShareTypeIcon(share.share_type)}
+          <div
+            className={'flex items-center gap-1 text-xs text-muted-foreground'}>
+            {share.share_target_username ? (
+              <p
+                title={share.share_target_username}
+                className={'max-w-[100px] truncate'}>
+                @{share.share_target_username}
+              </p>
+            ) : (
+              'Public'
+            )}
+            {getShareTypeIcon(share.share_type)}
+          </div>
         </div>
         <div className={'flex items-center gap-2'}>
-          <QrCodeModal value={shareData.url} />
           {isActive && (
             <>
+              <QrCodeModal value={shareData.url} />
               {navigator.share !== undefined &&
                 navigator.canShare(shareData) && (
                   <button onClick={() => navigator.share(shareData)}>

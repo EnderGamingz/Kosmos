@@ -16,7 +16,7 @@ export function TypeButton({
     <button
       onClick={onSelect}
       className={cn(
-        'relative flex rounded-lg px-3 py-1 transition-colors hover:bg-stone-400/20',
+        'isolate relative flex rounded-md px-3 py-1 transition-colors hover:bg-stone-800/20',
         'items-center gap-4 text-lg',
       )}
       aria-selected={selected}>
@@ -25,7 +25,7 @@ export function TypeButton({
       {selected && (
         <motion.div
           layoutId={`share-type`}
-          className={'absolute inset-0 -z-10 rounded-lg bg-stone-400/60'}
+          className={'absolute inset-0 -z-10 rounded-md bg-stone-400/60'}
         />
       )}
     </button>

@@ -1,14 +1,22 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { ShareOperationType } from '@models/file.ts';
 import { useEffect, useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
-import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
-import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
 import { cn } from '@lib/utils.ts';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@components/ui/sheet.tsx';
+import { Button } from '@components/ui/button.tsx';
 
 export default function ShareModal() {
   const { shareElementId, shareElementType, clearShareElement } =
@@ -16,26 +24,23 @@ export default function ShareModal() {
   const hasShare = !!shareElementId && !!shareElementType;
 
   return (
-    <AnimatePresence>
-      {hasShare && (
+    <Sheet open={hasShare} onOpenChange={clearShareElement}>
+      <SheetContent className={'gap-0'}>
         <ShareModalContent
-          shareElementId={shareElementId}
-          shareElementType={shareElementType}
-          onClose={clearShareElement}
+          shareElementId={shareElementId!}
+          shareElementType={shareElementType!}
         />
-      )}
-    </AnimatePresence>
+      </SheetContent>
+    </Sheet>
   );
 }
 
 export function ShareModalContent({
   shareElementId,
   shareElementType,
-  onClose,
 }: {
   shareElementId: string;
   shareElementType: ShareOperationType;
-  onClose: () => void;
 }) {
   const data = useUserShareData(shareElementId, shareElementType);
   const [create, setCreate] = useState(data.data?.length === 0);
@@ -48,70 +53,56 @@ export function ShareModalContent({
 
   return (
     <>
-      <Backdrop onClose={onClose} />
-      <div
-        className={cn(
-          'pointer-events-none isolate flex h-full w-full items-center justify-end',
-          'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 p-3 md:p-5',
-        )}>
+      <SheetHeader>
+        <SheetTitle>{'Share ' + shareElementType}</SheetTitle>
+        <SheetDescription>
+          {data.data?.length
+            ? `${data.data.length} share${data.data.length > 1 ? 's' : ''} created`
+            : 'No share yet'}
+        </SheetDescription>
+      </SheetHeader>
+      <div className={'px-3'}>
+        <Button
+          variant={'outline'}
+          onClick={() => setCreate(prev => !prev)}
+          className={'w-full'}>
+          <Plus
+            className={cn(
+              'h-4 w-4  transition-all',
+              create && 'rotate-[45deg]',
+            )}
+          />
+          {create ? 'Cancel creation' : 'Create new'}
+        </Button>
         <div
           className={
-            'pointer-events-auto isolate flex h-full w-full items-center sm:max-w-[500px]'
+            'mb-3 flex h-full flex-col overflow-y-auto px-1 py-3 scrollbar-hide'
           }>
-          <motion.div
-            initial={{ opacity: 0, x: 80, scale: 0.9, height: '50%' }}
-            animate={{ opacity: 1, x: 0, scale: 1, height: '100%' }}
-            exit={{ opacity: 0, x: 80, scale: 0.9, height: '50%' }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-              'relative shadow-lg',
-              'w-full rounded-xl bg-popover/50 p-3 md:p-6',
-              'flex flex-col overflow-hidden',
-            )}>
-            <div className={'absolute backdrop-blur-2xl inset-0 -z-10'} />
-            <div className={'flex items-center justify-between'}>
-              <h2 className={'text-2xl font-semibold'}>
-                Share {shareElementType}{' '}
-                <span className={'align-top text-sm font-light'}>
-                  ({data.data?.length ?? '?'})
-                </span>
-              </h2>
-              <button
-                onClick={() => setCreate(prev => !prev)}
-                className={'flex items-center gap-2 font-bold'}>
-                <Plus
-                  className={cn(
-                    'h-4 w-4 fill-stone-800 transition-all',
-                    create && 'rotate-45',
-                  )}
-                />
-                {create ? 'Cancel' : 'Create'}
-              </button>
-            </div>
-            <div
-              className={
-                'mb-3 flex h-full flex-col overflow-y-auto px-1 py-5 scrollbar-hide'
-              }>
-              <AnimatePresence>
-                {create ? (
-                  <CreateShare
-                    onDone={() => setCreate(false)}
-                    dataType={shareElementType}
-                    id={shareElementId}
-                  />
-                ) : (
-                  <ShareData
-                    shares={data.data}
-                    type={shareElementType}
-                    loading={data.isLoading}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-            <ModalCloseButton onClick={onClose} />
-          </motion.div>
+          <AnimatePresence>
+            {create ? (
+              <CreateShare
+                onDone={() => setCreate(false)}
+                dataType={shareElementType}
+                id={shareElementId}
+              />
+            ) : (
+              <ShareData
+                shares={data.data}
+                type={shareElementType}
+                loading={data.isLoading}
+              />
+            )}
+          </AnimatePresence>
         </div>
       </div>
+      <SheetFooter>
+        <SheetClose asChild>
+          <Button variant={'ghost'}>
+            <X />
+            Close
+          </Button>
+        </SheetClose>
+      </SheetFooter>
     </>
   );
 }

@@ -5,16 +5,23 @@ import { DisplayContext } from '@lib/contexts.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
 
 export default function useExplorerData() {
-  const { selectedFolders, selectedFiles, selectFile, selectFolder, display } =
-    useExplorerStore(
-      useShallow(s => ({
-        selectedFolders: s.selectedResources.selectedFolders,
-        selectedFiles: s.selectedResources.selectedFiles,
-        selectFile: s.selectedResources.selectFile,
-        selectFolder: s.selectedResources.selectFolder,
-        display: s.display,
-      })),
-    );
+  const {
+    currentFolder,
+    selectedFolders,
+    selectedFiles,
+    selectFile,
+    selectFolder,
+    display,
+  } = useExplorerStore(
+    useShallow(s => ({
+      currentFolder: s.current.folder,
+      selectedFolders: s.selectedResources.selectedFolders,
+      selectedFiles: s.selectedResources.selectedFiles,
+      selectFile: s.selectedResources.selectFile,
+      selectFolder: s.selectedResources.selectFolder,
+      display: s.display,
+    })),
+  );
 
   const { viewSettings, files, folders, shareUuid, onScroll } =
     use(DisplayContext);
@@ -34,5 +41,6 @@ export default function useExplorerData() {
     totalFileSize,
     shareUuid,
     onScroll,
+    currentFolder,
   };
 }
