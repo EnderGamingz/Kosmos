@@ -27,37 +27,57 @@ export function FileListFab({ hide }: { hide: boolean }) {
           hide && '!opacity-0 !pointer-events-none',
         )}>
         <AnimatePresence>
-          <motion.div layout key={'fab-social'}>
-            <Link
-              to={'/social'}
-              className={
-                'flex bg-popover shadow-md hover:shadow-lg border p-3 rounded-md hover:bg-border transition-colors cursor-pointer'
-              }>
-              <MessageSquare className={'w-5 h-5'} />
-            </Link>
-          </motion.div>
-          {create ? (
-            <motion.div
-              key={'fab-create'}
-              layoutId={'fab-create'}
-              className={
-                'bg-popover shadow-lg p-3 rounded-md flex flex-col gap-1'
-              }>
-              <FileWindowContextMenu onClose={() => setCreate(false)} />
-            </motion.div>
-          ) : (
-            <motion.button
-              key={'fab-create'}
-              layoutId={'fab-create'}
-              onClick={() => setCreate(true)}
-              className={
-                'bg-popover shadow-md hover:shadow-lg border-2 p-6 rounded-md hover:bg-border transition-colors cursor-pointer'
-              }>
-              <Plus className={'w-7 h-7'} />
-            </motion.button>
-          )}
+          <SocialFab key={'fab-social'} />
+          <CreateFab open={create} onOpenChange={setCreate} />
         </AnimatePresence>
       </div>
     </AnimatePresence>
+  );
+}
+
+function CreateFab({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  if (open) {
+    return (
+      <motion.div
+        key={'fab-create'}
+        layoutId={'fab-create'}
+        className={
+          'bg-popover shadow-lg p-3 rounded-md flex flex-col gap-1 border border-primary/30'
+        }>
+        <FileWindowContextMenu onClose={() => onOpenChange(false)} />
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.button
+      key={'fab-create'}
+      layoutId={'fab-create'}
+      onClick={() => onOpenChange(true)}
+      className={cn(
+        'bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-6 rounded-md hover:from-secondary transition-colors cursor-pointer',
+      )}>
+      <Plus className={'w-8 h-8'} />
+    </motion.button>
+  );
+}
+
+function SocialFab() {
+  return (
+    <motion.div layout>
+      <Link
+        to={'/social'}
+        className={cn(
+          'flex bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-3 rounded-md hover:from-secondary transition-colors cursor-pointer',
+        )}>
+        <MessageSquare className={'w-5 h-5'} />
+      </Link>
+    </motion.div>
   );
 }
