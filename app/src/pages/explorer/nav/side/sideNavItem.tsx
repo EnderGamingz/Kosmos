@@ -8,15 +8,18 @@ import { ChevronUp } from 'lucide-react';
 export function SideNavItem({
   link,
   small,
+  onClick,
 }: {
   link: ExplorerLink;
   small?: boolean;
+  onClick?: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (link.items) e.preventDefault();
     if (link.items) setOpen(!open);
+    onClick?.();
   };
 
   return (

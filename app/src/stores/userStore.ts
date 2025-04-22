@@ -3,8 +3,9 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
+export type User = UserModelDTO & { fetched_at: number };
 export type UserState = {
-  user?: UserModelDTO & { fetched_at: number };
+  user?: User;
   error?: string;
   fetchUser: (props?: { background: boolean }) => void;
   setUser: (user: UserModelDTO) => void;

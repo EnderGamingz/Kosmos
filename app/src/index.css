@@ -112,7 +112,6 @@ body {
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
 
-
 .ReactCollapse--collapse {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

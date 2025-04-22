@@ -27,14 +27,41 @@ function SideNavWrapper({
   );
 }
 
-export function ExplorerSideNav({ source }: { source: LinkSource }) {
-  const usage = useUsageStats();
-
+export function SideNavUsage({
+  usage,
+}: {
+  usage: ReturnType<typeof useUsageStats>;
+}) {
   const limit = usage.data?.limit || 0;
   const total = usage.data?.total || 0;
-  const bin = usage.data?.bin || 0;
 
-  const binUsage = useFormatBytes(bin);
+  return (
+    <div className={'mt-auto grid gap-2 border-t p-5'}>
+      <Link
+        to={'/usage/report'}
+        className={cn(
+          'flex items-center gap-2 rounded-lg px-2 py-1 font-light',
+          'hover:bg-stone-800/10 dark:hover:bg-stone-300/10',
+        )}>
+        <Cloud className={'h-5 w-5'} />
+        Account Storage
+        <SquareArrowOutUpRight className={'h-3 w-3'} />
+      </Link>
+      <UsageIndicator data={usage.data} loading={usage.isLoading} />
+      <div
+        className={'text-sm text-stone-800 md:text-base dark:text-stone-300'}>
+        {useFormatBytes(total)}{' '}
+        <span className={'text-stone-400 dark:text-stone-500'}>
+          of {useFormatBytes(limit)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function ExplorerSideNav({ source }: { source: LinkSource }) {
+  const usage = useUsageStats();
+  const binUsage = useFormatBytes(usage.data?.bin || 0);
 
   const links = useMemo(() => getLinks(source, binUsage), [source, binUsage]);
 
@@ -45,26 +72,7 @@ export function ExplorerSideNav({ source }: { source: LinkSource }) {
           <SideNavItem key={`side-nav-${link.name}`} link={link} />
         ))}
       </div>
-      <div className={'mt-auto grid gap-2 border-t border-stone-800/10 p-5'}>
-        <Link
-          to={'/usage/report'}
-          className={cn(
-            'flex items-center gap-2 rounded-lg px-2 py-1 font-light',
-            'hover:bg-stone-800/10 dark:hover:bg-stone-300/10',
-          )}>
-          <Cloud className={'h-5 w-5'} />
-          Account Storage
-          <SquareArrowOutUpRight className={'h-3 w-3'} />
-        </Link>
-        <UsageIndicator data={usage.data} loading={usage.isLoading} />
-        <div
-          className={'text-sm text-stone-800 md:text-base dark:text-stone-300'}>
-          {useFormatBytes(total)}{' '}
-          <span className={'text-stone-400 dark:text-stone-500'}>
-            of {useFormatBytes(limit)}
-          </span>
-        </div>
-      </div>
+      <SideNavUsage usage={usage} />
     </SideNavWrapper>
   );
 }

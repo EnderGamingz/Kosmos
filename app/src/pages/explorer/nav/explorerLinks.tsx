@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   BookUser,
   Clock,
-  Ellipsis,
   Home,
   Images,
   MessageSquare,
@@ -32,6 +31,16 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
     exact: true,
   },
   {
+    name: 'Favorites',
+    href: '/home/favorites',
+    icon: <Star />,
+  },
+  {
+    name: 'Shares',
+    icon: <Share2 />,
+    href: '/home/share/shared',
+  },
+  {
     name: 'Albums',
     href: '/home/album',
     icon: <Images />,
@@ -43,17 +52,6 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
     lessPriority: true,
   },
   {
-    name: 'Favorites',
-    href: '/home/favorites',
-    icon: <Star />,
-    lessPriority: true,
-  },
-  {
-    name: 'Shares',
-    icon: <Share2 />,
-    href: '/home/share/shared',
-  },
-  {
     name: 'Bin',
     href: '/home/bin',
     description: binUsage,
@@ -62,17 +60,20 @@ export const getExplorerLinks = (binUsage?: string): ExplorerLink[] => [
   },
 ];
 
-export const getBottomMoreLinks = (links: ExplorerLink[]): ExplorerLink => ({
-  name: 'More',
-  icon: <Ellipsis />,
-  items: links.filter(link => link.lessPriority === true),
-});
+export const getAdditionalLinks = (links: ExplorerLink[]): ExplorerLink[] =>
+  links.filter(link => link.lessPriority === true);
 
 export const getAdminLinks = (): ExplorerLink[] => [
   {
     name: 'User',
     href: '/admin/user',
     icon: <User />,
+  },
+  {
+    name: 'Back',
+    href: '/home',
+    icon: <ArrowLeft />,
+    onlyBottom: true,
   },
 ];
 

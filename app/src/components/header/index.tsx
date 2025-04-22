@@ -1,10 +1,9 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useUserState } from '@stores/userStore';
 import { UserMenu } from './userMenu.tsx';
 import { NewMenu } from './new/newMenu.tsx';
 import { NotificationsMenu } from '@components/header/notifications/notificationsMenu.tsx';
 import { ALLOW_REGISTER } from '@lib/env.ts';
-import { HeaderBranding } from '@components/header/headerBranding.tsx';
 import {
   SearchBar,
   SearchPopup,
@@ -12,21 +11,17 @@ import {
 import { cn } from '@lib/utils.ts';
 import { SocialHeaderLink } from '@components/header/socialHeaderLink.tsx';
 import { LogIn } from 'lucide-react';
+import { HeaderMenu } from '@components/header/headerMenu.tsx';
 
 export default function Header() {
-  const location = useLocation();
   const user = useUserState(s => s.user);
-
-  const isAuthPage =
-    location.pathname.includes('login') ||
-    location.pathname.includes('register');
 
   return (
     <header
       className={
         'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5 dark:border-stone-300/10'
       }>
-      {!isAuthPage && <HeaderBranding user={user} />}
+      <HeaderMenu user={user} />
       {user && (
         <div className={'mx-auto w-full max-w-md px-3 md:px-10'}>
           <div className={'max-md:hidden'}>

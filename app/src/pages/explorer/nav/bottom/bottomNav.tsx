@@ -1,13 +1,16 @@
-import { getBottomMoreLinks } from '@pages/explorer/nav/explorerLinks.tsx';
 import { BottomNavItem } from '@pages/explorer/nav/bottom/bottomNavItem.tsx';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.tsx';
+import { useAppState } from '@stores/appStateStore.ts';
+import {
+  ExplorerLink,
+  getAdditionalLinks,
+} from '@pages/explorer/nav/explorerLinks.tsx';
 
 export default function BottomNav({ source }: { source: LinkSource }) {
-  const [links, more] = useMemo(() => {
-    const explorerLinks = getLinks(source);
-    return [explorerLinks, getBottomMoreLinks(explorerLinks)];
-  }, [source]);
+  const links = useMemo(() => getLinks(source), [source]);
+
+  useHeaderMenu({ links });
 
   return (
     <aside
@@ -18,10 +21,19 @@ export default function BottomNav({ source }: { source: LinkSource }) {
         {links.map(link => (
           <BottomNavItem key={`bottom-nav-${link.name}`} link={link} />
         ))}
-        {!!more.items?.length && (
-          <BottomNavItem noPriority key={`bottom-nav-more`} link={more} />
-        )}
       </div>
     </aside>
   );
+}
+
+export function useHeaderMenu({ links }: { links: ExplorerLink[] }) {
+  const { clearHeaderLinks, setHeaderLinks } = useAppState();
+
+  useEffect(() => {
+    const explorerLinks = getAdditionalLinks(links);
+    setHeaderLinks(explorerLinks);
+    return () => {
+      clearHeaderLinks();
+    };
+  }, [links]);
 }

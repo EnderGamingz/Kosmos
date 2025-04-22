@@ -31,7 +31,7 @@ export function FileTypeDisplay({
     <div
       className={cn(
         'relative flex h-full w-full flex-col items-center justify-center gap-5',
-        'rounded-lg bg-stone-200/10  shadow-xl dark:bg-stone-500/10 text-stone-200',
+        'rounded-lg shadow-xl bg-stone-200/10 dark:bg-stone-500/10 text-stone-200',
         '[&_svg]:text-stone-200 pr-5 text-center backdrop-blur-lg',
         'outline -outline-offset-1 outline-stone-500/30',
         'animate-fade-in-right transition-all delay-100',
