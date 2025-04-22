@@ -45,11 +45,12 @@ export function MobileFileItem({
       onContextMenu={e => {
         e.preventDefault();
         e.stopPropagation();
-        onSelect(file);
+        if (!context.viewSettings?.noSelect) onSelect(file);
       }}
       className={cn(
         'flex items-center group transition-colors p-3 gap-2 rounded-lg hover:bg-border',
-        isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
+        isSelected &&
+          'bg-indigo-100 dark:bg-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-600/50',
         isShift && 'cursor-pointer',
         context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
       )}>

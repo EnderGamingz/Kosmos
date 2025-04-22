@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
@@ -65,18 +64,15 @@ export function FullscreenToggle({
   noOffset?: boolean;
 }) {
   return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1, transition: { delay: 0.3 } }}
-      exit={{ scale: 0, opacity: 0 }}
+    <div
       onClick={toggle}
       className={cn(
-        'absolute top-3 z-[110] rounded-full bg-stone-50/70 p-2 backdrop-blur-sm',
+        'absolute top-3 z-[110] rounded-full bg-stone-50/70 p-2 backdrop-blur-sm animate-fade-scale-in',
         '[&>svg]:h-5 [&>svg]:w-5',
         isFullscreen || noOffset ? 'right-3' : 'right-3 md:right-8',
         '[&>svg]:text-stone-800',
       )}>
       {isFullscreen ? <Minimize2 /> : <Maximize2 />}
-    </motion.div>
+    </div>
   );
 }

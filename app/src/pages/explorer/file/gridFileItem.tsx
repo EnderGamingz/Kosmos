@@ -92,10 +92,10 @@ export default function GridFileItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={cn(
-        'group relative rounded-lg outline-1',
-        'outline-transparent transition-[outline-color]',
-        Boolean(isSelected) &&
-          'bg-indigo-100/50 outline-indigo-300 dark:bg-indigo-900/50',
+        'group relative rounded-lg',
+        'transition-all',
+        isSelected &&
+          'bg-indigo-100/50 ring-2 ring-indigo-500 dark:ring-indigo-300',
         isShift && 'cursor-pointer',
         context.select.rangeStart === index &&
           'bg-indigo-50 dark:bg-indigo-900/50',
@@ -127,21 +127,19 @@ export default function GridFileItem({
         }}>
         <div
           className={cn(
-            'absolute z-30 flex items-start gap-2 px-2 py-1.5',
+            'absolute z-30 flex items-center gap-2 px-2 py-1.5 ',
             '[&>button>svg]:w-5 [&>button]:-mt-0.5 [&>button]:p-0',
-            'left-1.5 top-1.5 h-20 overflow-hidden rounded-t-lg',
+            'left-1 top-1 overflow-hidden rounded-t-lg',
             isDefaultDisplay &&
               'gap-2 pl-1.5 pt-2.5 [&>button>svg]:w-6 [&>button]:-mt-1',
             isHidden && 'left-0 top-0',
           )}>
           {!context.viewSettings?.noSelect && onSelect && (
-            <div className={'-mt-[4px] h-4 w-4'}>
-              <Checkbox
-                className={'h-4 w-4 bg-border'}
-                checked={isSelected}
-                onClick={() => onSelect(file)}
-              />
-            </div>
+            <Checkbox
+              className={'h-4 w-4 bg-border'}
+              checked={isSelected}
+              onClick={() => onSelect(file)}
+            />
           )}
           <Favorite
             id={file.id}
@@ -200,7 +198,7 @@ export default function GridFileItem({
                 key={`title-${file.id}`}
                 className={cn(
                   'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
-                  'mt-auto text-sm',
+                  'mt-auto text-sm text-stone-50',
                   !isCompact && 'lg:text-base',
                 )}>
                 {file.file_name}

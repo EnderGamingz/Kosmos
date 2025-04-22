@@ -56,7 +56,7 @@ export function MobileFolderItem({
       onContextMenu={e => {
         e.stopPropagation();
         e.preventDefault();
-        context.handleContext({ x: e.clientX, y: e.clientY }, folder);
+        if (!context.viewSettings?.noSelect) onSelect(folder);
       }}
       className={cn(
         'group/listItem flex items-center group transition-colors p-3 gap-2 rounded-lg hover:bg-border',

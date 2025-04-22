@@ -14,9 +14,7 @@ export default function NotificationIndicator() {
   );
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    }
+    if (window.innerWidth < 768) setIsMobile(true);
   }, []);
 
   return (
@@ -26,11 +24,8 @@ export default function NotificationIndicator() {
       }>
       <ul
         onClick={() => {
-          if (notifications.length > 1) {
-            setExpanded(!expanded);
-          } else {
-            setExpanded(false);
-          }
+          if (notifications.length > 1) setExpanded(!expanded);
+          else setExpanded(false);
         }}
         onMouseLeave={() => setExpanded(false)}
         className={cn(

@@ -24,9 +24,7 @@ export default function FileList() {
   useEffect(() => {
     setSelectedNone();
     setCurrentFolder(folder);
-    return () => {
-      setCurrentFolder(undefined);
-    };
+    return () => setCurrentFolder(undefined);
   }, [folder, setCurrentFolder, setSelectedNone]);
 
   const sort = useSearchState(s => s.sort);
@@ -48,7 +46,7 @@ export default function FileList() {
       className={
         'file-list relative flex h-full flex-col overflow-y-auto max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
-      <div className={'flex items-center pl-3 shadow-sm md:pl-0'}>
+      <div className={'flex items-center shadow-sm'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />

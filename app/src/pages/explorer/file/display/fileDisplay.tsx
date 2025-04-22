@@ -40,6 +40,7 @@ export default function FileDisplay({
   const sort = useSearchState(s => s.sort);
 
   const close = () => {
+    if (params.get('f') === null) return;
     setScopedIndex(-1);
     setParams(prev => {
       prev.delete('f');
@@ -75,10 +76,7 @@ export default function FileDisplay({
 
   useEffect(() => {
     const fileId = params.get('f');
-    if (fileId === undefined) {
-      close();
-      return;
-    }
+    if (!fileId) return;
 
     const index = filesInScope.findIndex(f => f.id === fileId);
     if (index === -1) close();
