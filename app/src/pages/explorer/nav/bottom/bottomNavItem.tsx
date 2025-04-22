@@ -31,7 +31,7 @@ export function BottomNavItem({
       }>
       <div
         className={
-          'py-1 px-5 rounded-full icon-wrapper group-hover:ring ring-stone-600 transition-all from-primary/5 to-primary/20'
+          'py-1 px-5 rounded-full icon-wrapper group-hover:ring ring-stone-400 transition-all from-primary/5 to-primary/20'
         }>
         <Icon className={'h-5 w-5'} />
       </div>

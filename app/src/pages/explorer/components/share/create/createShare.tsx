@@ -140,7 +140,7 @@ export function CreateShare({
         <div className={'!p-0'}>
           <Collapse isOpened={type === ShareType.Private}>
             <div className={'p-2 space-y-2'}>
-              <label htmlFor={'username'}>
+              <label>
                 <User />
                 User to share with*
                 {privateContact && (
@@ -170,7 +170,7 @@ export function CreateShare({
           />
         </div>
         <div>
-          <label htmlFor={'custom-expires'}>
+          <label>
             <Clock />
             Expiration
           </label>
