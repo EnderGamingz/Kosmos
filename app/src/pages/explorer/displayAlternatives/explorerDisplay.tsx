@@ -105,11 +105,12 @@ export default function ExplorerDataDisplay({
   }, [files, preferences]);
 
   const displayMode = () => {
+    if (viewSettings?.binView) return ExplorerDisplay.Table;
+
     const typeToCheck = overwriteDisplay?.displayMode ?? displayType.type;
     if (shouldUseMobileView && !isTypeIgnoredForMobile(typeToCheck))
       return ExplorerDisplay.Mobile;
 
-    if (viewSettings?.binView) return ExplorerDisplay.Table;
     if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
     else return displayType.type;
   };
