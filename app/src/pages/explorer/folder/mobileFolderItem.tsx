@@ -75,7 +75,12 @@ export function MobileFolderItem({
             'rounded-lg',
             isSelected && 'bg-popover brightness-50',
           )}>
-          <ItemIcon id={folder.id} name={folder.folder_name} type={'folder'} />
+          <ItemIcon
+            id={folder.id}
+            name={folder.folder_name}
+            type={'folder'}
+            color={folder.color}
+          />
         </div>
         {!context.viewSettings?.noSelect && (
           <Check

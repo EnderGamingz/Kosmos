@@ -155,6 +155,7 @@ export default function GridFolderItem({
               id={folder.id}
               name={folder.folder_name}
               type={'folder'}
+              color={folder.color}
             />
           </div>
         </div>
