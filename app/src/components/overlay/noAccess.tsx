@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 import { buttonVariants } from '@components/ui/button.tsx';
-import { ChevronLeft, Key, OctagonAlert } from 'lucide-react';
+import { ChevronLeft, KeyRound, OctagonAlert } from 'lucide-react';
 
 export function NoAccess({
   page,
@@ -50,7 +50,7 @@ export function NoAccess({
           ) : error ? (
             <OctagonAlert className={'h-12 w-12'} />
           ) : (
-            <Key className={'h-12 w-12'} />
+            <KeyRound className={'h-12 w-12'} />
           )}
         </div>
         <p className={'text-center font-medium animate-fade-in-top delay-100'}>

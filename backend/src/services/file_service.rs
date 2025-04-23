@@ -566,12 +566,11 @@ impl FileService {
             self.delete_formats_from_file_id(file_id).await?;
         }
 
+
         tokio::fs::remove_file(self.upload_path.join(file_id.to_string()))
             .await
-            .map_err(|e| {
-                tracing::error!("Error deleting file {} from storage: {}", file_id, e);
-                AppError::InternalError
-            })?;
+            // If the file does not exist ignore the error
+            .ok();
 
         sqlx::query!("DELETE FROM files WHERE id = $1", file_id)
             .execute(&self.db_pool)
