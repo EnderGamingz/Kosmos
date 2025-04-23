@@ -40,7 +40,7 @@ export function TableHeader({
             currentOrder={currentSort.sort_order}
           />
         </th>
-        <th align={'right'} className={'min-w-[100px]'}>
+        <th align={'right'} className={'min-w-[110px]'}>
           <ExplorerSort
             name={'Size'}
             sort={SortBy.FileSize}

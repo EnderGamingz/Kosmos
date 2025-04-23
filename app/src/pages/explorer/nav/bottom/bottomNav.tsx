@@ -13,7 +13,8 @@ export default function BottomNav({ source }: { source: LinkSource }) {
   useHeaderMenu({ links });
 
   return (
-    <aside className={'h-[80px] overflow-hidden bg-popover border-t'}>
+    <aside
+      className={'h-[80px] overflow-hidden bg-popover border-t opacity-20'}>
       <div className={'grid grid-cols-4 gap-2 p-2'}>
         {links.map(link => (
           <BottomNavItem key={`bottom-nav-${link.name}`} link={link} />

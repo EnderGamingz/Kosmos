@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { PreviewImage } from '@components/Image.tsx';
-import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper.tsx';
 import { AlbumFile } from '@models/album.ts';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { Vec2 } from '@/types/vec2.ts';
 
 export default function AlbumDisplay() {
   const { overwriteDisplay, viewSettings } = useContext(DisplayContext);

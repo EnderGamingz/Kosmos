@@ -1,7 +1,6 @@
 import { createContext } from 'react';
 import { ContextData } from '@hooks/useContextMenu.ts';
 import { DataOperationType } from '@models/file.ts';
-import { Vec2 } from '@pages/explorer/displayAlternatives/explorerDisplayWrapper';
 import {
   OverwriteDisplay,
   ViewSettings,
@@ -9,6 +8,7 @@ import {
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { ListOnScrollProps } from 'react-window';
+import { Vec2 } from '@/types/vec2.ts';
 
 export type DisplayContextType = {
   viewSettings?: ViewSettings;

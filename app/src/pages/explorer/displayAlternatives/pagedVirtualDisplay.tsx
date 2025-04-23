@@ -34,8 +34,7 @@ export function VirtualDisplayElement({
   const [top, setTop] = useState(0);
 
   return (
-    <PagedVirtualDisplayContext.Provider
-      value={{ top, setTop, header, footer }}>
+    <PagedVirtualDisplayContext value={{ top, setTop, header, footer }}>
       <FixedSizeList
         {...rest}
         innerElementType={inner}
@@ -52,7 +51,7 @@ export function VirtualDisplayElement({
         ref={listRef}>
         {row}
       </FixedSizeList>
-    </PagedVirtualDisplayContext.Provider>
+    </PagedVirtualDisplayContext>
   );
 }
 

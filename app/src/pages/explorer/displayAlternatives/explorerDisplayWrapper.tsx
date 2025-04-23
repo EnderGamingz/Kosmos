@@ -1,5 +1,5 @@
 import { DataOperationType, Selected } from '@models/file.ts';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -23,8 +23,9 @@ import { AnimatePresence } from 'framer-motion';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { ListOnScrollProps } from 'react-window';
 import { FileListFab } from '@pages/explorer/fileListFab.tsx';
-
-export type Vec2 = { x: number; y: number };
+import useLayoutOptions from '@hooks/useLayoutOptions.ts';
+import { Vec2 } from '@/types/vec2.ts';
+import { calculateDisplayHeight } from '@pages/explorer/displayAlternatives/calculateDisplayHeight.ts';
 
 export function ExplorerDisplayWrapper({
   files,
@@ -46,7 +47,7 @@ export function ExplorerDisplayWrapper({
   const [dragged, setDragged] = useState<
     undefined | { type: DataOperationType; id: string }
   >(undefined);
-  const displayRef = useRef<HTMLDivElement>(null);
+  const { isMobile } = useLayoutOptions();
 
   const {
     selectedFolders,
@@ -113,12 +114,12 @@ export function ExplorerDisplayWrapper({
 
   useEffect(() => {
     const handleHeight = () => {
-      if (displayRef.current) setDisplayHeight(displayRef.current.clientHeight);
+      setDisplayHeight(calculateDisplayHeight(isMobile));
     };
     handleHeight();
     window.addEventListener('resize', handleHeight);
     return () => window.removeEventListener('resize', handleHeight);
-  }, [setDisplayHeight, displayRef]);
+  }, [setDisplayHeight, isMobile]);
 
   const handleScroll = (props: ListOnScrollProps) => {
     if (props.scrollDirection === 'forward' && props.scrollOffset === 0)
@@ -154,9 +155,8 @@ export function ExplorerDisplayWrapper({
         />
       )}
       <div
-        ref={displayRef}
         id={'display'}
-        className={'h-full flex-grow overflow-x-auto'}
+        className={'h-full grow overflow-x-auto'}
         onContextMenu={e => {
           if (viewSettings?.isCreateAllowed)
             handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
