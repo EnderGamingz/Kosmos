@@ -12,10 +12,10 @@ use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct ShareFilePublicRequest {
-    pub(crate) file_id: String,
-    pub(crate) password: Option<String>,
-    pub(crate) limit: Option<i32>,
-    pub(crate) expires_at: Option<DateTime<Utc>>,
+    pub file_id: String,
+    pub password: Option<String>,
+    pub limit: Option<i32>,
+    pub expires_at: Option<DateTime<Utc>>,
 }
 
 impl ShareFilePublicRequest {
@@ -122,8 +122,8 @@ pub async fn share_folder_public(
 
 #[derive(Deserialize)]
 pub struct ShareFilePrivateRequest {
-    pub(crate) file_id: String,
-    pub(crate) target_username: String,
+    pub file_id: String,
+    pub target_username: String,
 }
 
 impl ShareFilePrivateRequest {
@@ -193,8 +193,8 @@ pub async fn share_file_private(
 
 #[derive(Deserialize)]
 pub struct ShareFolderPrivateRequest {
-    pub(crate) folder_id: String,
-    pub(crate) target_username: String,
+    pub folder_id: String,
+    pub target_username: String,
 }
 
 impl ShareFolderPrivateRequest {
@@ -268,10 +268,10 @@ pub async fn share_folder_private(
 
 #[derive(Deserialize)]
 pub struct ShareAlbumPublicRequest {
-    pub(crate) album_id: String,
-    pub(crate) password: Option<String>,
-    pub(crate) limit: Option<i32>,
-    pub(crate) expires_at: Option<DateTime<Utc>>,
+    pub album_id: String,
+    pub password: Option<String>,
+    pub limit: Option<i32>,
+    pub expires_at: Option<DateTime<Utc>>,
 }
 
 impl ShareAlbumPublicRequest {
@@ -315,8 +315,8 @@ pub async fn share_album_public(
 
 #[derive(Deserialize)]
 pub struct ShareAlbumPrivateRequest {
-    pub(crate) album_id: String,
-    pub(crate) target_username: String,
+    pub album_id: String,
+    pub target_username: String,
 }
 
 impl ShareAlbumPrivateRequest {

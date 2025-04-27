@@ -134,6 +134,7 @@ pub async fn send_personal_message(
             chat_type: chat.chat_type,
             content: message.clone(),
         }),
+        important: true
     };
     state
         .presence_handler
@@ -169,6 +170,7 @@ pub async fn send_group_message(
             chat_type: chat.chat_type,
             content: message.clone(),
         }),
+        important: true,
     };
     notify_group_chat_members(&state, chat.id, user_id, presence_message).await?;
 

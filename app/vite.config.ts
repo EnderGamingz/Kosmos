@@ -19,9 +19,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt',
       workbox: {
-        cleanupOutdatedCaches: false,
+        cleanupOutdatedCaches: true,
         sourcemap: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        importScripts: ['/service_worker/push.js'],
       },
       includeAssets: [
         'img/logo_filled.svg',

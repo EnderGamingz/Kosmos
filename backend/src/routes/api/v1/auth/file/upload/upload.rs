@@ -220,7 +220,8 @@ pub async fn upload_file(
     state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
         action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
             folder_id: folder.map(|f| f.to_string()),
-        })
+        }),
+        important: false,
     }).await;
 
     tracing::debug!("Pending {}", pending_image_formats.len());

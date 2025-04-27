@@ -64,7 +64,8 @@ pub async fn delete_contact_link(
         .await?;
 
     let presence_message_to_new_member = PresenceMessage{
-        action: PresenceAction::ChatsUpdate()
+        action: PresenceAction::ChatsUpdate(),
+        important: false
     };
     state.presence_handler.broadcast_to_user(payload.user_id.into(), presence_message_to_new_member).await;
 

@@ -13,7 +13,7 @@ export function NotificationStatus({ data }: { data: Notification }) {
         indeterminate={!isSuccess && !isError}
         value={100}
         className={cn(
-          'absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden transition-height',
+          'bg-transparent absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden transition-height',
           (isSuccess || isError) && 'h-0',
         )}
         indicatorClassName={'bg-stone-50'}

@@ -25,6 +25,7 @@ pub async fn notify_attention_status_for_user(
         action: PresenceAction::SocialUpdate(PresenceSocialUpdate {
             content: requires_attention,
         }),
+        important: false
     };
     state
         .presence_handler

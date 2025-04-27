@@ -77,6 +77,7 @@ pub async fn multi_delete(
             user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+                important: false
             },
         )
         .await;
@@ -160,6 +161,7 @@ pub async fn delete_folder(
             user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+                important: false
             },
         )
         .await;

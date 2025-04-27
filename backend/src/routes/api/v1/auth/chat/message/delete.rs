@@ -73,6 +73,7 @@ pub async fn delete_personal_message(
             chat_id: user_id.to_string(),
             message_id: message_id.to_string(),
         }),
+        important: false
     };
     state
         .presence_handler
@@ -109,6 +110,7 @@ pub async fn delete_group_message(
             chat_id: chat_id.to_string(),
             message_id: message_id.to_string(),
         }),
+        important: false
     };
 
     notify_group_chat_members(&state,chat.id, user_id, presence_message).await?;

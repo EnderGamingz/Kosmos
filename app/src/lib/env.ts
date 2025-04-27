@@ -5,6 +5,7 @@ export const {
   VITE_LOCAL_URL: LOCAL_URL,
   CF_PAGES_COMMIT_SHA: BUILD_ID,
   VITE_BUILD_TAG: BUILD_TAG,
+  VITE_PUSH_PUBLIC_BASE64: PUSH_PUBLIC_BASE64,
 } = import.meta.env;
 
 export const ALLOW_REGISTER = import.meta.env.VITE_ALLOW_REGISTER === 'true';

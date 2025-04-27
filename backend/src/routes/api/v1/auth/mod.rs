@@ -24,3 +24,4 @@ pub mod contact;
 pub mod chat;
 
 pub mod presence;
+pub mod notification;

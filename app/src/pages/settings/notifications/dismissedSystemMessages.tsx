@@ -1,19 +1,16 @@
 import { useDismissStore } from '@stores/dismissStore.ts';
+import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { AnimatePresence, motion } from 'framer-motion';
-
 import { cn } from '@lib/utils.ts';
-import { SettingsPageMetadata } from '@components/metadata.tsx';
-import { SettingsTitle } from '@pages/settings';
 
-export default function DismissedOverview() {
+export function DismissedSystemMessages() {
   const dismissStore = useDismissStore();
   const dismissed = dismissStore.getDismissed();
 
   return (
-    <div className={'space-y-3'}>
-      <SettingsTitle title={'Dismissed Messages'} />
-      <SettingsPageMetadata title={'Dismissed Messages'} />
+    <>
+      <SettingsSubtitle title={'Dismissed System messages'} />
       <ul className={'space-y-3'}>
         {!dismissed.length && <EmptyList message={'No dismissed messages'} />}
         <AnimatePresence>
@@ -43,6 +40,6 @@ export default function DismissedOverview() {
           })}
         </AnimatePresence>
       </ul>
-    </div>
+    </>
   );
 }
