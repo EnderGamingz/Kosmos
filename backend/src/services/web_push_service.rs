@@ -12,22 +12,17 @@ pub struct WebPushService {
     db_pool: KosmosPool,
     client: IsahcWebPushClient,
     private_key: String,
-    public_key: String,
 }
 
 impl WebPushService {
     pub fn new(db_pool: KosmosPool, push_client: IsahcWebPushClient) -> Self {
         let private_key = std::env::var("PUSH_PRIVATE_BASE64")
             .expect("WebPushService error: PUSH_PRIVATE_BASE64 must be set");
-
-        let public_key = std::env::var("PUSH_PUBLIC_BASE64")
-            .expect("WebPushService error: PUSH_PUBLIC_BASE64 must be set");
-
+        
         WebPushService {
             db_pool,
             client: push_client,
             private_key,
-            public_key,
         }
     }
 

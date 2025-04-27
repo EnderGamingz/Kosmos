@@ -30,12 +30,6 @@ impl PresenceHandler {
         let presence_users = self.presence_users.lock().await;
         let online_users = presence_users.get(&user_id);
 
-        // TODO Remove this
-        let _ = self
-            .web_push_service
-            .send_push_notification(user_id, message.clone().into())
-            .await;
-
         if let Some(senders) = online_users {
             if senders.is_empty() && message.important {
                 let _ = self
