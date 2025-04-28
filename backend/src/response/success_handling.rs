@@ -8,7 +8,7 @@ pub type ResponseResult = Result<AppSuccess, AppError>;
 
 #[derive(Serialize)]
 pub struct SuccessResponse {
-    pub(crate) message: Option<String>,
+    pub message: Option<String>,
 }
 
 #[derive(Serialize)]

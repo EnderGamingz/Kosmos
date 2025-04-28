@@ -1,7 +1,7 @@
 import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import {
   AppWindow,
-  BadgeCheck,
+  BellRing,
   Info,
   KeyRound,
   User,
@@ -30,9 +30,9 @@ export const getSettingsLinks = (): ExplorerLink[] => [
     icon: AppWindow,
   },
   {
-    name: 'Dismissed',
-    href: '/settings/dismissed',
-    icon: BadgeCheck,
+    name: 'Notifications',
+    href: '/settings/notifications',
+    icon: BellRing,
     lessPriority: true,
   },
   {

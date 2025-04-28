@@ -1,5 +1,5 @@
 import { useUserState } from '@stores/userStore.ts';
-import { useEffect, lazy } from 'react';
+import { lazy, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useInitializeKeys } from '@hooks/useInitKeys.ts';
 import { Role } from '@models/user.ts';
@@ -31,7 +31,9 @@ const HomePage = lazy(() => import('@pages/home'));
 const AdminPage = lazy(() => import('@pages/admin'));
 const AdminUserList = lazy(() => import('@pages/admin/user/list.tsx'));
 const AdminUser = lazy(() => import('@pages/admin/user/single.tsx'));
-const DismissedOverview = lazy(() => import('@pages/settings/dismissed'));
+const NotificationsSettingsPage = lazy(
+  () => import('@pages/settings/notifications'),
+);
 const SearchPage = lazy(() => import('@pages/explorer/pages/search.tsx'));
 const FavoritesPage = lazy(() => import('@pages/explorer/pages/favorites.tsx'));
 const AlbumsPage = lazy(() => import('@pages/explorer/pages/albums/all'));
@@ -84,7 +86,10 @@ export default function Router() {
           <Route
             path={'settings'}
             element={<AccessWrapper el={<Settings />} page={'Settings'} />}>
-            <Route path={'dismissed'} element={<DismissedOverview />} />
+            <Route
+              path={'notifications'}
+              element={<NotificationsSettingsPage />}
+            />
             <Route path={'preferences'} element={<Preferences />} />
             <Route path={'account'} element={<AccountSettings />} />
             <Route path={'security'} element={<SecuritySettings />} />

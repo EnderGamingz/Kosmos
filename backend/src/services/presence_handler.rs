@@ -1,5 +1,6 @@
 use crate::model::internal::presence::index::PresenceMessage;
 use crate::services::session_service::UserId;
+use crate::services::web_push_service::WebPushService;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::mpsc;
@@ -14,18 +15,29 @@ pub struct PresenceInstance {
 #[derive(Clone)]
 pub struct PresenceHandler {
     pub presence_users: Arc<Mutex<HashMap<UserId, Vec<PresenceInstance>>>>,
+    pub web_push_service: WebPushService,
 }
 
 impl PresenceHandler {
-    pub fn new() -> Self {
+    pub fn new(web_push_service: WebPushService) -> Self {
         Self {
             presence_users: Arc::new(Mutex::new(HashMap::new())),
+            web_push_service,
         }
     }
 
     pub async fn broadcast_to_user(&self, user_id: UserId, message: PresenceMessage) {
         let presence_users = self.presence_users.lock().await;
-        if let Some(senders) = presence_users.get(&user_id) {
+        let online_users = presence_users.get(&user_id);
+
+        if let Some(senders) = online_users {
+            if senders.is_empty() && message.important {
+                let _ = self
+                    .web_push_service
+                    .send_push_notification(user_id, message.clone().into())
+                    .await;
+                return;
+            }
             for sender in senders {
                 let _ = sender.sender.send(message.clone()).await.map_err(|e| {
                     tracing::error!(
@@ -35,7 +47,17 @@ impl PresenceHandler {
                     )
                 });
             }
+        } else if message.important {
+            let _ = self
+                .web_push_service
+                .send_push_notification(user_id, message.clone().into())
+                .await;
         }
+    }
+
+    pub async fn is_user_connected(&self, user_id: UserId) -> bool {
+        let presence_users = self.presence_users.lock().await;
+        presence_users.contains_key(&user_id)
     }
 
     pub async fn add_user(

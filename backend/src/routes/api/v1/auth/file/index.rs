@@ -233,6 +233,7 @@ pub async fn create_markdown_file(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: parent_folder_id.map(|f| f.to_string()),
                 }),
+                important: false
             },
         )
         .await;
@@ -301,6 +302,7 @@ pub async fn move_file(
             user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+                important: false
             },
         )
         .await;
@@ -343,6 +345,7 @@ pub async fn rename_file(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
                 }),
+                important: false
             },
         )
         .await;

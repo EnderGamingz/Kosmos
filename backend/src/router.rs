@@ -206,6 +206,18 @@ fn get_presence_router() -> KosmosRouter{
         .route("/", get(crate::routes::api::v1::auth::presence::handler::presence_handler))
 }
 
+fn get_push_subscription_router() -> KosmosRouter {
+    Router::new()
+        .route("/", get(crate::routes::api::v1::auth::notification::subscription::read::get_notification_subscriptions)
+                .post(crate::routes::api::v1::auth::notification::subscription::create::create_notification_subscription))
+        .route("/:subscription_id", delete(crate::routes::api::v1::auth::notification::subscription::delete::delete_notification_subscription))
+}
+
+fn get_notifications_router() -> KosmosRouter {
+    Router::new()
+        .nest("/subscription", get_push_subscription_router())
+}
+
 fn get_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
@@ -227,6 +239,7 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/profile", get_profile_router())
         .nest("/social", get_social_router())
         .nest("/presence", get_presence_router())
+        .nest("/notification", get_notifications_router())
         .nest("/admin", get_admin_router())
 }
 

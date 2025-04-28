@@ -90,6 +90,7 @@ pub async fn update_personal_message(
             message_id: message_id.to_string(),
             content: message.clone(),
         }),
+        important: false
     };
     state
         .presence_handler
@@ -132,6 +133,7 @@ pub async fn update_group_message(
             message_id: message_id.to_string(),
             content: message.clone(),
         }),
+        important: false
     };
     notify_group_chat_members(&state, chat.id, user_id, presence_message).await?;
 

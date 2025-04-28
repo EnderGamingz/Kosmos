@@ -119,7 +119,8 @@ pub async fn create_folder(
     state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
         action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
             folder_id: folder_id.map(|f| f.to_string()),
-        })
+        }),
+        important: false
     }).await;
 
 
@@ -181,7 +182,8 @@ pub async fn move_folder(
     state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
         action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
             folder_id: None,
-        })
+        }),
+        important: false
     }).await;
 
     Ok(AppSuccess::MOVED)
@@ -227,7 +229,8 @@ pub async fn multi_move(
     state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
         action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
             folder_id: target_folder_id.map(|f| f.to_string()),
-        })
+        }),
+        important: false
     }).await;
 
 
@@ -258,7 +261,8 @@ pub async fn rename_folder(
     state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
         action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
             folder_id: folder.parent_id.map(|f| f.to_string()),
-        })
+        }),
+        important: false
     }).await;
 
 

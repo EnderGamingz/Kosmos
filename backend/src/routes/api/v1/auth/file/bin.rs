@@ -44,6 +44,7 @@ pub async fn mark_file_for_deletion(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
                 }),
+                important: false,
             },
         )
         .await;
@@ -76,6 +77,7 @@ pub async fn mark_files_for_deletion(
             user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+                important: false,
             },
         )
         .await;
@@ -114,6 +116,7 @@ pub async fn restore_file(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
                 }),
+                important: false,
             },
         )
         .await;
@@ -157,6 +160,7 @@ pub async fn permanently_delete_file(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
                 }),
+                important: false,
             },
         )
         .await;

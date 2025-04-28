@@ -42,6 +42,7 @@ pub async fn rename_group_chat(
         action: PresenceAction::ChatUpdate(PresenceChatUpdate {
             chat_id: chat_id.to_string(),
         }),
+        important: false,
     };
     notify_group_chat_members(&state, chat_id, user_id.into(), presence_message).await?;
 

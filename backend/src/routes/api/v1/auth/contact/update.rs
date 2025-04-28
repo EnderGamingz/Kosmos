@@ -65,7 +65,8 @@ pub async fn update_received_contact_request(
     notify_attention_status_for_user(&state, request.request_user_id).await?;
 
     let presence_message_to_new_member = PresenceMessage{
-        action: PresenceAction::ChatsUpdate()
+        action: PresenceAction::ChatsUpdate(),
+        important: true,
     };
     state.presence_handler.broadcast_to_user(request.user_id, presence_message_to_new_member.clone()).await;
     state.presence_handler.broadcast_to_user(request.request_user_id, presence_message_to_new_member).await;

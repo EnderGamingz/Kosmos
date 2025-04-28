@@ -12,3 +12,4 @@ pub mod internal;
 pub mod profile;
 pub mod contact;
 pub mod chat;
+pub mod push;

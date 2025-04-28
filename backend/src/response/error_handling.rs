@@ -19,7 +19,7 @@ pub enum AppError {
 
 #[derive(Serialize)]
 pub struct ErrorResponse {
-    pub(crate) error: Option<String>,
+    pub error: Option<String>,
 }
 
 impl IntoResponse for AppError {

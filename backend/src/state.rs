@@ -16,7 +16,9 @@ use crate::services::usage_service::UsageService;
 use crate::services::user_service::UserService;
 use axum::extract::State;
 use sonyflake::Sonyflake;
+use web_push::IsahcWebPushClient;
 use webauthn_rs::Webauthn;
+use crate::services::web_push_service::WebPushService;
 
 pub type KosmosState = State<AppState>;
 
@@ -37,6 +39,7 @@ pub struct AppState {
     pub passkey_service: PasskeyService,
     pub sf: Sonyflake,
     pub presence_handler: PresenceHandler,
+    pub web_push_service: WebPushService,
 }
 
 impl AppState {
@@ -48,7 +51,11 @@ impl AppState {
     }
 }
 
-pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
+pub fn init(
+    db: &KosmosPool,
+    webauthn: &Webauthn,
+    web_push_client: &IsahcWebPushClient,
+) -> AppState {
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
     let profile_service = ProfileService::new(db.clone(), sf.clone());
@@ -63,8 +70,9 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
     let search_service = SearchService::new(db.clone());
     let album_service = AlbumService::new(db.clone(), sf.clone());
     let passkey_service = PasskeyService::new(db.clone(), webauthn.clone());
+    let web_push_service = WebPushService::new(db.clone(), web_push_client.clone());
 
-    let presence_handler = PresenceHandler::new();
+    let presence_handler = PresenceHandler::new(web_push_service.clone());
 
     AppState {
         user_service,
@@ -82,5 +90,6 @@ pub fn init(db: &KosmosPool, webauthn: &Webauthn) -> AppState {
         passkey_service,
         sf,
         presence_handler,
+        web_push_service,
     }
 }

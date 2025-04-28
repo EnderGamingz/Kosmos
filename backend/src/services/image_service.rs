@@ -234,7 +234,8 @@ impl ImageService {
         state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
             action: PresenceAction::OperationsUpdate(PresenceOperationsUpdate {
                 content: operations
-            })
+            }),
+            important: false
         }).await;
         Ok(())
     }

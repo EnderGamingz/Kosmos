@@ -5,7 +5,7 @@ use axum::http::header::{
 use axum::http::{HeaderValue, Method};
 use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
-
+use web_push::IsahcWebPushClient;
 use crate::db::KosmosPool;
 
 pub mod db;
@@ -72,11 +72,13 @@ async fn main() {
 
     let db = db::init().await;
 
+    let push_client = IsahcWebPushClient::new().expect("Failed to create web push client");
+
     let webauthn = webauthn::init();
 
     tracing::info!(name: "bootstrap", "Starting server");
 
-    let state = state::init(&db, &webauthn);
+    let state = state::init(&db, &webauthn, &push_client);
 
     state.operation_service.startup_prepare().await;
     state.file_service.startup_prepare().await;
