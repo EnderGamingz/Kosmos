@@ -29,17 +29,6 @@ impl PresenceHandler {
     pub async fn broadcast_to_user(&self, user_id: UserId, message: PresenceMessage) {
         let presence_users = self.presence_users.lock().await;
         let online_users = presence_users.get(&user_id);
-        
-        if message.important {
-            tracing::info!(
-                "[Presence] Sending important message to user {}",
-                user_id,
-            );
-            let _ = self
-                .web_push_service
-                .send_push_notification(user_id, message.clone().into())
-                .await;
-        }
 
         if let Some(senders) = online_users {
             if senders.is_empty() && message.important {
