@@ -34,6 +34,7 @@ async function onPush(event) {
           title: 'Close',
         },
       ];
+      tag = `message-${action.NewChatMessage.chat_id}`;
     }
 
     if ('ChatUpdate' in action) {
@@ -49,6 +50,7 @@ async function onPush(event) {
           title: 'Close',
         },
       ];
+      tag = `chat-${action.ChatUpdate.chat_id}`;
     }
 
     // Send the push data to the application
@@ -60,6 +62,7 @@ async function onPush(event) {
         self.registration.showNotification(title, {
           body,
           actions,
+          icon: '/img/logo_filled_full.svg',
           data: {
             tag,
             clickActionUrl: click,
@@ -80,5 +83,6 @@ async function onPush(event) {
     notification.close();
   } else {
     self.clients.openWindow(event.notification.data.clickActionUrl);
+    notification.close();
   }
 });
