@@ -1,9 +1,8 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { invalidateShares } from '@lib/query.ts';
 import { Trash } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function DeleteShare({ id }: { id: string }) {
   const notifications = useNotifications(s => s.actions);
@@ -15,8 +14,8 @@ export function DeleteShare({ id }: { id: string }) {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .delete(`${BASE_URL}auth/share/${id}`)
+      await api
+        .delete(`auth/share/${id}`)
         .then(() => {
           invalidateShares().then();
           notifications.updateNotification(updateId, {

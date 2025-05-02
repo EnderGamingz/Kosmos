@@ -1,6 +1,4 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import {
   AlbumResponse,
@@ -8,19 +6,16 @@ import {
 } from '@models/album.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { api } from '@lib/queries/api.ts';
 
 export class AlbumQuery {
   private static getAlbumData = (id: string) =>
-    axios
-      .get(`${BASE_URL}auth/album/${id}`)
-      .then(res => res.data as AlbumResponse);
+    api.get(`auth/album/${id}`).then(res => res.data as AlbumResponse);
 
   public static useAlbums = () => {
     return useQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/album`)
-          .then(res => res.data as AlbumModelDTO[]),
+        api.get(`auth/album`).then(res => res.data as AlbumModelDTO[]),
       queryKey: ['album'],
     });
   };
@@ -38,8 +33,8 @@ export class AlbumQuery {
   public static useInfiniteAvailableFiles = () => {
     return useInfiniteQuery({
       queryFn: ({ pageParam }) =>
-        axios
-          .get(`${BASE_URL}auth/album/available`, {
+        api
+          .get(`auth/album/available`, {
             params: {
               page: pageParam,
             },
@@ -61,8 +56,8 @@ export class AlbumQuery {
   public static useAvailableAlbums = (fileIds: string[]) => {
     return useQuery({
       queryFn: () =>
-        axios
-          .post(`${BASE_URL}auth/album/for`, {
+        api
+          .post(`auth/album/for`, {
             files: fileIds,
           })
           .then(res => res.data as AvailableAlbumsForFileResponse),

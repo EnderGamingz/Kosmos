@@ -12,8 +12,6 @@ import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -21,10 +19,11 @@ import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { EllipsisVertical, RotateCcw, Shredder } from 'lucide-react';
 import useSelectFile from '@utils/selectFile.ts';
+import { api } from '@lib/queries/api.ts';
 
 function TableFileItemBinActions({ id }: { id: string }) {
   const deleteAction = useMutation({
-    mutationFn: () => axios.delete(`${BASE_URL}auth/file/${id}`),
+    mutationFn: () => api.delete(`auth/file/${id}`),
     onSuccess: () => {
       invalidateBin().then();
       invalidateUsage().then();
@@ -32,7 +31,7 @@ function TableFileItemBinActions({ id }: { id: string }) {
   });
 
   const restoreAction = useMutation({
-    mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/restore`),
+    mutationFn: () => api.post(`auth/file/${id}/restore`),
     onSuccess: () => {
       invalidateBin().then();
       invalidateUsage().then();

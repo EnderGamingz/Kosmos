@@ -1,8 +1,7 @@
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { Base64 } from 'js-base64';
 
 import { completePasskeyLoginFunction } from '@components/passkey/completePasskeyLoginFunction.ts';
+import { api } from '@lib/queries/api.ts';
 
 export const startPasskeyLoginFunction = ({
   onController,
@@ -12,8 +11,8 @@ export const startPasskeyLoginFunction = ({
   mediationOverwrite?: CredentialMediationRequirement;
 }) => {
   const controller = new AbortController();
-  const req = axios
-    .post(BASE_URL + 'auth/passkey/authentication/start')
+  const req = api
+    .post('auth/passkey/authentication/start')
     .then(res => res.data)
     .then(credentialRequestOptions => {
       credentialRequestOptions.publicKey.challenge = Base64.toUint8Array(

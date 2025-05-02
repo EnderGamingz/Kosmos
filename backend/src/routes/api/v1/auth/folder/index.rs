@@ -24,7 +24,7 @@ pub enum SortByFolders {
     UpdatedAt,
 }
 
-#[derive(Serialize,TS)]
+#[derive(Serialize, TS)]
 #[ts(export)]
 pub struct FolderResponse {
     folder: Option<FolderModelDTO>,
@@ -116,13 +116,18 @@ pub async fn create_folder(
         .await?
         .to_string();
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: folder_id.map(|f| f.to_string()),
-        }),
-        important: false
-    }).await;
-
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: folder_id.map(|f| f.to_string()),
+                }),
+                important: false,
+            },
+        )
+        .await;
 
     Ok(AppSuccess::CREATED { id: Some(folder) })
 }
@@ -131,10 +136,8 @@ pub async fn move_folder(
     State(state): KosmosState,
     session: Session,
     Path(folder_id): Path<i64>,
-    params: Option<Query<MoveParams>>,
+    Query(params): Query<MoveParams>,
 ) -> ResponseResult {
-    let move_to_folder = params.map(|params| params.folder_id);
-
     let user_id = SessionService::check_logged_in(&session).await?;
 
     let folder = match state
@@ -150,7 +153,7 @@ pub async fn move_folder(
         Some(folder) => folder,
     };
 
-    if let Some(move_to_folder) = move_to_folder {
+    if let Some(move_to_folder) = params.folder_id {
         if !state
             .folder_service
             .check_folder_exists_by_id(move_to_folder, user_id)
@@ -165,7 +168,7 @@ pub async fn move_folder(
 
     let is_folder_already_in_destination = state
         .folder_service
-        .check_folder_exists_in_folder(&folder.folder_name, move_to_folder)
+        .check_folder_exists_in_folder(&folder.folder_name, params.folder_id)
         .await?;
 
     if is_folder_already_in_destination {
@@ -176,15 +179,19 @@ pub async fn move_folder(
 
     state
         .folder_service
-        .move_folder(user_id, folder_id, move_to_folder)
+        .move_folder(user_id, folder_id, params.folder_id)
         .await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: None,
-        }),
-        important: false
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
+                important: false,
+            },
+        )
+        .await;
 
     Ok(AppSuccess::MOVED)
 }
@@ -203,8 +210,16 @@ pub async fn multi_move(
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
 
-    let file_ids = payload.files.into_iter().map(|f| f.into()).collect::<Vec<i64>>();
-    let folder_ids = payload.folders.into_iter().map(|f| f.into()).collect::<Vec<i64>>();
+    let file_ids = payload
+        .files
+        .into_iter()
+        .map(|f| f.into())
+        .collect::<Vec<i64>>();
+    let folder_ids = payload
+        .folders
+        .into_iter()
+        .map(|f| f.into())
+        .collect::<Vec<i64>>();
     let target_folder_id = payload.target_folder.into();
 
     if let Some(target_folder_id) = target_folder_id {
@@ -226,13 +241,18 @@ pub async fn multi_move(
         )
         .await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: target_folder_id.map(|f| f.to_string()),
-        }),
-        important: false
-    }).await;
-
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: target_folder_id.map(|f| f.to_string()),
+                }),
+                important: false,
+            },
+        )
+        .await;
 
     Ok(AppSuccess::MOVED)
 }
@@ -258,13 +278,18 @@ pub async fn rename_folder(
         .rename_folder(user_id, folder_id, payload.name, folder.parent_id)
         .await?;
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: folder.parent_id.map(|f| f.to_string()),
-        }),
-        important: false
-    }).await;
-
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: folder.parent_id.map(|f| f.to_string()),
+                }),
+                important: false,
+            },
+        )
+        .await;
 
     Ok(AppSuccess::UPDATED)
 }

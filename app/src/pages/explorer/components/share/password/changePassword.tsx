@@ -1,8 +1,6 @@
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '@lib/env.ts';
-import axios from 'axios';
 import { invalidateShares } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import {
@@ -13,6 +11,7 @@ import {
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { KeyRound } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 function ChangePasswordForm({
   id,
@@ -32,8 +31,8 @@ function ChangePasswordForm({
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .patch(`${BASE_URL}auth/share/${id}`, {
+      await api
+        .patch(`auth/share/${id}`, {
           password: value,
         })
         .then(() => {

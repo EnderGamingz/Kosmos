@@ -1,6 +1,4 @@
 import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from './env.ts';
 import { ContextOperationType, ShareOperationType } from '@models/file.ts';
 import {
   canFolderBeSorted,
@@ -27,6 +25,7 @@ import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
 import { createZipInformationUrl } from '@lib/file.ts';
 import { ZipInformation } from '@bindings/ZipInformation.ts';
 import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
+import { api } from '@lib/queries/api.ts';
 
 export const queryClient = new QueryClient();
 
@@ -85,8 +84,8 @@ export async function invalidateFolder(id?: string | null) {
 export const useSearch = (query: string) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/search`, {
+      api
+        .get(`auth/search`, {
           params: { q: query },
         })
         .then(res => res.data as ExplorerSearchDTO),
@@ -108,8 +107,8 @@ export const useFolders = (parent_id?: string, sort?: SortParams) => {
         params.sort_order = getSortOrderString(sort?.sort_order);
       }
 
-      const res = await axios.get(
-        `${BASE_URL}auth/folder/all${parent_id ? `/${parent_id}` : ''}`,
+      const res = await api.get(
+        `auth/folder/all${parent_id ? `/${parent_id}` : ''}`,
         {
           params: params,
         },
@@ -127,8 +126,8 @@ export const useFilesInfinite = (
 ) => {
   return useInfiniteQuery({
     queryFn: ({ pageParam }) =>
-      axios
-        .get(`${BASE_URL}auth/file/all${parent_id ? `/${parent_id}` : ''}`, {
+      api
+        .get(`auth/file/all${parent_id ? `/${parent_id}` : ''}`, {
           params: {
             sort_by: getQuerySortString(sort?.sort_by),
             sort_order: getSortOrderString(sort?.sort_order),
@@ -155,8 +154,8 @@ export const useFilesInfinite = (
 export const useFileByTypeInfinite = (fileType: number, limit: number) => {
   return useInfiniteQuery({
     queryFn: ({ pageParam }) =>
-      axios
-        .get(`${BASE_URL}auth/file/all/type/${fileType}`, {
+      api
+        .get(`auth/file/all/type/${fileType}`, {
           params: {
             limit: limit,
             page: pageParam,
@@ -180,8 +179,8 @@ export const useFileByTypeInfinite = (fileType: number, limit: number) => {
 export const useRecentFiles = (limit?: number) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/file/all/recent`, {
+      api
+        .get(`auth/file/all/recent`, {
           params: {
             limit: limit,
           },
@@ -194,9 +193,7 @@ export const useRecentFiles = (limit?: number) => {
 export const useDeletedFiles = () => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/file/all/deleted`)
-        .then(res => res.data as FileModelDTO[]),
+      api.get(`auth/file/all/deleted`).then(res => res.data as FileModelDTO[]),
     queryKey: ['files', 'deleted'],
   });
 };
@@ -204,9 +201,7 @@ export const useDeletedFiles = () => {
 export const useFavorites = () => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/favorite`)
-        .then(res => res.data as FavoritesResponse),
+      api.get(`auth/favorite`).then(res => res.data as FavoritesResponse),
     queryKey: ['favorites', 'all'],
   });
 };
@@ -214,9 +209,7 @@ export const useFavorites = () => {
 export const useUsageStats = () => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/user/usage/stats`)
-        .then(res => res.data as DiskUsageStats),
+      api.get(`auth/user/usage/stats`).then(res => res.data as DiskUsageStats),
     queryKey: ['usage', 'stats'],
     placeholderData: {
       active: 0,
@@ -231,8 +224,8 @@ export const useUsageStats = () => {
 export const useUsageReport = () => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/user/usage/report`)
+      api
+        .get(`auth/user/usage/report`)
         .then(res => res.data as DiskUsageReport),
     queryKey: ['usage', 'report'],
     refetchOnWindowFocus: false,
@@ -242,8 +235,8 @@ export const useUsageReport = () => {
 export const useOperations = (onUnauthorized?: () => void) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/operation/all`)
+      api
+        .get(`auth/operation/all`)
         .then(res => res.data as OperationModelDTO[])
         .catch(e => {
           if (e.response?.status === 401) {
@@ -265,8 +258,8 @@ export const useSharedItems = (forUser?: boolean) => {
 
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/share/all${userSpecificEndpoint}`)
+      api
+        .get(`auth/share/all${userSpecificEndpoint}`)
         .then(res => res.data as SharedItems),
     queryKey: ['share', 'items', userSpecificEndpoint],
   });
@@ -275,8 +268,8 @@ export const useSharedItems = (forUser?: boolean) => {
 export const useUserShareData = (id: string, type: ShareOperationType) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/share/${type}/${id}`)
+      api
+        .get(`auth/share/${type}/${id}`)
         .then(res => res.data as ExtendedShareModelDTO[]),
     queryKey: ['share', id, type],
   });
@@ -285,9 +278,7 @@ export const useUserShareData = (id: string, type: ShareOperationType) => {
 export const useAccessShareFile = (uuid: string) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}s/file/${uuid}`)
-        .then(res => res.data as ShareFileModelDTO),
+      api.get(`s/file/${uuid}`).then(res => res.data as ShareFileModelDTO),
     queryKey: ['share-access', uuid],
     refetchOnWindowFocus: false,
     retry: false,
@@ -297,9 +288,7 @@ export const useAccessShareFile = (uuid: string) => {
 export const useAccessAlbumShare = (uuid: string) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}s/album/${uuid}`)
-        .then(res => res.data as AlbumShareResponse),
+      api.get(`s/album/${uuid}`).then(res => res.data as AlbumShareResponse),
     queryKey: ['share-access', uuid],
     refetchOnWindowFocus: false,
     retry: false,
@@ -309,10 +298,8 @@ export const useAccessAlbumShare = (uuid: string) => {
 export const useAccessShareFolder = (uuid: string, folderId?: string) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(
-          `${BASE_URL}s/folder/${uuid}${folderId ? `/Folder/${folderId}` : ''}`,
-        )
+      api
+        .get(`s/folder/${uuid}${folderId ? `/Folder/${folderId}` : ''}`)
         .then(res => res.data as FolderShareData),
     queryKey: ['share-access', uuid, folderId],
     refetchOnWindowFocus: false,
@@ -323,8 +310,8 @@ export const useAccessShareFolder = (uuid: string, folderId?: string) => {
 export const useFileContent = (fileId: string, url?: string) => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(url ?? `${BASE_URL}auth/file/${fileId}/action/Serve`)
+      api
+        .get(url ?? `auth/file/${fileId}/action/Serve`)
         .then(res => res.data.toString()),
     queryKey: ['file', 'content', fileId],
   });
@@ -337,9 +324,7 @@ export const setFileContent = (fileId: string, content: string) => {
 export const usePasskeys = () => {
   return useQuery({
     queryFn: () =>
-      axios
-        .get(`${BASE_URL}auth/passkey`)
-        .then(res => res.data as PasskeyModelDTO[]),
+      api.get(`auth/passkey`).then(res => res.data as PasskeyModelDTO[]),
     queryKey: ['passkeys'],
   });
 };
@@ -351,7 +336,7 @@ export const useZipInformation = (
 ) => {
   const url = createZipInformationUrl(shareUuid, isSharedInFolder, fileId);
   return useQuery({
-    queryFn: () => axios.get(url).then(res => res.data as ZipInformation),
+    queryFn: () => api.get(url).then(res => res.data as ZipInformation),
     queryKey: ['zip', fileId, shareUuid],
   });
 };

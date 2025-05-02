@@ -1,7 +1,6 @@
 import { NotificationActions, Severity } from '@stores/notificationStore.ts';
 import { BytesFormatter } from '@utils/fileSize.ts';
-import { BASE_URL } from '@lib/env.ts';
-import axios from 'axios';
+import { api } from '@lib/queries/api.ts';
 
 export const quickShareUploadFn = async ({
   files,
@@ -31,14 +30,14 @@ export const quickShareUploadFn = async ({
     canDismiss: false,
   });
 
-  const url = new URL(`${BASE_URL}auth/file/upload`);
+  const url = new URL(`auth/file/upload`);
   url.searchParams.set('is_quick_share', 'true');
   if (password) url.searchParams.set('password', password);
   if (expiresAt) url.searchParams.set('expires_at', expiresAt);
   if (limit) url.searchParams.set('limit', limit.toString());
 
   // noinspection JSUnusedGlobalSymbols
-  return axios
+  return api
     .postForm(url.toString(), formData, {
       onUploadProgress: ({ loaded, total }) => {
         notifications.updateNotification(uploadId, {

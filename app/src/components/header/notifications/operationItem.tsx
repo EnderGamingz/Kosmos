@@ -1,7 +1,5 @@
 import { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { refetchOperations } from '@lib/query.ts';
 import {
   getOperationStatusString,
@@ -10,6 +8,7 @@ import {
 } from '@models/operation.ts';
 import { OperationStatusIndicator } from '@components/header/notifications/operationStatusIndicator.tsx';
 import { UpdatingTimeIndicator } from '@components/updatingTimeIndicator.tsx';
+import { api } from '@lib/queries/api.ts';
 
 export function OperationItem({
   data,
@@ -19,8 +18,7 @@ export function OperationItem({
   index: number;
 }) {
   const retry = useMutation({
-    mutationFn: () =>
-      axios.post(`${BASE_URL}auth/file/image/retry/operation/${data.id}`),
+    mutationFn: () => api.post(`auth/file/image/retry/operation/${data.id}`),
     onSuccess: () => {
       setTimeout(() => {
         refetchOperations().then();

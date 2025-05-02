@@ -1,11 +1,10 @@
 import { FormEvent, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { api } from '@lib/queries/api.ts';
 
 export function PasswordChange() {
   const [oldPassword, setOldPassword] = useState('');
@@ -20,8 +19,8 @@ export function PasswordChange() {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .patch(`${BASE_URL}auth/user/password`, {
+      await api
+        .patch(`auth/user/password`, {
           old_password: oldPassword,
           new_password: newPassword,
         })

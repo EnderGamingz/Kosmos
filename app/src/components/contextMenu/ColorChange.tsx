@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolder } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { hexToHsva, hsvaToHex, ShadeSlider, Wheel } from '@uiw/react-color';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import useDisclosure from '@/hooks/useDisclosure';
 import { Delete, SwatchBook } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 const definedColors = [
   '#f44336',
@@ -62,8 +61,8 @@ export function FolderColorChange({
         loading: true,
         canDismiss: false,
       });
-      return axios
-        .patch(`${BASE_URL}auth/folder/${folderId}/color`, {
+      return api
+        .patch(`auth/folder/${folderId}/color`, {
           color: remove ? null : override || selected || color,
         })
         .then(async () => {

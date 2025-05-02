@@ -29,7 +29,7 @@ pub struct PresenceMessage {
 impl From<PresenceMessage> for ws::Message {
     fn from(message: PresenceMessage) -> Self {
         let message = serde_json::to_string(&message).unwrap();
-        ws::Message::Text(message)
+        ws::Message::Text(message.into())
     }
 }
 

@@ -1,10 +1,12 @@
 use crate::db::KosmosPool;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::services::album_service::AlbumService;
 use crate::services::contact_service::ContactService;
 use crate::services::file_service::FileService;
 use crate::services::folder_service::FolderService;
 use crate::services::image_service::ImageService;
+use crate::services::jwt_service::JWT_SERVICE;
 use crate::services::operation_service::OperationService;
 use crate::services::passkey_service::PasskeyService;
 use crate::services::permission_service::PermissionService;
@@ -14,15 +16,16 @@ use crate::services::search_service::SearchService;
 use crate::services::share_service::ShareService;
 use crate::services::usage_service::UsageService;
 use crate::services::user_service::UserService;
-use axum::extract::State;
+use crate::services::web_push_service::WebPushService;
+use axum::extract::{FromRef, State};
+use axum_jwt_auth::JwtDecoderState;
 use sonyflake::Sonyflake;
 use web_push::IsahcWebPushClient;
 use webauthn_rs::Webauthn;
-use crate::services::web_push_service::WebPushService;
 
 pub type KosmosState = State<AppState>;
 
-#[derive(Clone)]
+#[derive(Clone, FromRef)]
 pub struct AppState {
     pub user_service: UserService,
     pub profile_service: ProfileService,
@@ -40,6 +43,7 @@ pub struct AppState {
     pub sf: Sonyflake,
     pub presence_handler: PresenceHandler,
     pub web_push_service: WebPushService,
+    pub decoder: JwtDecoderState<JwtClaims>,
 }
 
 impl AppState {
@@ -56,6 +60,8 @@ pub fn init(
     webauthn: &Webauthn,
     web_push_client: &IsahcWebPushClient,
 ) -> AppState {
+    let jwt_service = &JWT_SERVICE;
+
     let sf = Sonyflake::new().expect("Failed to initialize Sonyflake");
     let user_service = UserService::new(db.clone(), sf.clone());
     let profile_service = ProfileService::new(db.clone(), sf.clone());
@@ -91,5 +97,6 @@ pub fn init(
         sf,
         presence_handler,
         web_push_service,
+        decoder: jwt_service.decoder.clone(),
     }
 }

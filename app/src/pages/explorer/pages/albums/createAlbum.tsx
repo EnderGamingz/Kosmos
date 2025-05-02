@@ -1,8 +1,6 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { CreateAlbumPayload } from '@models/album.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { FormEvent } from 'react';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import {
@@ -17,6 +15,7 @@ import useDisclosure from '@hooks/useDisclosure.ts';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { Check, Plus } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function CreateAlbum() {
   const notifications = useNotifications(s => s.actions);
@@ -30,8 +29,8 @@ export function CreateAlbum() {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .post(BASE_URL + 'auth/album', payload)
+      await api
+        .post('auth/album', payload)
         .then(() => {
           notifications.updateNotification(createId, {
             severity: Severity.SUCCESS,

@@ -1,14 +1,13 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { UpdateAlbumPayload } from '@models/album.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { FormEvent, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Button } from '@components/ui/button.tsx';
+import { api } from '@/lib/queries/api';
 
 const useAlbumUpdateMutation = () => {
   const notifications = useNotifications(s => s.actions);
@@ -20,8 +19,8 @@ const useAlbumUpdateMutation = () => {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .patch(`${BASE_URL}auth/album`, payload)
+      await api
+        .patch(`auth/album`, payload)
         .then(() => {
           AlbumQuery.invalidateAlbum(payload.id).then();
           notifications.updateNotification(updateId, {

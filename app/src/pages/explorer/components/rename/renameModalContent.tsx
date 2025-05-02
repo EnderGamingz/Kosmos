@@ -8,8 +8,6 @@ import {
 } from 'react';
 import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 
 import { cn } from '@lib/utils.ts';
@@ -20,6 +18,7 @@ import {
   DialogTitle,
 } from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
+import { api } from '@lib/queries/api.ts';
 
 export function RenameModalContent({
   renameData,
@@ -41,8 +40,8 @@ export function RenameModalContent({
         severity: Severity.INFO,
         loading: true,
       });
-      await axios
-        .patch(`${BASE_URL}auth/${renameData.type}/${renameData.id}`, {
+      await api
+        .patch(`auth/${renameData.type}/${renameData.id}`, {
           name: inputName,
         })
         .then(() => {

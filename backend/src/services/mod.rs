@@ -15,3 +15,4 @@ pub mod contact_service;
 pub mod chat_service;
 pub mod presence_handler;
 pub mod web_push_service;
+pub mod jwt_service;

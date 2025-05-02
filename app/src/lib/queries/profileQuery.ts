@@ -1,16 +1,13 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { ProfileModelDTO } from '@bindings/ProfileModelDTO.ts';
 import { NotificationActions, Severity } from '@/stores/notificationStore';
+import { api } from '@lib/queries/api.ts';
 
 export class ProfileQuery {
   public static useProfileByIdSuspense = (id?: string) => {
     return useSuspenseQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/profile/${id}`)
-          .then(res => res.data as ProfileModelDTO),
+        api.get(`auth/profile/${id}`).then(res => res.data as ProfileModelDTO),
       queryKey: ['profile', id],
     });
   };
@@ -27,8 +24,8 @@ export class ProfileQuery {
           loading: true,
           canDismiss: false,
         });
-        await axios
-          .patch(`${BASE_URL}auth/user/avatar`, {
+        await api
+          .patch(`auth/user/avatar`, {
             file_id: null,
           })
           .then(() => {

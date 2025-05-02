@@ -6,8 +6,6 @@ import { Chip } from '@pages/explorer/components/share/chip.tsx';
 import { getLocalTimeZone, now } from '@internationalized/date';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { ShareOperationType } from '@models/file.ts';
 import { invalidateShares } from '@lib/query.ts';
 import { cn } from '@lib/utils.ts';
@@ -18,6 +16,7 @@ import { Input } from '@components/ui/input.tsx';
 import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { ContactSelector } from '@pages/social/contacts/contactSelector.tsx';
 import { Check, Clock, KeyRound, MousePointerClick, User } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function CreateShare({
   dataType,
@@ -69,17 +68,14 @@ export function CreateShare({
         severity: Severity.INFO,
         loading: true,
       });
-      await axios
-        .post(
-          `${BASE_URL}auth/share/${dataType}/${getShareTypeString(type, true)}`,
-          {
-            [`${dataType}_id`]: id,
-            password: password || undefined,
-            limit: limit,
-            expires_at: expiresAt?.toISOString() || undefined,
-            target_username: privateContact?.username || undefined,
-          },
-        )
+      await api
+        .post(`auth/share/${dataType}/${getShareTypeString(type, true)}`, {
+          [`${dataType}_id`]: id,
+          password: password || undefined,
+          limit: limit,
+          expires_at: expiresAt?.toISOString() || undefined,
+          target_username: privateContact?.username || undefined,
+        })
         .then(() => {
           invalidateShares().then();
           onDone?.();

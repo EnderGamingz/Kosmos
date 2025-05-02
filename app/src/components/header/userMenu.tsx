@@ -1,8 +1,6 @@
 import { useUserState } from '@stores/userStore';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import useLogout from '@hooks/useLogout.ts';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useMemo, useState } from 'react';
@@ -14,6 +12,7 @@ import UserAvatar from '@components/UserAvatar.tsx';
 import { usePreferenceStore } from '@stores/preferenceStore.ts';
 import { themeChoices } from '@pages/settings/preferences/themePreferences.tsx';
 import { Bolt, Code, LogOut } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -21,7 +20,7 @@ export function UserMenu() {
   const logout = useLogout();
 
   const logoutAction = useMutation({
-    mutationFn: () => axios.post(`${BASE_URL}auth/logout`),
+    mutationFn: () => api.post(`auth/logout`),
     onSuccess: () => {
       handleClose();
       logout();

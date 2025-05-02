@@ -1,6 +1,4 @@
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
 import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
@@ -8,6 +6,7 @@ import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
 import { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage.ts';
 import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage.ts';
 import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import { api } from '@lib/queries/api.ts';
 
 export type OptimisticMessage = ChatMessageModelDTO & {
   loading?: boolean;
@@ -17,8 +16,8 @@ export class ChatQuery {
   public static useChatsSuspense = ({ limit }: { limit?: number }) =>
     useSuspenseQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/social/chat`, {
+        api
+          .get(`auth/social/chat`, {
             params: {
               limit,
             },
@@ -41,11 +40,9 @@ export class ChatQuery {
   }) =>
     useSuspenseQuery({
       queryFn: () =>
-        axios
+        api
           .get(
-            `${BASE_URL}auth/social/chat/${
-              isPersonalChat ? 'user' : 'group'
-            }/${chatId}`,
+            `auth/social/chat/${isPersonalChat ? 'user' : 'group'}/${chatId}`,
           )
           .then(res => res.data as ChatModelDTO),
       queryKey: ['chat', 'info', chatId],
@@ -63,8 +60,8 @@ export class ChatQuery {
     const section = isPersonalChat ? 'user' : 'group';
     return useQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/social/chat/${section}/${chatId}/messages`, {
+        api
+          .get(`auth/social/chat/${section}/${chatId}/messages`, {
             params: {
               page,
             },
@@ -91,13 +88,13 @@ export class ChatQuery {
     const section = isPersonalChat ? 'user' : 'group';
 
     if (editMessageId) {
-      return axios.patch(`${BASE_URL}auth/social/chat/${section}/${chatId}`, {
+      return api.patch(`auth/social/chat/${section}/${chatId}`, {
         content,
         message_id: editMessageId,
       });
     }
 
-    return axios.post(`${BASE_URL}auth/social/chat/${section}/${chatId}`, {
+    return api.post(`auth/social/chat/${section}/${chatId}`, {
       content,
       parent_id: parentId,
     });
@@ -110,8 +107,8 @@ export class ChatQuery {
   }) =>
     useSuspenseQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/social/chat/group/${chatId}/available`)
+        api
+          .get(`auth/social/chat/group/${chatId}/available`)
           .then(res => res.data as ProfileContactModelDTO[]),
       queryKey: ['chat', chatId, 'available'],
     });
@@ -122,8 +119,8 @@ export class ChatQuery {
     });
 
   public static createGroupChatRequest = ({ name }: { name: string }) =>
-    axios
-      .post(`${BASE_URL}auth/social/chat/group`, {
+    api
+      .post(`auth/social/chat/group`, {
         name,
       })
       .then(res => res.data as ChatModelDTO);
@@ -135,12 +132,12 @@ export class ChatQuery {
     chatId: string;
     userId: string;
   }) =>
-    axios.post(`${BASE_URL}auth/social/chat/group/${chatId}/invite`, {
+    api.post(`auth/social/chat/group/${chatId}/invite`, {
       user_id: userId,
     });
 
   public static leaveGroupChatRequest = ({ chatId }: { chatId: string }) =>
-    axios.post(`${BASE_URL}auth/social/chat/group/${chatId}/leave`);
+    api.post(`auth/social/chat/group/${chatId}/leave`);
 
   public static useSendMessageMutationOptimistic(
     chatId: string,
@@ -239,7 +236,7 @@ export class ChatQuery {
     isPersonalChat?: boolean;
   }) => {
     const section = isPersonalChat ? 'user' : 'group';
-    return axios.delete(`${BASE_URL}auth/social/chat/${section}/${chatId}`, {
+    return api.delete(`auth/social/chat/${section}/${chatId}`, {
       data: {
         message_id: messageId,
       },

@@ -7,9 +7,8 @@ import { FormEvent } from 'react';
 import { UpdateProfileDTO } from '@bindings/UpdateProfileDTO.ts';
 import { ProfileQuery } from '@lib/queries/profileQuery.ts';
 import { Textarea } from '@components/ui/textarea.tsx';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { api } from '@lib/queries/api.ts';
 
 export default function ProfileInfoSettings() {
   const user = useUserState(s => s.user);
@@ -27,8 +26,8 @@ export default function ProfileInfoSettings() {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .patch(`${BASE_URL}auth/profile`, payload)
+      await api
+        .patch(`auth/profile`, payload)
         .then(() => {
           notifications.updateNotification(updateId, {
             severity: Severity.SUCCESS,

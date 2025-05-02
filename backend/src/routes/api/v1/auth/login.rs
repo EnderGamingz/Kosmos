@@ -1,31 +1,30 @@
-use axum::extract::State;
-use axum::Json;
-use serde::Deserialize;
-use tower_sessions::Session;
-
-use crate::constants::SESSION_USER_ID_KEY;
 use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
+use crate::services::jwt_service::JwtService;
 use crate::state::AppState;
 use crate::utils::auth;
+use axum::extract::State;
+use axum::Json;
+use serde::{Deserialize, Serialize};
+use ts_rs::TS;
+
 #[derive(Deserialize)]
 pub struct LoginCredentials {
     username: String,
     password: String,
 }
 
+#[derive(Serialize, TS)]
+#[ts(export)]
+pub struct LoginResponseDTO {
+    token: String,
+    user: UserModelDTO,
+}
+
 pub async fn login(
     State(state): State<AppState>,
-    session: Session,
     Json(payload): Json<LoginCredentials>,
-) -> Result<Json<UserModelDTO>, AppError> {
-    let user_id = SessionService::get_user_id(&session).await;
-    if let Some(user_id) = user_id {
-        let user = state.user_service.get_auth_user(user_id).await?;
-        return Ok(Json(user.into()));
-    }
-
+) -> Result<Json<LoginResponseDTO>, AppError> {
     let found_user = state
         .user_service
         .get_user_by_username_optional(&payload.username)
@@ -53,13 +52,10 @@ pub async fn login(
         state.profile_service.create_empty_profile(user.id).await?;
     }
 
-    session
-        .insert(SESSION_USER_ID_KEY, user.id)
-        .await
-        .map_err(|e| {
-            tracing::error!("Failed to insert session: {}", e);
-            AppError::InternalError
-        })?;
+    let result = JwtService::login_user(user.clone()).map_err(|_| AppError::InternalError)?;
 
-    Ok(Json(user.into()))
+    Ok(Json(LoginResponseDTO {
+        token: result,
+        user: user.into(),
+    }))
 }

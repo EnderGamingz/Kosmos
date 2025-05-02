@@ -1,6 +1,5 @@
 import { useUserState } from '@stores/userStore';
-import axios from 'axios';
-import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
+import { ALLOW_REGISTER } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -11,6 +10,9 @@ import { useConditionalPasskeyLogin } from '@components/passkey/useConditionalPa
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { KeyRound, User } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
+import { LoginResponseDTO } from '@bindings/LoginResponseDTO.ts';
+import { JWT_TOKEN_STORAGE_KEY } from '@lib/constants.ts';
 
 type LoginData = { username: string; password: string };
 
@@ -37,14 +39,15 @@ export default function Login() {
         canDismiss: false,
       });
 
-      await axios
-        .post(`${BASE_URL}auth/login`, {
+      await api
+        .post('auth/login', {
           username,
           password,
         })
         .then(res => {
-          willRedirect.current = true;
-          userState.setUser(res.data);
+          const data = res.data as LoginResponseDTO;
+          localStorage.setItem(JWT_TOKEN_STORAGE_KEY, data.token);
+          userState.setUser(data.user);
 
           const returnPath = searchParams.get('return');
           navigate(returnPath ?? '/home');

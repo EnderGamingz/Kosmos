@@ -7,8 +7,6 @@ import { useState } from 'react';
 import MarkdownEditor from '@uiw/react-markdown-editor';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { truncateString } from '@utils/truncate.ts';
@@ -25,6 +23,7 @@ import {
 } from '@components/ui/dialog.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Check, FilePenLine } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 function MarkdownEditorContent({
   file,
@@ -48,8 +47,8 @@ function MarkdownEditorContent({
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .post(`${BASE_URL}auth/file/${file.id}/content`, {
+      await api
+        .post(`auth/file/${file.id}/content`, {
           content: code,
         })
         .then(() => {

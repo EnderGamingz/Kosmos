@@ -1,6 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import { BASE_URL } from '@lib/env.ts';
-import axios from 'axios';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { FormEvent, useState } from 'react';
 import useLogout from '@hooks/useLogout.ts';
@@ -10,6 +8,7 @@ import { cn } from '@lib/utils.ts';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { api } from '@lib/queries/api.ts';
 
 function DeleteAccount() {
   const usage = useUsageStats();
@@ -27,8 +26,8 @@ function DeleteAccount() {
         canDismiss: false,
       });
 
-      await axios
-        .delete(`${BASE_URL}auth/user`, {
+      await api
+        .delete(`auth/user`, {
           data: { password },
         })
         .then(() => {

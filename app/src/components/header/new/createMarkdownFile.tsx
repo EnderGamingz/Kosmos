@@ -1,10 +1,9 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { invalidateFilesInFolder, invalidateFolders } from '@lib/query.ts';
 import { ButtonForm } from '@pages/explorer/folder/createFolder.tsx';
 import { FilePlus2 } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function CreateMarkdownFile({
   folder,
@@ -22,8 +21,8 @@ export function CreateMarkdownFile({
         severity: Severity.INFO,
         loading: true,
       });
-      await axios
-        .post(`${BASE_URL}auth/file/create/markdown`, {
+      await api
+        .post(`auth/file/create/markdown`, {
           name: value,
           parent_folder_id: folder,
         })

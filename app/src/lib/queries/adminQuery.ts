@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import { api } from '@lib/queries/api.ts';
 
 export type AdminUserUpdate = {
   username?: string;
@@ -18,9 +17,7 @@ export class AdminQuery {
   public static useUsers = () => {
     return useQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/admin/user`)
-          .then(res => res.data as UserModelDTO[]),
+        api.get(`auth/admin/user`).then(res => res.data as UserModelDTO[]),
       queryKey: ['admin', 'user'],
     });
   };
@@ -40,9 +37,7 @@ export class AdminQuery {
   public static useUser = (id?: string) => {
     return useQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/admin/user/${id}`)
-          .then(res => res.data as UserModelDTO),
+        api.get(`auth/admin/user/${id}`).then(res => res.data as UserModelDTO),
       queryKey: ['admin', 'user', id],
     });
   };
@@ -52,8 +47,8 @@ export class AdminQuery {
     password: string,
     limit: number,
   ) => {
-    return axios
-      .post(`${BASE_URL}auth/admin/user`, {
+    return api
+      .post(`auth/admin/user`, {
         username,
         password,
         storage_limit: limit,
@@ -62,20 +57,20 @@ export class AdminQuery {
   };
 
   public static deleteUserFn = async (id: string) => {
-    return axios.delete(`${BASE_URL}auth/admin/user/${id}`);
+    return api.delete(`auth/admin/user/${id}`);
   };
 
   public static updateUserFn = async (id: string, data: AdminUserUpdate) => {
-    return axios
-      .patch(`${BASE_URL}auth/admin/user/${id}`, data)
+    return api
+      .patch(`auth/admin/user/${id}`, data)
       .then(() => AdminQuery.invalidateUser(id));
   };
 
   public static useUserUsage = (id?: string) => {
     return useQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/admin/user/${id}/usage`)
+        api
+          .get(`auth/admin/user/${id}/usage`)
           .then(res => res.data as DiskUsageStats),
       queryKey: ['admin', 'user', id, 'usage'],
     });

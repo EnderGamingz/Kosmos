@@ -12,8 +12,6 @@ import {
   makeUploadFiles,
   UploadFile,
 } from '@pages/explorer/components/upload/uploadFile.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import { Collapse } from 'react-collapse';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
@@ -23,6 +21,7 @@ import { cn } from '@lib/utils.ts';
 import { DialogClose, DialogFooter } from '@components/ui/dialog.tsx';
 import { Button, buttonVariants } from '@components/ui/button.tsx';
 import { FileUp, FolderUp, X } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function FileUploadContent({
   folder,
@@ -95,18 +94,14 @@ export function FileUploadContent({
     if (onClose) onClose();
 
     // noinspection JSUnusedGlobalSymbols
-    await axios
-      .postForm(
-        `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
-        formData,
-        {
-          onUploadProgress: ({ loaded, total }) => {
-            notification.updateNotification(uploadId, {
-              description: `${byteFormatter.formatBytes(loaded)} / ${total ? byteFormatter.formatBytes(total) : 'Unknown'}`,
-            });
-          },
+    await api
+      .postForm(`auth/file/upload${folder ? `/${folder}` : ''}`, formData, {
+        onUploadProgress: ({ loaded, total }) => {
+          notification.updateNotification(uploadId, {
+            description: `${byteFormatter.formatBytes(loaded)} / ${total ? byteFormatter.formatBytes(total) : 'Unknown'}`,
+          });
         },
-      )
+      })
       .then(res => {
         notification.updateNotification(uploadId, {
           timeout: 2000,

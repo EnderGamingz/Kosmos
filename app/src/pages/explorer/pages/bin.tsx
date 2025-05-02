@@ -7,21 +7,20 @@ import {
 import { useFormatBytes } from '@utils/fileSize.ts';
 import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Shredder } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export default function BinPage() {
   const { data: usageData } = useUsageStats();
   const deletedFiles = useDeletedFiles();
 
   const deleteAll = useMutation({
-    mutationFn: () => axios.post(`${BASE_URL}auth/file/bin/clear`),
+    mutationFn: () => api.post(`auth/file/bin/clear`),
     onSuccess: () => {
       invalidateBin().then();
       invalidateUsage().then();

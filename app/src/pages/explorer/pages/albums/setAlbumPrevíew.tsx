@@ -1,12 +1,11 @@
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { BASE_URL } from '@lib/env.ts';
-import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { Fullscreen } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 const useUpdateAlbumPreview = (albumId: string, fileId: string) => {
   const notifications = useNotifications(s => s.actions);
@@ -19,8 +18,8 @@ const useUpdateAlbumPreview = (albumId: string, fileId: string) => {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .put(`${BASE_URL}auth/album/${albumId}/preview`, {
+      await api
+        .put(`auth/album/${albumId}/preview`, {
           file_id: fileId,
         })
         .then(() => {

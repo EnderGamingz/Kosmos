@@ -1,7 +1,6 @@
 import { create } from 'zustand';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import { api } from '@lib/queries/api.ts';
 
 export type User = UserModelDTO & { fetched_at: number };
 export type UserState = {
@@ -20,8 +19,8 @@ export const useUserState = create<UserState>(set => ({
   fetchUser: async props => {
     if (!props?.background) set({ initialized: false, error: undefined });
 
-    const user = await axios
-      .get(`${BASE_URL}auth`)
+    const user = await api
+      .get('auth')
       .then(({ data }) => data)
       .catch(e => {
         if (e.response?.status === 401) {

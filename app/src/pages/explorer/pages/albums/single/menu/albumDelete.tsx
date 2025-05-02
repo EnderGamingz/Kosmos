@@ -1,12 +1,11 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { Trash } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function AlbumDelete({
   id,
@@ -27,8 +26,8 @@ export function AlbumDelete({
         severity: Severity.INFO,
         canDismiss: false,
       });
-      await axios
-        .delete(`${BASE_URL}auth/album/${id}`)
+      await api
+        .delete(`auth/album/${id}`)
         .then(() => {
           navigate('/home/album');
           AlbumQuery.invalidateAlbums().then();

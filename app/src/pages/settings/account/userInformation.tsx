@@ -2,12 +2,11 @@ import { useUserState } from '@stores/userStore.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import objectHash from 'object-hash';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+import { api } from '@lib/queries/api.ts';
 
 export function UserInformation() {
   const user = useUserState(s => s.user);
@@ -26,8 +25,8 @@ export function UserInformation() {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .patch(`${BASE_URL}auth/user`, {
+      await api
+        .patch(`auth/user`, {
           username: username,
           email: email ?? undefined,
           full_name: fullName ?? undefined,

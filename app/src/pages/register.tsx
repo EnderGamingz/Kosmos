@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
+import { ALLOW_REGISTER } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -8,6 +7,7 @@ import { AuthScreen } from '@pages/authScreen.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import { KeyRound, User } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 type RegisterData = { username: string; password: string };
 
@@ -24,8 +24,8 @@ export default function Register() {
         canDismiss: false,
       });
 
-      await axios
-        .post(`${BASE_URL}auth/register`, {
+      await api
+        .post(`auth/register`, {
           username: data.username,
           password: data.password,
         })

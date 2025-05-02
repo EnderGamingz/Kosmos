@@ -1,8 +1,6 @@
 import { invalidateShares } from '@lib/query.ts';
 import { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext, useState } from 'react';
@@ -12,6 +10,7 @@ import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Shredder } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function PermanentDeleteAction({
   deleteData,
@@ -33,8 +32,8 @@ export function PermanentDeleteAction({
         canDismiss: false,
       });
 
-      await axios
-        .delete(`${BASE_URL}auth/${deleteData.type}/${deleteData.id}`)
+      await api
+        .delete(`auth/${deleteData.type}/${deleteData.id}`)
         .then(async () => {
           notification.updateNotification(deleteId, {
             severity: Severity.SUCCESS,
@@ -99,8 +98,8 @@ export function MultiPermanentDelete({
         canDismiss: false,
       });
 
-      await axios
-        .delete(`${BASE_URL}auth/multi`, {
+      await api
+        .delete(`auth/multi`, {
           data: {
             folders: deleteData.folders.map(folder => folder.id),
             files: deleteData.files.map(file => file.id),

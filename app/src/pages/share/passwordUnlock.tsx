@@ -2,12 +2,11 @@ import { useParams } from 'react-router-dom';
 import { FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { invalidateShareAccess } from '@lib/query.ts';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Check } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function PasswordUnlock() {
   const [value, setValue] = useState('');
@@ -22,8 +21,8 @@ export function PasswordUnlock() {
         severity: Severity.INFO,
         canDismiss: false,
       });
-      await axios
-        .post(BASE_URL + 's/unlock', {
+      await api
+        .post('s/unlock', {
           share_uuid: uuid,
           password: value,
         })

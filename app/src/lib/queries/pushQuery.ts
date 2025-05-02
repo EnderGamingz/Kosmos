@@ -1,17 +1,16 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { NotificationActions, Severity } from '@/stores/notificationStore';
 import { queryClient } from '@lib/query.ts';
 import { PushSubscriptionModelDTO } from '@bindings/PushSubscriptionModelDTO.ts';
 import { CreateNotificationSubscriptionRequest } from '@bindings/CreateNotificationSubscriptionRequest.ts';
+import { api } from '@lib/queries/api.ts';
 
 export class PushQuery {
   public static usePushSubscriptionsSuspense = () => {
     return useSuspenseQuery({
       queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/notification/subscription`)
+        api
+          .get(`auth/notification/subscription`)
           .then(res => res.data as PushSubscriptionModelDTO[]),
       queryKey: ['push', 'subscriptions'],
     });
@@ -34,8 +33,8 @@ export class PushQuery {
           loading: true,
           canDismiss: false,
         });
-        await axios
-          .post(`${BASE_URL}auth/notification/subscription`, subscription)
+        await api
+          .post(`auth/notification/subscription`, subscription)
           .then(() => {
             notifications.updateNotification(updateId, {
               severity: Severity.SUCCESS,
@@ -69,8 +68,8 @@ export class PushQuery {
           loading: true,
           canDismiss: false,
         });
-        await axios
-          .delete(`${BASE_URL}auth/notification/subscription/${id}`, {})
+        await api
+          .delete(`auth/notification/subscription/${id}`, {})
           .then(() => {
             notifications.updateNotification(updateId, {
               severity: Severity.SUCCESS,

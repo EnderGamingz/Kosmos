@@ -3,10 +3,9 @@ import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { isValidFileForAvatar } from '@models/album.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { UserCircle } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export default function SetAsAvatarAction({
   file,
@@ -24,7 +23,7 @@ export default function SetAsAvatarAction({
 
   const setAction = useMutation({
     mutationFn: () =>
-      axios.patch(`${BASE_URL}auth/user/avatar`, {
+      api.patch(`auth/user/avatar`, {
         file_id: file.id,
       }),
     onSuccess: () => fetchUser({ background: true }),

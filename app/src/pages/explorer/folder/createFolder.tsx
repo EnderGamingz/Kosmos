@@ -1,11 +1,10 @@
 import { FormEvent, ReactNode, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolders } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { cn } from '@lib/utils.ts';
 import { Check, FolderClosed } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function CreateFolder({
   folder,
@@ -23,8 +22,8 @@ export function CreateFolder({
         severity: Severity.INFO,
         loading: true,
       });
-      await axios
-        .post(`${BASE_URL}auth/folder${folder ? `/${folder}` : ''}`, {
+      await api
+        .post(`auth/folder${folder ? `/${folder}` : ''}`, {
           name: value,
         })
         .then(() => {

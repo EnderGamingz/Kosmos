@@ -2,7 +2,7 @@ use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
 use axum::Json;
 use axum_valid::Valid;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
 use validator::Validate;
 
@@ -243,18 +243,17 @@ pub async fn create_markdown_file(
     })
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct MoveParams {
-    pub folder_id: i64,
+    pub folder_id: Option<i64>,
 }
 
 pub async fn move_file(
     State(state): KosmosState,
     session: Session,
     Path(file_id): Path<i64>,
-    params: Option<Query<MoveParams>>,
+    Query(params): Query<MoveParams>,
 ) -> ResponseResult {
-    let move_to_folder = params.map(|params| params.folder_id);
 
     let user_id = SessionService::check_logged_in(&session).await?;
 
@@ -267,7 +266,7 @@ pub async fn move_file(
             error: "File not found".to_string(),
         })?;
 
-    if let Some(move_to_folder) = move_to_folder {
+    if let Some(move_to_folder) = params.folder_id {
         if state
             .folder_service
             .check_folder_exists_by_id(move_to_folder, user_id)
@@ -282,7 +281,7 @@ pub async fn move_file(
 
     let is_file_already_in_destination_folder = state
         .file_service
-        .check_file_exists_in_folder(&file.file_name, move_to_folder)
+        .check_file_exists_in_folder(&file.file_name, params.folder_id)
         .await?;
 
     if is_file_already_in_destination_folder {
@@ -293,7 +292,7 @@ pub async fn move_file(
 
     state
         .file_service
-        .move_file(user_id, file_id, move_to_folder)
+        .move_file(user_id, file_id, params.folder_id)
         .await?;
 
     state

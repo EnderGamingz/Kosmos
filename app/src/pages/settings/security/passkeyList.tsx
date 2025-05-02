@@ -2,14 +2,13 @@ import { invalidatePasskeys, usePasskeys } from '@lib/query.ts';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
 import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 import { Trash2 } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export default function PasskeyList() {
   const notifications = useNotifications(s => s.actions);
@@ -23,8 +22,8 @@ export default function PasskeyList() {
         loading: true,
         canDismiss: false,
       });
-      await axios
-        .delete(`${BASE_URL}auth/passkey/${id}`)
+      await api
+        .delete(`auth/passkey/${id}`)
         .then(() => {
           invalidatePasskeys().then();
           notifications.updateNotification(deleteId, {

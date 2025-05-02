@@ -1,6 +1,4 @@
 import { Base64 } from 'js-base64';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { invalidatePasskeys } from '@lib/query.ts';
@@ -11,11 +9,12 @@ import { Button } from '@components/ui/button.tsx';
 import { Input } from '@components/ui/input.tsx';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
 import { KeyRound, Send } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const completeFunction = (credential: any) =>
-  axios
-    .post(`${BASE_URL}auth/passkey/register/complete`, {
+  api
+    .post(`auth/passkey/register/complete`, {
       id: credential?.id,
       rawId: Base64.fromUint8Array(new Uint8Array(credential?.rawId), true),
       type: credential?.type,
@@ -33,8 +32,8 @@ const completeFunction = (credential: any) =>
     .then(res => res.data);
 
 const startFunction = (name: string) =>
-  axios
-    .post(`${BASE_URL}auth/passkey/register/start`, { name })
+  api
+    .post(`auth/passkey/register/start`, { name })
     .then(res => res.data)
     .then(credentialCreationOptions => {
       credentialCreationOptions.publicKey.challenge = Base64.toUint8Array(

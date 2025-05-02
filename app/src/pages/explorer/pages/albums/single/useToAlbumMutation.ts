@@ -1,8 +1,7 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
+import { api } from '@lib/queries/api.ts';
 
 export const useToAlbumMutation = (albumId?: string) => {
   const notifications = useNotifications(s => s.actions);
@@ -28,14 +27,14 @@ export const useToAlbumMutation = (albumId?: string) => {
       const actions = [];
       if (add.length > 0) {
         actions.push(
-          axios.put(`${BASE_URL}auth/album/${id}/link`, {
+          api.put(`auth/album/${id}/link`, {
             file_ids: add,
           }),
         );
       }
       if (remove.length > 0) {
         actions.push(
-          axios.put(`${BASE_URL}auth/album/${id}/unlink`, {
+          api.put(`auth/album/${id}/unlink`, {
             file_ids: remove,
           }),
         );

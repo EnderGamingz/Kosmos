@@ -3,59 +3,60 @@ use crate::session::KosmosSession;
 use crate::state::AppState;
 use axum::extract::DefaultBodyLimit;
 use axum::routing::{delete, get, patch, post, put};
-use axum::Router;
+use axum::{middleware, Router};
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
 use tracing::Level;
+use crate::routes::api::v1::auth::middleware::authorization_middleware;
 
 pub type KosmosRouter = Router<AppState>;
 
 fn get_folder_router() -> KosmosRouter {
     Router::new()
         .route("/", post(crate::routes::api::v1::auth::folder::create_folder))
-        .route("/:folder_id", post(crate::routes::api::v1::auth::folder::create_folder)
+        .route("/{folder_id}", post(crate::routes::api::v1::auth::folder::create_folder)
                 .delete(crate::routes::api::v1::auth::folder::delete::delete_folder)
                 .patch(crate::routes::api::v1::auth::folder::rename_folder))
-        .route("/:folder_id/color", patch(crate::routes::api::v1::auth::folder::update::recolor_folder))
+        .route("/{folder_id}/color", patch(crate::routes::api::v1::auth::folder::update::recolor_folder))
         .route("/all", get(crate::routes::api::v1::auth::folder::get_folders))
-        .route("/all/:folder_id", get(crate::routes::api::v1::auth::folder::get_folders))
-        .route("/move/:folder_id", put(crate::routes::api::v1::auth::folder::move_folder))
+        .route("/all/{folder_id}", get(crate::routes::api::v1::auth::folder::get_folders))
+        .route("/move/{folder_id}", put(crate::routes::api::v1::auth::folder::move_folder))
 }
 
 fn get_image_router() -> KosmosRouter {
     Router::new()
-        .route("/:file_id/:format", get(crate::routes::api::v1::auth::file::image::get_image_by_format))
-        .route("/retry/operation/:operation_id", post(crate::routes::api::v1::auth::file::image::reprocess_images_from_operation))
+        .route("/{file_id}/{format}", get(crate::routes::api::v1::auth::file::image::get_image_by_format))
+        .route("/retry/operation/{operation_id}", post(crate::routes::api::v1::auth::file::image::reprocess_images_from_operation))
 }
 
 fn get_file_router() -> KosmosRouter {
     Router::new()
         .route("/create/markdown", post(crate::routes::api::v1::auth::file::create_markdown_file))
-        .route("/:file_id", delete(crate::routes::api::v1::auth::file::bin::permanently_delete_file)
+        .route("/{file_id}", delete(crate::routes::api::v1::auth::file::bin::permanently_delete_file)
                 .patch(crate::routes::api::v1::auth::file::rename_file))
-        .route("/:file_id/content", post(crate::routes::api::v1::auth::content::update::update_file_contents))
-        .route("/:file_id/albums", get(crate::routes::api::v1::auth::album::read::get_albums_for_file))
-        .route("/:file_id/action/:operation_type", get(crate::routes::api::v1::auth::download::handle_raw_file))
-        .route("/:file_id/bin", post(crate::routes::api::v1::auth::file::bin::mark_file_for_deletion))
-        .route("/:file_id/restore", post(crate::routes::api::v1::auth::file::bin::restore_file))
+        .route("/{file_id}/content", post(crate::routes::api::v1::auth::content::update::update_file_contents))
+        .route("/{file_id}/albums", get(crate::routes::api::v1::auth::album::read::get_albums_for_file))
+        .route("/{file_id}/action/{operation_type}", get(crate::routes::api::v1::auth::download::handle_raw_file))
+        .route("/{file_id}/bin", post(crate::routes::api::v1::auth::file::bin::mark_file_for_deletion))
+        .route("/{file_id}/restore", post(crate::routes::api::v1::auth::file::bin::restore_file))
         .route("/upload", post(crate::routes::api::v1::auth::file::upload::upload_file))
-        .route("/upload/:folder_id", post(crate::routes::api::v1::auth::file::upload::upload_file))
+        .route("/upload/{folder_id}", post(crate::routes::api::v1::auth::file::upload::upload_file))
         .route("/bin/clear", post(crate::routes::api::v1::auth::file::bin::clear_bin))
         .route("/all", get(crate::routes::api::v1::auth::file::get_files))
-        .route("/all/type/:file_type", get(crate::routes::api::v1::auth::file::get_file_by_type))
+        .route("/all/type/{file_type}", get(crate::routes::api::v1::auth::file::get_file_by_type))
         .route("/all/recent", get(crate::routes::api::v1::auth::file::get_recent_files))
         .route("/all/deleted", get(crate::routes::api::v1::auth::file::get_deleted_files))
-        .route("/all/:folder_id", get(crate::routes::api::v1::auth::file::get_files))
-        .route("/move/:file_id", put(crate::routes::api::v1::auth::file::move_file))
-        .route("/zip/:file_id", get(crate::routes::api::v1::auth::file::zip::get_zip_information))
+        .route("/all/{folder_id}", get(crate::routes::api::v1::auth::file::get_files))
+        .route("/move/{file_id}", put(crate::routes::api::v1::auth::file::move_file))
+        .route("/zip/{file_id}", get(crate::routes::api::v1::auth::file::zip::get_zip_information))
         .layer(DefaultBodyLimit::disable())
         .nest("/image", get_image_router())
 }
 
 fn get_download_router() -> KosmosRouter {
     Router::new()
-        .route("/file/:file_id", get(crate::routes::api::v1::auth::download::handle_raw_file))
+        .route("/file/{file_id}", get(crate::routes::api::v1::auth::download::handle_raw_file))
 }
 
 fn get_usage_router() -> KosmosRouter {
@@ -69,7 +70,7 @@ fn get_user_router() -> KosmosRouter {
         .route("/", patch(crate::routes::api::v1::auth::user::update::update_user)
                 .delete(crate::routes::api::v1::auth::user::delete::delete_self))
         .route("/avatar", patch(crate::routes::api::v1::auth::user::update::update_user_avatar_id))
-        .route("/avatar/:user_id", get(crate::routes::api::v1::auth::user::index::get_avatar_by_user_id))
+        .route("/avatar/{user_id}", get(crate::routes::api::v1::auth::user::index::get_avatar_by_user_id))
         .route("/password", patch(crate::routes::api::v1::auth::user::update::update_user_password))
         .nest("/usage", get_usage_router())
 }
@@ -92,18 +93,18 @@ fn get_share_router() -> KosmosRouter {
         .route("/all", get(crate::routes::api::v1::share::shared_items::get_shared_items))
         .route("/all/me", get(crate::routes::api::v1::share::shared_items::get_targeted_shared_items_for_user))
         // File
-        .route("/file/:file_id", get(crate::routes::api::v1::share::get_file_shares_for_user))
+        .route("/file/{file_id}", get(crate::routes::api::v1::share::get_file_shares_for_user))
         .route("/file/public", post(crate::routes::api::v1::share::create::share_file_public))
         .route("/file/private", post(crate::routes::api::v1::share::create::share_file_private))
         // Folder
-        .route("/folder/:folder_id", get(crate::routes::api::v1::share::get_folder_shares_for_user))
+        .route("/folder/{folder_id}", get(crate::routes::api::v1::share::get_folder_shares_for_user))
         .route("/folder/public", post(crate::routes::api::v1::share::create::share_folder_public))
         .route("/folder/private", post(crate::routes::api::v1::share::create::share_folder_private))
         // Album
         .route("/album/public", post(crate::routes::api::v1::share::create::share_album_public))
         .route("/album/private", post(crate::routes::api::v1::share::create::share_album_private))
-        .route("/album/:album_id", get(crate::routes::api::v1::share::get_album_shares_for_user))
-        .route("/:share_id", patch(crate::routes::api::v1::share::update_share)
+        .route("/album/{album_id}", get(crate::routes::api::v1::share::get_album_shares_for_user))
+        .route("/{share_id}", patch(crate::routes::api::v1::share::update_share)
                 .delete(crate::routes::api::v1::share::delete_share))
 }
 
@@ -111,10 +112,10 @@ fn get_admin_router() -> KosmosRouter {
     Router::new()
         .route("/user", get(crate::routes::api::v1::auth::admin::user::get_all_users)
                 .post(crate::routes::api::v1::auth::admin::user::create_user))
-        .route("/user/:user_id", get(crate::routes::api::v1::auth::admin::user::get_user)
+        .route("/user/{user_id}", get(crate::routes::api::v1::auth::admin::user::get_user)
                 .delete(crate::routes::api::v1::auth::admin::user::delete_user)
                 .patch(crate::routes::api::v1::auth::admin::user::update_user))
-        .route("/user/:user_id/usage", get(crate::routes::api::v1::auth::admin::user::get_user_usage))
+        .route("/user/{user_id}/usage", get(crate::routes::api::v1::auth::admin::user::get_user_usage))
 }
 
 fn get_search_router() -> KosmosRouter {
@@ -125,8 +126,8 @@ fn get_search_router() -> KosmosRouter {
 fn get_favorite_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::favorite::read::get_favorites))
-        .route("/folder/:folder_id", put(crate::routes::api::v1::auth::folder::favorite::favorite_folder))
-        .route("/file/:file_id", put(crate::routes::api::v1::auth::file::favorite::favorite_file))
+        .route("/folder/{folder_id}", put(crate::routes::api::v1::auth::folder::favorite::favorite_folder))
+        .route("/file/{file_id}", put(crate::routes::api::v1::auth::file::favorite::favorite_file))
 }
 
 fn get_album_router() -> KosmosRouter {
@@ -134,11 +135,11 @@ fn get_album_router() -> KosmosRouter {
         .route("/", get(crate::routes::api::v1::auth::album::read::get_albums)
             .patch(crate::routes::api::v1::auth::album::update::update_album)
             .post(crate::routes::api::v1::auth::album::create::create_album))
-        .route("/:album_id", get(crate::routes::api::v1::auth::album::read::get_album)
+        .route("/{album_id}", get(crate::routes::api::v1::auth::album::read::get_album)
                 .delete(crate::routes::api::v1::auth::album::delete::delete_album))
-        .route("/:album_id/preview", put(crate::routes::api::v1::auth::album::update::update_album_preview))
-        .route("/:album_id/link", put(crate::routes::api::v1::auth::album::update::link_files_to_album))
-        .route("/:album_id/unlink", put(crate::routes::api::v1::auth::album::update::unlink_file_from_album))
+        .route("/{album_id}/preview", put(crate::routes::api::v1::auth::album::update::update_album_preview))
+        .route("/{album_id}/link", put(crate::routes::api::v1::auth::album::update::link_files_to_album))
+        .route("/{album_id}/unlink", put(crate::routes::api::v1::auth::album::update::unlink_file_from_album))
         .route("/available", get(crate::routes::api::v1::auth::album::read::get_available_files))
         .route("/for", post(crate::routes::api::v1::auth::album::read::get_available_albums_for_files))
 }
@@ -146,7 +147,7 @@ fn get_album_router() -> KosmosRouter {
 fn get_passkey_auth_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::passkey::get_passkeys))
-        .route("/:passkey_id", delete(crate::routes::api::v1::auth::passkey::delete_passkey))
+        .route("/{passkey_id}", delete(crate::routes::api::v1::auth::passkey::delete_passkey))
         .route("/register/start", post(crate::routes::api::v1::auth::passkey::register::register_start))
         .route("/register/complete", post(crate::routes::api::v1::auth::passkey::register::register_complete))
         .route("/authentication/start", post(crate::routes::api::v1::auth::passkey::authenticate::authentication_start))
@@ -159,29 +160,29 @@ fn get_quick_share_router() -> KosmosRouter {
 
 fn get_profile_router() -> KosmosRouter {
     Router::new()
-        .route("/:user_id", get(crate::routes::api::v1::auth::profile::index::get_profile_by_user_id))
+        .route("/{user_id}", get(crate::routes::api::v1::auth::profile::index::get_profile_by_user_id))
         .route("/", patch(crate::routes::api::v1::auth::profile::update::update_profile))
 }
 
 fn get_chat_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::chat::index::get_chats))
-        .route("/user/:other_user_id", get(crate::routes::api::v1::auth::chat::create::get_create_personal_chat)
+        .route("/user/{other_user_id}", get(crate::routes::api::v1::auth::chat::create::get_create_personal_chat)
                    .post(crate::routes::api::v1::auth::chat::message::create::send_personal_message)
             .patch(crate::routes::api::v1::auth::chat::message::update::update_personal_message)
             .delete(crate::routes::api::v1::auth::chat::message::delete::delete_personal_message))
-        .route("/user/:other_user_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_personal_chat))
+        .route("/user/{other_user_id}/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_personal_chat))
         .route("/group", post(crate::routes::api::v1::auth::chat::create::create_group_chat))
-        .route("/group/:chat_id", get(crate::routes::api::v1::auth::chat::index::get_group_chat)
+        .route("/group/{chat_id}", get(crate::routes::api::v1::auth::chat::index::get_group_chat)
                 .post(crate::routes::api::v1::auth::chat::message::create::send_group_message)
                 .delete(crate::routes::api::v1::auth::chat::message::delete::delete_group_message)
                 .patch(crate::routes::api::v1::auth::chat::message::update::update_group_message)
         )
-        .route("/group/:chat_id/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_group_chat))
-        .route("/group/:chat_id/leave", post(crate::routes::api::v1::auth::chat::leave::leave_group_chat))
-        .route("/group/:chat_id/rename", post(crate::routes::api::v1::auth::chat::update::rename_group_chat))
-        .route("/group/:chat_id/invite", post(crate::routes::api::v1::auth::chat::invite::invite_user_to_group_chat))
-        .route("/group/:chat_id/available", get(crate::routes::api::v1::auth::chat::index::get_available_users_for_group_chat))
+        .route("/group/{chat_id}/messages", get(crate::routes::api::v1::auth::chat::message::index::get_messages_for_group_chat))
+        .route("/group/{chat_id}/leave", post(crate::routes::api::v1::auth::chat::leave::leave_group_chat))
+        .route("/group/{chat_id}/rename", post(crate::routes::api::v1::auth::chat::update::rename_group_chat))
+        .route("/group/{chat_id}/invite", post(crate::routes::api::v1::auth::chat::invite::invite_user_to_group_chat))
+        .route("/group/{chat_id}/available", get(crate::routes::api::v1::auth::chat::index::get_available_users_for_group_chat))
 }
 
 fn get_contact_router() -> KosmosRouter {
@@ -210,7 +211,7 @@ fn get_push_subscription_router() -> KosmosRouter {
     Router::new()
         .route("/", get(crate::routes::api::v1::auth::notification::subscription::read::get_notification_subscriptions)
                 .post(crate::routes::api::v1::auth::notification::subscription::create::create_notification_subscription))
-        .route("/:subscription_id", delete(crate::routes::api::v1::auth::notification::subscription::delete::delete_notification_subscription))
+        .route("/{subscription_id}", delete(crate::routes::api::v1::auth::notification::subscription::delete::delete_notification_subscription))
 }
 
 fn get_notifications_router() -> KosmosRouter {
@@ -218,13 +219,15 @@ fn get_notifications_router() -> KosmosRouter {
         .nest("/subscription", get_push_subscription_router())
 }
 
-fn get_auth_router() -> KosmosRouter {
-    Router::new()
+fn  get_auth_router() -> KosmosRouter {
+    let un_auth = Router::new()
         .route("/", get(crate::routes::api::v1::auth::auth))
         .route("/login", post(crate::routes::api::v1::auth::login))
         .route("/register", post(crate::routes::api::v1::auth::register))
         .route("/logout", post(crate::routes::api::v1::auth::logout))
-        .nest("/passkey", get_passkey_auth_router())
+        .nest("/passkey", get_passkey_auth_router());
+
+    let auth = Router::new()
         .nest("/search", get_search_router())
         .nest("/share", get_share_router())
         .nest("/file", get_file_router())
@@ -240,29 +243,33 @@ fn get_auth_router() -> KosmosRouter {
         .nest("/social", get_social_router())
         .nest("/presence", get_presence_router())
         .nest("/notification", get_notifications_router())
-        .nest("/admin", get_admin_router())
+        .nest("/admin", get_admin_router());
+
+    Router::new()
+        .nest("/auth", auth).layer(middleware::from_fn(authorization_middleware))
+        .nest("/auth", un_auth)
 }
 
 fn get_public_share_router() -> KosmosRouter {
     Router::new()
-        .route("/file/:share_id", get(crate::routes::api::v1::share::access_file_share))
-        .route("/file/:share_id/action/:operation_type", get(crate::routes::api::v1::auth::download::handle_raw_file_share))
-        .route("/file/:share_id/image/:format", get(crate::routes::api::v1::auth::file::image::get_share_image_by_format))
-        .route("/file/:share_id/zip", get(crate::routes::api::v1::auth::file::zip::access_zip_share))
-        .route("/folder/:share_id", get(crate::routes::api::v1::share::access_folder_share))
-        .route("/folder/:share_id/multi", post(crate::routes::api::v1::auth::download::multi_share_download))
-        .route("/folder/:share_id/:access_type/:access_id", get(crate::routes::api::v1::share::access_folder_share_item))
-        .route("/folder/:share_id/File/:file_id/action/:operation_type", get(crate::routes::api::v1::auth::download::handle_raw_file_share_through_folder))
-        .route("/folder/:share_id/image/:file_id/:format", get(crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_folder))
-        .route("/album/:share_id", get(crate::routes::api::v1::share::access_album_share))
-        .route("/album/:share_id/file/:file_id/action/:operation_type", get(crate::routes::api::v1::auth::download::handle_raw_file_share_through_album))
-        .route("/album/:share_id/image/:file_id/:format", get(crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_album))
+        .route("/file/{share_id}", get(crate::routes::api::v1::share::access_file_share))
+        .route("/file/{share_id}/action/{operation_type}", get(crate::routes::api::v1::auth::download::handle_raw_file_share))
+        .route("/file/{share_id}/image/{format}", get(crate::routes::api::v1::auth::file::image::get_share_image_by_format))
+        .route("/file/{share_id}/zip", get(crate::routes::api::v1::auth::file::zip::access_zip_share))
+        .route("/folder/{share_id}", get(crate::routes::api::v1::share::access_folder_share))
+        .route("/folder/{share_id}/multi", post(crate::routes::api::v1::auth::download::multi_share_download))
+        .route("/folder/{share_id}/{access_type}/{access_id}", get(crate::routes::api::v1::share::access_folder_share_item))
+        .route("/folder/{share_id}/File/{file_id}/action/{operation_type}", get(crate::routes::api::v1::auth::download::handle_raw_file_share_through_folder))
+        .route("/folder/{share_id}/image/{file_id}/{format}", get(crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_folder))
+        .route("/album/{share_id}", get(crate::routes::api::v1::share::access_album_share))
+        .route("/album/{share_id}/file/{file_id}/action/{operation_type}", get(crate::routes::api::v1::auth::download::handle_raw_file_share_through_album))
+        .route("/album/{share_id}/image/{file_id}/{format}", get(crate::routes::api::v1::auth::file::image::get_share_image_by_format_through_album))
         .route("/unlock", post(crate::routes::api::v1::share::unlock_share))
 }
 
 fn get_api_router() -> KosmosRouter {
     Router::new()
-        .nest("/auth", get_auth_router())
+        .merge(get_auth_router())
         .nest("/s", get_public_share_router())
 }
 

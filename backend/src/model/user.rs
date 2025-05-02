@@ -1,3 +1,4 @@
+use crate::model::jwt::JwtUser;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::types::Uuid;
@@ -48,6 +49,12 @@ impl From<UserModel> for UserModelDTO {
             created_at: user.created_at,
             updated_at: user.updated_at,
         }
+    }
+}
+
+impl From<UserModel> for JwtUser {
+    fn from(user: UserModel) -> Self {
+        JwtUser { user_id: user.id }
     }
 }
 // End: User Model

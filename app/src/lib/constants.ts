@@ -15,3 +15,4 @@ export const MAX_QUICK_SHARE_FILES = 100;
 export const APP_TIME_LOCALE = enUS;
 
 export const WEBSOCKET_ENDPOINT = 'auth/presence';
+export const JWT_TOKEN_STORAGE_KEY = 'comet-trail';

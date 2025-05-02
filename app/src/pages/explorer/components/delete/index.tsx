@@ -1,13 +1,12 @@
 import { PermanentDeleteAction } from './permanentDeleteAction.tsx';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Trash } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export function MoveToTrash({
   id,
@@ -22,7 +21,7 @@ export function MoveToTrash({
 }) {
   const permanent = useKeyStore(s => s.keys.shift);
   const trashAction = useMutation({
-    mutationFn: () => axios.post(`${BASE_URL}auth/file/${id}/bin`),
+    mutationFn: () => api.post(`auth/file/${id}/bin`),
     onSuccess: () => {
       // Handled by presence
       //invalidateFiles().then();
@@ -69,8 +68,8 @@ export function MultiMoveToTrash({
 
   const trashAction = useMutation({
     mutationFn: async () =>
-      axios
-        .post(`${BASE_URL}auth/multi/bin`, {
+      api
+        .post(`auth/multi/bin`, {
           files: deleteData.files.map(file => file.id),
         })
         .then(async () => {

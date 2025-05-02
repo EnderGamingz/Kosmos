@@ -1,6 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { DataOperationType } from '@models/file.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import {
@@ -12,6 +10,7 @@ import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { cn } from '@lib/utils.ts';
 import { Star } from 'lucide-react';
+import { api } from '@lib/queries/api.ts';
 
 export default function Favorite({
   id,
@@ -33,8 +32,8 @@ export default function Favorite({
   const action = useMutation({
     mutationFn: async () => {
       if (action.isPending) return;
-      await axios
-        .put(`${BASE_URL}auth/favorite/${type}/${id}`)
+      await api
+        .put(`auth/favorite/${type}/${id}`)
         .then(() => {
           invalidateData(type).then(onUpdate);
           invalidateUsageReport().then();

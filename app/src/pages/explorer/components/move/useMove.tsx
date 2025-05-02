@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -7,6 +5,7 @@ import {
   MultiMoveData,
 } from '@pages/explorer/components/move/moveModalContent.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
+import { api } from '@lib/queries/api.ts';
 
 export function useMove(
   moveData: MoveData,
@@ -19,21 +18,17 @@ export function useMove(
 
   function getMoveFn() {
     if (multiData) {
-      return axios.put(`${BASE_URL}auth/multi`, {
+      return api.put(`auth/multi`, {
         files: multiData.files.map(file => file.id),
         folders: multiData.folders.map(folder => folder.id),
         target_folder: selectedFolder?.trim() || undefined,
       });
     } else {
-      return axios.put(
-        `${BASE_URL}auth/${moveData.type}/move/${moveData.id}`,
-        undefined,
-        {
-          params: {
-            folder_id: selectedFolder,
-          },
+      return api.put(`auth/${moveData.type}/move/${moveData.id}`, undefined, {
+        params: {
+          folder_id: selectedFolder,
         },
-      );
+      });
     }
   }
 
