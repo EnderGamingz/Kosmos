@@ -1,13 +1,14 @@
-use axum::extract::State;
-use axum::Json;
-use serde::Deserialize;
-use tower_sessions::Session;
-use webauthn_rs::prelude::{CreationChallengeResponse, RegisterPublicKeyCredential};
-
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Deserialize;
+use tower_sessions::Session;
+use webauthn_rs::prelude::{CreationChallengeResponse, RegisterPublicKeyCredential};
 
 #[derive(Deserialize)]
 pub struct PasskeyRegisterStart {
@@ -15,16 +16,19 @@ pub struct PasskeyRegisterStart {
 }
 
 pub async fn register_start(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
     session: Session,
     Json(payload): Json<PasskeyRegisterStart>,
 ) -> Result<Json<CreationChallengeResponse>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let user = state.user_service.get_auth_user(user_id).await?;
+    let user = state
+        .user_service
+        .get_auth_user(claims.user.user_id)
+        .await?;
 
     let excluded_credentials = state
         .passkey_service
-        .get_excluded_credentials(user_id)
+        .get_excluded_credentials(claims.user.user_id)
         .await?;
 
     let excluded_credentials = match excluded_credentials.len() > 0 {
@@ -55,11 +59,11 @@ pub async fn register_start(
 }
 
 pub async fn register_complete(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
     session: Session,
     Json(payload): Json<RegisterPublicKeyCredential>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let (register_state, register_name) = SessionService::get_passkey_register(&session).await?;
 
     SessionService::clear_passkey_register(&session).await;
@@ -78,7 +82,7 @@ pub async fn register_complete(
 
     state
         .passkey_service
-        .create_passkey(user_id, passkey, register_name)
+        .create_passkey(claims.user.user_id, passkey, register_name)
         .await?;
 
     Ok(AppSuccess::CREATED { id: None })

@@ -1,11 +1,11 @@
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
 
 use crate::model::album::AlbumModelDTO;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
 #[derive(Deserialize)]
@@ -15,15 +15,13 @@ pub struct CreateAlbumPayload {
 }
 
 pub async fn create_album(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<CreateAlbumPayload>,
 ) -> Result<Json<AlbumModelDTO>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let album = state
         .album_service
-        .create_album(user_id, payload.name, payload.description)
+        .create_album(claims.user.user_id, payload.name, payload.description)
         .await?;
 
     Ok(Json(album.into()))

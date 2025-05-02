@@ -1,14 +1,14 @@
+use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
+use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 use crate::state::KosmosState;
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
-use crate::model::internal::entity_id::EntityId;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 
 #[derive(Deserialize)]
 pub struct CancelContactRequestDTO {
@@ -16,12 +16,10 @@ pub struct CancelContactRequestDTO {
 }
 
 pub async fn cancel_sent_contact_request(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<CancelContactRequestDTO>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let request = state
         .contact_service
         .get_request_by_id_optional(payload.id.into())
@@ -30,7 +28,7 @@ pub async fn cancel_sent_contact_request(
             error: "Contact request not found".to_string(),
         })?;
 
-    if request.user_id != user_id {
+    if request.user_id != claims.user.user_id {
         return Err(AppError::NotAllowed {
             error: "You are not allowed to cancel this request".to_string(),
         });
@@ -52,22 +50,23 @@ pub struct DeleteContactLinkDTO {
 }
 
 pub async fn delete_contact_link(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<DeleteContactLinkDTO>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     state
         .contact_service
-        .delete_contact_link(user_id, payload.user_id.into())
+        .delete_contact_link(claims.user.user_id, payload.user_id.into())
         .await?;
 
-    let presence_message_to_new_member = PresenceMessage{
+    let presence_message_to_new_member = PresenceMessage {
         action: PresenceAction::ChatsUpdate(),
-        important: false
+        important: false,
     };
-    state.presence_handler.broadcast_to_user(payload.user_id.into(), presence_message_to_new_member).await;
+    state
+        .presence_handler
+        .broadcast_to_user(payload.user_id.into(), presence_message_to_new_member)
+        .await;
 
     Ok(AppSuccess::DELETED)
 }

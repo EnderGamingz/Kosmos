@@ -1,21 +1,20 @@
 use axum::extract::State;
-use tower_sessions::Session;
 use axum::Json;
+use axum_jwt_auth::Claims;
+use crate::model::jwt::JwtClaims;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::profile_service::UpdateProfileDTO;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
 pub async fn update_profile(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(profile): Json<UpdateProfileDTO>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     state
         .profile_service
-        .update_profile(user_id.into(), &profile)
+        .update_profile(claims.user.user_id.into(), &profile)
         .await?;
 
     Ok(AppSuccess::UPDATED)

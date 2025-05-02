@@ -1,9 +1,9 @@
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
-use tower_sessions::Session;
 use validator::Validate;
 
 use crate::model::file::FileModelDTO;
@@ -11,10 +11,10 @@ use crate::model::internal::entity_id::OptionEntityId;
 use crate::model::internal::file_type::FileType;
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceExplorerUpdate;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::folder::SortByFolders;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
 pub static FILE_SIZE_LIMIT: u64 = 50 * 1024 * 1024;
@@ -79,13 +79,11 @@ impl GetFilesSortParams<SortByFolders> {
 }
 
 pub async fn get_files(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Query(sort_params): Query<GetFilesSortParams<SortByFiles>>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let folder = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
@@ -93,7 +91,7 @@ pub async fn get_files(
 
     let files = state
         .file_service
-        .get_files(user_id, folder, false, sort_params)
+        .get_files(claims.user.user_id, folder, false, sort_params)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
@@ -119,15 +117,13 @@ impl GetRecentFilesParams {
 }
 
 pub async fn get_recent_files(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Query(params): Query<GetRecentFilesParams>,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let files = state
         .file_service
-        .get_recent_files(user_id, params)
+        .get_recent_files(claims.user.user_id, params)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
@@ -137,13 +133,12 @@ pub async fn get_recent_files(
 }
 
 pub async fn get_deleted_files(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let files = state
         .file_service
-        .get_marked_deleted_files(user_id)
+        .get_marked_deleted_files(claims.user.user_id)
         .await?
         .into_iter()
         .map(FileModelDTO::from)
@@ -169,18 +164,17 @@ impl GetFilesByType {
 }
 
 pub async fn get_file_by_type(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_type): Path<i16>,
     Query(params): Query<GetFilesByType>,
 ) -> Result<Json<Vec<FileModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let file_type = FileType::new(file_type);
 
     let files = state
         .file_service
         .get_files_by_file_type(
-            user_id,
+            claims.user.user_id,
             vec![file_type],
             params.get_limit(),
             params.get_page(),
@@ -200,11 +194,10 @@ pub struct CreateMarkdownFilePayload {
 }
 
 pub async fn create_markdown_file(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<CreateMarkdownFilePayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let file_name = payload.name.trim().to_string();
     let parent_folder_id = payload.parent_folder_id.into();
 
@@ -221,19 +214,19 @@ pub async fn create_markdown_file(
 
     let id = state
         .file_service
-        .create_empty_markdown_file(user_id, parent_folder_id, file_name)
+        .create_empty_markdown_file(claims.user.user_id, parent_folder_id, file_name)
         .await?
         .id;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: parent_folder_id.map(|f| f.to_string()),
                 }),
-                important: false
+                important: false,
             },
         )
         .await;
@@ -249,18 +242,15 @@ pub struct MoveParams {
 }
 
 pub async fn move_file(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
     Query(params): Query<MoveParams>,
 ) -> ResponseResult {
-
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     // Check if file exists and returns not found if it doesn't
     let file = state
         .file_service
-        .check_file_exists_by_id(file_id, user_id)
+        .check_file_exists_by_id(file_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "File not found".to_string(),
@@ -269,7 +259,7 @@ pub async fn move_file(
     if let Some(move_to_folder) = params.folder_id {
         if state
             .folder_service
-            .check_folder_exists_by_id(move_to_folder, user_id)
+            .check_folder_exists_by_id(move_to_folder, claims.user.user_id)
             .await?
             .is_none()
         {
@@ -292,16 +282,16 @@ pub async fn move_file(
 
     state
         .file_service
-        .move_file(user_id, file_id, params.folder_id)
+        .move_file(claims.user.user_id, file_id, params.folder_id)
         .await?;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
-                important: false
+                important: false,
             },
         )
         .await;
@@ -316,16 +306,14 @@ pub struct RenameParams {
 }
 
 pub async fn rename_file(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
     Valid(Json(params)): Valid<Json<RenameParams>>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let file = state
         .file_service
-        .check_file_exists_by_id(file_id, user_id)
+        .check_file_exists_by_id(file_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "File not found".to_string(),
@@ -333,18 +321,23 @@ pub async fn rename_file(
 
     state
         .file_service
-        .rename_file(user_id, file.id, params.name, file.parent_folder_id)
+        .rename_file(
+            claims.user.user_id,
+            file.id,
+            params.name,
+            file.parent_folder_id,
+        )
         .await?;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
                 }),
-                important: false
+                important: false,
             },
         )
         .await;

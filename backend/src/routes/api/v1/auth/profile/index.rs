@@ -1,18 +1,17 @@
 use crate::model::internal::entity_id::EntityId;
 use crate::model::profile::ProfileModelDTO;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
 use axum::Json;
-use tower_sessions::Session;
+use axum_jwt_auth::Claims;
+use crate::model::jwt::JwtClaims;
 
 pub async fn get_profile_by_user_id(
+    Claims(_claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(user_id): Path<EntityId>,
 ) -> Result<Json<ProfileModelDTO>, AppError> {
-    SessionService::check_logged_in(&session).await?;
 
     let profile = state
         .profile_service

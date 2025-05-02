@@ -10,20 +10,21 @@ use crate::state::{AppState, KosmosState};
 use crate::utils::auth;
 use axum::extract::{Path, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Serialize;
 use tower_sessions::Session;
 use ts_rs::TS;
+use crate::model::jwt::JwtClaims;
 
 pub async fn get_file_shares_for_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
 ) -> Result<Json<Vec<ExtendedShareModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
         .share_service
-        .get_file_shares(file_id, user_id)
+        .get_file_shares(file_id, claims.user.user_id)
         .await?
         .into_iter()
         .map(ExtendedShareModelDTO::from)
@@ -33,15 +34,14 @@ pub async fn get_file_shares_for_user(
 }
 
 pub async fn get_folder_shares_for_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(folder_id): Path<i64>,
 ) -> Result<Json<Vec<ExtendedShareModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
         .share_service
-        .get_folder_shares(folder_id, user_id)
+        .get_folder_shares(folder_id, claims.user.user_id)
         .await?
         .into_iter()
         .map(ExtendedShareModelDTO::from)
@@ -51,15 +51,14 @@ pub async fn get_folder_shares_for_user(
 }
 
 pub async fn get_album_shares_for_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(album_id): Path<i64>,
 ) -> Result<Json<Vec<ExtendedShareModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let shares = state
         .share_service
-        .get_album_shares(album_id, user_id)
+        .get_album_shares(album_id, claims.user.user_id)
         .await?
         .into_iter()
         .map(ExtendedShareModelDTO::from)

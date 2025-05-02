@@ -7,6 +7,7 @@ use axum::http::header::{CONTENT_LENGTH, CONTENT_RANGE, RANGE};
 use axum::http::{header, HeaderMap, HeaderName, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
 use tokio::fs::File;
 use tokio::io::{AsyncReadExt, AsyncSeekExt};
@@ -17,13 +18,14 @@ use zip::ZipWriter;
 
 use crate::model::file::FileModel;
 use crate::model::folder::Directory;
+use crate::model::jwt::JwtClaims;
 use crate::model::share::ExtendedShareModel;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::share::{
     get_share_access_for_folder_items, get_share_album_data, get_share_file,
     is_allowed_to_access_share, AccessShareItemType,
 };
-use crate::services::session_service::{SessionService, UserId};
+use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
 
 #[derive(Deserialize)]
@@ -168,15 +170,19 @@ pub async fn get_raw_file(
 }
 
 pub async fn handle_raw_file(
+    Claims(claims): Claims<JwtClaims>,
     mut headers: HeaderMap,
     State(state): KosmosState,
-    session: Session,
     Path((file_id, operation_type)): Path<(i64, RawFileAction)>,
 ) -> Result<Response, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    let raw_response =
-        get_raw_file(&mut headers, &state, file_id, operation_type, Some(user_id)).await?;
+    let raw_response = get_raw_file(
+        &mut headers,
+        &state,
+        file_id,
+        operation_type,
+        Some(claims.user.user_id),
+    )
+    .await?;
 
     Ok(raw_response.into_response())
 }
@@ -270,20 +276,25 @@ pub struct MultiDownloadParsed {
 }
 
 pub async fn multi_download(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(request_data): Json<MultiDownloadRequest>,
 ) -> Result<Response, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let request = parse_multi_download_payload(request_data)?;
 
     let folder_structure = state
         .folder_service
-        .get_folder_structure(request.folders, Some(user_id))
+        .get_folder_structure(request.folders, Some(claims.user.user_id))
         .await?;
 
-    let response =
-        handle_multi_download(state, request.files, folder_structure, Some(user_id), None).await;
+    let response = handle_multi_download(
+        state,
+        request.files,
+        folder_structure,
+        Some(claims.user.user_id),
+        None,
+    )
+    .await;
     response
 }
 
@@ -486,7 +497,7 @@ async fn multi_download_get_file(
         return Ok(Some(file));
     }
 
-    return Ok(None);
+    Ok(None)
 }
 
 async fn write_file_to_zip(

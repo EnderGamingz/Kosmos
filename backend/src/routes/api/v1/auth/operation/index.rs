@@ -1,21 +1,18 @@
-use axum::extract::State;
-use axum::Json;
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::model::operation::OperationModelDTO;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
 
 pub async fn get_all_operations(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<Vec<OperationModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let operations = state
         .operation_service
-        .get_operations_by_user_id(user_id, 20)
+        .get_operations_by_user_id(claims.user.user_id, 20)
         .await?
         .into_iter()
         .map(OperationModelDTO::from)

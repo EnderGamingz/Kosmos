@@ -1,21 +1,22 @@
-use axum::extract::State;
-use axum::Json;
-use serde::Serialize;
-use tower_sessions::Session;
-use ts_rs::TS;
 use crate::model::album::AlbumModelWithShareInfoDTO;
 use crate::model::file::FileModelWithShareInfoDTO;
 use crate::model::folder::FolderModelWithShareInfoDTO;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::{SessionService, UserId};
+use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Serialize;
+use ts_rs::TS;
 
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct SharedItems {
     files: Vec<FileModelWithShareInfoDTO>,
     folders: Vec<FolderModelWithShareInfoDTO>,
-    albums: Vec<AlbumModelWithShareInfoDTO>
+    albums: Vec<AlbumModelWithShareInfoDTO>,
 }
 
 impl SharedItems {
@@ -40,31 +41,36 @@ impl SharedItems {
             .map(FolderModelWithShareInfoDTO::from)
             .collect::<Vec<_>>();
 
-        let albums = state.share_service
+        let albums = state
+            .share_service
             .get_shared_albums(user_id)
             .await?
             .into_iter()
             .map(AlbumModelWithShareInfoDTO::from)
             .collect::<Vec<_>>();
 
-        Ok(SharedItems { files, folders, albums })
+        Ok(SharedItems {
+            files,
+            folders,
+            albums,
+        })
     }
 }
 
 pub async fn get_shared_items(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<SharedItems>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let shared = SharedItems::get_shared_files_and_folders(&state, &user_id, false).await?;
+    let shared =
+        SharedItems::get_shared_files_and_folders(&state, &claims.user.user_id, false).await?;
     Ok(Json(shared))
 }
 
 pub async fn get_targeted_shared_items_for_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<SharedItems>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let shared = SharedItems::get_shared_files_and_folders(&state, &user_id, true).await?;
+    let shared =
+        SharedItems::get_shared_files_and_folders(&state, &claims.user.user_id, true).await?;
     Ok(Json(shared))
 }

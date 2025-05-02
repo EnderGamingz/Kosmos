@@ -1,19 +1,18 @@
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
-use tower_sessions::Session;
+use axum_jwt_auth::Claims;
+use crate::model::jwt::JwtClaims;
 
 pub async fn favorite_folder(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(folder_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let folder = state
         .folder_service
-        .check_folder_exists_by_id(folder_id, user_id)
+        .check_folder_exists_by_id(folder_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "Folder not found".to_string(),

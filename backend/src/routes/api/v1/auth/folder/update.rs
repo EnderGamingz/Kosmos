@@ -1,12 +1,12 @@
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use regex::Regex;
 use serde::Deserialize;
-use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct FolderRecolorPayload {
@@ -14,19 +14,17 @@ pub struct FolderRecolorPayload {
 }
 
 pub async fn recolor_folder(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(folder_id): Path<i64>,
     Json(payload): Json<FolderRecolorPayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let color = if let Some(color) = &payload.color {
         color
     } else {
         state
             .folder_service
-            .update_folder_color(user_id, folder_id, None)
+            .update_folder_color(claims.user.user_id, folder_id, None)
             .await?;
         return Ok(AppSuccess::UPDATED);
     };
@@ -41,7 +39,7 @@ pub async fn recolor_folder(
 
     state
         .folder_service
-        .update_folder_color(user_id, folder_id, Some(color))
+        .update_folder_color(claims.user.user_id, folder_id, Some(color))
         .await?;
 
     Ok(AppSuccess::UPDATED)

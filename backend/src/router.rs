@@ -3,12 +3,11 @@ use crate::session::KosmosSession;
 use crate::state::AppState;
 use axum::extract::DefaultBodyLimit;
 use axum::routing::{delete, get, patch, post, put};
-use axum::{middleware, Router};
+use axum::Router;
 use tower_http::cors::CorsLayer;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
 use tracing::Level;
-use crate::routes::api::v1::auth::middleware::authorization_middleware;
 
 pub type KosmosRouter = Router<AppState>;
 
@@ -246,7 +245,7 @@ fn  get_auth_router() -> KosmosRouter {
         .nest("/admin", get_admin_router());
 
     Router::new()
-        .nest("/auth", auth).layer(middleware::from_fn(authorization_middleware))
+        .nest("/auth", auth)
         .nest("/auth", un_auth)
 }
 

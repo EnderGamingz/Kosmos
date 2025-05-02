@@ -1,9 +1,9 @@
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
-use tower_sessions::Session;
 use ts_rs::TS;
 use validator::Validate;
 
@@ -11,10 +11,10 @@ use crate::model::folder::{FolderModelDTO, SimpleDirectoryDTO};
 use crate::model::internal::entity_id::{EntityId, OptionEntityId};
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceExplorerUpdate;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::{GetFilesSortParams, MoveParams, RenameParams};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -33,13 +33,11 @@ pub struct FolderResponse {
 }
 
 pub async fn get_folders(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Query(sort_params): Query<GetFilesSortParams<SortByFolders>>,
     folder_id: Result<Path<i64>, PathRejection>,
 ) -> Result<Json<FolderResponse>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let parent = match folder_id {
         Ok(Path(id)) => Some(id),
         Err(_) => None,
@@ -47,7 +45,7 @@ pub async fn get_folders(
 
     let folders: Vec<FolderModelDTO> = state
         .folder_service
-        .get_folders(user_id, parent, sort_params)
+        .get_folders(claims.user.user_id, parent, sort_params)
         .await?
         .into_iter()
         .map(FolderModelDTO::from)
@@ -65,7 +63,7 @@ pub async fn get_folders(
         Some(
             state
                 .folder_service
-                .get_parent_directories(folder, Some(user_id), None)
+                .get_parent_directories(folder, Some(claims.user.user_id), None)
                 .await?
                 .into_iter()
                 .map(SimpleDirectoryDTO::from)
@@ -89,8 +87,8 @@ pub struct FolderRequest {
 }
 
 pub async fn create_folder(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     folder_id: Result<Path<i64>, PathRejection>,
     Valid(Json(payload)): Valid<Json<FolderRequest>>,
 ) -> ResponseResult {
@@ -98,10 +96,9 @@ pub async fn create_folder(
         Ok(Path(id)) => Some(id),
         Err(_) => None,
     };
-    let user_id = SessionService::check_logged_in(&session).await?;
     let does_folder_exist = state
         .folder_service
-        .check_folder_exists_by_name(&payload.name, user_id, folder_id)
+        .check_folder_exists_by_name(&payload.name, claims.user.user_id, folder_id)
         .await?;
 
     if does_folder_exist.is_some() {
@@ -112,14 +109,14 @@ pub async fn create_folder(
 
     let folder = state
         .folder_service
-        .create_folder(user_id, payload.name, folder_id)
+        .create_folder(claims.user.user_id, payload.name, folder_id)
         .await?
         .to_string();
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: folder_id.map(|f| f.to_string()),
@@ -133,16 +130,14 @@ pub async fn create_folder(
 }
 
 pub async fn move_folder(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(folder_id): Path<i64>,
     Query(params): Query<MoveParams>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let folder = match state
         .folder_service
-        .check_folder_exists_by_id(folder_id, user_id)
+        .check_folder_exists_by_id(folder_id, claims.user.user_id)
         .await?
     {
         None => {
@@ -156,7 +151,7 @@ pub async fn move_folder(
     if let Some(move_to_folder) = params.folder_id {
         if !state
             .folder_service
-            .check_folder_exists_by_id(move_to_folder, user_id)
+            .check_folder_exists_by_id(move_to_folder, claims.user.user_id)
             .await?
             .is_some()
         {
@@ -179,13 +174,13 @@ pub async fn move_folder(
 
     state
         .folder_service
-        .move_folder(user_id, folder_id, params.folder_id)
+        .move_folder(claims.user.user_id, folder_id, params.folder_id)
         .await?;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
                 important: false,
@@ -204,12 +199,10 @@ pub struct MultiMovePayload {
 }
 
 pub async fn multi_move(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<MultiMovePayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let file_ids = payload
         .files
         .into_iter()
@@ -233,7 +226,7 @@ pub async fn multi_move(
     state
         .folder_service
         .multi_move_items(
-            user_id,
+            claims.user.user_id,
             file_ids,
             folder_ids,
             target_folder_id,
@@ -244,7 +237,7 @@ pub async fn multi_move(
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: target_folder_id.map(|f| f.to_string()),
@@ -258,16 +251,14 @@ pub async fn multi_move(
 }
 
 pub async fn rename_folder(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(folder_id): Path<i64>,
     Valid(Json(payload)): Valid<Json<RenameParams>>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let folder = state
         .folder_service
-        .check_folder_exists_by_id(folder_id, user_id)
+        .check_folder_exists_by_id(folder_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "Folder not found".to_string(),
@@ -275,13 +266,18 @@ pub async fn rename_folder(
 
     state
         .folder_service
-        .rename_folder(user_id, folder_id, payload.name, folder.parent_id)
+        .rename_folder(
+            claims.user.user_id,
+            folder_id,
+            payload.name,
+            folder.parent_id,
+        )
         .await?;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: folder.parent_id.map(|f| f.to_string()),

@@ -1,9 +1,8 @@
 use crate::model::role::{Permission, Role};
 use crate::model::user::UserModel;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
 use crate::services::user_service::UserService;
-use tower_sessions::Session;
+use crate::model::jwt::JwtClaims;
 
 #[derive(Clone)]
 pub struct PermissionService {
@@ -19,11 +18,10 @@ impl PermissionService {
 
     pub async fn verify_permission(
         &self,
-        session: &Session,
+        jwt_claims: &JwtClaims,
         permission: Permission,
     ) -> Result<UserModel, AppError> {
-        let user_id = SessionService::check_logged_in(&session).await?;
-        let user = self.user_service.get_auth_user(user_id).await?;
+        let user = self.user_service.get_auth_user(jwt_claims.user.user_id).await?;
         let role = Role::new(user.role);
 
         let has_permissions = role.has_permission(permission);
@@ -39,11 +37,10 @@ impl PermissionService {
 
     pub async fn verify_permissions(
         &self,
-        session: &Session,
+        jwt_claims: &JwtClaims,
         permissions: Vec<Permission>,
     ) -> Result<UserModel, AppError> {
-        let user_id = SessionService::check_logged_in(&session).await?;
-        let user = self.user_service.get_auth_user(user_id).await?;
+        let user = self.user_service.get_auth_user(jwt_claims.user.user_id).await?;
         let role = Role::new(user.role);
 
         let has_permissions = role.has_permissions(permissions);

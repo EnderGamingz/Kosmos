@@ -1,13 +1,13 @@
 use crate::model::chat::message::ChatMessageModelDTO;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::services::chat_service::MessageQueryDTO;
-use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, Query, State};
 use axum::Json;
-use std::collections::HashMap;
+use axum_jwt_auth::Claims;
 use axum_valid::Valid;
-use tower_sessions::Session;
+use std::collections::HashMap;
 
 async fn get_messages_by_chat(
     state: &AppState,
@@ -73,17 +73,16 @@ async fn get_messages_by_chat(
 }
 
 pub async fn get_messages_for_personal_chat(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(other_person_id): Path<i64>,
     Valid(Query(params)): Valid<Query<MessageQueryDTO>>,
 ) -> Result<Json<Vec<ChatMessageModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let chat = state
         .contact_service
         .chat_service
-        .get_personal_chat_optional(user_id, other_person_id)
+        .get_personal_chat_optional(claims.user.user_id, other_person_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             error: "Chat not found".to_string(),
@@ -95,17 +94,16 @@ pub async fn get_messages_for_personal_chat(
 }
 
 pub async fn get_messages_for_group_chat(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(chat_id): Path<i64>,
     Valid(Query(params)): Valid<Query<MessageQueryDTO>>,
 ) -> Result<Json<Vec<ChatMessageModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let chat = state
         .contact_service
         .chat_service
-        .get_group_chat_optional_from_user(user_id, chat_id)
+        .get_group_chat_optional_from_user(claims.user.user_id, chat_id)
         .await?
         .ok_or_else(|| AppError::BadRequest {
             error: Some("Chat not found".to_string()),

@@ -1,3 +1,4 @@
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::session_service::SessionService;
@@ -5,6 +6,7 @@ use crate::state::KosmosState;
 use crate::utils::auth;
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use tower_sessions::Session;
 
 #[derive(serde::Deserialize)]
@@ -13,12 +15,15 @@ pub struct DeleteSelfUserRequest {
 }
 
 pub async fn delete_self(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
     session: Session,
     Json(payload): Json<DeleteSelfUserRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let user = state.user_service.get_auth_user(user_id).await?;
+    let user = state
+        .user_service
+        .get_auth_user(claims.user.user_id)
+        .await?;
 
     let password_flag = auth::verify_password(payload.password.as_str(), &user.password_hash)?;
 
@@ -30,7 +35,7 @@ pub async fn delete_self(
 
     let files = state
         .file_service
-        .get_files_for_user_delete(user_id)
+        .get_files_for_user_delete(claims.user.user_id)
         .await?;
 
     for file in files {
@@ -40,9 +45,12 @@ pub async fn delete_self(
             .await?;
     }
 
-    state.folder_service.delete_all_folders(user_id).await?;
+    state
+        .folder_service
+        .delete_all_folders(claims.user.user_id)
+        .await?;
 
-    state.user_service.delete_user(user_id).await?;
+    state.user_service.delete_user(claims.user.user_id).await?;
 
     SessionService::flush_session(&session).await;
 

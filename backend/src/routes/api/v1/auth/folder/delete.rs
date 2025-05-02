@@ -1,14 +1,15 @@
 use crate::model::internal::file_type::FileType;
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceExplorerUpdate;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::{SessionService, UserId};
+use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct MultiDeleteRawBody {
@@ -22,12 +23,10 @@ pub struct MultiDeleteBody {
 }
 
 pub async fn multi_delete(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(body): Json<MultiDeleteRawBody>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let body = MultiDeleteBody {
         folders: body
             .folders
@@ -54,13 +53,13 @@ pub async fn multi_delete(
     };
 
     for folder_id in body.folders {
-        delete_folder_with_structure(&state, folder_id, user_id).await?;
+        delete_folder_with_structure(&state, folder_id, claims.user.user_id).await?;
     }
 
     for file_id in body.files {
         let file = state
             .file_service
-            .check_file_exists_by_id(file_id, user_id)
+            .check_file_exists_by_id(file_id, claims.user.user_id)
             .await?
             .ok_or(AppError::NotFound {
                 error: "File not found".to_string(),
@@ -74,10 +73,10 @@ pub async fn multi_delete(
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
-                important: false
+                important: false,
             },
         )
         .await;
@@ -126,15 +125,14 @@ async fn delete_folder_with_structure(
 }
 
 pub async fn delete_folder(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(folder_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     if state
         .folder_service
-        .check_folder_exists_by_id(folder_id, user_id)
+        .check_folder_exists_by_id(folder_id, claims.user.user_id)
         .await?
         .is_none()
     {
@@ -158,10 +156,10 @@ pub async fn delete_folder(
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
-                important: false
+                important: false,
             },
         )
         .await;

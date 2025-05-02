@@ -1,12 +1,11 @@
-use axum::extract::{Path, State};
-use axum::Json;
-use serde::Deserialize;
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use crate::utils::auth;
+use axum::extract::{Path, State};
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct UpdateShareRequest {
@@ -14,15 +13,14 @@ pub struct UpdateShareRequest {
 }
 
 pub async fn update_share(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(share_id): Path<i64>,
     Json(payload): Json<UpdateShareRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let share = state
         .share_service
-        .get_share_for_user(share_id, user_id)
+        .get_share_for_user(share_id, claims.user.user_id)
         .await?;
 
     if let Some(password) = payload.password {

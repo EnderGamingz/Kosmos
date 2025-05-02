@@ -1,13 +1,14 @@
-use axum::extract::State;
-use axum::Json;
-use serde::Serialize;
-use tower_sessions::Session;
-use ts_rs::TS;
 use crate::model::file::FileModelDTO;
+use crate::model::jwt::JwtClaims;
 use crate::model::usage::{FileTypeSumDataDTO, UsageSumDataDTO};
 use crate::response::error_handling::AppError;
-use crate::services::session_service::{SessionService, UserId};
+use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Serialize;
+use ts_rs::TS;
 
 #[derive(Serialize, TS)]
 #[ts(export)]
@@ -58,12 +59,10 @@ pub async fn get_usage_report_by_user_id(
 }
 
 pub async fn get_usage_report(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<DiskUsageReport>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    let usage = get_usage_report_by_user_id(&state, user_id).await?;
+    let usage = get_usage_report_by_user_id(&state, claims.user.user_id).await?;
 
     Ok(Json(usage))
 }

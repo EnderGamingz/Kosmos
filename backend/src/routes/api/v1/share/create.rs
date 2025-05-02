@@ -1,14 +1,14 @@
 use crate::model::internal::share_type::ShareType;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use crate::utils::auth;
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
-use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct ShareFilePublicRequest {
@@ -29,15 +29,17 @@ impl ShareFilePublicRequest {
 }
 
 pub async fn share_file_public(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(mut payload): Json<ShareFilePublicRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let file_id = payload.get_file_id()?;
 
     // Check if file exists by the logged-in user
-    let file = state.file_service.get_file(file_id, Some(user_id)).await?;
+    let file = state
+        .file_service
+        .get_file(file_id, Some(claims.user.user_id))
+        .await?;
 
     if let Some(password) = payload.password {
         let hashed_password = auth::hash_password(password.as_str())?;
@@ -46,7 +48,7 @@ pub async fn share_file_public(
 
     let uuid = state
         .share_service
-        .create_public_file_share(file.id, payload, user_id)
+        .create_public_file_share(file.id, payload, claims.user.user_id)
         .await?
         .uuid;
 
@@ -74,15 +76,14 @@ impl ShareFolderPublicRequest {
 }
 
 pub async fn share_folder_public(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(mut payload): Json<ShareFolderPublicRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let folder_id = payload.get_folder_id()?;
     let folder = state.folder_service.get_folder(folder_id).await?;
 
-    if folder.user_id != user_id {
+    if folder.user_id != claims.user.user_id {
         return Err(AppError::NotAllowed {
             error: "Not allowed".to_string(),
         });
@@ -111,7 +112,7 @@ pub async fn share_folder_public(
 
     let uuid = state
         .share_service
-        .create_public_folder_share(folder.id, payload, user_id)
+        .create_public_folder_share(folder.id, payload, claims.user.user_id)
         .await?
         .uuid;
 
@@ -137,14 +138,16 @@ impl ShareFilePrivateRequest {
 }
 
 pub async fn share_file_private(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<ShareFilePrivateRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let file_id = payload.get_file_id()?;
 
-    let file = state.file_service.get_file(file_id, Some(user_id)).await?;
+    let file = state
+        .file_service
+        .get_file(file_id, Some(claims.user.user_id))
+        .await?;
 
     let target_user = match state
         .user_service
@@ -157,14 +160,14 @@ pub async fn share_file_private(
 
     let is_contact_with_user = state
         .contact_service
-        .check_users_are_contacts(user_id, target_user.id)
+        .check_users_are_contacts(claims.user.user_id, target_user.id)
         .await?;
 
     if !is_contact_with_user {
         Err(AppError::UserNotFound)?;
     }
 
-    if user_id == target_user.id {
+    if claims.user.user_id == target_user.id {
         return Err(AppError::BadRequest {
             error: Some("Cannot share with yourself".to_string()),
         });
@@ -172,7 +175,7 @@ pub async fn share_file_private(
 
     let existing_share = state
         .share_service
-        .get_private_file_share_by_target(target_user.id, user_id, file.id)
+        .get_private_file_share_by_target(target_user.id, claims.user.user_id, file.id)
         .await?;
 
     if existing_share.is_some() {
@@ -183,7 +186,7 @@ pub async fn share_file_private(
 
     let share = state
         .share_service
-        .create_private_file_share(file.id, user_id, target_user.id)
+        .create_private_file_share(file.id, claims.user.user_id, target_user.id)
         .await?;
 
     Ok(AppSuccess::CREATED {
@@ -208,11 +211,10 @@ impl ShareFolderPrivateRequest {
 }
 
 pub async fn share_folder_private(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<ShareFolderPrivateRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let folder_id = payload.get_folder_id()?;
 
     let folder = state.folder_service.get_folder(folder_id).await?;
@@ -226,7 +228,7 @@ pub async fn share_folder_private(
         Some(u) => u,
     };
 
-    if user_id == target_user.id {
+    if claims.user.user_id == target_user.id {
         return Err(AppError::BadRequest {
             error: Some("Cannot share with yourself".to_string()),
         });
@@ -236,7 +238,7 @@ pub async fn share_folder_private(
     // Using it would not allow folders to be shared with something already shared inside it.
     /*    let existing_share = state
             .share_service
-            .get_private_share_by_target(target_user.id, user_id)
+            .get_private_share_by_target(target_user.id, claims.user.user_id)
             .await?;
     */
     let is_folder_already_shared = state
@@ -258,7 +260,7 @@ pub async fn share_folder_private(
 
     let share = state
         .share_service
-        .create_private_folder_share(folder.id, user_id, target_user.id)
+        .create_private_folder_share(folder.id, claims.user.user_id, target_user.id)
         .await?;
 
     Ok(AppSuccess::CREATED {
@@ -285,16 +287,15 @@ impl ShareAlbumPublicRequest {
 }
 
 pub async fn share_album_public(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(mut payload): Json<ShareAlbumPublicRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let album_id = payload.get_album_id()?;
 
     let album = state
         .album_service
-        .get_album_by_id(Some(user_id), album_id)
+        .get_album_by_id(Some(claims.user.user_id), album_id)
         .await?;
 
     if let Some(password) = payload.password {
@@ -304,7 +305,7 @@ pub async fn share_album_public(
 
     let uuid = state
         .share_service
-        .create_public_album_share(album.id, payload, user_id)
+        .create_public_album_share(album.id, payload, claims.user.user_id)
         .await?
         .uuid;
 
@@ -330,16 +331,15 @@ impl ShareAlbumPrivateRequest {
 }
 
 pub async fn share_album_private(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<ShareAlbumPrivateRequest>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let album_id = payload.get_album_id()?;
 
     let album = state
         .album_service
-        .get_album_by_id(Some(user_id), album_id)
+        .get_album_by_id(Some(claims.user.user_id), album_id)
         .await?;
 
     let target_user = match state
@@ -351,7 +351,7 @@ pub async fn share_album_private(
         Some(u) => Ok(u),
     }?;
 
-    if user_id == target_user.id {
+    if claims.user.user_id == target_user.id {
         return Err(AppError::BadRequest {
             error: Some("Cannot share with yourself".to_string()),
         });
@@ -359,7 +359,7 @@ pub async fn share_album_private(
 
     if state
         .share_service
-        .get_private_album_share_by_target(target_user.id, user_id, album.id)
+        .get_private_album_share_by_target(target_user.id, claims.user.user_id, album.id)
         .await?
         .is_some()
     {
@@ -370,7 +370,7 @@ pub async fn share_album_private(
 
     let share = state
         .share_service
-        .create_private_album_share(album.id, user_id, target_user.id)
+        .create_private_album_share(album.id, claims.user.user_id, target_user.id)
         .await?;
 
     Ok(AppSuccess::CREATED {

@@ -1,14 +1,14 @@
-use axum::extract::{Path, State};
-use axum::Json;
-use serde::Deserialize;
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::model::role::{Permission, Role};
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::services::user_service::UpdateUserRequest;
 use crate::state::KosmosState;
 use crate::utils::{auth, string, validation};
+use axum::extract::{Path, State};
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct AdminUpdateUserPayload {
@@ -21,14 +21,14 @@ pub struct AdminUpdateUserPayload {
 }
 
 pub async fn update_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(user_id): Path<i64>,
     Json(payload): Json<AdminUpdateUserPayload>,
 ) -> ResponseResult {
     let admin = state
         .permission_service
-        .verify_permission(&session, Permission::UpdateUser)
+        .verify_permission(&claims, Permission::UpdateUser)
         .await?;
 
     let user = state.user_service.get_auth_user(user_id).await?;
@@ -70,7 +70,10 @@ pub async fn update_user(
             });
         }
 
-        state.user_service.update_role(user.id, selected_role).await?;
+        state
+            .user_service
+            .update_role(user.id, selected_role)
+            .await?;
     }
 
     if let Some(new_password) = payload.new_password {

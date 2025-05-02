@@ -1,16 +1,16 @@
 use crate::model::internal::entity_id::EntityId;
+use crate::model::jwt::JwtClaims;
 use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::services::user_service::UpdateUserRequest;
 use crate::state::KosmosState;
 use crate::utils::{auth, string, validation};
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use axum_valid::Valid;
 use serde::Deserialize;
-use tower_sessions::Session;
 use validator::Validate;
 
 #[derive(Deserialize, Validate)]
@@ -21,12 +21,14 @@ pub struct UpdateUserPayload {
 }
 
 pub async fn update_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Valid(Json(payload)): Valid<Json<UpdateUserPayload>>,
 ) -> Result<Json<UserModelDTO>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let user = state.user_service.get_auth_user(user_id).await?;
+    let user = state
+        .user_service
+        .get_auth_user(claims.user.user_id)
+        .await?;
 
     let mut user_update = UpdateUserRequest {
         username: user.username.clone(),
@@ -57,7 +59,10 @@ pub async fn update_user(
         user_update.full_name = Some(full_name);
     }
 
-    let updated_user = state.user_service.update_user(user_id, user_update).await?;
+    let updated_user = state
+        .user_service
+        .update_user(claims.user.user_id, user_update)
+        .await?;
 
     Ok(Json(updated_user.into()))
 }
@@ -69,23 +74,25 @@ pub struct PasswordUpdatePayload {
 }
 
 pub async fn update_user_password(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Valid(Json(payload)): Valid<Json<PasswordUpdatePayload>>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let user = state.user_service.get_auth_user(user_id).await?;
+    let user = state
+        .user_service
+        .get_auth_user(claims.user.user_id)
+        .await?;
 
     validation::validate_password(&payload.new_password)?;
 
-    // Make sure old password is not the same as new password
+    // Make sure the old password is different from the new password
     if payload.new_password == payload.old_password {
         return Err(AppError::BadRequest {
             error: Some("New password cannot be the same as old password".to_string()),
         });
     }
 
-    // Make sure old password is correct
+    // Make sure the old password is correct
     let password_flag = auth::verify_password(&payload.old_password, &user.password_hash)?;
 
     if !password_flag {
@@ -100,7 +107,7 @@ pub async fn update_user_password(
     // Update password
     state
         .user_service
-        .update_user_password(user_id, new_password_hash)
+        .update_user_password(claims.user.user_id, new_password_hash)
         .await?;
 
     Ok(AppSuccess::UPDATED)
@@ -112,12 +119,14 @@ pub struct UpdateAvatarPayload {
 }
 
 pub async fn update_user_avatar_id(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Valid(Json(payload)): Valid<Json<UpdateAvatarPayload>>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let user = state.user_service.get_auth_user(user_id).await?;
+    let user = state
+        .user_service
+        .get_auth_user(claims.user.user_id)
+        .await?;
 
     if let Some(file_id) = payload.file_id {
         let file = state
@@ -132,12 +141,12 @@ pub async fn update_user_avatar_id(
 
         state
             .user_service
-            .update_user_avatar_id(user_id, Some(file_id.into()))
+            .update_user_avatar_id(claims.user.user_id, Some(file_id.into()))
             .await?;
     } else if user.avatar_image_id.is_some() {
         state
             .user_service
-            .update_user_avatar_id(user_id, None)
+            .update_user_avatar_id(claims.user.user_id, None)
             .await?;
     }
 

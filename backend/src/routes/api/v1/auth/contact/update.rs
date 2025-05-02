@@ -1,15 +1,15 @@
 use crate::model::internal::contact_request_status::ContactRequestStatus;
+use crate::model::internal::entity_id::EntityId;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
+use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 use crate::state::KosmosState;
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
-use crate::model::internal::entity_id::EntityId;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
 
 #[derive(Deserialize)]
 pub struct UpdateReceivedContactRequestDTO {
@@ -18,11 +18,10 @@ pub struct UpdateReceivedContactRequestDTO {
 }
 
 pub async fn update_received_contact_request(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<UpdateReceivedContactRequestDTO>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let request = state
         .contact_service
@@ -38,7 +37,7 @@ pub async fn update_received_contact_request(
         });
     }
 
-    if request.request_user_id != user_id {
+    if request.request_user_id != claims.user.user_id {
         return Err(AppError::NotFound {
             error: "Contact request not found".to_string(),
         });
@@ -59,7 +58,7 @@ pub async fn update_received_contact_request(
 
     state
         .contact_service
-        .update_contact_request_to_user(payload.id.into(), user_id, new_state)
+        .update_contact_request_to_user(payload.id.into(), claims.user.user_id, new_state)
         .await?;
 
     notify_attention_status_for_user(&state, request.request_user_id).await?;

@@ -1,20 +1,17 @@
-use axum::extract::{Path, State};
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::{Path, State};
+use axum_jwt_auth::Claims;
 
 pub async fn delete_passkey(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(passkey_id): Path<i32>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     state
         .passkey_service
-        .delete_passkey(user_id, passkey_id)
+        .delete_passkey(claims.user.user_id, passkey_id)
         .await?;
 
     Ok(AppSuccess::DELETED)

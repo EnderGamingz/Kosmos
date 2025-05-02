@@ -5,9 +5,11 @@ use axum::extract::{Path, State};
 use axum::response::{IntoResponse, Response};
 use std::path::Path as StdPath;
 use std::sync::Arc;
+use axum_jwt_auth::Claims;
 use tower_sessions::Session;
 use crate::model::internal::file_type::FileType;
 use crate::model::internal::preview_status::PreviewStatus;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::share::{
@@ -17,7 +19,6 @@ use crate::routes::api::v1::share::{
 use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
 use crate::services::file_service::FileService;
 use crate::services::image_service::ImageService;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
 pub async fn get_image_format_data(
@@ -65,14 +66,13 @@ pub async fn get_image_format_data(
 }
 
 pub async fn get_image_by_format(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path((file_id, format)): Path<(i64, i16)>,
 ) -> Result<Response, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let file_data = state
         .file_service
-        .check_file_exists_by_id(file_id, user_id)
+        .check_file_exists_by_id(file_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "File not found".to_string(),
@@ -150,15 +150,14 @@ pub async fn get_share_image_by_format(
 }
 
 pub async fn reprocess_images_from_operation(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(operation_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let operation = state
         .operation_service
-        .get_operation_for_user_by_id(operation_id, user_id)
+        .get_operation_for_user_by_id(operation_id, claims.user.user_id)
         .await?;
 
 
@@ -202,7 +201,7 @@ pub async fn reprocess_images_from_operation(
             let _ = image_service_clone
                 .generate_all_formats(
                     metadata,
-                    user_id.clone(),
+                    claims.user.user_id,
                     Arc::new(state.clone()),
                     Some(operation.id),
                 )

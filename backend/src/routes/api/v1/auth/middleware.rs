@@ -6,7 +6,7 @@ use axum::http;
 use axum::middleware::Next;
 use axum::response::Response;
 
-pub async fn authorization_middleware(
+pub async fn optional_authorization_middleware(
     mut req: Request,
     next: Next,
 ) -> Result<Response<Body>, AppError> {

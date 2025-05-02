@@ -1,13 +1,14 @@
-use serde::Serialize;
-use axum::extract::State;
-use tower_sessions::Session;
-use axum::Json;
-use ts_rs::TS;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::{SessionService, UserId};
+use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Serialize;
+use ts_rs::TS;
 
-#[derive(Serialize,TS)]
+#[derive(Serialize, TS)]
 #[ts(export)]
 pub struct DiskUsageStats {
     #[ts(type = "number")]
@@ -27,11 +28,13 @@ pub async fn get_usage_stats_by_user_id(
     let active_usage = state
         .usage_service
         .get_user_storage_usage(user_id, Some(false))
-        .await?.get_sum();
+        .await?
+        .get_sum();
     let bin_storage = state
         .usage_service
         .get_user_storage_usage(user_id, Some(true))
-        .await?.get_sum();
+        .await?
+        .get_sum();
     let total_usage = active_usage.clone() + bin_storage.clone();
     let storage_limit = state.user_service.get_user_storage_limit(user_id).await?;
 
@@ -44,12 +47,10 @@ pub async fn get_usage_stats_by_user_id(
 }
 
 pub async fn get_usage_stats(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<DiskUsageStats>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    let usage = get_usage_stats_by_user_id(&state, user_id).await?;
+    let usage = get_usage_stats_by_user_id(&state, claims.user.user_id).await?;
 
     Ok(Json(usage))
 }

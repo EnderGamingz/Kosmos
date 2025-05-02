@@ -1,24 +1,22 @@
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceChatUpdate;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::chat::utils::notify_group_chat_members;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
-use tower_sessions::Session;
+use axum_jwt_auth::Claims;
 
 pub async fn leave_group_chat(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(chat_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     state
         .contact_service
         .chat_service
-        .get_group_chat_optional_from_user(user_id, chat_id)
+        .get_group_chat_optional_from_user(claims.user.user_id, chat_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             error: "Chat not found".to_string(),
@@ -27,7 +25,7 @@ pub async fn leave_group_chat(
     state
         .contact_service
         .chat_service
-        .remove_user_from_chat(user_id, chat_id)
+        .remove_user_from_chat(claims.user.user_id, chat_id)
         .await?;
 
     let remaining_members = state
@@ -50,7 +48,13 @@ pub async fn leave_group_chat(
         }),
         important: true,
     };
-    notify_group_chat_members(&state, chat_id, user_id.into(), presence_message).await?;
+    notify_group_chat_members(
+        &state,
+        chat_id,
+        claims.user.user_id.into(),
+        presence_message,
+    )
+    .await?;
 
     Ok(AppSuccess::OK { data: None })
 }

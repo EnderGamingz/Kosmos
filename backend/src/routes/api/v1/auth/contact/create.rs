@@ -1,12 +1,12 @@
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::contact::index::notify_attention_status_for_user;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::State;
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
 
 #[derive(Deserialize)]
 pub struct ContactRequestDTO {
@@ -14,19 +14,17 @@ pub struct ContactRequestDTO {
 }
 
 pub async fn send_contact_request(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<ContactRequestDTO>,
 ) -> ResponseResult {
-    let from_user_id = SessionService::check_logged_in(&session).await?;
-
     let to_user = state
         .user_service
         .get_user_by_username_optional(&payload.username)
         .await?
         .ok_or(AppError::UserNotFound)?;
 
-    if from_user_id == to_user.id {
+    if claims.user.user_id == to_user.id {
         return Err(AppError::BadRequest {
             error: Some("You can't send a contact request to yourself".to_string()),
         });
@@ -34,7 +32,7 @@ pub async fn send_contact_request(
 
     let are_contacts = state
         .contact_service
-        .check_users_are_contacts(from_user_id, to_user.id)
+        .check_users_are_contacts(claims.user.user_id, to_user.id)
         .await?;
 
     if are_contacts {
@@ -45,7 +43,7 @@ pub async fn send_contact_request(
 
     let is_request_sent = state
         .contact_service
-        .check_users_have_pending_request(from_user_id, to_user.id)
+        .check_users_have_pending_request(claims.user.user_id, to_user.id)
         .await?;
 
     if is_request_sent {
@@ -56,7 +54,7 @@ pub async fn send_contact_request(
 
     state
         .contact_service
-        .create_contact_request(from_user_id, to_user.id)
+        .create_contact_request(claims.user.user_id, to_user.id)
         .await?;
 
     notify_attention_status_for_user(&state, to_user.id).await?;

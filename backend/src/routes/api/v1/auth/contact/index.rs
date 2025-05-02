@@ -3,14 +3,13 @@ use crate::model::internal::presence::messages::PresenceSocialUpdate;
 use crate::model::jwt::JwtClaims;
 use crate::model::profile::{ProfileContactModelDTO, ProfileContactPendingModelDTO};
 use crate::response::error_handling::AppError;
-use crate::services::session_service::{SessionService, UserId};
+use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Query, State};
 use axum::Json;
 use axum_jwt_auth::Claims;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
-use tower_sessions::Session;
 use ts_rs::TS;
 use validator::Validate;
 
@@ -44,14 +43,12 @@ pub struct ContactRequestsResponse {
 }
 
 pub async fn get_unhandled_contact_requests(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<ContactRequestsResponse>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let requests_sent = state
         .contact_service
-        .get_sent_requests_profiles(user_id)
+        .get_sent_requests_profiles(claims.user.user_id)
         .await?
         .into_iter()
         .map(|r| r.into())
@@ -59,7 +56,7 @@ pub async fn get_unhandled_contact_requests(
 
     let requests_received = state
         .contact_service
-        .get_received_requests_profiles(user_id)
+        .get_received_requests_profiles(claims.user.user_id)
         .await?
         .into_iter()
         .map(|r| r.into())
@@ -105,15 +102,13 @@ fn get_default_page() -> i64 {
 }
 
 pub async fn get_contacts_profiles(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Valid(Query(query)): Valid<Query<GetContactProfilesParamsDTO>>,
 ) -> Result<Json<Vec<ProfileContactModelDTO>>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let profiles = state
         .contact_service
-        .get_contacts_profiles_by_search(user_id, query)
+        .get_contacts_profiles_by_search(claims.user.user_id, query)
         .await?
         .into_iter()
         .map(|c| c.into())

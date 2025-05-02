@@ -1,15 +1,16 @@
 use crate::model::file::FileModel;
+use crate::model::internal::zip::ZipInformation;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
+use crate::routes::api::v1::share::{get_share_file, is_allowed_to_access_share};
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use std::fs::File;
 use tokio::task::spawn_blocking;
 use tower_sessions::Session;
 use zip::ZipArchive;
-use crate::model::internal::zip::ZipInformation;
-use crate::routes::api::v1::share::{get_share_file, is_allowed_to_access_share};
 
 fn build_zip_information(paths: Vec<String>) -> ZipInformation {
     let mut root = ZipInformation::new("root");
@@ -70,12 +71,11 @@ pub async fn get_zip_information_for_file(
 }
 
 pub async fn get_zip_information(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
 ) -> Result<Json<ZipInformation>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-    let file_model = state.file_service.get_file(file_id, Some(user_id)).await?;
+    let file_model = state.file_service.get_file(file_id, Some(claims.user.user_id)).await?;
 
     let zip_info = get_zip_information_for_file(state, file_model).await?;
 

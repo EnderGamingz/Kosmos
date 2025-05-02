@@ -1,6 +1,9 @@
 use crate::constants::MAX_QUICK_SHARE_FILES;
 use crate::model::internal::file_type::FileType;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 use crate::model::internal::preview_status::PreviewStatus;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::routes::api::v1::auth::file::index::FILE_SIZE_LIMIT;
@@ -10,19 +13,16 @@ use crate::routes::api::v1::auth::file::upload::{
 use crate::routes::api::v1::share::create::ShareFolderPublicRequest;
 use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
 use crate::services::file_service::FileService;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use crate::utils::auth;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Multipart, Path, Query, State};
+use axum_jwt_auth::Claims;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::Arc;
-use tower_sessions::Session;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::model::internal::presence::messages::{PresenceExplorerUpdate};
 
 #[derive(Deserialize)]
 pub struct FileUploadParams {
@@ -63,16 +63,18 @@ impl FileUploadParams {
 }
 
 pub async fn upload_file(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Query(params): Query<FileUploadParams>,
     folder_id: Result<Path<i64>, PathRejection>,
     mut multipart: Multipart,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let folder = folder_id.ok().map(|Path(id)| id);
 
-    let user = state.user_service.get_auth_user(user_id).await?;
+    let user = state
+        .user_service
+        .get_auth_user(claims.user.user_id)
+        .await?;
 
     let mut storage_remaining =
         check_storage::check_user_storage_limit(&state.usage_service, user.id, user.storage_limit)
@@ -217,12 +219,18 @@ pub async fn upload_file(
         None
     };
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: folder.map(|f| f.to_string()),
-        }),
-        important: false,
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            claims.user.user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: folder.map(|f| f.to_string()),
+                }),
+                important: false,
+            },
+        )
+        .await;
 
     tracing::debug!("Pending {}", pending_image_formats.len());
 

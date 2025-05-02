@@ -1,18 +1,19 @@
+use crate::model::jwt::JwtClaims;
 use crate::model::role::Permission;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
-use tower_sessions::Session;
+use axum_jwt_auth::Claims;
 
 pub async fn delete_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(user_id): Path<i64>,
 ) -> ResponseResult {
     let admin = state
         .permission_service
-        .verify_permission(&session, Permission::DeleteUser)
+        .verify_permission(&claims, Permission::DeleteUser)
         .await?;
 
     let user_to_delete = state.user_service.get_auth_user(user_id).await?;

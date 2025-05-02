@@ -1,12 +1,11 @@
-use axum::extract::{Path, State};
-use axum::Json;
-use serde::Deserialize;
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::{Path, State};
+use axum::Json;
+use axum_jwt_auth::Claims;
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct UpdateAlbumPayload {
@@ -24,20 +23,23 @@ impl UpdateAlbumPayload {
 }
 
 pub async fn update_album(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<UpdateAlbumPayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let album = state
         .album_service
-        .get_album_by_id(Some(user_id), payload.get_id()?)
+        .get_album_by_id(Some(claims.user.user_id), payload.get_id()?)
         .await?;
 
     state
         .album_service
-        .update_album(user_id, album.id, payload.name, payload.description)
+        .update_album(
+            claims.user.user_id,
+            album.id,
+            payload.name,
+            payload.description,
+        )
         .await?;
 
     Ok(AppSuccess::UPDATED)
@@ -61,15 +63,14 @@ impl FilesToAlbumActionPayload {
 }
 
 pub async fn link_files_to_album(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(album_id): Path<i64>,
     Json(payload): Json<FilesToAlbumActionPayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let album = state
         .album_service
-        .get_album_by_id(Some(user_id), album_id)
+        .get_album_by_id(Some(claims.user.user_id), album_id)
         .await?;
 
     let files = state.album_service.get_album_files(album.id).await?;
@@ -77,8 +78,11 @@ pub async fn link_files_to_album(
     let file_ids = payload.get_file_ids()?;
     // Check all files
     for file_id in file_ids.iter() {
-        let file = state.file_service.get_file(*file_id, Some(user_id)).await?;
-        // Check if file is valid for album, e.g. if it is an image
+        let file = state
+            .file_service
+            .get_file(*file_id, Some(claims.user.user_id))
+            .await?;
+        // Check if the file is valid for an album, e.g., if it is an image
         if !file.is_valid_for_album() {
             return Err(AppError::BadRequest {
                 error: Some("File is not valid for album".to_string()),
@@ -91,11 +95,11 @@ pub async fn link_files_to_album(
         .add_files_to_album(album.id, &file_ids)
         .await?;
 
-    // Set preview file
+    // Set as the preview file
     if files.is_empty() && !file_ids.is_empty() {
         let _ = state
             .album_service
-            .set_preview_id(user_id, album.id, Some(file_ids[0]))
+            .set_preview_id(claims.user.user_id, album.id, Some(file_ids[0]))
             .await?;
     }
 
@@ -103,22 +107,24 @@ pub async fn link_files_to_album(
 }
 
 pub async fn unlink_file_from_album(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(album_id): Path<i64>,
     Json(payload): Json<FilesToAlbumActionPayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let album = state
         .album_service
-        .get_album_by_id(Some(user_id), album_id)
+        .get_album_by_id(Some(claims.user.user_id), album_id)
         .await?;
 
     let file_ids = payload.get_file_ids()?;
 
     // Check all files
     for file_id in file_ids.iter() {
-        state.file_service.get_file(*file_id, Some(user_id)).await?;
+        state
+            .file_service
+            .get_file(*file_id, Some(claims.user.user_id))
+            .await?;
     }
 
     state
@@ -126,12 +132,12 @@ pub async fn unlink_file_from_album(
         .remove_files_from_album(album.id, &file_ids)
         .await?;
 
-    // Remove preview file when it is removed from album
+    // Remove the preview file when it is removed from the album
     if let Some(preview_id) = album.preview_id {
         if file_ids.contains(&preview_id) {
             state
                 .album_service
-                .set_preview_id(user_id, album.id, None)
+                .set_preview_id(claims.user.user_id, album.id, None)
                 .await?;
         }
     }
@@ -155,15 +161,14 @@ impl UpdateAlbumPreviewPayload {
 }
 
 pub async fn update_album_preview(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(album_id): Path<i64>,
     Json(payload): Json<UpdateAlbumPreviewPayload>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
     let album = state
         .album_service
-        .get_album_by_id(Some(user_id), album_id)
+        .get_album_by_id(Some(claims.user.user_id), album_id)
         .await?;
 
     let new_preview_id = payload.get_file_id()?;
@@ -180,7 +185,7 @@ pub async fn update_album_preview(
 
     state
         .album_service
-        .set_preview_id(user_id, album.id, Some(new_preview_id))
+        .set_preview_id(claims.user.user_id, album.id, Some(new_preview_id))
         .await?;
 
     Ok(AppSuccess::UPDATED)

@@ -6,12 +6,12 @@ use crate::model::internal::presence::messages::{
 };
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Path, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
+use crate::model::jwt::JwtClaims;
 use crate::routes::api::v1::auth::chat::utils::notify_group_chat_members;
 
 async fn delete_message(
@@ -47,30 +47,29 @@ pub struct DeleteChatMessageDTO {
 }
 
 pub async fn delete_personal_message(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(other_user_id): Path<i64>,
     Json(payload): Json<DeleteChatMessageDTO>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let chat = state
         .contact_service
         .chat_service
-        .get_personal_chat_optional(user_id, other_user_id)
+        .get_personal_chat_optional(claims.user.user_id, other_user_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             error: "Chat not found".to_string(),
         })?;
 
     let message_id = payload.message_id.into();
-    delete_message(&state, &chat, message_id, user_id).await?;
+    delete_message(&state, &chat, message_id, claims.user.user_id).await?;
     state.contact_service.chat_service.set_latest_message_at_now(chat.id).await?;
 
     // Personal chat, only one partner,  chat_id for other user is self user id
     let presence_message = PresenceMessage {
         action: PresenceAction::DeletedChatMessage(PresenceDeletedChatMessage {
-            chat_id: user_id.to_string(),
+            chat_id: claims.user.user_id.to_string(),
             message_id: message_id.to_string(),
         }),
         important: false
@@ -84,24 +83,23 @@ pub async fn delete_personal_message(
 }
 
 pub async fn delete_group_message(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(chat_id): Path<i64>,
     Json(payload): Json<DeleteChatMessageDTO>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
 
     let chat = state
         .contact_service
         .chat_service
-        .get_group_chat_optional_from_user(user_id, chat_id)
+        .get_group_chat_optional_from_user(claims.user.user_id, chat_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             error: "Chat not found".to_string(),
         })?;
 
     let message_id = payload.message_id.into();
-    delete_message(&state, &chat, message_id, user_id).await?;
+    delete_message(&state, &chat, message_id, claims.user.user_id).await?;
     state.contact_service.chat_service.set_latest_message_at_now(chat.id).await?;
 
     // Group chat, broadcast to all members
@@ -113,7 +111,7 @@ pub async fn delete_group_message(
         important: false
     };
 
-    notify_group_chat_members(&state,chat.id, user_id, presence_message).await?;
+    notify_group_chat_members(&state,chat.id, claims.user.user_id, presence_message).await?;
 
     Ok(AppSuccess::DELETED)
 }

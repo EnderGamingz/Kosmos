@@ -1,25 +1,23 @@
 use crate::model::internal::entity_id::EntityId;
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceExplorerUpdate;
+use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use serde::Deserialize;
-use tower_sessions::Session;
 
 pub async fn mark_file_for_deletion(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let file = state
         .file_service
-        .check_file_exists_by_id(file_id, user_id)
+        .check_file_exists_by_id(file_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "File not found".to_string(),
@@ -33,13 +31,13 @@ pub async fn mark_file_for_deletion(
 
     state
         .file_service
-        .mark_file_for_deletion(file_id, user_id)
+        .mark_file_for_deletion(file_id, claims.user.user_id)
         .await?;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
@@ -58,23 +56,21 @@ pub struct MarkFilesForDeletion {
 }
 
 pub async fn mark_files_for_deletion(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<MarkFilesForDeletion>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let file_ids: Vec<i64> = payload.files.into_iter().map(|f| f.into()).collect();
 
     state
         .file_service
-        .mark_files_for_deletion(file_ids, user_id)
+        .mark_files_for_deletion(file_ids, claims.user.user_id)
         .await?;
 
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
                 important: false,
@@ -86,15 +82,13 @@ pub async fn mark_files_for_deletion(
 }
 
 pub async fn restore_file(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let file = state
         .file_service
-        .check_file_exists_by_id(file_id, user_id)
+        .check_file_exists_by_id(file_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "File not found".to_string(),
@@ -111,7 +105,7 @@ pub async fn restore_file(
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
@@ -125,15 +119,13 @@ pub async fn restore_file(
 }
 
 pub async fn permanently_delete_file(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(file_id): Path<i64>,
 ) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let file = state
         .file_service
-        .check_file_exists_by_id(file_id, user_id)
+        .check_file_exists_by_id(file_id, claims.user.user_id)
         .await?
         .ok_or(AppError::NotFound {
             error: "File not found".to_string(),
@@ -155,7 +147,7 @@ pub async fn permanently_delete_file(
     state
         .presence_handler
         .broadcast_to_user(
-            user_id,
+            claims.user.user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
@@ -168,9 +160,10 @@ pub async fn permanently_delete_file(
     Ok(AppSuccess::DELETED)
 }
 
-pub async fn clear_bin(State(state): KosmosState, session: Session) -> ResponseResult {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
-    state.file_service.clear_bin(user_id).await?;
+pub async fn clear_bin(
+    Claims(claims): Claims<JwtClaims>,
+    State(state): KosmosState,
+) -> ResponseResult {
+    state.file_service.clear_bin(claims.user.user_id).await?;
     Ok(AppSuccess::OK { data: None })
 }

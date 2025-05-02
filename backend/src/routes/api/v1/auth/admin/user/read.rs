@@ -1,20 +1,20 @@
-use axum::extract::{Path, State};
-use axum::Json;
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::model::role::Permission;
 use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
-use crate::routes::api::v1::auth::user::usage::{DiskUsageStats, get_usage_stats_by_user_id};
+use crate::routes::api::v1::auth::user::usage::{get_usage_stats_by_user_id, DiskUsageStats};
 use crate::state::KosmosState;
+use axum::extract::{Path, State};
+use axum::Json;
+use axum_jwt_auth::Claims;
 
 pub async fn get_all_users(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<Vec<UserModelDTO>>, AppError> {
     state
         .permission_service
-        .verify_permission(&session, Permission::ListUser)
+        .verify_permission(&claims, Permission::ListUser)
         .await?;
 
     let users = state.user_service.get_all_users().await?;
@@ -25,13 +25,13 @@ pub async fn get_all_users(
 }
 
 pub async fn get_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(user_id): Path<i64>,
 ) -> Result<Json<UserModelDTO>, AppError> {
     state
         .permission_service
-        .verify_permission(&session, Permission::ReadUser)
+        .verify_permission(&claims, Permission::ReadUser)
         .await?;
 
     let user = state.user_service.get_auth_user(user_id).await?;
@@ -40,13 +40,13 @@ pub async fn get_user(
 }
 
 pub async fn get_user_usage(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Path(user_id): Path<i64>,
 ) -> Result<Json<DiskUsageStats>, AppError> {
     state
         .permission_service
-        .verify_permission(&session, Permission::ReadUser)
+        .verify_permission(&claims, Permission::ReadUser)
         .await?;
 
     let user = state.user_service.get_auth_user(user_id).await?;

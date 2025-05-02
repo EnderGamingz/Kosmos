@@ -1,15 +1,15 @@
-use axum::extract::State;
-use axum::Json;
-use axum_valid::Valid;
-use serde::Deserialize;
-use tower_sessions::Session;
-use validator::Validate;
-
+use crate::model::jwt::JwtClaims;
 use crate::model::role::Permission;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
 use crate::state::KosmosState;
 use crate::utils::auth;
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
+use axum_valid::Valid;
+use serde::Deserialize;
+use validator::Validate;
 
 #[derive(Deserialize, Validate)]
 pub struct AdminCreateUser {
@@ -21,13 +21,13 @@ pub struct AdminCreateUser {
 }
 
 pub async fn create_user(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Valid(Json(payload)): Valid<Json<AdminCreateUser>>,
 ) -> ResponseResult {
     state
         .permission_service
-        .verify_permission(&session, Permission::CreateUser)
+        .verify_permission(&claims, Permission::CreateUser)
         .await?;
 
     let existing_user = state
