@@ -1,30 +1,23 @@
-use axum::extract::State;
-use axum::Json;
-use tower_sessions::Session;
-
+use crate::model::jwt::JwtClaims;
 use crate::model::user::UserModelDTO;
 use crate::response::error_handling::AppError;
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::State;
+use axum::Json;
+use axum_jwt_auth::Claims;
 
 pub async fn auth(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<UserModelDTO>, AppError> {
-    if let Some(user_id) = SessionService::get_user_id(&session).await {
-        let auth_user = state.user_service.get_user(user_id).await?;
+    let auth_user = state.user_service.get_user(claims.user.user_id).await?;
 
-        match auth_user {
-            None => {
-                SessionService::flush_session(&session).await;
-
-                Err(AppError::NotLoggedIn)?
-            }
-            Some(user) => {
-                return Ok(Json(user.into()));
-            }
+    match auth_user {
+        None => Err(AppError::NotLoggedIn)?,
+        Some(user) => {
+            return Ok(Json(user.into()));
         }
-    };
+    }
 
     Err(AppError::NotLoggedIn)
 }

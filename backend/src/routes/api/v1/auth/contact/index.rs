@@ -1,11 +1,13 @@
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceSocialUpdate;
+use crate::model::jwt::JwtClaims;
 use crate::model::profile::{ProfileContactModelDTO, ProfileContactPendingModelDTO};
 use crate::response::error_handling::AppError;
 use crate::services::session_service::{SessionService, UserId};
 use crate::state::{AppState, KosmosState};
 use axum::extract::{Query, State};
 use axum::Json;
+use axum_jwt_auth::Claims;
 use axum_valid::Valid;
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
@@ -25,7 +27,7 @@ pub async fn notify_attention_status_for_user(
         action: PresenceAction::SocialUpdate(PresenceSocialUpdate {
             content: requires_attention,
         }),
-        important: false
+        important: false,
     };
     state
         .presence_handler
@@ -70,14 +72,12 @@ pub async fn get_unhandled_contact_requests(
 }
 
 pub async fn get_requires_attention(
+    Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
 ) -> Result<Json<bool>, AppError> {
-    let user_id = SessionService::check_logged_in(&session).await?;
-
     let requires_attention = state
         .contact_service
-        .has_unhandled_requests(user_id)
+        .has_unhandled_requests(claims.user.user_id)
         .await?;
 
     Ok(Json(requires_attention))

@@ -1,12 +1,9 @@
-use axum::http::header::{
-    ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION,
-    CONTENT_TYPE,
-};
+use crate::db::KosmosPool;
+use axum::http::header::{ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_EXPOSE_HEADERS, AUTHORIZATION, CONTENT_DISPOSITION, CONTENT_TYPE};
 use axum::http::{HeaderValue, Method};
 use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 use web_push::IsahcWebPushClient;
-use crate::db::KosmosPool;
 
 pub mod db;
 pub mod model;
@@ -64,6 +61,7 @@ async fn main() {
             CONTENT_TYPE,
             ACCESS_CONTROL_ALLOW_CREDENTIALS,
             ACCESS_CONTROL_EXPOSE_HEADERS,
+            AUTHORIZATION
         ])
         .expose_headers([CONTENT_DISPOSITION])
         .allow_credentials(true);
