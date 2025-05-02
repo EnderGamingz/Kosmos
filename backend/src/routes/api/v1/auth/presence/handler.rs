@@ -5,7 +5,8 @@ use crate::services::jwt_service::JWT_SERVICE;
 use crate::services::session_service::UserId;
 use crate::state::{AppState, KosmosState};
 use axum::extract::ws::WebSocket;
-use axum::extract::{Query, State, WebSocketUpgrade};
+use axum::extract::{State, WebSocketUpgrade};
+use axum::http::HeaderMap;
 use axum::response::Response;
 use axum_jwt_auth::Claims;
 use futures::{SinkExt, StreamExt};
@@ -20,21 +21,44 @@ pub struct PresenceStartQuery {
 
 pub async fn presence_handler(
     State(state): KosmosState,
+    headers: HeaderMap,
     ws: WebSocketUpgrade,
-    Query(params): Query<PresenceStartQuery>,
 ) -> Result<Response, AppError> {
+    let request_token = headers
+        .get("Sec-WebSocket-Protocol")
+        .ok_or(AppError::BadRequest {
+            error: Some("No token provided".to_string()),
+        })?
+        .to_str()
+        .map_err(|_| AppError::BadRequest {
+            error: Some("Token is not a string".to_string()),
+        })?;
+
     let jwt_service = &JWT_SERVICE;
 
     let token_data = jwt_service
         .decoder
         .decoder
-        .decode(params.token.as_str())
+        .decode(request_token)
         .await
         .map_err(|_| AppError::InternalError)?;
 
     let claims = Claims(token_data.claims);
 
-    Ok(ws.on_upgrade(move |socket| handle_presence_socket(socket, claims.0.user.user_id, state)))
+    let mut websocket_response =
+        ws.on_upgrade(move |socket| handle_presence_socket(socket, claims.0.user.user_id, state));
+
+    websocket_response
+        .headers_mut()
+        .insert("Sec-WebSocket-Protocol", request_token.parse()
+            .map_err(|_| {
+                AppError::BadRequest {
+                    error: Some("Token is not a string".to_string()),
+                }
+            })?
+        );
+
+    Ok(websocket_response)
 }
 
 async fn handle_presence_socket(mut socket: WebSocket, user_id: UserId, state: AppState) {

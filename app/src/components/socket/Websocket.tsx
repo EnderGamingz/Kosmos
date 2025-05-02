@@ -37,15 +37,13 @@ function Connector() {
   const jwtToken = localStorage.getItem(JWT_TOKEN_STORAGE_KEY);
   if (!jwtToken) return null;
 
-  const { lastJsonMessage } = useWebSocket(
-    `${BASE_URL + WEBSOCKET_ENDPOINT}?token=${jwtToken}`,
-    {
-      onOpen: () => console.log('[Presence] Connection established'),
-      onClose: () => console.log('[Presence] Connection closed'),
-      onError: e => console.error('[Presence] Error', e),
-      shouldReconnect: () => true,
-    },
-  );
+  const { lastJsonMessage } = useWebSocket(`${BASE_URL + WEBSOCKET_ENDPOINT}`, {
+    protocols: jwtToken,
+    onOpen: () => console.log('[Presence] Connection established'),
+    onClose: event => console.log('[Presence] Connection closed', event),
+    onError: e => console.error('[Presence] Error', e),
+    shouldReconnect: () => true,
+  });
 
   useEffect(() => {
     if (lastJsonMessage)
