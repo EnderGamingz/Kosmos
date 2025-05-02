@@ -1,6 +1,7 @@
 import { useUserState } from '@stores/userStore.ts';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '@stores/notificationStore.ts';
+import { JWT_TOKEN_STORAGE_KEY } from '@lib/constants.ts';
 
 export default function useLogout() {
   const userLogout = useUserState(s => s.logout);
@@ -10,6 +11,7 @@ export default function useLogout() {
   );
 
   return () => {
+    localStorage.removeItem(JWT_TOKEN_STORAGE_KEY);
     userLogout();
     clearNotifications();
     navigate('/auth/login');

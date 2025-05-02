@@ -1,6 +1,5 @@
 import { useUserState } from '@stores/userStore';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
 import useLogout from '@hooks/useLogout.ts';
 import { UserMenuUsage } from '@components/header/userMenuUsage.tsx';
 import { useMemo, useState } from 'react';
@@ -12,20 +11,11 @@ import UserAvatar from '@components/UserAvatar.tsx';
 import { usePreferenceStore } from '@stores/preferenceStore.ts';
 import { themeChoices } from '@pages/settings/preferences/themePreferences.tsx';
 import { Bolt, Code, LogOut } from 'lucide-react';
-import { api } from '@lib/queries/api.ts';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
   const user = useUserState();
   const logout = useLogout();
-
-  const logoutAction = useMutation({
-    mutationFn: () => api.post(`auth/logout`),
-    onSuccess: () => {
-      handleClose();
-      logout();
-    },
-  });
 
   const handleClose = () => setOpen(false);
 
@@ -98,7 +88,7 @@ export function UserMenu() {
               'w-full animate-fade-in-top delay-400 justify-start cursor-pointer'
             }
             size={'sm'}
-            onClick={() => logoutAction.mutate()}>
+            onClick={logout}>
             <LogOut className={'h-5 w-5'} />
             Logout
           </Button>
