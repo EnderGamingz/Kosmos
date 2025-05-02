@@ -10,14 +10,8 @@ use axum::http::HeaderMap;
 use axum::response::Response;
 use axum_jwt_auth::Claims;
 use futures::{SinkExt, StreamExt};
-use serde::Deserialize;
 use sqlx::types::Uuid;
 use tokio::sync::mpsc;
-
-#[derive(Deserialize)]
-pub struct PresenceStartQuery {
-    token: String,
-}
 
 pub async fn presence_handler(
     State(state): KosmosState,
@@ -63,12 +57,9 @@ pub async fn presence_handler(
 
 async fn handle_presence_socket(mut socket: WebSocket, user_id: UserId, state: AppState) {
     let connection_id = Uuid::new_v4().to_string();
-    println!("New connection {}", connection_id);
     socket_ping(&mut socket).await.unwrap_or_else(|_| {
         return;
     });
-
-    println!("Socket pinged");
 
     let (mut ws_tx, _ws_rx) = socket.split();
     let (tx, mut rx) = mpsc::channel::<PresenceMessage>(32);
@@ -78,18 +69,14 @@ async fn handle_presence_socket(mut socket: WebSocket, user_id: UserId, state: A
         .add_user(user_id, tx, connection_id.clone())
         .await;
 
-    println!("User added");
-
     while let Some(message) = rx.recv().await {
         if ws_tx.send(message.into()).await.is_err() {
             break;
         }
-        println!("Message sent");
     }
 
     state
         .presence_handler
         .remove_user_sender(user_id, connection_id)
         .await;
-    println!("User removed");
 }

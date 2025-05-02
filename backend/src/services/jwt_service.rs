@@ -49,7 +49,6 @@ impl JwtService {
             },
         }
     }
-    
 
     pub fn login_user(user: UserModel) -> Result<String, AppError> {
         let jwt_service = &JWT_SERVICE;

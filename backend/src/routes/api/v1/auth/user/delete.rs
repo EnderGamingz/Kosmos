@@ -1,13 +1,11 @@
 use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
-use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 use crate::utils::auth;
 use axum::extract::State;
 use axum::Json;
 use axum_jwt_auth::Claims;
-use tower_sessions::Session;
 
 #[derive(serde::Deserialize)]
 pub struct DeleteSelfUserRequest {
@@ -17,7 +15,6 @@ pub struct DeleteSelfUserRequest {
 pub async fn delete_self(
     Claims(claims): Claims<JwtClaims>,
     State(state): KosmosState,
-    session: Session,
     Json(payload): Json<DeleteSelfUserRequest>,
 ) -> ResponseResult {
     let user = state
@@ -51,8 +48,6 @@ pub async fn delete_self(
         .await?;
 
     state.user_service.delete_user(claims.user.user_id).await?;
-
-    SessionService::flush_session(&session).await;
 
     Ok(AppSuccess::DELETED)
 }
