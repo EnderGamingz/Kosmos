@@ -1,6 +1,6 @@
 import useWebSocket from 'react-use-websocket';
 import { BASE_URL } from '@lib/env.ts';
-import { WEBSOCKET_ENDPOINT } from '@lib/constants.ts';
+import { JWT_TOKEN_STORAGE_KEY, WEBSOCKET_ENDPOINT } from '@lib/constants.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { useEffect } from 'react';
 import { PresenceMessage } from '@bindings/PresenceMessage.ts';
@@ -33,12 +33,19 @@ export default function Websocket() {
 
 function Connector() {
   const socialUpdate = useSocialUpdate();
-  const { lastJsonMessage } = useWebSocket(BASE_URL + WEBSOCKET_ENDPOINT, {
-    onOpen: () => console.log('[Presence] Connection established'),
-    onClose: () => console.log('[Presence] Connection closed'),
-    onError: e => console.error('[Presence] Error', e),
-    shouldReconnect: () => true,
-  });
+
+  const jwtToken = localStorage.getItem(JWT_TOKEN_STORAGE_KEY);
+  if (!jwtToken) return null;
+
+  const { lastJsonMessage } = useWebSocket(
+    `${BASE_URL + WEBSOCKET_ENDPOINT}?token=${jwtToken}`,
+    {
+      onOpen: () => console.log('[Presence] Connection established'),
+      onClose: () => console.log('[Presence] Connection closed'),
+      onError: e => console.error('[Presence] Error', e),
+      shouldReconnect: () => true,
+    },
+  );
 
   useEffect(() => {
     if (lastJsonMessage)
