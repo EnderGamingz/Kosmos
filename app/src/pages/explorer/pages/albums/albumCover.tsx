@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { createPreviewUrl } from '@lib/file.ts';
 import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import { useProtectedContent } from '@utils/getProtectedImage.ts';
 
 export default function AlbumCover({
   album,
@@ -45,12 +46,15 @@ function AlbumCoverImage({
     album.preview_id,
     !!shareUuid,
   );
+
+  const protectedImg = useProtectedContent(previewUrl);
+
   return (
     <img
       className={
         'absolute inset-0 h-full w-full rounded-lg bg-cover bg-center bg-no-repeat object-cover'
       }
-      src={previewUrl}
+      src={protectedImg.blobUrl}
       alt={album.name}
     />
   );

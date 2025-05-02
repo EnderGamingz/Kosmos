@@ -1,14 +1,11 @@
 use crate::model::internal::image_format::ImageFormat;
-use crate::model::jwt::JwtClaims;
 use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::file::image::get_image_format_data;
 use crate::state::KosmosState;
 use axum::extract::{Path, State};
 use axum::response::{IntoResponse, Response};
-use axum_jwt_auth::Claims;
 
 pub async fn get_avatar_by_user_id(
-    Claims(_claims): Claims<JwtClaims>,
     State(state): KosmosState,
     Path(user_id): Path<i64>,
 ) -> Result<Response, AppError> {

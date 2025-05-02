@@ -1,10 +1,11 @@
-import { useContext, useState } from 'react';
+import { useContext, useRef } from 'react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
 import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
 import { createPreviewUrl } from '@lib/file.ts';
 import { cn } from '@lib/utils.ts';
 import { Skeleton } from '@components/ui/skeleton.tsx';
 import { OctagonAlert, TriangleAlert } from 'lucide-react';
+import { useProtectedContent } from '@utils/getProtectedImage.ts';
 
 export function PreviewImage({
   id,
@@ -19,7 +20,7 @@ export function PreviewImage({
   type?: FileType;
   dynamic?: boolean;
 }) {
-  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const context: DisplayContextType | undefined = useContext(DisplayContext);
 
   const isUnavailable = status === FilePreviewStatus.Unavailable;
@@ -34,6 +35,8 @@ export function PreviewImage({
     !!context.viewSettings?.album,
   );
 
+  const { loaded, blobUrl } = useProtectedContent(src);
+
   return (
     <div
       className={cn(
@@ -44,9 +47,9 @@ export function PreviewImage({
       )}>
       {(isReady || type === FileType.RawImage) && (
         <img
+          ref={imgRef}
+          src={blobUrl}
           loading={'lazy'}
-          onLoad={() => setLoaded(true)}
-          onError={() => setLoaded(true)}
           data-loaded={loaded}
           width={40}
           height={40}
@@ -56,7 +59,6 @@ export function PreviewImage({
             'data-[loaded=true]:opacity-100 motion-reduce:transition-none',
             dynamic ? 'max-h-[400px] min-h-16' : 'h-10 w-10',
           )}
-          src={src}
           alt={alt}
         />
       )}

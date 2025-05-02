@@ -20,7 +20,7 @@ export function ImageFullscreenView({
   open: boolean;
   tooLarge: boolean;
   onDoubleClick: () => void;
-  src: string;
+  src: string | undefined;
   file: FileModelDTO;
   previewSrc?: string;
 }) {

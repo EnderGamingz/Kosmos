@@ -8,6 +8,7 @@ import { ImageTooLargePrompt } from '@pages/explorer/file/display/displayTypes/i
 import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
+import { useProtectedContent } from '@/utils/getProtectedImage';
 
 export function DisplayImage({
   file,
@@ -39,6 +40,9 @@ export function DisplayImage({
 
   const isFullScreenAvailable = fullScreen !== undefined;
 
+  const highResProtectedImg = useProtectedContent(highRes);
+  const lowResProtectedImg = lowRes ? useProtectedContent(lowRes) : undefined;
+
   const img = (
     <img
       onDoubleClick={toggleFullScreen}
@@ -49,11 +53,14 @@ export function DisplayImage({
           ? 'bg-contain object-contain drop-shadow-lg'
           : 'bg-cover object-cover shadow-lg',
       )}
-      src={isTooLarge ? lowRes : highRes}
+      src={
+        isTooLarge ? lowResProtectedImg?.blobUrl : highResProtectedImg.blobUrl
+      }
       style={{
         // Image background serves as a low-quality placeholder
         // until the high-resolution image is downloaded
-        backgroundImage: lowRes && `url(${lowRes})`,
+        backgroundImage:
+          lowResProtectedImg && `url(${lowResProtectedImg.blobUrl})`,
       }}
       alt={file.file_name}
     />
@@ -69,7 +76,7 @@ export function DisplayImage({
           tooLarge={isTooLarge}
           onDoubleClick={toggleFullScreen}
           file={file}
-          src={highRes}
+          src={highResProtectedImg.blobUrl}
         />
       )}
       <div className={'relative overflow-hidden rounded-xl'}>
