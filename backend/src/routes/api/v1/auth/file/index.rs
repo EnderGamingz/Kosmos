@@ -7,7 +7,7 @@ use tower_sessions::Session;
 use validator::Validate;
 
 use crate::model::file::FileModelDTO;
-use crate::model::internal::entity_id::OptionEntityId;
+use crate::model::internal::entity_id::EntityId;
 use crate::model::internal::file_type::FileType;
 use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
 use crate::model::internal::presence::messages::PresenceExplorerUpdate;
@@ -196,7 +196,7 @@ pub async fn get_file_by_type(
 #[derive(Deserialize)]
 pub struct CreateMarkdownFilePayload {
     pub name: String,
-    pub parent_folder_id: OptionEntityId,
+    pub parent_folder_id: Option<EntityId>,
 }
 
 pub async fn create_markdown_file(
@@ -206,7 +206,7 @@ pub async fn create_markdown_file(
 ) -> ResponseResult {
     let user_id = SessionService::check_logged_in(&session).await?;
     let file_name = payload.name.trim().to_string();
-    let parent_folder_id = payload.parent_folder_id.into();
+    let parent_folder_id = payload.parent_folder_id.map(|id| id.0);
 
     let file_exists = state
         .file_service
@@ -233,7 +233,7 @@ pub async fn create_markdown_file(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: parent_folder_id.map(|f| f.to_string()),
                 }),
-                important: false
+                important: false,
             },
         )
         .await;
@@ -302,7 +302,7 @@ pub async fn move_file(
             user_id,
             PresenceMessage {
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate { folder_id: None }),
-                important: false
+                important: false,
             },
         )
         .await;
@@ -345,7 +345,7 @@ pub async fn rename_file(
                 action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
                     folder_id: file.parent_folder_id.map(|f| f.to_string()),
                 }),
-                important: false
+                important: false,
             },
         )
         .await;
