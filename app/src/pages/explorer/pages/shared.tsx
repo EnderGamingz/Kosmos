@@ -1,5 +1,5 @@
 import { useSharedItems } from '@lib/query.ts';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';

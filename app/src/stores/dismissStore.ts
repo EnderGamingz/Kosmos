@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { merge } from 'lodash';
+import merge from 'lodash/merge';
 import { HardDrive, MessageCircleWarning } from 'lucide-react';
 import { Icon } from '@/types/icon.ts';
 

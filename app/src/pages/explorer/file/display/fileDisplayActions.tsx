@@ -7,7 +7,7 @@ import OpenExternally from '@pages/explorer/components/openExternally.tsx';
 import { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
-import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
+import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/markdown/FileMarkdownDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
 import { cn } from '@lib/utils.ts';

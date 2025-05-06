@@ -6,7 +6,7 @@ import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { FileWindowContextMenu } from '@components/contextMenu/menus/fileWindowContextMenu.tsx';
 import { Link } from 'react-router-dom';
 
-export function FileListFab({ hide }: { hide: boolean }) {
+export default function FileListFab({ hide }: { hide: boolean }) {
   const [create, setCreate] = useState(false);
 
   function handleClick(event: MouseEvent<HTMLDivElement>): void {

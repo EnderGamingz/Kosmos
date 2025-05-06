@@ -1,31 +1,31 @@
+import { lazy, ReactNode, useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { DataOperationType, Selected } from '@models/file.ts';
-import { ReactNode, useEffect, useState } from 'react';
-import { useExplorerStore } from '@stores/explorerStore.ts';
-import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
 import { DisplayContext } from '@lib/contexts.ts';
-import { MultipleActionButton } from '@pages/explorer/components/multipleActionButton.tsx';
-import FileDisplay from '@pages/explorer/file/display/fileDisplay.tsx';
-import ExplorerContextMenu, {
-  ContextMenuExplorerContent,
-} from '@components/contextMenu/contextMenu.tsx';
-import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
-import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
+import { ListOnScrollProps } from 'react-window';
+import { Vec2 } from '@/types/vec2.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import {
   OverwriteDisplay,
   ViewSettings,
-} from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
-import { useShallow } from 'zustand/react/shallow';
-import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { createPortal } from 'react-dom';
-import { AnimatePresence } from 'framer-motion';
-import { Backdrop } from '@components/overlay/backdrop.tsx';
-import { ListOnScrollProps } from 'react-window';
-import { FileListFab } from '@pages/explorer/fileListFab.tsx';
-import useLayoutOptions from '@hooks/useLayoutOptions.ts';
-import { Vec2 } from '@/types/vec2.ts';
+} from '@pages/explorer/displayAlternatives/display/types.ts';
 import { calculateDisplayHeight } from '@pages/explorer/displayAlternatives/calculateDisplayHeight.ts';
+import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
+import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
+import useLayoutOptions from '@hooks/useLayoutOptions.ts';
+import { useExplorerStore } from '@stores/explorerStore.ts';
+
+import FileUploader from '@pages/explorer/components/upload/fileUploader.tsx';
+import FileListFab from '@pages/explorer/fileListFab.tsx';
+import ShareModal from '@pages/explorer/components/share/shareModal.tsx';
+import ContextMenuHandler from '@pages/explorer/displayAlternatives/display/contextMenuHandler.tsx';
+import MultipleActionButton from '@pages/explorer/components/multipleActionButton.tsx';
+
+// Very large component
+const FileDisplay = lazy(
+  () => import('@pages/explorer/file/display/fileDisplay.tsx'),
+);
 
 export function ExplorerDisplayWrapper({
   files,
@@ -161,13 +161,13 @@ export function ExplorerDisplayWrapper({
           if (viewSettings?.isCreateAllowed)
             handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
         }}>
-        <FileUploadContent
+        <FileUploader
           disabled={!viewSettings?.isCreateAllowed}
           folder={currentFolder}
           isInList
           className={'h-full'}>
           {children}
-        </FileUploadContent>
+        </FileUploader>
       </div>
       {viewSettings?.isCreateAllowed && <FileListFab hide={!showFab} />}
       {!viewSettings?.noDisplay && (
@@ -178,26 +178,12 @@ export function ExplorerDisplayWrapper({
         />
       )}
       {!shareUuid && <ShareModal />}
-      {!viewSettings?.scrollControlMissing &&
-        createPortal(
-          <AnimatePresence>
-            {context.clicked && (
-              <Backdrop
-                key={'backdrop-context-menu'}
-                onClose={() => context.setClicked(false)}
-              />
-            )}
-            {context.clicked && (
-              <ExplorerContextMenu key={'context-menu'} pos={context.pos}>
-                <ContextMenuExplorerContent
-                  data={context.data}
-                  onClose={() => context.setClicked(false)}
-                />
-              </ExplorerContextMenu>
-            )}
-          </AnimatePresence>,
-          document.body,
-        )}
+      <ContextMenuHandler
+        key={'context-menu'}
+        scrollControlMissing={viewSettings?.scrollControlMissing}
+        context={context}
+        onClose={() => context.setClicked(false)}
+      />
     </DisplayContext>
   );
 }

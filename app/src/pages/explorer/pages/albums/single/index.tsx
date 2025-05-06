@@ -8,7 +8,7 @@ import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import { AlbumAddItems } from '@pages/explorer/pages/albums/single/albumAddItems.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useScrollThreshold } from '@hooks/useScrollDirection.ts';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlider.tsx';
 import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';

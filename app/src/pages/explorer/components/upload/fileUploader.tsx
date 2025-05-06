@@ -24,7 +24,7 @@ import { DialogClose, DialogFooter } from '@components/ui/dialog.tsx';
 import { Button, buttonVariants } from '@components/ui/button.tsx';
 import { FileUp, FolderUp, X } from 'lucide-react';
 
-export function FileUploadContent({
+export default function FileUploader({
   folder,
   onClose,
   isInList,

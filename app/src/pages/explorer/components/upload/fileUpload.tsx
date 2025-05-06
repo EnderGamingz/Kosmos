@@ -1,6 +1,6 @@
 import { useUsageStats } from '@lib/query.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { FileUploadContent } from '@pages/explorer/components/upload/fileUploadContent.tsx';
+import FileUploader from '@pages/explorer/components/upload/fileUploader.tsx';
 import { ReactNode } from 'react';
 import {
   Dialog,
@@ -35,7 +35,7 @@ export function FileUploadModal({
             </DialogDescription>
           </DialogHeader>
           <div>
-            <FileUploadContent
+            <FileUploader
               folder={currentFolder}
               onClose={() => onOpenChange(false)}
             />

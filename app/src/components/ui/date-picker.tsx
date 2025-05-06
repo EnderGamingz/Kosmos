@@ -603,7 +603,7 @@ interface TimePickerProps {
   onChange?: (date: Date | undefined) => void;
   hourCycle?: 12 | 24;
   /**
-   * Determines the smallest unit that is displayed in the datetime picker.
+   * Determines the smallest unit displayed in the datetime picker.
    * Default is 'second'.
    * */
   granularity?: Granularity;
@@ -722,7 +722,7 @@ type DateTimePickerProps = {
    **/
   displayFormat?: { hour24?: string; hour12?: string };
   /**
-   * The granularity prop allows you to control the smallest unit that is displayed by DateTimePicker.
+   * The granularity prop allows you to control the smallest unit displayed by DateTimePicker.
    * By default, the value is `second` which shows all time inputs.
    **/
   granularity?: Granularity;

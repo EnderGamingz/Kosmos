@@ -1,5 +1,5 @@
 import { FileTypeActions } from '@models/file.ts';
-import FileMarkdownDisplay from '@pages/explorer/file/display/displayTypes/FileMarkdownDisplay.tsx';
+import FileMarkdownDisplay from '@pages/explorer/file/display/displayTypes/markdown/FileMarkdownDisplay.tsx';
 import { ReactNode, useState } from 'react';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';

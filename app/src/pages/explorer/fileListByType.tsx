@@ -3,7 +3,7 @@ import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useFileByTypeInfinite } from '@lib/query.ts';
 import { getFileTypeString } from '@models/file.ts';
 import { useEffect } from 'react';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
 
 export default function FileListByType() {

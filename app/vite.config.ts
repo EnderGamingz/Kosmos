@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import webfontDownload from 'vite-plugin-webfont-dl';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -8,17 +8,24 @@ import Manifest from './public/manifest.json';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   envPrefix: ['VITE_', 'CF_PAGES_'],
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
     tailwindcss(),
     webfontDownload(),
     tsconfigPaths(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
+      base: '/',
       workbox: {
+        cacheId: 'kosmos',
+        clientsClaim: true,
+        skipWaiting: true,
         cleanupOutdatedCaches: true,
         sourcemap: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,

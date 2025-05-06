@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useSearchState } from '@stores/searchStore.ts';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { useShallow } from 'zustand/react/shallow';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.tsx';

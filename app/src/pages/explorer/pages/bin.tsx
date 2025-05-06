@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import { Progress } from '@components/ui/progress.tsx';
 import { PageMetadata } from '@components/metadata.tsx';

@@ -84,7 +84,7 @@ function MobileListHeader() {
   );
 }
 
-export function MobileList() {
+export default function MobileList() {
   const { viewSettings, files, folders, totalFileSize } = useExplorerData();
 
   return (

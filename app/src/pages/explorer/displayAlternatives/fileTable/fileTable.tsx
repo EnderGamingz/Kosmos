@@ -61,7 +61,7 @@ function Row({ index, data }: { index: number; data: VirtualDisplayItemData }) {
   );
 }
 
-export function FileTable() {
+export default function FileTable() {
   const { viewSettings, files, folders, totalFileSize } = useExplorerData();
 
   return (

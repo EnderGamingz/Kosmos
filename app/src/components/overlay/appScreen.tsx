@@ -4,10 +4,12 @@ export default function AppScreen({
   logo,
   text,
   loading,
+  showText = true,
 }: {
   logo?: boolean;
   text?: string;
   loading?: boolean;
+  showText?: boolean;
 }) {
   return (
     <div
@@ -17,9 +19,11 @@ export default function AppScreen({
       }>
       <div className={'flex flex-col items-center gap-4'}>
         {logo && <ApplicationIcon className={'app-loading-logo h-32 w-32'} />}
-        <span className={'app-loading-text text-center text-5xl font-bold'}>
-          {text ?? 'Kosmos'}
-        </span>
+        {showText && (
+          <span className={'app-loading-text text-center text-5xl font-bold'}>
+            {text ?? 'Kosmos'}
+          </span>
+        )}
       </div>
       {loading && (
         <div

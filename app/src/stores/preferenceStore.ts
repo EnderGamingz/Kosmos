@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { merge } from 'lodash';
+import merge from 'lodash/merge';
 
 export enum ExplorerDisplay {
   Mobile,

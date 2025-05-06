@@ -16,18 +16,8 @@ export const itemTransitionVariant = {
   show: { opacity: 1 },
 };
 
-export const itemTransitionVariantFadeInFromLeft = {
-  hidden: { opacity: 0, x: -40 },
-  show: { opacity: 1, x: 0 },
-};
-
 export const itemTransitionVariantFadeInFromTop = {
   hidden: { opacity: 0, y: -40 },
-  show: { opacity: 1, y: 0 },
-};
-
-export const itemTransitionVariantFadeInFromTopSmall = {
-  hidden: { opacity: 0, y: -10 },
   show: { opacity: 1, y: 0 },
 };
 

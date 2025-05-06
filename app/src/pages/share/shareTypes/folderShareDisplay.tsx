@@ -1,4 +1,4 @@
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useAccessShareFolder } from '@lib/query.ts';

@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@lib/utils.ts';
 import { EllipsisVertical } from 'lucide-react';
 
-export function MultipleActionButton({
+export default function MultipleActionButton({
   someSelected,
   handleClick,
 }: {

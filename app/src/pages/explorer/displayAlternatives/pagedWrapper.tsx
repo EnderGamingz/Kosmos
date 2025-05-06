@@ -1,8 +1,8 @@
-import { ViewSettings } from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
 import { ReactNode } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { cn } from '@lib/utils.ts';
+import { ViewSettings } from '@pages/explorer/displayAlternatives/display/types.ts';
 
 export function PagedWrapper({
   viewSettings,

@@ -1,5 +1,5 @@
 import { useFavorites } from '@lib/query.ts';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';

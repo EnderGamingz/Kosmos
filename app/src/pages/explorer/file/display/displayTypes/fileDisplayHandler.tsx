@@ -1,15 +1,16 @@
-import { FileType, FileTypeActions, getFileTypeString } from '@models/file.ts';
-import { DisplayImage } from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
-import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { ReactNode, useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
+import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { FileType, FileTypeActions, getFileTypeString } from '@models/file.ts';
+import { ReactNode, useContext, useEffect, useState } from 'react';
+import { cn } from '@lib/utils.ts';
+import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
+import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
+
+import ArchiveDisplay from '@pages/explorer/file/display/displayTypes/archiveDisplay.tsx';
+import DisplayImage from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
+import EmbedAudio from '@pages/explorer/file/display/displayTypes/embedAudio.tsx';
 import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
 import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
-import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import ArchiveDisplay from '@pages/explorer/file/display/displayTypes/archiveDisplay.tsx';
-import { cn } from '@lib/utils.ts';
-import EmbedAudio from '@pages/explorer/file/display/displayTypes/embedAudio.tsx';
 
 export function FileTypeDisplay({
   id,

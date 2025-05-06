@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay.tsx';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function UsageReportLargeFiles({ files }: { files: FileModelDTO[] }) {

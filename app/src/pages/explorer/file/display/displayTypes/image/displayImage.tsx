@@ -9,7 +9,7 @@ import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 
-export function DisplayImage({
+export default function DisplayImage({
   file,
   fullScreen,
   onFullScreen,

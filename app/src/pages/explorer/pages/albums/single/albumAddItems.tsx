@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect, useState } from 'react';
-import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/explorerDisplay';
+import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import { useToAlbumMutation } from '@pages/explorer/pages/albums/single/useToAlbumMutation.ts';
 import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
