@@ -1,10 +1,9 @@
 import { cn } from '@lib/utils.ts';
 import { type MouseEvent, useState } from 'react';
-import { MessageSquare, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import { FileWindowContextMenu } from '@components/contextMenu/menus/fileWindowContextMenu.tsx';
-import { Link } from 'react-router-dom';
 
 export default function FileListFab({ hide }: { hide: boolean }) {
   const [create, setCreate] = useState(false);
@@ -27,10 +26,6 @@ export default function FileListFab({ hide }: { hide: boolean }) {
           hide && '!opacity-0 !pointer-events-none',
         )}>
         <AnimatePresence>
-          <motion.div key={'fab-social'} layout>
-            <SocialFab />
-          </motion.div>
-
           <div
             key={'fab-create'}
             className={'animate-fade-in-bottom delay-100'}>
@@ -39,18 +34,6 @@ export default function FileListFab({ hide }: { hide: boolean }) {
         </AnimatePresence>
       </div>
     </AnimatePresence>
-  );
-}
-
-function SocialFab() {
-  return (
-    <Link
-      to={'/social'}
-      className={cn(
-        'animate-fade-in-bottom delay-200 flex bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-3 rounded-md hover:from-secondary transition-colors cursor-pointer',
-      )}>
-      <MessageSquare className={'w-5 h-5'} />
-    </Link>
   );
 }
 

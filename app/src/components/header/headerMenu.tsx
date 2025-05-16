@@ -9,8 +9,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@components/ui/sheet.tsx';
-import { Cloud, Menu, MessageSquare } from 'lucide-react';
-import { HeaderBranding } from '@components/header/headerBranding.tsx';
+import { Menu } from 'lucide-react';
+import {
+  HeaderBranding,
+  HeaderBrandingSitePartSwitcher,
+  kosmosParts,
+} from '@components/header/headerBranding.tsx';
 import { useLocation } from 'react-router-dom';
 import { useAppState } from '@stores/appStateStore.ts';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
@@ -43,7 +47,12 @@ function HeaderLinksMenu({
           </SheetDescription>
         </SheetHeader>
         <div className={'mr-10'}>
-          <HeaderBranding expanded user={user} onClick={() => setOpen(false)} />
+          <HeaderBranding
+            noPartSwitcher
+            expanded
+            user={user}
+            onClick={() => setOpen(false)}
+          />
         </div>
         <hr />
         <div className={'flex flex-col gap-2 grow'}>
@@ -58,24 +67,17 @@ function HeaderLinksMenu({
           <p className={'px-1 text-center mb-1 text-muted-foreground text-sm'}>
             Kosmos
           </p>
-          <SideNavItem
-            key={`side-nav-cloud`}
-            link={{
-              name: 'Cloud',
-              href: '/home',
-              icon: Cloud,
-            }}
-            onClick={() => setOpen(false)}
-          />
-          <SideNavItem
-            key={`side-nav-social`}
-            link={{
-              name: 'Social',
-              href: '/social',
-              icon: MessageSquare,
-            }}
-            onClick={() => setOpen(false)}
-          />
+          {kosmosParts.map(part => (
+            <SideNavItem
+              key={part.title}
+              link={{
+                name: part.title,
+                href: part.link,
+                icon: part.icon,
+              }}
+              onClick={() => setOpen(false)}
+            />
+          ))}
         </div>
         <SideNavUsage usage={usage} />
       </SheetContent>
@@ -94,8 +96,9 @@ export function HeaderMenu({ user }: { user?: User }) {
   return (
     <>
       {user && (
-        <div className={'md:hidden'}>
+        <div className={'md:hidden flex items-center gap-4'}>
           <HeaderLinksMenu links={headerLinks} user={user} />
+          <HeaderBrandingSitePartSwitcher expanded noBrand />
         </div>
       )}
       <div className={cn(user && 'max-md:hidden')}>

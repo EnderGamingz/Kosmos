@@ -7,11 +7,11 @@ import { cn } from '@lib/utils.ts';
 export default function NotificationIndicator() {
   const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const notifications = useNotifications(s =>
-    s.notifications
-      .filter(x => x.popup)
-      .sort((a, b) => (b.priority || 0) - (a.priority || 0)),
-  );
+  const notifications = useNotifications(s => s.notifications);
+
+  const filteredNotifications = notifications
+    .filter(x => x.popup)
+    .sort((a, b) => (b.priority || 0) - (a.priority || 0));
 
   useEffect(() => {
     if (window.innerWidth < 768) setIsMobile(true);
@@ -24,7 +24,7 @@ export default function NotificationIndicator() {
       }>
       <ul
         onClick={() => {
-          if (notifications.length > 1) setExpanded(!expanded);
+          if (filteredNotifications.length > 1) setExpanded(!expanded);
           else setExpanded(false);
         }}
         onMouseLeave={() => setExpanded(false)}
@@ -34,7 +34,7 @@ export default function NotificationIndicator() {
           'bottom-0 [&_li]:absolute',
         )}>
         <AnimatePresence>
-          {notifications.slice(0, 5).map((notification, i) => (
+          {filteredNotifications.slice(0, 5).map((notification, i) => (
             <NotificationItem
               index={i}
               key={notification.id}

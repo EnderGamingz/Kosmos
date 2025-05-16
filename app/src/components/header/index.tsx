@@ -9,7 +9,6 @@ import {
   SearchPopup,
 } from '@components/header/search/searchBar.tsx';
 import { cn } from '@lib/utils.ts';
-import { SocialHeaderLink } from '@components/header/socialHeaderLink.tsx';
 import { LogIn } from 'lucide-react';
 import { HeaderMenu } from '@components/header/headerMenu.tsx';
 
@@ -43,7 +42,7 @@ export default function Header() {
             <SearchPopup />
             <NewMenu />
             <NotificationsMenu />
-            <SocialHeaderLink />
+            {/*<SocialHeaderLink />*/}
             <UserMenu />
           </>
         ) : (
