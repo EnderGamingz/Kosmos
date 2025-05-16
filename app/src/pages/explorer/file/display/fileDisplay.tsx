@@ -159,6 +159,7 @@ function FileDisplayContent({
                 fullScreen={fullsScreenPreview}
                 onFullScreen={setFullsScreenPreview}
                 shareUuid={shareUuid}
+                key={prevFile.id}
               />
             </div>
             <div
