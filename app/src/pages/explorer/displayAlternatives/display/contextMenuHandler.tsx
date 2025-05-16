@@ -16,14 +16,17 @@ function ContextMenuContent(
   props: Omit<ContextMenuHandlerProps, 'scrollControlMissing'>,
 ) {
   let { context, onClose } = props;
-  if (!context.clicked) return null;
 
   return (
     <AnimatePresence>
-      <Backdrop onClose={onClose} />
-      <ExplorerContextMenu pos={context.pos}>
-        <ContextMenuExplorerContent data={context.data} onClose={onClose} />
-      </ExplorerContextMenu>
+      {context.clicked && (
+        <>
+          <Backdrop key={'context-backdrop'} onClose={onClose} />
+          <ExplorerContextMenu key={'context-menu'} pos={context.pos}>
+            <ContextMenuExplorerContent data={context.data} onClose={onClose} />
+          </ExplorerContextMenu>
+        </>
+      )}
     </AnimatePresence>
   );
 }

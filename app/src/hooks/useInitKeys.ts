@@ -37,6 +37,11 @@ export function useInitializeKeys() {
   }, [updateKeys]);
 
   useEffect(() => {
-    window.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('contextmenu', e => {
+      if (e.target instanceof HTMLImageElement) {
+        return;
+      }
+      e.preventDefault();
+    });
   }, []);
 }
