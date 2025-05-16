@@ -136,6 +136,7 @@ function FileDisplayContent({
 
   useEffect(() => {
     if (file) setPrevFile(file);
+    setFullsScreenPreview(false);
   }, [file]);
 
   return (
