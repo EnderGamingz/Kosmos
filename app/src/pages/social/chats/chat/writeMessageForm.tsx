@@ -4,7 +4,6 @@ import { FormEvent, useEffect, useRef } from 'react';
 import { cn } from '@lib/utils.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Input } from '@components/ui/input.tsx';
-import { EmojiSelect } from '@components/ui/emojiSelect.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Pen, Reply, Send, X } from 'lucide-react';
 import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
@@ -86,12 +85,6 @@ export function WriteMessageForm() {
     setEditMessage(undefined);
   }
 
-  const handleEmojiSelect = (e: string) => {
-    const input = inputRef.current;
-    if (!input) return;
-    input.value = input.value + e;
-  };
-
   return (
     <form
       onSubmit={handleSubmit}
@@ -114,7 +107,6 @@ export function WriteMessageForm() {
       />
       <div
         className={'absolute right-0.5 top-1 bottom-1 flex items-center z-10'}>
-        <EmojiSelect handleSelect={handleEmojiSelect} />
         <Button type={'submit'} variant={'ghost'} className={'aspect-square'}>
           <Send />
         </Button>

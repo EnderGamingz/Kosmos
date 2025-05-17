@@ -1,12 +1,12 @@
 import { Theme, usePreferenceStore } from '@stores/preferenceStore.ts';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@lib/query.ts';
-import LazyRouter from './lazyRouter.tsx';
 import { useEffect } from 'react';
 import {
   LayoutOptionsContext,
   useDefaultLayoutOptions,
 } from '@hooks/useLayoutOptions.ts';
+import AppRouter from '@/router/appRouter.tsx';
 
 export function App() {
   const darkMode = usePreferenceStore(s => s.theme.type === Theme.Dark);
@@ -23,7 +23,7 @@ export function App() {
           className={
             'app-wrapper flex flex-grow flex-col ' + (darkMode ? 'dark' : '')
           }>
-          <LazyRouter />
+          <AppRouter />
         </div>
       </LayoutOptionsContext>
     </QueryClientProvider>

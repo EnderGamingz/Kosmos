@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { AdminPageMetadata } from '@components/metadata.tsx';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
 
-export default function AdminPage() {
+export default function AdminPagesWrapper() {
   return (
     <>
       <AdminPageMetadata />

@@ -3,6 +3,7 @@ import { HeaderBranding } from '@components/header/headerBranding.tsx';
 import { Link } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 import { PageMetadata } from '@components/metadata.tsx';
+import { RouterLoading } from '@components/header/routerLoading.tsx';
 
 export function AuthScreen({
   children,
@@ -27,6 +28,7 @@ export function AuthScreen({
       className={
         'fixed inset-0 isolate z-50 grid flex-grow grid-cols-1 md:grid-cols-5 bg-background'
       }>
+      <RouterLoading />
       <PageMetadata title={title} />
       <div
         className={

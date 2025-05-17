@@ -3,7 +3,7 @@ import { SettingsPageMetadata } from '@components/metadata.tsx';
 import { ExplorerSideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
 
-export default function Settings() {
+export default function SettingsPagesWrapper() {
   return (
     <>
       <SettingsPageMetadata />

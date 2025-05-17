@@ -26,3 +26,22 @@ pub async fn get_profile_by_user_id(
         Some(p) => Ok(Json(p.into())),
     }
 }
+
+pub async fn get_profile_self(
+    State(state): KosmosState,
+    session: Session,
+) -> Result<Json<ProfileModelDTO>, AppError> {
+    let user_id = SessionService::check_logged_in(&session).await?;
+
+    let profile = state
+        .profile_service
+        .get_profile_optional(user_id.into())
+        .await?;
+
+    match profile {
+        None => Err(AppError::NotFound {
+            error: "Profile not found".to_string(),
+        }),
+        Some(p) => Ok(Json(p.into())),
+    }
+}

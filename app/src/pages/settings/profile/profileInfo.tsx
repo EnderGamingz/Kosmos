@@ -17,7 +17,7 @@ export default function ProfileInfoSettings() {
 
   if (!user) return null;
 
-  const { data } = ProfileQuery.useProfileByIdSuspense(user.id);
+  const { data } = ProfileQuery.useProfileSelfSuspense();
 
   const action = useMutation({
     mutationFn: async ({ payload }: { payload: UpdateProfileDTO }) => {

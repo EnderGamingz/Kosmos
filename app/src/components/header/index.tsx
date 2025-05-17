@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useUserState } from '@stores/userStore';
 import { UserMenu } from './userMenu.tsx';
-import { NewMenu } from './new/newMenu.tsx';
-import { NotificationsMenu } from '@components/header/notifications/notificationsMenu.tsx';
 import { ALLOW_REGISTER } from '@lib/env.ts';
 import {
   SearchBar,
@@ -11,6 +9,14 @@ import {
 import { cn } from '@lib/utils.ts';
 import { LogIn } from 'lucide-react';
 import { HeaderMenu } from '@components/header/headerMenu.tsx';
+import { RouterLoading } from '@components/header/routerLoading.tsx';
+import { lazy, Suspense } from 'react';
+import { Skeleton } from '@components/ui/skeleton.tsx';
+
+const NewMenu = lazy(() => import('./new/newMenu.tsx'));
+const NotificationsMenu = lazy(
+  () => import('@components/header/notifications/notificationsMenu.tsx'),
+);
 
 export default function Header() {
   const user = useUserState(s => s.user);
@@ -20,6 +26,7 @@ export default function Header() {
       className={
         'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5 dark:border-stone-300/10'
       }>
+      <RouterLoading />
       <HeaderMenu user={user} />
       {user && (
         <div className={'mx-auto w-full max-w-md px-3 md:px-10'}>
@@ -38,13 +45,13 @@ export default function Header() {
           !user && 'ml-auto',
         )}>
         {user ? (
-          <>
+          <Suspense fallback={<Skeleton className={'h-11 w-24'} />}>
             <SearchPopup />
             <NewMenu />
             <NotificationsMenu />
             {/*<SocialHeaderLink />*/}
             <UserMenu />
-          </>
+          </Suspense>
         ) : (
           <>
             <Link to={'/auth/login'} className={'header-login-btn'}>

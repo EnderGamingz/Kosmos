@@ -6,7 +6,11 @@ import { ChatHeader } from '@pages/social/chats/chat/chatHeader.tsx';
 import { ChatMessages } from '@pages/social/chats/chat/message.tsx';
 import { WriteMessageForm } from '@pages/social/chats/chat/writeMessageForm.tsx';
 
-export function UserChatPage({ personalChat }: { personalChat: boolean }) {
+export default function UserChatPage({
+  personalChat,
+}: {
+  personalChat: boolean;
+}) {
   const { userId, chatId } = useParams();
   const id = personalChat ? userId : chatId;
   const user = useUserState(s => s.user);

@@ -160,7 +160,8 @@ fn get_quick_share_router() -> KosmosRouter {
 fn get_profile_router() -> KosmosRouter {
     Router::new()
         .route("/:user_id", get(crate::routes::api::v1::auth::profile::index::get_profile_by_user_id))
-        .route("/", patch(crate::routes::api::v1::auth::profile::update::update_profile))
+        .route("/", get(crate::routes::api::v1::auth::profile::index::get_profile_self)
+            .patch(crate::routes::api::v1::auth::profile::update::update_profile))
 }
 
 fn get_chat_router() -> KosmosRouter {

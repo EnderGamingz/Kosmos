@@ -15,7 +15,7 @@ import {
 import { AttentionDot } from '@components/header/attentionDot.tsx';
 import { Bell } from 'lucide-react';
 
-export function NotificationsMenu() {
+export default function NotificationsMenu() {
   const [seen, setSeen] = useState(true);
   const [initial, setInitial] = useState(true);
   const [initialSucceeded, setInitialSucceeded] = useState<string[]>([]);

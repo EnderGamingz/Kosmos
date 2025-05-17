@@ -15,7 +15,7 @@ import {
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Clock, Plus } from 'lucide-react';
 
-export function NewMenu() {
+export default function NewMenu() {
   const [open, setOpen] = useState(false);
   const currentFolder = useExplorerStore(s => s.current.folder);
   const handleClose = () => setOpen(false);

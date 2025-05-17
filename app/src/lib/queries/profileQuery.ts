@@ -3,15 +3,48 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { ProfileModelDTO } from '@bindings/ProfileModelDTO.ts';
 import { NotificationActions, Severity } from '@/stores/notificationStore';
+import { queryClient } from '@lib/query.ts';
 
 export class ProfileQuery {
+  private static fetchProfileById(id: string | undefined) {
+    return () =>
+      axios
+        .get(`${BASE_URL}auth/profile/${id}`)
+        .then(res => res.data as ProfileModelDTO);
+  }
+
+  private static fetchProfileSelf() {
+    return () =>
+      axios
+        .get(`${BASE_URL}auth/profile`)
+        .then(res => res.data as ProfileModelDTO);
+  }
+
   public static useProfileByIdSuspense = (id?: string) => {
     return useSuspenseQuery({
-      queryFn: () =>
-        axios
-          .get(`${BASE_URL}auth/profile/${id}`)
-          .then(res => res.data as ProfileModelDTO),
+      queryFn: this.fetchProfileById(id),
       queryKey: ['profile', id],
+    });
+  };
+
+  public static useProfileSelfSuspense = () => {
+    return useSuspenseQuery({
+      queryFn: this.fetchProfileSelf(),
+      queryKey: ['profile', 'self'],
+    });
+  };
+
+  public static prefetchProfileById = (id?: string) => {
+    return queryClient.prefetchQuery({
+      queryKey: ['profile', id],
+      queryFn: this.fetchProfileById(id),
+    });
+  };
+
+  public static prefetchProfileSelf = () => {
+    return queryClient.prefetchQuery({
+      queryKey: ['profile', 'self'],
+      queryFn: this.fetchProfileSelf(),
     });
   };
 

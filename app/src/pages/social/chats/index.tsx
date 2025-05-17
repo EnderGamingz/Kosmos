@@ -1,5 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom';
-import { UserChatPage } from '@pages/social/chats/chat';
+import { Link, Outlet } from 'react-router-dom';
 import { SocialPageMetadata } from '@components/metadata.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
@@ -20,22 +19,15 @@ import { PopoverClose } from '@radix-ui/react-popover';
 import { getChatUrl } from '@utils/social/getChatUrl.ts';
 import CreateGroupChat from './createGroupChat';
 
-export default function ChatsRouter() {
+export default function ChatsRoutesWrapper() {
   return (
     <div className={'flex flex-col grow'}>
-      <Routes>
-        <Route path={'user/:userId'} element={<UserChatPage personalChat />} />
-        <Route
-          path={'group/:chatId'}
-          element={<UserChatPage personalChat={false} />}
-        />
-        <Route index element={<ChatsHome />} />
-      </Routes>
+      <Outlet />
     </div>
   );
 }
 
-function ChatsHome() {
+export function ChatsHome() {
   return (
     <div className={'space-y-4 gap-4'}>
       <SocialPageMetadata title={'Chats'} />

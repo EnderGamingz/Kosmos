@@ -3,7 +3,6 @@
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
-@source "../node_modules/@ferrucc-io/emoji-picker";
 
 @custom-variant dark (&:is(.dark *));
 
