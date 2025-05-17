@@ -2,7 +2,13 @@ import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { DetailType, ExplorerDisplay } from '@stores/preferenceStore.ts';
 
 export type ViewSettings = {
+  /**
+   * Disables display sorting
+   */
   limitedView?: boolean;
+  /**
+   * Disable scroll on the whole page for when the display is not contained in a .file-list
+   */
   scrollControlMissing?: boolean;
   paged?: boolean;
   onLoadNextPage?: () => void;

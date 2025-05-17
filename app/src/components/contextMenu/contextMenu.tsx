@@ -16,9 +16,11 @@ import { cn } from '@lib/utils.ts';
 export default function ContextMenu({
   children,
   pos,
+  scrollControlMissing,
 }: {
   children: ReactNode;
   pos: { x: number; y: number };
+  scrollControlMissing?: boolean;
 }) {
   const isOverflowingX = pos.x + CONTEXT_MENU_WIDTH > window.innerWidth;
   const isOverflowingY = pos.y + CONTEXT_MENU_HEIGHT > window.innerHeight;
@@ -30,11 +32,12 @@ export default function ContextMenu({
             .file-list {
               overflow: hidden !important;
             }
+            ${scrollControlMissing && `html { overflow: hidden !important; }`}
         `}
       </style>
       <motion.div
         className={cn(
-          'absolute z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',
+          'fixed z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',
           '[&_button>svg]:h-5 [&_button]:flex [&_button]:items-center [&_button]:gap-2 [&_button]:text-left',
           '[&_button:not(.no-pre):hover]:bg-stone-100 [&_button:not(.no-pre):hover]:text-stone-900 [&_button:not(.no-pre)]:px-3 [&_button:not(.no-pre)]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',

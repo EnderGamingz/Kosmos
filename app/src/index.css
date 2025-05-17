@@ -95,6 +95,12 @@
     transition: background-color 150ms ease-in-out;
 }
 
+body::-webkit-scrollbar {
+    width: 0;
+    height: 3px;
+}
+
+
 html,
 body {
     max-width: 100vw;

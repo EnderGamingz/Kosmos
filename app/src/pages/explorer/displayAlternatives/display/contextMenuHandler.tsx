@@ -12,17 +12,20 @@ type ContextMenuHandlerProps = {
   onClose: () => void;
 };
 
-function ContextMenuContent(
-  props: Omit<ContextMenuHandlerProps, 'scrollControlMissing'>,
-) {
-  let { context, onClose } = props;
-
+function ContextMenuContent({
+  context,
+  onClose,
+  scrollControlMissing,
+}: ContextMenuHandlerProps) {
   return (
     <AnimatePresence>
       {context.clicked && (
         <>
           <Backdrop key={'context-backdrop'} onClose={onClose} />
-          <ExplorerContextMenu key={'context-menu'} pos={context.pos}>
+          <ExplorerContextMenu
+            key={'context-menu'}
+            pos={context.pos}
+            scrollControlMissing={scrollControlMissing}>
             <ContextMenuExplorerContent data={context.data} onClose={onClose} />
           </ExplorerContextMenu>
         </>
@@ -31,15 +34,6 @@ function ContextMenuContent(
   );
 }
 
-export default function ContextMenuHandler({
-  scrollControlMissing,
-  context,
-  onClose,
-}: ContextMenuHandlerProps) {
-  if (scrollControlMissing) return null;
-
-  return createPortal(
-    <ContextMenuContent context={context} onClose={onClose} />,
-    document.body,
-  );
+export default function ContextMenuHandler(props: ContextMenuHandlerProps) {
+  return createPortal(<ContextMenuContent {...props} />, document.body);
 }
