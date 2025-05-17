@@ -10,6 +10,7 @@ import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx'
 import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
 import ContextMenuDivider from '@components/contextMenu/ContextMenuDivider.tsx';
 import Favorite from '@pages/explorer/components/favorite.tsx';
+import { BinActions } from '@pages/explorer/file/tableFileItem.tsx';
 
 export function FileContextMenu({
   data,
@@ -19,6 +20,15 @@ export function FileContextMenu({
   onClose: () => void;
 }) {
   const isImage = isValidFileForAvatar(data) || isValidFileForAlbum(data);
+
+  if (data.deleted_at) {
+    return (
+      <>
+        <ContextMenuTitle type={'file'} title={data.file_name} />
+        <BinActions id={data.id} inList onClose={onClose} />
+      </>
+    );
+  }
 
   return (
     <>

@@ -29,8 +29,10 @@ function SideNavWrapper({
 
 export function SideNavUsage({
   usage,
+  onClick,
 }: {
   usage: ReturnType<typeof useUsageStats>;
+  onClick?: () => void;
 }) {
   const limit = usage.data?.limit || 0;
   const total = usage.data?.total || 0;
@@ -38,6 +40,7 @@ export function SideNavUsage({
   return (
     <div className={'mt-auto grid gap-2 border-t p-5'}>
       <Link
+        onClick={onClick}
         to={'/usage/report'}
         className={cn(
           'flex items-center gap-2 rounded-lg px-2 py-1 font-light',

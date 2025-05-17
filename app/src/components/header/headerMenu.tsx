@@ -79,7 +79,7 @@ function HeaderLinksMenu({
             />
           ))}
         </div>
-        <SideNavUsage usage={usage} />
+        <SideNavUsage usage={usage} onClick={() => setOpen(false)} />
       </SheetContent>
     </Sheet>
   );

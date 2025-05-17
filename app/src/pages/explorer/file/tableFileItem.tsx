@@ -21,8 +21,17 @@ import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { EllipsisVertical, RotateCcw, Shredder } from 'lucide-react';
 import useSelectFile from '@utils/selectFile.ts';
+import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 
-function TableFileItemBinActions({ id }: { id: string }) {
+export function BinActions({
+  id,
+  inList,
+  onClose,
+}: {
+  id: string;
+  inList?: boolean;
+  onClose?: () => void;
+}) {
   const deleteAction = useMutation({
     mutationFn: () => axios.delete(`${BASE_URL}auth/file/${id}`),
     onSuccess: () => {
@@ -39,21 +48,36 @@ function TableFileItemBinActions({ id }: { id: string }) {
     },
   });
 
+  const onRestore = () => {
+    restoreAction.mutate();
+    onClose?.();
+  };
+
+  const onDelete = () => {
+    deleteAction.mutate();
+    onClose?.();
+  };
+
   return (
-    <div className={'flex items-center gap-5 [&>button]:cursor-pointer'}>
-      <button
-        title={'Restore'}
-        className={'text-blue-500'}
-        onClick={() => restoreAction.mutate()}>
-        <RotateCcw className={'h-5 w-5'} />
+    <ConditionalWrapper
+      wrapper={c => (
+        <div
+          className={
+            'flex items-center gap-5 [&>button]:cursor-pointer [&_svg]:h-5 [&_svg]:w-5'
+          }>
+          {c}
+        </div>
+      )}
+      condition={!inList}>
+      <button title={'Restore'} className={'text-blue-500'} onClick={onRestore}>
+        <RotateCcw />
+        {inList && 'Restore File'}
       </button>
-      <button
-        title={'Delete'}
-        className={'text-red-500'}
-        onClick={() => deleteAction.mutate()}>
-        <Shredder className={'h-5 w-5'} />
+      <button title={'Delete'} className={'text-red-500'} onClick={onDelete}>
+        <Shredder />
+        {inList && 'Delete permanently'}
       </button>
-    </div>
+    </ConditionalWrapper>
   );
 }
 
@@ -188,15 +212,13 @@ export function TableFileItem({
             active={file.favorite}
           />
         )}
-        {!context.viewSettings?.scrollControlMissing && (
-          <button
-            onClick={e => {
-              context.handleContext({ x: e.clientX, y: e.clientY }, file);
-            }}
-            className={'cursor-pointer p-2'}>
-            <EllipsisVertical className={'h-5 w-5'} />
-          </button>
-        )}
+        <button
+          onClick={e => {
+            context.handleContext({ x: e.clientX, y: e.clientY }, file);
+          }}
+          className={'cursor-pointer p-2'}>
+          <EllipsisVertical className={'h-5 w-5'} />
+        </button>
       </td>
       <td align={'right'}>{useFormatBytes(file.file_size)}</td>
       <td align={'right'} className={'whitespace-nowrap text-sm font-light'}>
@@ -204,7 +226,7 @@ export function TableFileItem({
       </td>
       {context.viewSettings?.binView && (
         <td>
-          <TableFileItemBinActions id={file.id} />
+          <BinActions id={file.id} />
         </td>
       )}
     </tr>

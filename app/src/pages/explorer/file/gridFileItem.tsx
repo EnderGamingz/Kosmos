@@ -219,18 +219,13 @@ export default function GridFileItem({
                   )}>
                   {file.file_name}
                 </p>
-                {!context.viewSettings?.scrollControlMissing && (
-                  <button
-                    onClick={e => {
-                      context.handleContext(
-                        { x: e.clientX, y: e.clientY },
-                        file,
-                      );
-                    }}
-                    className={'cursor-pointer'}>
-                    <EllipsisVertical className={'h-5 w-5'} />
-                  </button>
-                )}
+                <button
+                  onClick={e => {
+                    context.handleContext({ x: e.clientX, y: e.clientY }, file);
+                  }}
+                  className={'cursor-pointer'}>
+                  <EllipsisVertical className={'h-5 w-5'} />
+                </button>
               </div>
               <p
                 key={`updated-${file.updated_at}`}

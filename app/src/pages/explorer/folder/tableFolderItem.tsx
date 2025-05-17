@@ -152,15 +152,13 @@ export function TableFolderItem({
             active={folder.favorite}
             iconOnly
           />
-          {!context.viewSettings?.scrollControlMissing && (
-            <button
-              onClick={e => {
-                context.handleContext({ x: e.clientX, y: e.clientY }, folder);
-              }}
-              className={'cursor-pointer p-2'}>
-              <EllipsisVertical className={'h-5 w-5'} />
-            </button>
-          )}
+          <button
+            onClick={e => {
+              context.handleContext({ x: e.clientX, y: e.clientY }, folder);
+            }}
+            className={'cursor-pointer p-2'}>
+            <EllipsisVertical className={'h-5 w-5'} />
+          </button>
         </div>
       </td>
       <td align={'right'}></td>
