@@ -191,13 +191,35 @@ export const useRecentFiles = (limit?: number) => {
   });
 };
 
+export const prefetchRecentFiles = () => {
+  return queryClient.prefetchQuery({
+    queryKey: ['files', 'recent'],
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/file/all/recent`, {
+          withCredentials: true,
+        })
+        .then(res => res.data as FileModelDTO[]),
+  });
+};
+
 export const useDeletedFiles = () => {
   return useQuery({
+    queryKey: ['files', 'deleted'],
     queryFn: () =>
       axios
         .get(`${BASE_URL}auth/file/all/deleted`)
         .then(res => res.data as FileModelDTO[]),
+  });
+};
+
+export const prefetchDeletedFiles = () => {
+  return queryClient.prefetchQuery({
     queryKey: ['files', 'deleted'],
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/file/all/deleted`, { withCredentials: true })
+        .then(res => res.data as FileModelDTO[]),
   });
 };
 

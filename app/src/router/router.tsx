@@ -76,6 +76,8 @@ export const router = createBrowserRouter([
             lazy: {
               Component: async () =>
                 (await import('@pages/explorer/pages/recent.tsx')).default,
+              loader: async () =>
+                (await import('@lib/query')).prefetchRecentFiles,
             },
           },
           {
@@ -83,6 +85,8 @@ export const router = createBrowserRouter([
             lazy: {
               Component: async () =>
                 (await import('@pages/explorer/pages/bin.tsx')).default,
+              loader: async () =>
+                (await import('@lib/query')).prefetchDeletedFiles,
             },
           },
           {
