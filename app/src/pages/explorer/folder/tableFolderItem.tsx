@@ -88,7 +88,7 @@ export function TableFolderItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={cn(
-        'flex group/listItem group transition-colors hover:bg-border [&>div]:p-3',
+        'flex items-center group/listItem group transition-colors hover:bg-border [&>div]:p-3',
         isSelected &&
           'bg-indigo-100 dark:bg-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-600/50',
         isShift && 'cursor-pointer',
