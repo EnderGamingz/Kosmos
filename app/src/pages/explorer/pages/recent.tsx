@@ -34,7 +34,11 @@ export default function RecentFiles() {
             isLoading={files.isLoading}
             files={files.data || []}
             folders={[]}
-            viewSettings={{ limitedView: true }}
+            viewSettings={{
+              limitedView: true,
+              // Magic shit again
+              additionalHeightReduction: [36],
+            }}
           />
         </div>
       </div>

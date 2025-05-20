@@ -1,9 +1,8 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@lib/utils.ts';
 
 export function FileTableLoading() {
   return (
-    <div className={cn('absolute inset-0 flex overflow-hidden')}>
+    <div className={'mt-10 absolute inset-0 flex overflow-hidden'}>
       <style>
         {`
         .file-list {
@@ -11,54 +10,54 @@ export function FileTableLoading() {
         }
         `}
       </style>
-      <table
-        className={'w-full table-auto overflow-hidden text-left opacity-60'}>
-        <thead>
-          <tr className={'[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700'}>
-            <th>
-              <div className={'w-7'}>
-                <Skeleton className={'h-5 w-5 rounded-md'} />
-              </div>
-            </th>
-            <th className={'w-full'}>
-              <Skeleton className={'h-5 w-1/5'} />
-            </th>
-            <th align={'right'} className={'min-w-[100px]'}>
-              <Skeleton className={'h-5 w-full'} />
-            </th>
-            <th align={'right'} className={'min-w-[155px]'}>
-              <Skeleton className={'h-5 w-2/3'} />
-            </th>
-          </tr>
-        </thead>
-        <tbody className={'overflow-hidden'}>
+      <div className={'w-full overflow-hidden text-left opacity-60'}>
+        <div
+          className={
+            'flex [&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700'
+          }>
+          <div>
+            <div className={'w-7'}>
+              <Skeleton className={'h-5 w-5 rounded-md'} />
+            </div>
+          </div>
+          <div className={'w-full'}>
+            <Skeleton className={'h-5 w-1/5'} />
+          </div>
+          <div className={'min-w-[100px] text-right'}>
+            <Skeleton className={'h-5 w-full'} />
+          </div>
+          <div className={'min-w-[155px] text-right'}>
+            <Skeleton className={'h-5 w-2/3'} />
+          </div>
+        </div>
+        <div className={'overflow-hidden'}>
           {Array.from({ length: 20 }).map((_, i) => (
-            <tr
+            <div
               key={i}
               className={
-                '[&_td]:p-3 [&_td]:font-bold [&_td]:text-stone-700 animate-fade-in-top'
+                'flex [&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700 animate-fade-in-top'
               }
               style={{
                 animationDelay: `${i * 30}ms`,
               }}>
-              <td className={'p-3'}>
+              <div>
                 <div className={'w-7'}>
                   <Skeleton className={'h-5 w-5 rounded-md'} />
                 </div>
-              </td>
-              <td className={'w-full'}>
+              </div>
+              <div className={'w-full'}>
+                <Skeleton className={'h-5 w-1/2'} />
+              </div>
+              <div className={'min-w-[100px] text-right'}>
                 <Skeleton className={'h-5 w-full'} />
-              </td>
-              <td align={'right'}>
-                <Skeleton className={'h-5 w-full'} />
-              </td>
-              <td align={'right'}>
-                <Skeleton className={'h-5 w-full'} />
-              </td>
-            </tr>
+              </div>
+              <div className={'min-w-[155px] text-right'}>
+                <Skeleton className={'h-5 w-2/3'} />
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 }

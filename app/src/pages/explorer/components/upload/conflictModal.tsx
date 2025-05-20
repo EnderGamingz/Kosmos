@@ -182,8 +182,9 @@ function FileConflictItem({
           <Badge
             key={a.name}
             className={cn(
-              'cursor-pointer',
-              a.action === file.resolveAction && 'bg-stone-700/50',
+              'cursor-pointer transition-colors',
+              a.action === file.resolveAction &&
+                'bg-muted-foreground dark:text-white',
             )}
             onClick={() => selectAction(a.action)}>
             {a.name}

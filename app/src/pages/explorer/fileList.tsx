@@ -45,29 +45,27 @@ export default function FileList() {
   return (
     <div
       className={cn(
-        'file-list relative flex flex-col grow overflow-hidden',
+        'file-list relative flex flex-col overflow-hidden',
         'h-full max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]',
       )}>
       <div className={'flex items-center shadow-sm'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />
-      <div className={'relative grow'}>
-        <ExplorerDataDisplay
-          isLoading={isLoading}
-          files={files.data?.pages.flat() || []}
-          folders={folders.data?.folders || []}
-          viewSettings={{
-            paged: true,
-            isCreateAllowed: true,
-            hasNextPage: files.hasNextPage,
-            onLoadNextPage: async () => {
-              if (files.isFetching) return;
-              await files.fetchNextPage();
-            },
-          }}
-        />
-      </div>
+      <ExplorerDataDisplay
+        isLoading={isLoading}
+        files={files.data?.pages.flat() || []}
+        folders={folders.data?.folders || []}
+        viewSettings={{
+          paged: true,
+          isCreateAllowed: true,
+          hasNextPage: files.hasNextPage,
+          onLoadNextPage: async () => {
+            if (files.isFetching) return;
+            await files.fetchNextPage();
+          },
+        }}
+      />
     </div>
   );
 }

@@ -3,19 +3,14 @@ import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { motion } from 'framer-motion';
-import { useExplorerStore } from '@stores/explorerStore.ts';
-import { useContext, useState } from 'react';
+import { CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { useMove } from '@pages/explorer/components/move/useMove.tsx';
-import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
-import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
@@ -86,15 +81,15 @@ export function TableFileItem({
   file,
   selected,
   onSelect,
-  outerDisabled,
+  style,
 }: {
   i: number;
   file: FileModelDTO;
   selected: string[];
   onSelect: (file: FileModelDTO) => void;
   outerDisabled?: boolean;
+  style?: CSSProperties;
 }) {
-  const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
     useShallow(s => ({
       isControl: s.keys.ctrl,
@@ -104,30 +99,13 @@ export function TableFileItem({
 
   const selectFile = useSelectFile();
 
-  const { dragDestination, setDestination, selectedItems } = useExplorerStore(
-    useShallow(s => ({
-      dragDestination: s.dragMove.destination,
-      setDestination: s.dragMove.setDestination,
-      selectedItems: s.selectedResources,
-    })),
-  );
-
   const isSelected = selected.includes(file.id);
 
   const context = useContext(DisplayContext);
 
-  const moveAction = useMove(
-    {
-      type: 'file',
-      id: context.dragMove.id as string,
-      name: file.file_name,
-    },
-    getMultiMoveBySelected(selectedItems),
-    dragDestination,
-  );
-
   return (
-    <tr
+    <div
+      style={style}
       id={file.id}
       onClick={() => {
         if (isControl) onSelect(file);
@@ -139,7 +117,7 @@ export function TableFileItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, file);
       }}
       className={cn(
-        'group transition-colors hover:bg-border [&_td]:p-3 [&_th]:p-3',
+        'flex group transition-colors hover:bg-border [&>div]:p-3',
         isSelected &&
           'bg-indigo-100 dark:bg-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-600/50',
         isShift && 'cursor-pointer',
@@ -147,48 +125,19 @@ export function TableFileItem({
           'bg-indigo-50 dark:bg-indigo-600/60 hover:bg-indigo-100 dark:hover:bg-indigo-700/60',
       )}>
       {!context.viewSettings?.noSelect && (
-        <th>
+        <div>
           <Checkbox checked={isSelected} onClick={() => onSelect(file)} />
-        </th>
+        </div>
       )}
-      <td
+      <div
         className={cn(
-          'flex h-full !p-0',
+          'flex h-full !p-0 grow',
           !!context.viewSettings?.noSelect && '!pl-3',
         )}>
-        <motion.div
-          drag={
-            !outerDisabled &&
-            !context.viewSettings?.limitedView &&
-            !isTouchDevice() &&
-            !context.shareUuid
-          }
-          dragSnapToOrigin
-          whileDrag={{ scale: 0.6, pointerEvents: 'none', opacity: 0.5 }}
-          onDragStart={() => {
-            setDestination();
-            context.dragMove.setDrag('file', file.id);
-            setDisabled(true);
-          }}
-          onDragEnd={() => {
-            if (dragDestination) {
-              moveAction.mutate();
-            }
-          }}
-          onDragTransitionEnd={() => {
-            context.dragMove.resetDrag();
-            setDestination();
-            setDisabled(false);
-          }}
-          className={'flex flex-grow items-center'}
+        <div
+          className={'flex grow items-center'}
           onClick={() => {
-            if (
-              isControl ||
-              isShift ||
-              disabled ||
-              context.viewSettings?.noDisplay
-            )
-              return;
+            if (isControl || isShift || context.viewSettings?.noDisplay) return;
             selectFile(file.id);
           }}>
           <ItemIcon
@@ -203,7 +152,7 @@ export function TableFileItem({
             }>
             {file.file_name}
           </p>
-        </motion.div>
+        </div>
         {!context.viewSettings?.binView && (
           <Favorite
             id={file.id}
@@ -219,16 +168,19 @@ export function TableFileItem({
           className={'cursor-pointer p-2'}>
           <EllipsisVertical className={'h-5 w-5'} />
         </button>
-      </td>
-      <td align={'right'}>{useFormatBytes(file.file_size)}</td>
-      <td align={'right'} className={'whitespace-nowrap text-sm font-light'}>
+      </div>
+      <div className={'text-right w-[110px]'}>
+        {useFormatBytes(file.file_size)}
+      </div>
+      <div
+        className={'whitespace-nowrap text-sm font-light text-right w-[155px]'}>
         {formatDistanceToNow(file.updated_at)}
-      </td>
+      </div>
       {context.viewSettings?.binView && (
-        <td>
+        <div>
           <BinActions id={file.id} />
-        </td>
+        </div>
       )}
-    </tr>
+    </div>
   );
 }

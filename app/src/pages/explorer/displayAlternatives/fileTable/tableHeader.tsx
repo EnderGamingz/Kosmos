@@ -3,17 +3,20 @@ import { SortBy } from '@models/sort.ts';
 
 import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
 import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
-import { useContext } from 'react';
+import { RefObject, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import { cn } from '@lib/utils.ts';
 
 export function TableHeader({
   files,
   folders,
+  ref,
 }: {
   files: FileModelDTO[];
   folders: FolderModelDTO[];
+  ref?: RefObject<HTMLTableSectionElement | null>;
 }) {
   const currentSort = useSearchState(s => s.sort);
   const context = useContext(DisplayContext);
@@ -21,17 +24,18 @@ export function TableHeader({
   const noSort = context.viewSettings?.limitedView || !!context.shareUuid;
 
   return (
-    <thead>
-      <tr
-        className={
-          '[&_th]:p-3 [&_th]:font-bold [&_th]:text-stone-700 dark:[&_th]:text-stone-300'
-        }>
+    <div ref={ref}>
+      <div
+        className={cn(
+          '[&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700 dark:[&>div]:text-stone-300',
+          'flex',
+        )}>
         {!context.viewSettings?.noSelect && (
-          <th>
+          <div>
             <SelectAllCheckBox files={files} folders={folders} />
-          </th>
+          </div>
         )}
-        <th className={'w-full min-w-[300px]'}>
+        <div className={'w-full min-w-[300px]'}>
           <ExplorerSort
             name={'Name'}
             sort={SortBy.Name}
@@ -39,8 +43,8 @@ export function TableHeader({
             currentSortBy={currentSort.sort_by}
             currentOrder={currentSort.sort_order}
           />
-        </th>
-        <th align={'right'} className={'min-w-[110px]'}>
+        </div>
+        <div className={'min-w-[110px] text-right'}>
           <ExplorerSort
             name={'Size'}
             sort={SortBy.FileSize}
@@ -48,8 +52,8 @@ export function TableHeader({
             currentSortBy={currentSort.sort_by}
             currentOrder={currentSort.sort_order}
           />
-        </th>
-        <th align={'right'} className={'min-w-[155px]'}>
+        </div>
+        <div className={'min-w-[155px] text-right'}>
           <ExplorerSort
             name={context.viewSettings?.binView ? 'Deleted' : 'Modified'}
             sort={SortBy.UpdatedAt}
@@ -57,8 +61,8 @@ export function TableHeader({
             currentSortBy={currentSort.sort_by}
             currentOrder={currentSort.sort_order}
           />
-        </th>
-      </tr>
-    </thead>
+        </div>
+      </div>
+    </div>
   );
 }

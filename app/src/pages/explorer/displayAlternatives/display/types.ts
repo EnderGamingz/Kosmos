@@ -20,6 +20,7 @@ export type ViewSettings = {
   noSelect?: boolean;
   noDisplay?: boolean;
   isCreateAllowed?: boolean;
+  additionalHeightReduction?: number[];
   noActions?: boolean;
   selectDisable?: {
     files?: boolean;

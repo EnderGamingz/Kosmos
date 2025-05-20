@@ -99,7 +99,10 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
               isLoading={items.isLoading}
               files={(items.data?.files as FileModelDTO[]) || []}
               folders={(items.data?.folders as FolderModelDTO[]) || []}
-              viewSettings={{ limitedView: true }}
+              viewSettings={{
+                limitedView: true,
+                additionalHeightReduction: [108],
+              }}
             />
           )}
         </div>

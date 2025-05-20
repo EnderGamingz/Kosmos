@@ -23,7 +23,7 @@ export default function FileListFab({ hide }: { hide: boolean }) {
         className={cn(
           'z-50 hidden pointer-events-none max-md:flex flex-col max-md:pointer-events-auto',
           'absolute bottom-5 right-5 opacity-100 transition-all duration-200 items-end gap-3',
-          hide && '!opacity-0 !pointer-events-none',
+          hide && '!opacity-0 !pointer-events-none scale-70',
         )}>
         <AnimatePresence>
           <div

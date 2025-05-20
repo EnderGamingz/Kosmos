@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { useKeyStore } from '@stores/keyStore.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { useContext } from 'react';
+import { CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
@@ -14,11 +14,13 @@ export function MobileFolderItem({
   folder,
   selected,
   onSelect,
+  style,
 }: {
   i: number;
   folder: FolderModelDTO;
   selected: string[];
   onSelect: (folder: FolderModelDTO) => void;
+  style?: CSSProperties;
 }) {
   const { isControl, isShift } = useKeyStore(
     useShallow(s => ({ isControl: s.keys.ctrl, isShift: s.keys.shift })),
@@ -48,6 +50,7 @@ export function MobileFolderItem({
 
   return (
     <div
+      style={style}
       onClick={() => {
         if (isControl && !selectDisabled) onSelect(folder);
         if (isShift) context.select.setRange(i);

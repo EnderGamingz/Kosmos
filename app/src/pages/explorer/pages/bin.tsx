@@ -79,6 +79,7 @@ export default function BinPage() {
           scrollControlMissing: true,
           noSelect: true,
           noDisplay: true,
+          additionalHeightReduction: [40],
         }}
       />
     </div>

@@ -3,19 +3,24 @@ import InfiniteScroll from 'react-infinite-scroller';
 
 import { cn } from '@lib/utils.ts';
 import { ViewSettings } from '@pages/explorer/displayAlternatives/display/types.ts';
+import { ReactElementType } from 'react-window';
 
 export function PagedWrapper({
   viewSettings,
   children,
   height,
+  type,
 }: {
   height?: boolean;
   viewSettings?: ViewSettings;
   children: ReactNode;
+  type?: ReactElementType;
 }) {
   if (!viewSettings?.paged) return children;
+
   return (
     <InfiniteScroll
+      element={type as string}
       pageStart={0}
       loadMore={viewSettings.onLoadNextPage || (() => {})}
       hasMore={viewSettings.hasNextPage}

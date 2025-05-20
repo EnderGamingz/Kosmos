@@ -1,57 +1,76 @@
-import { createContext, JSX, ReactNode, useRef, useState } from 'react';
-import { FixedSizeList, FixedSizeListProps } from 'react-window';
+import { JSX, ReactNode, useCallback, useMemo, useState } from 'react';
+import {
+  FixedSizeList,
+  FixedSizeListProps,
+  ReactElementType,
+} from 'react-window';
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import { Slot } from '@radix-ui/react-slot';
+import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 
-export const PagedVirtualDisplayContext = createContext<{
-  top: number;
-  setTop: (top: number) => void;
-  header: ReactNode;
-  footer: ReactNode;
-}>({
-  top: 0,
-  setTop: () => {},
-  header: <></>,
-  footer: <></>,
-});
+function PartRenderer({
+  children,
+  onHeight,
+}: {
+  children: ReactNode;
+  onHeight: (height: number) => void;
+}) {
+  const elementRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (!node) return;
+      const resizeObserver = new ResizeObserver(() => {
+        onHeight(node.offsetHeight);
+      });
+      resizeObserver.observe(node);
+    },
+    [children],
+  );
+
+  return <Slot ref={elementRef}>{children}</Slot>;
+}
 
 export function VirtualDisplayElement({
   row,
   header,
   footer,
   inner,
+  listHeight,
+  listWrapperType,
+  showNoItems,
   ...rest
 }: {
   header?: ReactNode;
   children?: ReactNode;
   footer?: ReactNode;
-  inner: ({ children }: { children: ReactNode }) => JSX.Element;
+  listHeight: number;
+  inner?: ({ children }: { children: ReactNode }) => JSX.Element;
   row: FixedSizeListProps['children'];
-} & Omit<FixedSizeListProps, 'children' | 'innerElementType'>) {
-  const listRef = useRef<FixedSizeList | null>(null);
-  const [top, setTop] = useState(0);
+  listWrapperType?: ReactElementType;
+  showNoItems?: boolean;
+} & Omit<FixedSizeListProps, 'children' | 'innerElementType' | 'height'>) {
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  const fixedHeight = useMemo(
+    // Absolute magic happening here, the 10 is the devil, do not remove
+    // or find the cause
+    () => listHeight - headerHeight - 10,
+    [listHeight, headerHeight],
+  );
 
   return (
-    <PagedVirtualDisplayContext value={{ top, setTop, header, footer }}>
+    <>
+      <PartRenderer onHeight={setHeaderHeight}>{header}</PartRenderer>
       <FixedSizeList
         {...rest}
-        innerElementType={inner}
-        onItemsRendered={props => {
-          const style =
-            listRef.current &&
-            // @ts-expect-error private method access
-            listRef.current._getItemStyle(props.overscanStartIndex);
-          setTop((style && style.top) || 0);
-
-          // Call the original callback
-          rest.onItemsRendered && rest.onItemsRendered(props);
-        }}
-        ref={listRef}>
+        height={showNoItems ? 0 : fixedHeight}
+        innerElementType={listWrapperType}>
         {row}
       </FixedSizeList>
-    </PagedVirtualDisplayContext>
+      {showNoItems && <EmptyList />}
+    </>
   );
 }
 
@@ -96,15 +115,19 @@ export function getVirtualRowData({
 export function PagedVirtualDisplay({
   inner,
   header,
-  footer,
   row,
   itemSize,
+  listWrapperType,
+  wrapperType,
+  showNoItems,
 }: {
-  inner: ({ children }: { children: ReactNode }) => JSX.Element;
+  inner?: ({ children }: { children: ReactNode }) => JSX.Element;
   header: ReactNode;
-  footer: ReactNode;
   row: FixedSizeListProps['children'];
   itemSize: number;
+  listWrapperType?: ReactElementType;
+  wrapperType?: 'div' | 'table';
+  showNoItems?: boolean;
 }) {
   const {
     selectedFolders,
@@ -128,19 +151,21 @@ export function PagedVirtualDisplay({
     selectedFolders,
   };
 
+  const itemCount = folders.length + files.length;
   return (
-    <PagedWrapper viewSettings={viewSettings}>
+    <PagedWrapper viewSettings={viewSettings} type={wrapperType}>
       <VirtualDisplayElement
         inner={inner}
+        listWrapperType={listWrapperType}
         onScroll={onScroll}
-        height={display.height || 500}
+        listHeight={display.height || 500}
         width={'100%'}
-        itemCount={folders.length + files.length}
+        itemCount={itemCount}
         itemData={itemData}
         itemSize={itemSize}
         header={header}
         row={row}
-        footer={footer}
+        showNoItems={showNoItems && itemCount === 0}
       />
     </PagedWrapper>
   );

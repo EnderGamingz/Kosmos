@@ -114,12 +114,17 @@ export function ExplorerDisplayWrapper({
 
   useEffect(() => {
     const handleHeight = () => {
-      setDisplayHeight(calculateDisplayHeight(isMobile));
+      setDisplayHeight(
+        calculateDisplayHeight(
+          isMobile,
+          viewSettings?.additionalHeightReduction,
+        ),
+      );
     };
     handleHeight();
     window.addEventListener('resize', handleHeight);
     return () => window.removeEventListener('resize', handleHeight);
-  }, [setDisplayHeight, isMobile]);
+  }, [setDisplayHeight, isMobile, viewSettings?.additionalHeightReduction]);
 
   const handleScroll = (props: ListOnScrollProps) => {
     if (props.scrollDirection === 'forward' && props.scrollOffset === 0)

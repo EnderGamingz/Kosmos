@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { useContext, useState } from 'react';
+import { CSSProperties, useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useExplorerStore } from '@stores/explorerStore.ts';
@@ -22,12 +22,14 @@ export function TableFolderItem({
   selected,
   onSelect,
   outerDisabled,
+  style,
 }: {
   i: number;
   folder: FolderModelDTO;
   selected: string[];
   onSelect: (folder: FolderModelDTO) => void;
   outerDisabled?: boolean;
+  style?: CSSProperties;
 }) {
   const [disabled, setDisabled] = useState(false);
   const { isControl, isShift } = useKeyStore(
@@ -74,7 +76,8 @@ export function TableFolderItem({
   const selectDisabled = context.viewSettings?.selectDisable?.folders;
 
   return (
-    <tr
+    <div
+      style={style}
       onClick={() => {
         if (isControl && !selectDisabled) onSelect(folder);
         if (isShift) context.select.setRange(i);
@@ -85,7 +88,7 @@ export function TableFolderItem({
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
       className={cn(
-        'group/listItem group transition-colors hover:bg-border [&_td]:p-3 [&_th]:p-3',
+        'flex group/listItem group transition-colors hover:bg-border [&>div]:p-3',
         isSelected &&
           'bg-indigo-100 dark:bg-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-600/50',
         isShift && 'cursor-pointer',
@@ -93,14 +96,14 @@ export function TableFolderItem({
           'bg-indigo-50 dark:bg-indigo-600/60 hover:bg-indigo-100 dark:hover:bg-indigo-700/60',
       )}>
       {!context.viewSettings?.noSelect && (
-        <th>
+        <div>
           <Checkbox
             checked={isSelected}
             onClick={() => !selectDisabled && onSelect(folder)}
           />
-        </th>
+        </div>
       )}
-      <td className={'!p-0'}>
+      <div className={'!p-0 grow'}>
         <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
@@ -160,11 +163,12 @@ export function TableFolderItem({
             <EllipsisVertical className={'h-5 w-5'} />
           </button>
         </div>
-      </td>
-      <td align={'right'}></td>
-      <td align={'right'} className={'whitespace-nowrap text-sm font-light'}>
+      </div>
+      <div className={'text-right w-[110px]'}></div>
+      <div
+        className={'whitespace-nowrap text-sm font-light text-right w-[155px]'}>
         {formatDistanceToNow(folder.updated_at)}
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 }

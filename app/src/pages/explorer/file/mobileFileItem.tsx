@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { useContext } from 'react';
+import { CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -16,11 +16,13 @@ export function MobileFileItem({
   file,
   selected,
   onSelect,
+  style,
 }: {
   i: number;
   file: FileModelDTO;
   selected: string[];
   onSelect: (file: FileModelDTO) => void;
+  style?: CSSProperties;
 }) {
   const { isControl, isShift } = useKeyStore(
     useShallow(s => ({
@@ -35,6 +37,7 @@ export function MobileFileItem({
 
   return (
     <div
+      style={style}
       id={file.id}
       onClick={() => {
         if (isControl) onSelect(file);

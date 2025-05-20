@@ -2,31 +2,25 @@ import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData
 import {
   getVirtualRowData,
   PagedVirtualDisplay,
-  PagedVirtualDisplayContext,
   VirtualDisplayItemData,
 } from '../pagedVirtualDisplay';
-import { ReactNode, useContext } from 'react';
+import { CSSProperties, RefObject } from 'react';
 import { isFileModel } from '@models/file.ts';
-import EmptyList from '../../components/EmptyList';
-import { cn } from '@/lib/utils';
 import { FileGridSort } from '@pages/explorer/displayAlternatives/fileGrid/fileGridSort.tsx';
 import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
 import { MobileFileItem } from '@pages/explorer/file/mobileFileItem.tsx';
 import { MobileFolderItem } from '@pages/explorer/folder/mobileFolderItem.tsx';
 import { MOBILE_FILE_LIST_ITEM_HEIGHT } from '@lib/constants.ts';
 
-const Inner = ({ children }: { children: ReactNode }) => {
-  const { header, top, footer } = useContext(PagedVirtualDisplayContext);
-  return (
-    <div style={{ top, position: 'absolute', width: '100%' }}>
-      {header}
-      {children}
-      {footer}
-    </div>
-  );
-};
-
-function Row({ index, data }: { index: number; data: VirtualDisplayItemData }) {
+function Row({
+  index,
+  data,
+  style,
+}: {
+  index: number;
+  data: VirtualDisplayItemData;
+  style?: CSSProperties;
+}) {
   const {
     onSelectFolder,
     onSelectFile,
@@ -43,12 +37,14 @@ function Row({ index, data }: { index: number; data: VirtualDisplayItemData }) {
         onSelect={onSelectFile}
         key={itemData.id}
         file={itemData}
+        style={style}
       />
     );
   }
 
   return (
     <MobileFolderItem
+      style={style}
       i={index}
       selected={selectedFolders.map(folder => folder.id)}
       onSelect={onSelectFolder}
@@ -58,11 +54,12 @@ function Row({ index, data }: { index: number; data: VirtualDisplayItemData }) {
   );
 }
 
-function MobileListHeader() {
+function MobileListHeader({ ref }: { ref?: RefObject<HTMLDivElement> }) {
   const { shareUuid, viewSettings, files, folders, currentFolder } =
     useExplorerData();
+
   return (
-    <div className={'my-[12px] px-5'}>
+    <div ref={ref} className={'h-11 flex items-center px-5'}>
       <div className={' flex items-center gap-2'}>
         {!viewSettings?.noSelect && (
           <SelectAllCheckBox files={files} folders={folders} />
@@ -85,28 +82,11 @@ function MobileListHeader() {
 }
 
 export default function MobileList() {
-  const { viewSettings, files, folders, totalFileSize } = useExplorerData();
-
   return (
     <PagedVirtualDisplay
       itemSize={MOBILE_FILE_LIST_ITEM_HEIGHT}
-      inner={Inner}
       header={<MobileListHeader />}
-      footer={
-        !files.length && !folders.length ? (
-          <EmptyList />
-        ) : (
-          <div
-            className={
-              'grid place-items-center text-sm mt-10 pb-32 text-muted-foreground'
-            }>
-            <p className={cn(!!viewSettings?.binView && 'pl-4')}>
-              {folders.length} Folders &bull; {files.length} Files &bull;{' '}
-              {totalFileSize}
-            </p>
-          </div>
-        )
-      }
+      showNoItems
       row={Row}
     />
   );
