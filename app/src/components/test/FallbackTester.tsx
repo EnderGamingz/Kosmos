@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button.tsx';
+import { Button } from '@components/ui/button.tsx';
 import { ReactNode, useEffect, useState } from 'react';
 
 export default function FallbackTester({

@@ -6,16 +6,17 @@ import { useUserState } from '@stores/userStore.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { StaticNotificationItem } from '@components/notifications/staticNotificationItem.tsx';
 import { OperationItem } from '@components/header/notifications/operationItem.tsx';
-import { cn } from '@lib/utils.ts';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@components/ui/popover.tsx';
 import { AttentionDot } from '@components/header/attentionDot.tsx';
 import { Bell } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from '@components/ui/sheet.tsx';
 
-export default function NotificationsMenu() {
+export default function NotificationsSheet() {
+  const [open, setOpen] = useState(false);
   const [seen, setSeen] = useState(true);
   const [initial, setInitial] = useState(true);
   const [initialSucceeded, setInitialSucceeded] = useState<string[]>([]);
@@ -73,33 +74,34 @@ export default function NotificationsMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operations.data]);
 
+  useEffect(() => {
+    if (open) setSeen(true);
+  }, [open]);
+
   return (
-    <Popover onOpenChange={b => b && setSeen(true)}>
-      <PopoverTrigger asChild>
-        <button className={'flex p-2.5 sm:p-3 relative cursor-pointer'}>
-          {!seen && <AttentionDot />}
-          <Bell className={'h-6 w-6'} />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        side={'bottom'}
-        className={cn(
-          'bg-transparent p-0 shadow-none border-none min-w-[220px]',
-          'flex flex-col gap-2',
-          '[&>div]:bg-popover [&>div]:border [&>div]:px-2 [&>div]:shadow-large [&>div]:rounded-lg',
-        )}>
-        <div>
-          <h2
+    <>
+      {open && (
+        <style>
+          {`
+            #root {
+              transform: translate(-20px, 0) scale(0.99);
+            }
+          `}
+        </style>
+      )}
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <button className={'flex p-2.5 sm:p-3 relative cursor-pointer'}>
+            {!seen && <AttentionDot />}
+            <Bell className={'h-6 w-6'} />
+          </button>
+        </SheetTrigger>
+        <SheetContent side={'right'} className={'p-3'}>
+          <SheetTitle>Notifications</SheetTitle>
+          <ul
             className={
-              'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
+              'max-h-[calc(50vh-150px)] divide-y divide-border overflow-y-auto scrollbar-hide'
             }>
-            Notifications
-          </h2>
-          <div
-            className={cn(
-              'h-full max-h-[150px] md:max-h-[250px]',
-              'flex w-full flex-col divide-y divide-border overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
-            )}>
             {notifications.length ? (
               notifications.map((notification, i) => (
                 <StaticNotificationItem
@@ -109,42 +111,45 @@ export default function NotificationsMenu() {
                 />
               ))
             ) : (
-              <p
+              <li
                 className={
                   'self-center justify-self-center font-light text-muted-foreground'
                 }>
-                No notifications
-              </p>
+                No notifications in the current session.
+              </li>
             )}
+          </ul>
+          <div>
+            <h2
+              className={
+                'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
+              }>
+              Operations
+            </h2>
+            <div
+              className={
+                'max-h-[calc(50vh-150px)] divide-y divide-border overflow-y-auto scrollbar-hide'
+              }>
+              {operations.data?.length ? (
+                operations.data?.map((operation, i) => (
+                  <OperationItem
+                    key={operation.id}
+                    data={operation}
+                    index={i}
+                  />
+                ))
+              ) : (
+                <p
+                  className={
+                    'self-center justify-self-center font-light text-muted-foreground'
+                  }>
+                  No operations
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div>
-          <h2
-            className={
-              'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
-            }>
-            Operations
-          </h2>
-          <div
-            className={cn(
-              'max-h-[150px] md:max-h-[250px]',
-              'grid w-full divide-y divide-border overflow-y-auto px-1 pb-3 pt-1 scrollbar-hide',
-            )}>
-            {operations.data?.length ? (
-              operations.data?.map((operation, i) => (
-                <OperationItem key={operation.id} data={operation} index={i} />
-              ))
-            ) : (
-              <p
-                className={
-                  'self-center justify-self-center font-light text-muted-foreground'
-                }>
-                No operations
-              </p>
-            )}
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

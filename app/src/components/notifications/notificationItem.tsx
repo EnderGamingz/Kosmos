@@ -2,12 +2,15 @@ import { Notification, useNotifications } from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { NotificationStatus } from './notificationStatus.tsx';
-import { getSeverityIcon } from '@components/notifications/getSeverityIcon.tsx';
+import {
+  getSeverityBorderColor,
+  getSeverityIcon,
+} from '@components/notifications/getSeverityIcon.tsx';
 import { Collapse } from 'react-collapse';
 import { cn } from '@lib/utils.ts';
 import { X } from 'lucide-react';
 
-const ExpandedNotificationHeight = 56;
+const ExpandedNotificationHeight = 64;
 
 export function NotificationItem({
   data,
@@ -34,10 +37,13 @@ export function NotificationItem({
   }, [data.id, data.timeout, update]);
 
   const relativePos = expanded
-    ? index * ExpandedNotificationHeight
+    ? index * ExpandedNotificationHeight + index * 2
     : index * (10 - index * 0.7);
 
   const exitDirection = mobile ? -30 : 30;
+
+  const Icon = getSeverityIcon(data.severity);
+  const color = getSeverityBorderColor(data.severity);
 
   return (
     <motion.li
@@ -50,6 +56,7 @@ export function NotificationItem({
         top: mobile ? relativePos : 'unset',
         zIndex: -index,
         scale: expanded ? 1 : index === 0 ? 1 : 1 - index * 0.02,
+        height: expanded ? ExpandedNotificationHeight : 'auto',
       }}
       drag={'x'}
       dragConstraints={{ left: 0, right: 0 }}
@@ -62,14 +69,13 @@ export function NotificationItem({
       exit={{ opacity: 0, y: exitDirection, zIndex: 1, skew: '-10deg' }}
       transition={{ duration: 0.2 }}
       className={cn(
-        'relative w-full cursor-grab overflow-hidden shadow-sm transition-colors',
-        'rounded-md bg-stone-700 text-stone-50 shadow-[0_0_5px_-2px_#000000A0]',
+        'relative w-full cursor-grab overflow-hidden shadow-sm transition-colors border-r-4',
+        'rounded-md bg-stone-700 text-stone-50',
+        color,
         index === 0 || expanded ? 'text-stone-50' : 'text-stone-50/20',
       )}>
       <div className={'flex gap-1 px-2 py-2'}>
-        <div className={'mr-1 flex h-7 w-7'}>
-          {getSeverityIcon(data.severity)}
-        </div>
+        <Icon className={'mr-1 flex h-7 w-7'} />
         <div className={'w-full'}>
           <div className={'flex items-center'}>
             <p className={'text-lg font-medium'}>{data.title}</p>

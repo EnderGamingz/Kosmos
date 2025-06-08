@@ -3,11 +3,13 @@ import { NotificationItem } from './notificationItem';
 import { useNotifications } from '@stores/notificationStore';
 import { useEffect, useState } from 'react';
 import { cn } from '@lib/utils.ts';
+import { useLocation } from 'react-router-dom';
 
 export default function NotificationIndicator() {
   const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const notifications = useNotifications(s => s.notifications);
+  const location = useLocation();
 
   const filteredNotifications = notifications
     .filter(x => x.popup)
@@ -17,6 +19,12 @@ export default function NotificationIndicator() {
     if (window.innerWidth < 768) setIsMobile(true);
   }, []);
 
+  // Close notifications on updates
+  useEffect(() => {
+    setExpanded(false);
+  }, [location.pathname, notifications.length, isMobile]);
+
+  const maxNotificationsToShow = 8;
   return (
     <div
       className={
@@ -27,22 +35,23 @@ export default function NotificationIndicator() {
           if (filteredNotifications.length > 1) setExpanded(!expanded);
           else setExpanded(false);
         }}
-        onMouseLeave={() => setExpanded(false)}
         className={cn(
           'group relative isolate',
           'flex max-h-64 flex-col-reverse gap-2 max-sm:flex-col',
           'bottom-0 [&_li]:absolute',
         )}>
         <AnimatePresence>
-          {filteredNotifications.slice(0, 5).map((notification, i) => (
-            <NotificationItem
-              index={i}
-              key={notification.id}
-              data={notification}
-              expanded={expanded}
-              mobile={isMobile}
-            />
-          ))}
+          {filteredNotifications
+            .slice(0, maxNotificationsToShow)
+            .map((notification, i) => (
+              <NotificationItem
+                index={i}
+                key={notification.id}
+                data={notification}
+                expanded={expanded}
+                mobile={isMobile}
+              />
+            ))}
         </AnimatePresence>
       </ul>
     </div>

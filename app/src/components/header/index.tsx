@@ -15,7 +15,7 @@ import { Skeleton } from '@components/ui/skeleton.tsx';
 
 const NewMenu = lazy(() => import('./new/newMenu.tsx'));
 const NotificationsMenu = lazy(
-  () => import('@components/header/notifications/notificationsMenu.tsx'),
+  () => import('@components/header/notifications/notificationsSheet.tsx'),
 );
 
 export default function Header() {

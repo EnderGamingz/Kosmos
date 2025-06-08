@@ -122,7 +122,6 @@ body {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms
 }
-
 #root {
     min-height: 100svh;
     display: flex;
@@ -135,7 +134,9 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    transition: all 200ms ease-in-out;
 }
+
 
 ::-webkit-scrollbar {
     width: 3px;
@@ -400,5 +401,15 @@ body {
 
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 }
