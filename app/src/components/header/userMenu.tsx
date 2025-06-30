@@ -34,9 +34,7 @@ export function UserMenu() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className={
-            'cursor-pointer p-1 flex items-center gap-2 rounded-full outline-none'
-          }>
+          className={'p-1 flex items-center gap-2 rounded-full outline-none'}>
           <UserAvatar
             disabled={!user.user?.has_avatar}
             userId={user.user?.id}

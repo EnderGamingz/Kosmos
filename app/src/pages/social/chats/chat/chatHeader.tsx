@@ -55,8 +55,7 @@ function ChatMembers({ chat }: { chat: ChatModelDTO }) {
   return (
     <Drawer direction={'right'}>
       <DrawerTrigger asChild>
-        <button
-          className={'text-sm text-muted-foreground underline cursor-pointer'}>
+        <button className={'text-sm text-muted-foreground underline'}>
           {chat.members.length} member{chat.members.length > 1 ? 's' : ''}
         </button>
       </DrawerTrigger>

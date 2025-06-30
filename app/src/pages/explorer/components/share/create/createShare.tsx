@@ -230,7 +230,7 @@ export function CreateShare({
           </div>
           <Collapse isOpened={!!expiresAt}>
             <DateTimePicker
-              className={'bg-input cursor-pointer'}
+              className={'bg-input'}
               granularity={'minute'}
               placeholder={'Expires at'}
               displayFormat={{
@@ -288,8 +288,7 @@ export function CreateShare({
             createAction.isPending ||
             (type === ShareType.Private && !privateContact)
           }
-          onClick={() => createAction.mutate()}
-          className={'cursor-pointer'}>
+          onClick={() => createAction.mutate()}>
           <Check />
           {createButtonText}
         </Button>

@@ -66,8 +66,7 @@ function ArchiveItem({
       onClick={onClick}
       className={cn(
         'flex items-center gap-2 rounded-lg px-2 py-1 transition-colors',
-        onClick &&
-          'cursor-pointer bg-stone-600/60 hover:bg-stone-600/40 dark:bg-stone-700/60',
+        onClick && 'bg-stone-600/60 hover:bg-stone-600/40 dark:bg-stone-700/60',
       )}>
       {onClick && (
         <ChevronDown

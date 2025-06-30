@@ -57,7 +57,7 @@ export function AddContact() {
           <Button
             type={'submit'}
             disabled={isPending}
-            className={'cursor-pointer group-invalid:cursor-not-allowed '}>
+            className={'group-invalid:cursor-not-allowed '}>
             <UserPlus />
           </Button>
         </form>

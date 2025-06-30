@@ -91,7 +91,7 @@ export default function NotificationsSheet() {
       )}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <button className={'flex p-2.5 sm:p-3 relative cursor-pointer'}>
+          <button className={'flex p-2.5 sm:p-3 relative'}>
             {!seen && <AttentionDot />}
             <Bell className={'h-6 w-6'} />
           </button>

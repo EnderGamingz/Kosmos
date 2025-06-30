@@ -222,8 +222,7 @@ export default function GridFileItem({
                 <button
                   onClick={e => {
                     context.handleContext({ x: e.clientX, y: e.clientY }, file);
-                  }}
-                  className={'cursor-pointer'}>
+                  }}>
                   <EllipsisVertical className={'h-5 w-5'} />
                 </button>
               </div>

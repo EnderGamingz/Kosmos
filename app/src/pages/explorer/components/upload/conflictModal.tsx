@@ -136,7 +136,6 @@ export function ConflictModal({
           <div className={'flex flex-wrap gap-2'}>
             {actions.map(a => (
               <Button
-                className={'cursor-pointer'}
                 variant={'outline'}
                 key={a.allName}
                 onClick={() => handleAllResolve(a.action)}>
@@ -182,7 +181,7 @@ function FileConflictItem({
           <Badge
             key={a.name}
             className={cn(
-              'cursor-pointer transition-colors',
+              'transition-colors',
               a.action === file.resolveAction &&
                 'bg-muted-foreground dark:text-white',
             )}

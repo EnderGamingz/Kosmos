@@ -98,10 +98,7 @@ function PasskeyItem({
         last && 'border-transparent dark:border-transparent',
       )}>
       <span>{passkey.name}</span>
-      <Trash2
-        className={'h-5 w-5 cursor-pointer text-red-500'}
-        onClick={onDelete}
-      />
+      <Trash2 className={'h-5 w-5 text-red-500'} onClick={onDelete} />
     </motion.li>
   );
 }

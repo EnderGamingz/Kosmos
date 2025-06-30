@@ -114,7 +114,7 @@ export default function Login() {
           disabled={isPending}
           type={'submit'}
           className={
-            'lg:text-lg cursor-pointer w-full group-invalid:cursor-not-allowed group-invalid:opacity-50'
+            'lg:text-lg w-full group-invalid:cursor-not-allowed group-invalid:opacity-50'
           }>
           Login
         </Button>

@@ -38,7 +38,7 @@ export function ExplorerSort({
   };
 
   return (
-    <div className={'w-full cursor-pointer'} onClick={handleSort}>
+    <div className={'w-full'} onClick={handleSort}>
       {name}
       <SortIcon
         desc={currentSortBy === sort && currentOrder === SortOrder.Desc}

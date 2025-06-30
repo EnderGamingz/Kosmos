@@ -88,7 +88,7 @@ export function ChangePassword({ id }: { id: string }) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className={'cursor-pointer pointer-events-auto'}>
+        <button className={'pointer-events-auto'}>
           <Chip
             onClick={() => {}}
             content={

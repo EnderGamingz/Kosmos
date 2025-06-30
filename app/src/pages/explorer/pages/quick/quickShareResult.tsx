@@ -52,9 +52,7 @@ export function QuickShareResult({
         </div>
       </div>
       <div className={'mt-4'}>
-        <button
-          onClick={onReset}
-          className={'text-stone-600 underline cursor-pointer'}>
+        <button onClick={onReset} className={'text-stone-600 underline'}>
           Create another share
         </button>
       </div>

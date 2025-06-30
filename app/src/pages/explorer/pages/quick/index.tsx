@@ -177,9 +177,7 @@ function FileItem({ file, onRemove }: { file: File; onRemove: () => void }) {
       onDoubleClick={onRemove}>
       <FileIcon className={'h-5 min-w-5'} />
       <p className={'col-span-2 truncate'}>{file.name}</p>
-      <button
-        className={'ml-auto p-1 text-red-500 cursor-pointer'}
-        onClick={onRemove}>
+      <button className={'ml-auto p-1 text-red-500'} onClick={onRemove}>
         <X className={'h-4 w-4'} />
       </button>
     </motion.li>

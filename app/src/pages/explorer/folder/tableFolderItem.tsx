@@ -159,7 +159,7 @@ export function TableFolderItem({
             onClick={e => {
               context.handleContext({ x: e.clientX, y: e.clientY }, folder);
             }}
-            className={'cursor-pointer p-2'}>
+            className={'p-2'}>
             <EllipsisVertical className={'h-5 w-5'} />
           </button>
         </div>

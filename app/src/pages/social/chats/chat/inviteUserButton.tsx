@@ -72,9 +72,7 @@ function UserItem({
   return (
     <li
       onClick={handleClick}
-      className={
-        'cursor-pointer transition-colors hover:bg-border p-2 rounded-md'
-      }>
+      className={'transition-colors hover:bg-border p-2 rounded-md'}>
       <div className={'flex gap-2'}>
         <UserAvatar
           disabled={!user.has_avatar}

@@ -26,8 +26,7 @@ export default function NewMenu() {
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button
-            className={'flex items-center gap-1 py-2.5 px-2.5 cursor-pointer'}>
+          <button className={'flex items-center gap-1 py-2.5 px-2.5'}>
             <Plus className={'h-5 w-5 sm:mr-1'} />
             <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>

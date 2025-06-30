@@ -33,9 +33,7 @@ function UserItem({ user }: { user: UserModelDTO }) {
   const navigate = useNavigate();
   return (
     <tr
-      className={
-        'cursor-pointer transition-colors hover:bg-stone-200 dark:hover:bg-stone-700'
-      }
+      className={'transition-colors hover:bg-stone-200 dark:hover:bg-stone-700'}
       onClick={() => navigate(`/admin/user/${user.id}`)}>
       <td>{user.username}</td>
       <td>{user.full_name}</td>
@@ -72,7 +70,9 @@ export default function AdminUserList() {
             </tr>
           </thead>
           <tbody>
-            {users.data?.map(user => <UserItem key={user.id} user={user} />)}
+            {users.data?.map(user => (
+              <UserItem key={user.id} user={user} />
+            ))}
           </tbody>
         </table>
       </div>

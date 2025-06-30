@@ -60,7 +60,7 @@ export default function BinPage() {
           <Button
             variant={'outline'}
             className={
-              'border-primary bg-transparent cursor-pointer animate-fade-in-right delay-300'
+              'border-primary bg-transparent animate-fade-in-right delay-300'
             }
             onClick={() => deleteAll.mutate()}
             disabled={deleteAll.isPending || !deletedFiles.data?.length}>

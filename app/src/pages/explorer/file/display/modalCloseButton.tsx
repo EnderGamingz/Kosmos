@@ -3,10 +3,7 @@ import { X } from 'lucide-react';
 
 export function ModalCloseButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button
-      onClick={onClick}
-      variant={'secondary'}
-      className={'w-full cursor-pointer'}>
+    <Button onClick={onClick} variant={'secondary'} className={'w-full'}>
       <X className={'h-4 w-4'} /> Close
     </Button>
   );

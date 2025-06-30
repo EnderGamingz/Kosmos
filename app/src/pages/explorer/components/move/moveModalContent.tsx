@@ -93,7 +93,7 @@ export function MoveModalContent({
       <div className={'min-h-32'}>
         <ul
           className={cn(
-            '[&_li:hover]:bg-indigo-100 [&_li]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
+            '[&_li:hover]:bg-indigo-100 [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
             'dark:[&_li:hover]:bg-indigo-700/50 dark:[&_li]:text-stone-100',
           )}>
           {data?.folder && (

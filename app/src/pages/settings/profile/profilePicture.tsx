@@ -42,7 +42,6 @@ export default function ProfilePictureSettings() {
             className={'flex flex-wrap gap-2 animate-fade-in-left delay-200'}>
             {user.has_avatar && (
               <Button
-                className={'cursor-pointer'}
                 variant={'outline'}
                 onClick={() => remove.mutate()}
                 disabled={remove.isPending}>

@@ -58,7 +58,7 @@ export default function Favorite({
   return (
     <button
       className={cn(
-        'flex items-center gap-1 cursor-pointer',
+        'flex items-center gap-1',
         iconOnly && 'p-2',
         action.isPending && 'animate-pulse cursor-wait',
       )}

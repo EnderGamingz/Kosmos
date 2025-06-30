@@ -268,7 +268,7 @@ export default function FileUploader({
         {...getRootProps()}
         className={cn(
           'max-sm:h-36 h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 flex',
-          'items-center justify-center text-center text-xl md:text-2xl font-bold text-stone-500 cursor-pointer',
+          'items-center justify-center text-center text-xl md:text-2xl font-bold text-stone-500',
           isDragActive && 'border-blue-400/50 bg-blue-100',
         )}>
         <input {...getInputProps({ id: 'files' })} />
@@ -280,7 +280,7 @@ export default function FileUploader({
       </div>
       <DialogFooter
         className={
-          'mt-4 flex flex-col-reverse justify-between gap-3 sm:flex-row [&_button,&_label]:cursor-pointer'
+          'mt-4 flex flex-col-reverse justify-between gap-3 sm:flex-row'
         }>
         <DialogClose asChild>
           <Button variant={'outline'}>Cancel</Button>

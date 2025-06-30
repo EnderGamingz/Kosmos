@@ -116,7 +116,7 @@ function ContactSelectorContent({
       {data.map(profile => (
         <li
           key={profile.user_id}
-          className={'group cursor-pointer'}
+          className={'group'}
           onClick={() => onSelect(profile)}>
           <ContactItem profile={profile} isSelected={selected === profile} />
         </li>

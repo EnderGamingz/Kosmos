@@ -56,10 +56,7 @@ export function BinActions({
   return (
     <ConditionalWrapper
       wrapper={c => (
-        <div
-          className={
-            'flex items-center gap-5 [&>button]:cursor-pointer [&_svg]:h-5 [&_svg]:w-5'
-          }>
+        <div className={'flex items-center gap-5 [&_svg]:h-5 [&_svg]:w-5'}>
           {c}
         </div>
       )}
@@ -165,7 +162,7 @@ export function TableFileItem({
           onClick={e => {
             context.handleContext({ x: e.clientX, y: e.clientY }, file);
           }}
-          className={'cursor-pointer p-2'}>
+          className={'p-2'}>
           <EllipsisVertical className={'h-5 w-5'} />
         </button>
       </div>

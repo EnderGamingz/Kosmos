@@ -62,7 +62,7 @@ export function MobileFileItem({
           e.stopPropagation();
           if (!context.viewSettings?.noSelect) onSelect(file);
         }}
-        className={'cursor-pointer relative'}>
+        className={'relative'}>
         <div
           className={cn(
             'rounded-lg',

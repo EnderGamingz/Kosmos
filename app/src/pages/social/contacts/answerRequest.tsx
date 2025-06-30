@@ -89,7 +89,7 @@ export function ContactRequestListItem({
           <p>{request.full_name ?? request.username}</p>
           <p className={'text-muted-foreground'}>{request.status}</p>
         </div>
-        <div className={'ml-auto [&_button]:cursor-pointer'}>
+        <div className={'ml-auto'}>
           {type === 'sent' ? (
             <CancelRequestButton request={request} />
           ) : (

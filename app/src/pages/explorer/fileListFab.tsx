@@ -63,7 +63,7 @@ function CreateFab({
       layoutId={'fab-create'}
       onClick={() => onOpenChange(true)}
       className={cn(
-        'bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-6 rounded-md hover:from-secondary transition-colors cursor-pointer',
+        'bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-6 rounded-md hover:from-secondary transition-colors',
       )}>
       <Plus className={'w-8 h-8'} />
     </motion.button>

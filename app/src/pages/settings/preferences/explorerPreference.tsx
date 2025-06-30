@@ -61,7 +61,7 @@ export function Preference({
       )}>
       <div
         onClick={() => setOpen(prev => !prev)}
-        className={'flex cursor-pointer items-center justify-between'}>
+        className={'flex items-center justify-between'}>
         <div
           className={cn(
             'flex items-center gap-3 text-stone-600 [&_svg]:h-6 [&_svg]:w-6',

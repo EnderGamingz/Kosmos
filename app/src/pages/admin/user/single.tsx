@@ -93,10 +93,7 @@ function AdminDeleteUser({ user }: { user: UserModelDTO }) {
   });
 
   return (
-    <Button
-      className={'cursor-pointer'}
-      onClick={() => deleteAction.mutate()}
-      variant={'destructive'}>
+    <Button onClick={() => deleteAction.mutate()} variant={'destructive'}>
       <Trash2 />
       Delete User
     </Button>

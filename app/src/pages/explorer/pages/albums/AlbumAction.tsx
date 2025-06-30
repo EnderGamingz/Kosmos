@@ -40,7 +40,7 @@ function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
       <div className={'min-h-32'}>
         <ul
           className={cn(
-            '[&_li:not(.added):hover]:bg-indigo-100 [&_li:not(.added)]:cursor-pointer [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
+            '[&_li:not(.added):hover]:bg-indigo-100 [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
             'dark:[&_li:not(.added):hover]:bg-indigo-700/50',
           )}>
           {albums.data?.available.map(album => (

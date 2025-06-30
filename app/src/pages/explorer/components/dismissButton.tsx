@@ -18,7 +18,7 @@ export function DismissButton({
 
   return (
     <Button
-      className={'cursor-pointer bg-transparent border-primary'}
+      className={'bg-transparent border-primary'}
       onClick={dismissHandler}
       variant={'outline'}>
       <X />

@@ -42,7 +42,6 @@ export default function ContextMenu({
           '[&_button:not(.no-pre):hover]:bg-stone-100 [&_button:not(.no-pre):hover]:text-stone-900 [&_button:not(.no-pre)]:px-3 [&_button:not(.no-pre)]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',
           'bg-stone-50 dark:bg-stone-800 dark:[&_button:not(.no-pre):hover]:bg-stone-600/50 dark:[&_button:not(.no-pre):hover]:text-stone-100',
-          '[&_button]:cursor-pointer',
         )}
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}

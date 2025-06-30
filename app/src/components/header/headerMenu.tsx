@@ -34,7 +34,7 @@ function HeaderLinksMenu({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className={'cursor-pointer'}>
+        <button>
           <Menu className={'h-6 w-6'} />
           <span className={'sr-only'}>Menu</span>
         </button>

@@ -93,7 +93,7 @@ export function FileDisplayActions({
         !left && 'justify-center',
         '[&_button>svg]:h-8 [&_button>svg]:w-8 [&_button]:rounded-xl [&_button]:p-2',
         '[&_button]:grid [&_button]:place-items-center',
-        '[&_button]:bg-stone-200/20 [&_button]:border [&_button]:cursor-pointer',
+        '[&_button]:bg-stone-200/20 [&_button]:border',
         '[&_button]:h-22 [&_button]:w-22 [&_button]:text-sm [&_button]:shadow-sm',
         '[&_button:hover]:bg-stone-400/20 [&_button:hover]:shadow-md',
         'dark:[&_button]:bg-stone-700/50 dark:[&_button]:shadow-stone-800/40',

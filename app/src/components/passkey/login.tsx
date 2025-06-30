@@ -55,7 +55,7 @@ export default function PasskeyLogin({
       type={'button'}
       variant={'outline'}
       onClick={() => loginMutation.mutate()}
-      className={'w-full cursor-pointer'}
+      className={'w-full'}
       disabled={loginMutation.isPending}>
       <BadgeCheck />
       Use Passkey
