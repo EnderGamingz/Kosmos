@@ -72,35 +72,44 @@ export function UserMenu() {
         <hr className={'my-3 mt-2 animate-fade-in-top delay-100'} />
         <div className={'space-y-1'}>
           {user.user?.role === Role.Admin && (
-            <Link
-              to={'/admin/user'}
-              className={'menu-button animate-fade-in-top delay-100'}
-              onClick={handleClose}>
-              <Code className={'h-5 w-5'} />
-              Admin
-            </Link>
+            <div className={'animate-fade-in-top delay-100'}>
+              <Link
+                to={'/admin/user'}
+                className={'menu-button'}
+                onClick={handleClose}>
+                <Code className={'h-5 w-5'} />
+                Admin
+              </Link>
+            </div>
           )}
-          <Link
-            to={'/settings/account'}
-            className={'menu-button animate-fade-in-top delay-200'}
-            onClick={handleClose}>
-            <Bolt className={'h-5 w-5'} />
-            Settings
-          </Link>
-          <hr className={'my-2 animate-fade-in-top delay-200'} />
-          <UserMenuThemeSwitcher />
-          <hr className={'my-2 animate-fade-in-top delay-300'} />
-
-          <Button
-            variant={'destructive'}
-            className={
-              'w-full animate-fade-in-top delay-400 justify-start cursor-pointer'
-            }
-            size={'sm'}
-            onClick={() => logoutAction.mutate()}>
-            <LogOut className={'h-5 w-5'} />
-            Logout
-          </Button>
+          <div className={'animate-fade-in-top delay-200'}>
+            <Link
+              to={'/settings/account'}
+              className={'menu-button'}
+              onClick={handleClose}>
+              <Bolt className={'h-5 w-5'} />
+              Settings
+            </Link>
+          </div>
+          <div className={'animate-fade-in-top delay-200'}>
+            <hr className={'my-2'} />
+          </div>
+          <div className={'animate-fade-in-top delay-200'}>
+            <UserMenuThemeSwitcher />
+          </div>
+          <div className={'animate-fade-in-top delay-300'}>
+            <hr className={'my-2'} />
+          </div>
+          <div className={'animate-fade-in-top delay-400'}>
+            <Button
+              variant={'destructive'}
+              className={'w-full justify-start'}
+              size={'sm'}
+              onClick={() => logoutAction.mutate()}>
+              <LogOut className={'h-5 w-5'} />
+              Logout
+            </Button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
@@ -127,9 +136,7 @@ function UserMenuThemeSwitcher() {
   return (
     <button
       onClick={() => themePreferences.setType(other.value)}
-      className={
-        'menu-button w-full animate-fade-in-top delay-200 [&_svg]:h-5 [&_svg]:w-5'
-      }>
+      className={'menu-button w-full [&_svg]:h-5 [&_svg]:w-5'}>
       {current.icon}
       {current.name}
     </button>

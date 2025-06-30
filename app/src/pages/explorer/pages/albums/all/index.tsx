@@ -3,7 +3,6 @@ import { AlbumItem } from '@pages/explorer/pages/albums/all/albumItem.tsx';
 import { CreateAlbum } from '@pages/explorer/pages/albums/createAlbum.tsx';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
-import { Progress } from '@components/ui/progress.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
 
 export default function AlbumsPage() {
@@ -11,13 +10,6 @@ export default function AlbumsPage() {
   return (
     <div className={'relative'}>
       <PageMetadata title={'Albums'} />
-      <Progress
-        aria-label={'Recent Files loading...'}
-        indeterminate={!albums?.data || albums.isLoading}
-        value={100}
-        className={'absolute left-0 top-0 z-10 h-1 opacity-50'}
-        color={'default'}
-      />
       <div
         className={
           'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5'

@@ -11,7 +11,6 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
-import { Progress } from '@components/ui/progress.tsx';
 import { PageMetadata } from '@components/metadata.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Shredder } from 'lucide-react';
@@ -36,13 +35,6 @@ export default function BinPage() {
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
       <PageMetadata title={'Trash Bin'} />
-      <Progress
-        aria-label={'Recent Files loading...'}
-        indeterminate={!deletedFiles?.data || deletedFiles.isLoading}
-        value={100}
-        className={'absolute left-0 top-0 h-1 opacity-50'}
-        color={'default'}
-      />
       <div className={'flex items-center justify-between px-5 pt-5'}>
         <div>
           <SubPageTitle>Trash bin</SubPageTitle>

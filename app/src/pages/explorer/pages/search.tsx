@@ -5,8 +5,8 @@ import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
-import { Progress } from '@/components/ui/progress';
 import { PageMetadata } from '@components/metadata.tsx';
+import { RouterLoadingBar } from '@components/header/routerLoading.tsx';
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -34,16 +34,9 @@ export default function SearchPage() {
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
       }>
       <PageMetadata title={`"${query}" - Search`} />
-      <Progress
-        aria-label={'Recent Files loading...'}
-        indeterminate={!search?.data || search.isLoading}
-        value={100}
-        className={'absolute left-0 top-0 h-1 opacity-50'}
-        color={'default'}
-      />
+      {(!search?.data || search.isLoading) && <RouterLoadingBar />}
       <div className={'px-5 pt-5'}>
         <SubPageTitle>Search Results</SubPageTitle>
-
         <motion.p
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

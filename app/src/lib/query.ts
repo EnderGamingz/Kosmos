@@ -95,6 +95,18 @@ export const useSearch = (query: string) => {
   });
 };
 
+export const prefetchSearch = (query: string) => {
+  return queryClient.prefetchQuery({
+    queryKey: ['search', query],
+    queryFn: () =>
+      axios
+        .get(`${BASE_URL}auth/search`, {
+          params: { q: query },
+        })
+        .then(res => res.data as ExplorerSearchDTO),
+  });
+};
+
 export const useFolders = (parent_id?: string, sort?: SortParams) => {
   return useQuery({
     queryFn: async () => {

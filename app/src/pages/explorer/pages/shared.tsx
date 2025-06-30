@@ -27,10 +27,10 @@ import { AlbumModelWithShareInfoDTO } from '@bindings/AlbumModelWithShareInfoDTO
 import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
-import { Progress } from '@/components/ui/progress';
 import { PageMetadata } from '@components/metadata.tsx';
 import { SquareArrowOutUpRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@components/ui/tabs.tsx';
+import { RouterLoadingBar } from '@components/header/routerLoading.tsx';
 
 export default function ExplorerSharePage() {
   const { pathname } = useLocation();
@@ -78,13 +78,7 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
     <div className={'relative grow flex flex-col'}>
       <PageMetadata title={`Shared ${sharingType}`} />
       <div className={'file-list relative flex flex-col overflow-y-auto grow'}>
-        <Progress
-          aria-label={'Shared items loading...'}
-          indeterminate={!items?.data || items.isLoading}
-          value={100}
-          className={'absolute left-0 top-0 h-1 opacity-50'}
-          color={'default'}
-        />
+        {(!items?.data || items.isLoading) && <RouterLoadingBar />}
         <div className={'px-5 pt-5'}>
           <SubPageTitle>{`Shared Items ${sharingType}`}</SubPageTitle>
         </div>
