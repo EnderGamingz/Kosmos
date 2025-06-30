@@ -301,6 +301,7 @@ export const useUserShareData = (id: string, type: ShareOperationType) => {
         .get(`${BASE_URL}auth/share/${type}/${id}`)
         .then(res => res.data as ExtendedShareModelDTO[]),
     queryKey: ['share', id, type],
+    enabled: !!id && !!type,
   });
 };
 

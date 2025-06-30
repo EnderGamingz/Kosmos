@@ -9,6 +9,7 @@ import { cn } from '@lib/utils.ts';
 import { Plus, X } from 'lucide-react';
 import {
   Sheet,
+  SheetBodyTransform,
   SheetClose,
   SheetContent,
   SheetDescription,
@@ -24,18 +25,21 @@ export default function ShareModal() {
   const hasShare = !!shareElementId && !!shareElementType;
 
   return (
-    <Sheet open={hasShare} onOpenChange={clearShareElement}>
-      <SheetContent className={'gap-0'}>
-        <ShareModalContent
-          shareElementId={shareElementId!}
-          shareElementType={shareElementType!}
-        />
-      </SheetContent>
-    </Sheet>
+    <>
+      {hasShare && <SheetBodyTransform />}
+      <Sheet open={hasShare} onOpenChange={clearShareElement}>
+        <SheetContent className={'gap-0'}>
+          <ShareSheetContent
+            shareElementId={shareElementId!}
+            shareElementType={shareElementType!}
+          />
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
 
-export function ShareModalContent({
+export function ShareSheetContent({
   shareElementId,
   shareElementType,
 }: {

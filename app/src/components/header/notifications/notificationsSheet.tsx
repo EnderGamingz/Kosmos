@@ -10,6 +10,7 @@ import { AttentionDot } from '@components/header/attentionDot.tsx';
 import { Bell } from 'lucide-react';
 import {
   Sheet,
+  SheetBodyTransform,
   SheetContent,
   SheetTitle,
   SheetTrigger,
@@ -80,15 +81,7 @@ export default function NotificationsSheet() {
 
   return (
     <>
-      {open && (
-        <style>
-          {`
-            #root {
-              transform: translate(-20px, 0) scale(0.99);
-            }
-          `}
-        </style>
-      )}
+      {open && <SheetBodyTransform />}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <button className={'flex p-2.5 sm:p-3 relative'}>
