@@ -34,6 +34,19 @@ export default function NotificationTester() {
         }>
         Error
       </Button>
+        <Button
+        onClick={() =>
+          notify({
+            severity: Severity.INFO,
+            title: 'Loading',
+            description: 'Progress ongoing',
+              loading: true,
+              canDismiss: false
+          })
+        }>
+        Loading
+      </Button>
+
     </div>
   );
 }

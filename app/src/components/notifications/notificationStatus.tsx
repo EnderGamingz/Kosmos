@@ -3,7 +3,15 @@ import { Notification, Severity } from '@stores/notificationStore.ts';
 import { cn } from '@lib/utils.ts';
 import { Progress } from '@components/ui/progress.tsx';
 
-export function NotificationStatus({ data }: { data: Notification }) {
+export function NotificationStatus({
+  data,
+  className,
+  indicatorClassName,
+}: {
+  data: Notification;
+  className?: string;
+  indicatorClassName?: string;
+}) {
   const isSuccess = data.severity === Severity.SUCCESS;
   const isError = data.severity === Severity.ERROR;
 
@@ -15,8 +23,9 @@ export function NotificationStatus({ data }: { data: Notification }) {
         className={cn(
           'bg-transparent absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden transition-height',
           (isSuccess || isError) && 'h-0',
+          className,
         )}
-        indicatorClassName={'bg-stone-50'}
+        indicatorClassName={cn('bg-primary', indicatorClassName)}
         aria-label={'Loading...'}
       />
     );

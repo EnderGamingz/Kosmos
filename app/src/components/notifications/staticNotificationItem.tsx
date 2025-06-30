@@ -20,7 +20,7 @@ export function StaticNotificationItem({
   return (
     <li
       className={cn(
-        'relative w-full animate-fade-in-top rounded-r-[3px] pr-3 border-r-3',
+        'relative w-full animate-fade-in-top rounded-r-[3px] pr-3 border-r-3 py-1',
         color,
       )}
       style={{

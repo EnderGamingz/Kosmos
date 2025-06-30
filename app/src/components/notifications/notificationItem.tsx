@@ -48,7 +48,7 @@ export function NotificationItem({
   return (
     <motion.li
       layout
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 30, rotate: '-5deg' }}
       animate={{
         opacity: 1,
         y: 0,
@@ -57,6 +57,7 @@ export function NotificationItem({
         zIndex: -index,
         scale: expanded ? 1 : index === 0 ? 1 : 1 - index * 0.02,
         height: expanded ? ExpandedNotificationHeight : 'auto',
+        rotate: '0deg',
       }}
       drag={'x'}
       dragConstraints={{ left: 0, right: 0 }}
@@ -66,13 +67,12 @@ export function NotificationItem({
           update(data.id, { popup: false });
         }
       }}
-      exit={{ opacity: 0, y: exitDirection, zIndex: 1, skew: '-10deg' }}
+      exit={{ opacity: 0, y: exitDirection, zIndex: 1, rotate: '5deg' }}
       transition={{ duration: 0.2 }}
       className={cn(
-        'relative w-full cursor-grab overflow-hidden shadow-sm transition-colors border-r-4',
-        'rounded-md bg-stone-700 text-stone-50',
+        'relative w-full cursor-grab overflow-hidden transition-colors',
+        'rounded-sm bg-popover border border-r-4 shadow-md',
         color,
-        index === 0 || expanded ? 'text-stone-50' : 'text-stone-50/20',
       )}>
       <div className={'flex gap-1 px-2 py-2'}>
         <Icon className={'mr-1 flex h-7 w-7'} />
@@ -93,16 +93,16 @@ export function NotificationItem({
           )}
         </div>
         {data.canDismiss && (
-          <div
+          <button
             onClick={e => {
               e.stopPropagation();
               update(data.id, { popup: false });
             }}
             className={
-              'ml-auto cursor-pointer self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
+              'ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
             }>
             <X className={'h-5 w-5'} />
-          </div>
+          </button>
         )}
       </div>
       <NotificationStatus data={data} />
