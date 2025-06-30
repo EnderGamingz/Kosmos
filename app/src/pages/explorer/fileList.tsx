@@ -48,7 +48,7 @@ export default function FileList() {
         'file-list relative flex flex-col overflow-hidden',
         'h-full max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]',
       )}>
-      <div className={'flex items-center border-b'}>
+      <div className={'flex items-center shadow-sm'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />
