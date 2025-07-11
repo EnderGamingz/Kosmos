@@ -425,11 +425,13 @@ impl FileService {
         &self,
         file_name: &String,
         folder_id: Option<i64>,
+        user_id: UserId
     ) -> Result<bool, AppError> {
         sqlx::query!(
-            "SELECT id FROM files WHERE file_name = $1 AND parent_folder_id is not distinct from $2",
+            "SELECT id FROM files WHERE file_name = $1 AND parent_folder_id is not distinct from $2 AND user_id = $3 LIMIT 1",
             file_name,
-            folder_id
+            folder_id,
+            user_id
         )
         .fetch_optional(&self.db_pool)
         .await
@@ -448,7 +450,7 @@ impl FileService {
         parent_folder_id: Option<i64>,
     ) -> Result<i64, AppError> {
         if self
-            .check_file_exists_in_folder(&file_name, parent_folder_id)
+            .check_file_exists_in_folder(&file_name, parent_folder_id, user_id)
             .await?
         {
             return Err(AppError::DataConflict {

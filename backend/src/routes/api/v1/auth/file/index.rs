@@ -199,7 +199,7 @@ pub struct CreateMarkdownFilePayload {
     pub parent_folder_id: Option<EntityId>,
 }
 
-pub async fn create_markdown_file(
+pub async fn  create_markdown_file(
     State(state): KosmosState,
     session: Session,
     Json(payload): Json<CreateMarkdownFilePayload>,
@@ -210,7 +210,7 @@ pub async fn create_markdown_file(
 
     let file_exists = state
         .file_service
-        .check_file_exists_in_folder(&file_name, parent_folder_id)
+        .check_file_exists_in_folder(&file_name, parent_folder_id, user_id)
         .await?;
 
     if file_exists {
@@ -282,7 +282,7 @@ pub async fn move_file(
 
     let is_file_already_in_destination_folder = state
         .file_service
-        .check_file_exists_in_folder(&file.file_name, move_to_folder)
+        .check_file_exists_in_folder(&file.file_name, move_to_folder, user_id)
         .await?;
 
     if is_file_already_in_destination_folder {
