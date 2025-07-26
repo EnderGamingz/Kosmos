@@ -3,11 +3,11 @@ use crate::response::error_handling::AppError;
 use crate::routes::api::v1::auth::presence::ping::socket_ping;
 use crate::services::session_service::SessionService;
 use crate::state::{AppState, KosmosState};
-use axum::extract::ws::WebSocket;
+use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{State, WebSocketUpgrade};
 use axum::response::Response;
 use futures::{SinkExt, StreamExt};
-use sqlx::types::{Uuid};
+use sqlx::types::Uuid;
 use tokio::sync::mpsc;
 use tower_sessions::Session;
 
@@ -23,11 +23,11 @@ pub async fn presence_handler(
 
 async fn handle_presence_socket(mut socket: WebSocket, user_id: i64, state: AppState) {
     let connection_id = Uuid::new_v4().to_string();
-    socket_ping(&mut socket).await.unwrap_or_else(|_| {
+    if socket_ping(&mut socket).await.is_err() {
         return;
-    });
+    }
 
-    let (mut ws_tx, _ws_rx) = socket.split();
+    let (mut ws_tx, mut ws_rx) = socket.split();
     let (tx, mut rx) = mpsc::channel::<PresenceMessage>(32);
 
     state
@@ -35,11 +35,42 @@ async fn handle_presence_socket(mut socket: WebSocket, user_id: i64, state: AppS
         .add_user(user_id, tx, connection_id.clone())
         .await;
 
-    while let Some(message) = rx.recv().await {
-        if ws_tx.send(message.into()).await.is_err() {
-            break;
+    // Listen to socket closing frame
+    let receive_task = tokio::spawn(async move {
+        while let Some(msg) = ws_rx.next().await {
+            if let Ok(msg) = msg {
+                match msg {
+                    Message::Close(_) => return,
+                    _ => {}
+                }
+            } else {
+                return;
+            }
         }
-    }
+    });
+
+    let send_task = tokio::spawn(async move {
+        while let Some(message) = rx.recv().await {
+            if ws_tx.send(message.into()).await.is_err() {
+                break;
+            }
+        }
+    });
+
+    let receive_handle = receive_task.abort_handle();
+    let send_handle = send_task.abort_handle();
+
+    // Wait for either task to complete
+    tokio::select! {
+        _ = send_task => {
+            receive_handle.abort();
+        }
+        _ = receive_task => {
+            send_handle.abort();
+        }
+    };
+
+
 
     state
         .presence_handler
