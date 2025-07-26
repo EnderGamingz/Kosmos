@@ -10,6 +10,8 @@ import {
 } from '@components/ui/popover.tsx';
 import { ChevronDown, Cloud, MessageSquare } from 'lucide-react';
 import { PopoverClose } from '@radix-ui/react-popover';
+import { ContactQuery } from '@lib/queries/contactQuery.ts';
+import { AttentionDot } from '@components/header/attentionDot.tsx';
 
 export const kosmosParts = [
   {
@@ -88,6 +90,8 @@ export function HeaderBrandingSitePartSwitcher({
   expanded?: boolean;
   noBrand?: boolean;
 }) {
+  const attention = ContactQuery.useRequiresAttention();
+
   const path = useLocation().pathname;
   const currentPath = kosmosParts.find(part => path.startsWith(part.link));
 
@@ -97,9 +101,10 @@ export function HeaderBrandingSitePartSwitcher({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            'sm:flex gap-2 cursor-pointer items-center',
+            'sm:flex gap-2 cursor-pointer items-center relative',
             !expanded && 'hidden',
           )}>
+          {attention.data && <AttentionDot className={'bg-red-400 right-3 top-0'} />}
           {!noBrand && <span className={'text-2xl font-bold'}>Kosmos</span>}
           <div
             title={'Current location'}
@@ -135,9 +140,10 @@ export function HeaderBrandingSitePartSwitcher({
               style={{ animationDelay: `${i * 0.1}s` }}
               className={cn(
                 'menu-button aria-[current]:font-bold',
-                'animate-fade-in-top',
+                'animate-fade-in-top relative',
                 'hover:bg-stone-700/5 dark:hover:bg-stone-300/20',
               )}>
+              {part.link.includes("social") && attention.data && <AttentionDot className={'bg-red-400 top-1/2 -translate-y-1/2 right-2'} />}
               <part.icon className={'h-6 w-6'} />
               {part.title}
             </NavLink>
