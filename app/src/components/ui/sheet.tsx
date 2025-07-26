@@ -47,7 +47,7 @@ function SheetBodyTransform() {
     <style>
       {`
             #root {
-              transform: translate(-20px, 0) scale(0.99);
+              transform: translate(-20px, 0);
             }
           `}
     </style>

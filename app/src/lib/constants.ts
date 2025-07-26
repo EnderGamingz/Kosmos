@@ -3,6 +3,7 @@ import { enUS } from 'date-fns/locale/en-US';
 export const FALLBACK_STORAGE_LIMIT = 10 * 1024 * 1024 * 1024; // 10 GiB
 export const IMAGE_LOAD_SIZE_THRESHOLD = 75 * 1024 * 1024; // 75 MiB
 export const UPLOAD_CHUNK_SIZE = 400;
+export const UPLOAD_CHUNK_STORAGE_SIZE = 100 * 1024 * 1024; // 100 MiB
 export const CONTEXT_MENU_WIDTH = 230;
 export const CONTEXT_MENU_HEIGHT = 380;
 

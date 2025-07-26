@@ -18,7 +18,10 @@ import { FileWithPath, useDropzone } from 'react-dropzone';
 import { Collapse } from 'react-collapse';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 import { useByteFormatter } from '@utils/fileSize.ts';
-import { UPLOAD_CHUNK_SIZE } from '@lib/constants.ts';
+import {
+  UPLOAD_CHUNK_SIZE,
+  UPLOAD_CHUNK_STORAGE_SIZE,
+} from '@lib/constants.ts';
 import { cn } from '@lib/utils.ts';
 import { DialogClose, DialogFooter } from '@components/ui/dialog.tsx';
 import { Button, buttonVariants } from '@components/ui/button.tsx';
@@ -92,10 +95,8 @@ export default function FileUploader({
       canDismiss: false,
     });
 
-    if (onClose) onClose();
-
     // noinspection JSUnusedGlobalSymbols
-    await axios
+    return await axios
       .postForm(
         `${BASE_URL}auth/file/upload${folder ? `/${folder}` : ''}`,
         formData,
@@ -135,8 +136,18 @@ export default function FileUploader({
       return;
     }
 
-    const uploadChunk = files.slice(0, UPLOAD_CHUNK_SIZE);
-    const rest = files.slice(UPLOAD_CHUNK_SIZE);
+    // Chunk upload files by both size and amount
+    const uploadChunk = [];
+    let currentSize = 0;
+    for (let i = 0; i < files.length; i++){
+      const file = files[i];
+      if (currentSize + file.size > UPLOAD_CHUNK_STORAGE_SIZE) break;
+      if (i + 1 > UPLOAD_CHUNK_SIZE) break;
+      uploadChunk.push(file);
+      currentSize += file.size;
+    }
+
+    const rest = files.slice(uploadChunk.length);
 
     handleUpload(uploadChunk, rest.length).then(() => {
       handleToUpload(rest);
@@ -145,6 +156,7 @@ export default function FileUploader({
 
   useEffect(() => {
     if (!toUpload || !toUpload?.length) return;
+    if (onClose) onClose()
     handleToUpload(toUpload);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
