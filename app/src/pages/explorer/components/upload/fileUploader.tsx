@@ -141,7 +141,7 @@ export default function FileUploader({
     let currentSize = 0;
     for (let i = 0; i < files.length; i++){
       const file = files[i];
-      if (currentSize + file.size > UPLOAD_CHUNK_STORAGE_SIZE) break;
+      if (i > 0 && currentSize + file.size > UPLOAD_CHUNK_STORAGE_SIZE) break;
       if (i + 1 > UPLOAD_CHUNK_SIZE) break;
       uploadChunk.push(file);
       currentSize += file.size;
