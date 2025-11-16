@@ -1,7 +1,11 @@
 import { DisplayContext } from '@lib/contexts.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FileType, FileTypeActions, getFileTypeString } from '@models/file.ts';
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import {
+  type FileType,
+  FileTypeActions,
+  getFileTypeString,
+} from '@models/file.ts';
+import { type ReactNode, useContext, useEffect, useState } from 'react';
 import { cn } from '@lib/utils.ts';
 import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
@@ -9,7 +13,9 @@ import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import ArchiveDisplay from '@pages/explorer/file/display/displayTypes/archiveDisplay.tsx';
 import DisplayImage from '@pages/explorer/file/display/displayTypes/image/displayImage.tsx';
 import EmbedAudio from '@pages/explorer/file/display/displayTypes/embedAudio.tsx';
-import EmbedFile from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
+import EmbedFile, {
+  PlainTextFileDisplay,
+} from '@pages/explorer/file/display/displayTypes/embedFile.tsx';
 import EmbedVideo from '@pages/explorer/file/display/displayTypes/embedVideo.tsx';
 
 export function FileTypeDisplay({
@@ -19,6 +25,7 @@ export function FileTypeDisplay({
   noText,
   loading,
   children,
+  text,
 }: {
   id: string;
   name: string;
@@ -26,6 +33,7 @@ export function FileTypeDisplay({
   noText?: boolean;
   loading?: boolean;
   children?: ReactNode;
+  text?: string;
 }) {
   const shouldShowChildren = Boolean(children && !loading);
   return (
@@ -38,21 +46,23 @@ export function FileTypeDisplay({
         'animate-fade-in-right transition-all delay-100',
         loading && '[&_svg]:h-14 [&_svg]:w-14',
         !loading && shouldShowChildren && 'gap-0',
-      )}>
+      )}
+    >
       <div className={cn('relative', shouldShowChildren && 'h-0 opacity-0')}>
         {loading && (
           <div
             className={
               'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-            }>
-            <div className={'app-loading-indicator !h-16 !w-16'} />
+            }
+          >
+            <div className={'app-loading-indicator size-16!'} />
           </div>
         )}
         {!shouldShowChildren && <ItemIcon id={id} name={name} type={type} />}
       </div>
       {!noText && !shouldShowChildren && (
         <p className={'animate-fade-in-top delay-100'}>
-          {getFileTypeString(type)} File
+          {text ?? `${getFileTypeString(type)} File`}
         </p>
       )}
       {!loading && children}
@@ -92,6 +102,8 @@ export function FileDisplayHandler({
     return () => clearTimeout(timeout);
   }, [previewOnHold]);
 
+  console.log(file);
+
   if (FileTypeActions.isZipArchive(file)) {
     return (
       <ArchiveDisplay
@@ -126,7 +138,8 @@ export function FileDisplayHandler({
         id={file.id}
         name={file.file_name}
         type={file.file_type}
-        loading={previewOnHold}>
+        loading={previewOnHold}
+      >
         <EmbedVideo file={file} serveUrl={highResUrl} />
       </FileTypeDisplay>
     );
@@ -138,7 +151,8 @@ export function FileDisplayHandler({
         id={file.id}
         name={file.file_name}
         type={file.file_type}
-        loading={previewOnHold}>
+        loading={previewOnHold}
+      >
         <EmbedAudio file={file} serveUrl={highResUrl} />
       </FileTypeDisplay>
     );
@@ -148,6 +162,25 @@ export function FileDisplayHandler({
     return (
       <EmbedFile file={file} serveUrl={highResUrl} isShared={!!shareUuid} />
     );
+  }
+
+  if (FileTypeActions.hasFilePlainDisplayableContent(file)) {
+    if (
+      FileTypeActions.isFileTooLargeForContentDisplay(file) ||
+      previewOnHold
+    ) {
+      return (
+        <FileTypeDisplay
+          id={file.id}
+          name={file.file_name}
+          type={file.file_type}
+          loading={previewOnHold}
+          text={'File too large to display content'}
+        />
+      );
+    }
+
+    return <PlainTextFileDisplay file={file} serveUrl={highResUrl} />;
   }
 
   return (

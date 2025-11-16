@@ -1,32 +1,32 @@
 import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from './env.ts';
-import { ContextOperationType, ShareOperationType } from '@models/file.ts';
+import type { ContextOperationType, ShareOperationType } from '@models/file.ts';
 import {
   canFolderBeSorted,
   getQuerySortString,
   getSortOrderString,
-  SortParams,
-  SortParamsForQuery,
+  type SortParams,
+  type SortParamsForQuery,
 } from '@models/sort.ts';
 import { FALLBACK_STORAGE_LIMIT } from '@lib/constants.ts';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
-import { AlbumShareResponse } from '@models/album.ts';
-import { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
-import { DiskUsageReport } from '@bindings/DiskUsageReport.ts';
-import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
-import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
-import { SharedItems } from '@bindings/SharedItems.ts';
-import { ExplorerSearchDTO } from '@bindings/ExplorerSearchDTO.ts';
-import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
-import { FavoritesResponse } from '@bindings/FavoritesResponse.ts';
-import { FolderShareData } from '@bindings/FolderShareData.ts';
-import { FolderResponse } from '@bindings/FolderResponse.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
+import type { AlbumShareResponse } from '@models/album.ts';
+import type { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
+import type { DiskUsageReport } from '@bindings/DiskUsageReport.ts';
+import type { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import type { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
+import type { SharedItems } from '@bindings/SharedItems.ts';
+import type { ExplorerSearchDTO } from '@bindings/ExplorerSearchDTO.ts';
+import type { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
+import type { FavoritesResponse } from '@bindings/FavoritesResponse.ts';
+import type { FolderShareData } from '@bindings/FolderShareData.ts';
+import type { FolderResponse } from '@bindings/FolderResponse.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
 import { createZipInformationUrl } from '@lib/file.ts';
-import { ZipInformation } from '@bindings/ZipInformation.ts';
-import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
+import type { ZipInformation } from '@bindings/ZipInformation.ts';
+import type { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
 
 export const queryClient = new QueryClient();
 
@@ -422,7 +422,7 @@ export async function refetchOperations() {
 }
 
 export async function invalidateData(type: ContextOperationType) {
-  if (type == 'folder') await invalidateFolders();
+  if (type === 'folder') await invalidateFolders();
   else if (type === 'multi') await invalidateItems();
   else await invalidateFiles();
 }

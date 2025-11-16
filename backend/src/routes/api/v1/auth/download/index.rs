@@ -48,7 +48,7 @@ pub async fn get_raw_file(
 ) -> Result<(StatusCode, HeaderMap<HeaderValue>, Body), AppError> {
     let file = match user_id {
         None => {
-            // File is not owned by user, accessed through share
+            // File is not owned by the user, accessed through share
             state.file_service.get_file(file_id, None).await?
         }
         Some(user_id) => state
@@ -105,7 +105,7 @@ pub async fn get_raw_file(
         file.updated_at.to_rfc3339().as_str(),
     );
 
-    // If Range header is present, try to serve partial content to client
+    // If the Range header is present, try to serve partial content to the client
     let body = if let Some(range) = request_headers.get(RANGE) {
         // Parse the range and skip beginning ""bytes="
         let range_str = &range.to_str().unwrap_or("")[6..];
@@ -113,7 +113,7 @@ pub async fn get_raw_file(
 
         let range_start = u64::from_str(ranges[0]).unwrap_or(0);
 
-        // If end isn't specified, read to the end of the file
+        // If the end isn't specified, read to the end of the file
         let range_end = if ranges.get(1).is_some() && !ranges[1].is_empty() {
             u64::from_str(ranges[1]).unwrap_or(0)
         } else {
@@ -159,7 +159,7 @@ pub async fn get_raw_file(
         Body::from_stream(stream)
     };
 
-    // If Content-Range header is present, return partial content to client
+    // If the Content-Range header is present, return partial content to the client
     if response_headers.get(CONTENT_RANGE).is_some() {
         Ok((StatusCode::PARTIAL_CONTENT, response_headers, body))
     } else {
@@ -343,6 +343,9 @@ fn parse_multi_download_payload(
     Ok(request)
 }
 
+const ZIP_FILE_NAME_LIMIT: usize = 255;
+
+
 async fn handle_multi_download(
     state: AppState,
     files: Vec<i64>,
@@ -355,14 +358,39 @@ async fn handle_multi_download(
     let temp_location = std::path::Path::new(&upload_location).join("temp");
     let temp_path = std::path::Path::new(&temp_location);
 
-    let file_name = format!(
-        "Kosmos_Archive_{}.zip",
-        chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S")
-    );
-    let temp_zip_path = temp_path.join(&file_name);
+    let is_folder_download = files.is_empty() && !folder_structure.is_empty();
+
+    let root = if is_folder_download {
+        folder_structure.first()
+    } else {
+        None
+    };
+
+    let file_name = match root {
+        None => format!(
+            "Kosmos_Archive_{}.zip",
+            chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S")
+        ),
+        Some(dir) => format!("{}.zip", dir.folder_name),
+    };
+
+    // Make upload dir for zip archive so it no name conflicts happen
+    let temp_upload_folder_name = chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S").to_string();
+    let temp_upload_folder_path = temp_path.join(&temp_upload_folder_name);
+
+    // Clean up if exists (should not)
+    let _ = tokio::fs::remove_dir_all(&temp_upload_folder_path).await;
+
+    tokio::fs::create_dir(&temp_upload_folder_path)
+        .await
+        .map_err(|e| {
+            tracing::error!("Error creating temp archive folder: {}", e);
+            AppError::InternalError
+        })?;
+
+    let temp_zip_path = temp_upload_folder_path.join(&file_name);
     let temp_zip_path_str = temp_zip_path.to_str().unwrap();
 
-    let _ = tokio::fs::remove_file(temp_zip_path_str).await;
 
     let file = std::fs::File::create(temp_zip_path_str).map_err(|e| {
         tracing::error!("Error creating zip file: {}", e);
@@ -388,9 +416,20 @@ async fn handle_multi_download(
     }
 
     for dir in &folder_structure {
-        let mut dir_paths = vec![];
-        dir_paths.push((&dir.path.join("/")).to_owned());
-        dir_paths.push((&dir.folder_name).to_owned());
+        let path = if is_folder_download && dir.path.len() > 1 {
+            // Remove the first folder from the path as it is the root
+            dir.path[1..].to_vec()
+        } else {
+            dir.path.to_owned()
+        };
+
+        let safe_folder_name = if dir.folder_name.len() > ZIP_FILE_NAME_LIMIT {
+            &dir.folder_name[..ZIP_FILE_NAME_LIMIT]
+        } else {
+            &dir.folder_name
+        };
+
+        let dir_paths = [path.join("/").to_owned(), safe_folder_name.to_string()];
 
         let path_in_zip = dir_paths.join("/");
 
@@ -398,13 +437,19 @@ async fn handle_multi_download(
             let file_id: &i64 = &dir.files[i];
             let file_name: &String = &dir.file_names[i];
 
+            let safe_file_name =  if file_name.len() > ZIP_FILE_NAME_LIMIT {
+                &file_name[..ZIP_FILE_NAME_LIMIT]
+            } else {
+                file_name
+            };
+
             let path_to_file = upload_path.join(file_id.to_string());
 
             if let Ok(mut file) = File::open(&path_to_file).await {
-                // Ignore error as this can fail when a folder with the name already exists
+                // Ignore the error as this can fail when a folder with the name already exists
                 let _ = zip.add_directory(&path_in_zip, options);
 
-                let file_in_zip = format!("{}/{}", path_in_zip, file_name);
+                let file_in_zip = format!("{}/{}", path_in_zip, safe_file_name);
 
                 write_file_to_zip(options, &mut zip, &file_in_zip, &mut file).await?;
             } else {
@@ -447,7 +492,7 @@ async fn handle_multi_download(
         ),
     ];
 
-    // This way of doing it is not ideal, but it seems to work, this can maybe break in the future
+    // This way of doing it is not ideal, but it seems to work; this can maybe break in the future
 
     // The tokio remove file function uses the underlying 'unlink' syscall
     // which causes the file to be marked as deleted until no process has any handles for it
@@ -455,7 +500,7 @@ async fn handle_multi_download(
 
     let response: Result<Response<Body>, AppError> = Ok((header, body).into_response());
 
-    let _ = tokio::fs::remove_file(temp_zip_path_str).await;
+    let _ = tokio::fs::remove_dir_all(&temp_upload_folder_path).await;
     response
 }
 
@@ -474,7 +519,7 @@ async fn multi_download_get_file(
 
     if let Some(share) = share {
         let can_access_with_share =
-            get_share_access_for_folder_items(&state, &AccessShareItemType::File, file_id, share)
+            get_share_access_for_folder_items(state, &AccessShareItemType::File, file_id, share)
                 .await?;
         if !can_access_with_share {
             return Err(AppError::NotAllowed {
@@ -486,7 +531,7 @@ async fn multi_download_get_file(
         return Ok(Some(file));
     }
 
-    return Ok(None);
+    Ok(None)
 }
 
 async fn write_file_to_zip(

@@ -1,6 +1,6 @@
-import { ContextData } from '@hooks/useContextMenu.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { ContextData } from '@hooks/useContextMenu.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export enum FileType {
   Generic,
@@ -14,49 +14,52 @@ export enum FileType {
   Editable,
 }
 
-export class FileTypeActions {
-  static isImage(id: number) {
-    return [FileType.Image, FileType.RawImage].includes(id);
-  }
+const readableFiles = [
+  'text/x-tex',
+  'text/markdown',
+  'text/plain',
+  'text/csv',
+  'text/html',
+  'application/json',
+  'application/xml',
+  'application/x-yaml',
+  'text/yaml',
+];
 
-  static isVideo(id: number) {
-    return [FileType.Video].includes(id);
-  }
+export const FileTypeActions = {
+  isImage: (id: number) => [FileType.Image, FileType.RawImage].includes(id),
 
-  static isAudio(id: number) {
-    return [FileType.Audio].includes(id);
-  }
+  isVideo: (id: number) => [FileType.Video].includes(id),
 
-  static canOpenExternal(data: FileModelDTO) {
-    return [FileType.Document, FileType.Video].includes(data.file_type);
-  }
+  isAudio: (id: number) => [FileType.Audio].includes(id),
 
-  static hasPreview(data: FileModelDTO) {
-    return [FileType.Image, FileType.RawImage].includes(data.file_type);
-  }
+  canOpenExternal: (data: FileModelDTO) =>
+    [FileType.Document, FileType.Video].includes(data.file_type),
 
-  static hasFileEmbedData(data: FileModelDTO) {
-    return [FileType.Document, FileType.Editable].includes(data.file_type);
-  }
+  hasPreview: (data: FileModelDTO) =>
+    [FileType.Image, FileType.RawImage].includes(data.file_type),
 
-  static canEditContent(data: FileModelDTO) {
-    return data.file_type === FileType.Editable;
-  }
+  hasFileEmbedData: (data: FileModelDTO) =>
+    [FileType.Document, FileType.Editable].includes(data.file_type),
 
-  static isMarkdown(data: FileModelDTO) {
-    return this.canEditContent(data) && data.mime_type === 'text/markdown';
-  }
+  hasFilePlainDisplayableContent: (data: FileModelDTO) => {
+    return readableFiles.includes(data.mime_type);
+  },
 
-  static isZipArchive(data: FileModelDTO) {
-    return (
-      data.file_type === FileType.Archive && data.file_name.endsWith('.zip')
-    );
-  }
+  isFileTooLargeForContentDisplay: (data: FileModelDTO) =>
+    data.file_size > 5 * 1024 * 1024, // 5 MB limit
 
-  static shouldDelayPreview(data: FileModelDTO) {
-    return [FileType.Image, FileType.Document].includes(data.file_type);
-  }
-}
+  canEditContent: (data: FileModelDTO) => data.file_type === FileType.Editable,
+
+  isMarkdown: (data: FileModelDTO) =>
+    FileTypeActions.canEditContent(data) && data.mime_type === 'text/markdown',
+
+  isZipArchive: (data: FileModelDTO) =>
+    data.file_type === FileType.Archive && data.file_name.endsWith('.zip'),
+
+  shouldDelayPreview: (data: FileModelDTO) =>
+    [FileType.Image, FileType.Document].includes(data.file_type),
+};
 
 export enum FilePreviewStatus {
   Unavailable,
@@ -122,5 +125,5 @@ export function isEmpty(data: ContextData): data is Selected {
   return (
     (data as Selected).files.length === 0 &&
     (data as Selected).folders.length === 0
-  )
+  );
 }

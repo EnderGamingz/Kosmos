@@ -1,9 +1,10 @@
 import ConditionalWrapper from './wrappers/ConditionalWrapper.tsx';
 import { Link } from 'react-router-dom';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { hexToRGB } from '@utils/color.ts';
 import { cn } from '@lib/utils.ts';
+import { truncateString } from '@utils/truncate.ts';
 
 export default function BreadCrumbs({ children }: { children: ReactNode[] }) {
   return (
@@ -32,6 +33,9 @@ export function BreadCrumbItem({
   onClick?: () => void;
   initial?: boolean;
 }) {
+  const hasName = typeof name === 'string';
+  const safeName = truncateString(hasName ? name : '', 30);
+
   return (
     <motion.div
       onMouseEnter={onMouseEnter}
@@ -42,32 +46,38 @@ export function BreadCrumbItem({
       }
       initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 10, opacity: 0 }}>
+      exit={{ x: 10, opacity: 0 }}
+    >
       <ConditionalWrapper
         key={`breadcrumb-${href}`}
         condition={!!href}
         wrapper={c => (
           <Link
             className={cn(
-              'rounded-md px-1 transition-colors ',
-              !initial && 'hover:!bg-stone-500/10 dark:hover:!bg-stone-700/60',
+              'rounded-md px-1 transition-colors',
+              !initial && 'hover:bg-stone-500/10! dark:hover:bg-stone-700/60!',
             )}
             style={{
               backgroundColor: color
                 ? `rgba(${hexToRGB(color).join(',')}, 0.2)`
                 : undefined,
             }}
-            to={href!}>
+            to={href!}
+          >
             {c}
           </Link>
-        )}>
-        {name}
+        )}
+      >
+        <span title={hasName && name.length > 30 ? name : undefined}>
+          {hasName ? safeName : name}
+        </span>
       </ConditionalWrapper>
       <span
         className={cn(
           'text-muted-foreground transition-opacity',
           last ? 'opacity-0' : 'opacity-100',
-        )}>
+        )}
+      >
         /
       </span>
     </motion.div>

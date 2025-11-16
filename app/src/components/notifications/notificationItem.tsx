@@ -1,4 +1,7 @@
-import { Notification, useNotifications } from '@stores/notificationStore.ts';
+import {
+  type Notification,
+  useNotifications,
+} from '@stores/notificationStore.ts';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { NotificationStatus } from './notificationStatus.tsx';
@@ -73,9 +76,10 @@ export function NotificationItem({
         'relative w-full cursor-grab overflow-hidden transition-colors',
         'rounded-sm bg-popover border border-r-4 shadow-md',
         color,
-      )}>
+      )}
+    >
       <div className={'flex gap-1 px-2 py-2'}>
-        <Icon className={'mr-1 flex h-7 w-7'} />
+        <Icon className={'mr-1 flex size-7 shrink-0'} />
         <div className={'w-full'}>
           <div className={'flex items-center'}>
             <p className={'text-lg font-medium'}>{data.title}</p>
@@ -87,20 +91,20 @@ export function NotificationItem({
           </div>
           <p className={'text-sm font-light'}>{data.description}</p>
           {data.child && (
-            <Collapse isOpened={!data.loading}>
-              <>{data.child}</>
-            </Collapse>
+            <Collapse isOpened={!data.loading}>{data.child}</Collapse>
           )}
         </div>
         {data.canDismiss && (
           <button
+            type={'button'}
             onClick={e => {
               e.stopPropagation();
               update(data.id, { popup: false });
             }}
             className={
               'ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
-            }>
+            }
+          >
             <X className={'h-5 w-5'} />
           </button>
         )}

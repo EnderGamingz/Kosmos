@@ -1,6 +1,6 @@
 import {
-  ChangeEvent,
-  ReactNode,
+  type ChangeEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useRef,
@@ -10,11 +10,11 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import {
   makeUploadFiles,
-  UploadFile,
+  type UploadFile,
 } from '@pages/explorer/components/upload/uploadFile.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { FileWithPath, useDropzone } from 'react-dropzone';
+import { type FileWithPath, useDropzone } from 'react-dropzone';
 import { Collapse } from 'react-collapse';
 import { ConflictModal } from '@pages/explorer/components/upload/conflictModal.tsx';
 import { useByteFormatter } from '@utils/fileSize.ts';
@@ -52,12 +52,9 @@ export default function FileUploader({
 
   useEffect(
     () =>
-      useExplorerStore.subscribe(
-        state =>
-          (fileNamesRef.current = state.current.filesInScope.map(
-            x => x.file_name,
-          )),
-      ),
+      useExplorerStore.subscribe(state => {
+        fileNamesRef.current = state.current.filesInScope.map(x => x.file_name);
+      }),
     [],
   );
 
@@ -139,7 +136,7 @@ export default function FileUploader({
     // Chunk upload files by both size and amount
     const uploadChunk = [];
     let currentSize = 0;
-    for (let i = 0; i < files.length; i++){
+    for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (i > 0 && currentSize + file.size > UPLOAD_CHUNK_STORAGE_SIZE) break;
       if (i + 1 > UPLOAD_CHUNK_SIZE) break;
@@ -154,9 +151,10 @@ export default function FileUploader({
     });
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: want to run only on toUpload change
   useEffect(() => {
     if (!toUpload || !toUpload?.length) return;
-    if (onClose) onClose()
+    if (onClose) onClose();
     handleToUpload(toUpload);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -170,6 +168,7 @@ export default function FileUploader({
     }
   }, [selectForUpload]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: want to run only on isInList & notification change
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
       if (!acceptedFiles.length) return;
@@ -220,10 +219,11 @@ export default function FileUploader({
         <div
           {...getRootProps()}
           className={cn(
-            'rounded-lg outline-dashed outline-2 outline-transparent transition-all !duration-150',
+            'rounded-lg outline-dashed outline-2 outline-transparent transition-all duration-150!',
             isDragActive && 'scale-[0.99] bg-blue-300/20 outline-blue-500',
             className,
-          )}>
+          )}
+        >
           <input {...getInputProps()} />
           {children}
         </div>
@@ -243,7 +243,8 @@ export default function FileUploader({
         <div
           className={
             'mb-2 rounded-md border dark:border-amber-400 dark:bg-amber-950/50 dark:text-amber-50 border-amber-400 bg-amber-100 text-amber-900'
-          }>
+          }
+        >
           <div className={'p-2'}>
             <b>
               Possible Folder Upload Detected
@@ -282,7 +283,8 @@ export default function FileUploader({
           'max-sm:h-36 h-52 rounded-xl border-4 border-dashed border-gray-400/50 p-4 flex',
           'items-center justify-center text-center text-xl md:text-2xl font-bold text-stone-500',
           isDragActive && 'border-blue-400/50 bg-blue-100',
-        )}>
+        )}
+      >
         <input {...getInputProps({ id: 'files' })} />
         {isDragActive ? (
           <p>Release the files here</p>
@@ -293,7 +295,8 @@ export default function FileUploader({
       <DialogFooter
         className={
           'mt-4 flex flex-col-reverse justify-between gap-3 sm:flex-row'
-        }>
+        }
+      >
         <DialogClose asChild>
           <Button variant={'outline'}>Cancel</Button>
         </DialogClose>

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 import { CornerDownRight, Search } from 'lucide-react';
@@ -45,7 +45,8 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
             'absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2',
             'text-stone-500 transition-opacity',
             !value && 'opacity-0',
-          )}>
+          )}
+        >
           <CornerDownRight className={'h-5 w-5'} />
         </button>
       </div>

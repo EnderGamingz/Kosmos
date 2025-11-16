@@ -28,6 +28,15 @@ pub async fn init() {
         create_dir_all(&temp_location)
             .await
             .expect("Could not create temp folder");
+    } else {
+        // Clear temp folder on startup
+        tracing::info!(name: "bootstrap", "Clearing temp folder");
+        tokio::fs::remove_dir_all(&temp_location)
+            .await
+            .expect("Could not clear temp folder");
+        create_dir_all(&temp_location)
+            .await
+            .expect("Could not recreate temp folder");
     }
 
     if !backup_location.exists() {

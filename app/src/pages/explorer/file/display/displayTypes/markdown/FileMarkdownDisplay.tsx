@@ -1,7 +1,7 @@
 import { useFileContent } from '@lib/query.ts';
 import { useState } from 'react';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import {
@@ -47,13 +47,14 @@ export function EditMarkdownFile({
 
   return (
     <>
-      <button onClick={onOpen}>
+      <button type={'button'} onClick={onOpen}>
         <FilePenLine />
         Edit File
       </button>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent
-          className={'!max-w-full !h-full flex flex-col rounded-none'}>
+          className={'max-w-full! h-full! flex flex-col rounded-none'}
+        >
           <DialogHeader className={'grow-0'}>
             <DialogTitle>Editing</DialogTitle>
             <DialogDescription>
@@ -84,28 +85,33 @@ export function MarkdownFullscreenView({
   onClose: () => void;
   file: FileModelDTO;
 }) {
+  const safeName = truncateString(file.file_name, 30);
   return (
     <Dialog open={open} onOpenChange={b => !b && onClose()}>
       <DialogContent
-        className={'!max-w-full h-full rounded-none flex flex-col'}>
+        className={'max-w-full!  h-full rounded-none flex flex-col'}
+      >
         <DialogHeader>
           <DialogTitle>Markdown Preview</DialogTitle>
-          <DialogDescription>{file.file_name}</DialogDescription>
+          <DialogDescription>{safeName}</DialogDescription>
         </DialogHeader>
         <LexicalComposer
           initialConfig={{
             editorState: () => $convertFromMarkdownString(data, TRANSFORMERS),
             ...editorConfig,
-          }}>
-          <RichTextPlugin
-            contentEditable={
-              <ContentEditable
-                contentEditable={false}
-                className={'p-2 border outline-none rounded-md'}
-              />
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
+          }}
+        >
+          <div className={'h-50 grow overflow-auto'}>
+            <RichTextPlugin
+              contentEditable={
+                <ContentEditable
+                  contentEditable={false}
+                  className={'p-2 border outline-none rounded-md'}
+                />
+              }
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+          </div>
         </LexicalComposer>
       </DialogContent>
     </Dialog>
@@ -134,9 +140,10 @@ export default function FileMarkdownDisplay({
       />
       <div
         className={cn(
-          'relative h-full w-full rounded-xl p-3 bg-popover border',
+          'relative h-full w-full rounded-xl p-3 bg-popover border flex flex-col',
           !isShared ? 'md:pr-5' : 'md:pr-1',
-        )}>
+        )}
+      >
         <FullscreenToggle
           isFullscreen={fullscreen}
           toggle={() => setFullscreen(prev => !prev)}
@@ -148,13 +155,16 @@ export default function FileMarkdownDisplay({
               editorState: () =>
                 $convertFromMarkdownString(query.data, TRANSFORMERS),
               ...editorConfig,
-            }}>
-            <RichTextPlugin
-              contentEditable={
-                <ContentEditable contentEditable={false} className={'p-2'} />
-              }
-              ErrorBoundary={LexicalErrorBoundary}
-            />
+            }}
+          >
+            <div className={'h-50 grow overflow-auto'}>
+              <RichTextPlugin
+                contentEditable={
+                  <ContentEditable contentEditable={false} className={'p-2'} />
+                }
+                ErrorBoundary={LexicalErrorBoundary}
+              />
+            </div>
           </LexicalComposer>
         )}
       </div>

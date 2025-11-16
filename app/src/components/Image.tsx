@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { FilePreviewStatus, FileType } from '@models/file.ts';
-import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { DisplayContext, type DisplayContextType } from '@lib/contexts.ts';
 import { createPreviewUrl } from '@lib/file.ts';
 import { cn } from '@lib/utils.ts';
 import { Skeleton } from '@components/ui/skeleton.tsx';
@@ -37,11 +37,12 @@ export function PreviewImage({
   return (
     <div
       className={cn(
-        'img-container grid place-items-center [&>*]:col-[1/-1] [&>*]:row-[1/-1]',
+        'img-container grid place-items-center *:col-span-full *:row-span-full',
         'shadow-inherit',
-        dynamic ? 'min-h-20' : 'h-[40px] w-[40px]',
+        dynamic ? 'min-h-20' : 'size-10',
         isUnavailable && 'rounded-xl outline outline-stone-400/50',
-      )}>
+      )}
+    >
       {(isReady || type === FileType.RawImage) && (
         <img
           loading={'lazy'}
@@ -52,7 +53,7 @@ export function PreviewImage({
           height={40}
           className={cn(
             'img relative z-10 aspect-square rounded-lg object-cover text-[0] opacity-0',
-            'rounded-lg shadow-xl !duration-300 transition-transform-opacity',
+            'rounded-lg shadow-xl duration-300! transition-transform-opacity',
             'data-[loaded=true]:opacity-100 motion-reduce:transition-none',
             dynamic ? 'max-h-[400px] min-h-16' : 'h-10 w-10',
           )}

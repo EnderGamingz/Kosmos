@@ -3,12 +3,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { CSSProperties, useContext } from 'react';
+import { type CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
-import useSelectFile from '@utils/selectFile.ts';
+import useSelectFile from '@utils/file.ts';
 import { Check, EllipsisVertical, Star } from 'lucide-react';
 
 export function MobileFileItem({
@@ -56,18 +56,18 @@ export function MobileFileItem({
           'bg-indigo-100 dark:bg-indigo-700/50 hover:bg-indigo-200 dark:hover:bg-indigo-600/50',
         isShift && 'cursor-pointer',
         context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
-      )}>
+      )}
+    >
       <div
         onClick={e => {
           e.stopPropagation();
           if (!context.viewSettings?.noSelect) onSelect(file);
         }}
-        className={'relative'}>
+        className={'relative'}
+      >
         <div
-          className={cn(
-            'rounded-lg',
-            isSelected && 'bg-popover brightness-50',
-          )}>
+          className={cn('rounded-lg', isSelected && 'bg-popover brightness-50')}
+        >
           <ItemIcon
             id={file.id}
             name={file.file_name}
@@ -89,7 +89,8 @@ export function MobileFileItem({
         <p
           className={
             'flex gap-1 flex-wrap text-xs text-muted-foreground items-center'
-          }>
+          }
+        >
           {file.favorite && (
             <>
               <Star className={'w-3.5 h-3.5'} /> &bull;{' '}
@@ -104,7 +105,8 @@ export function MobileFileItem({
         onClick={e => {
           e.stopPropagation();
           context.handleContext({ x: e.clientX, y: e.clientY }, file);
-        }}>
+        }}
+      >
         <EllipsisVertical className={'w-5 h-5'} />
       </button>
     </div>

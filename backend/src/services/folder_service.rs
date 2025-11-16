@@ -519,7 +519,7 @@ impl FolderService {
     ) -> Result<Vec<Directory>, AppError> {
         let folders = folders.into_iter().collect::<Vec<_>>();
         let folder_res =
-            sqlx::query_as::<_, Directory>(&*Self::folder_structure_query(&folders, user_id))
+            sqlx::query_as::<_, Directory>(&Self::folder_structure_query(&folders, user_id))
                 .bind(&folders)
                 .bind(user_id)
                 .fetch_all(&self.db_pool)

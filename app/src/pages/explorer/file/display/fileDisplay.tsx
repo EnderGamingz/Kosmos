@@ -7,7 +7,7 @@ import { FileDisplayActions } from '@pages/explorer/file/display/fileDisplayActi
 import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.tsx';
 import { useSearchState } from '@stores/searchStore.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
 import {
   CleanDialogContent,
@@ -76,6 +76,7 @@ export default function FileDisplay({
     deps: [filesInScope.length, disabled],
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: is handled
   useEffect(() => {
     const fileId = params.get('f');
     if (fileId === null && scopedIndex === -1) return;
@@ -92,11 +93,13 @@ export default function FileDisplay({
     setScopedIndex(index !== -1 ? index : -1);
   }, [params]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: is handled
   useEffect(() => {
     if (params.get('f') === null) return;
     close();
   }, [currentFolder]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: is handled
   const file = useMemo(() => {
     if (scopedIndex === -1) return undefined;
     if (filesInScope?.[scopedIndex] === undefined) return undefined;
@@ -144,7 +147,8 @@ function FileDisplayContent({
       <CleanDialogContent
         className={
           'flex flex-col h-full w-full max-w-5xl focus:outline-none focus-visible:outline-none md:grid md:max-h-[600px] md:grid-cols-2'
-        }>
+        }
+      >
         <DialogHeader className={'sr-only'}>
           <DialogTitle>{prevFile?.file_name || 'File'}</DialogTitle>
           <DialogDescription>{prevFile?.mime_type || ''}</DialogDescription>
@@ -153,8 +157,9 @@ function FileDisplayContent({
           <>
             <div
               className={cn(
-                '-mb-5 flex-grow md:-mr-5 md:mb-0 [&>*]:absolute [&>*]:inset-0 relative',
-              )}>
+                '-mb-5 grow md:-mr-5 md:mb-0 *:absolute *:inset-0 relative',
+              )}
+            >
               <FileDisplayHandler
                 file={prevFile}
                 fullScreen={fullsScreenPreview}
@@ -172,7 +177,8 @@ function FileDisplayContent({
                 'dark:bg-stone-900 dark:outline-stone-400/20',
                 isSelected &&
                   '-outline-offset-4 outline-blue-500 dark:outline-blue-400',
-              )}>
+              )}
+            >
               <DisplayHeader
                 file={prevFile}
                 selected={isSelected}

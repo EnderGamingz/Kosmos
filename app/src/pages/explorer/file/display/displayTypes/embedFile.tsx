@@ -1,8 +1,8 @@
 import { FileTypeActions } from '@models/file.ts';
 import FileMarkdownDisplay from '@pages/explorer/file/display/displayTypes/markdown/FileMarkdownDisplay.tsx';
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { FullscreenToggle } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog.tsx';
+import { useFileContent } from '@lib/query.ts';
 
 export default function EmbedFile({
   file,
@@ -32,6 +33,28 @@ export default function EmbedFile({
   return <FileObjectDisplay file={file} serveUrl={serveUrl} />;
 }
 
+export function PlainTextFileDisplay({
+  file,
+  serveUrl,
+}: {
+  file: FileModelDTO;
+  serveUrl: string;
+}) {
+  const content = useFileContent(file.id, serveUrl);
+
+  return (
+    <div
+      className={
+        'h-full w-full rounded-xl bg-stone-800/20 text-stone-50 shadow-lg backdrop-blur-md p-5 overflow-auto'
+      }
+    >
+      <pre className={'whitespace-pre-wrap wrap-break-word'}>
+        {content.data}
+      </pre>
+    </div>
+  );
+}
+
 export function ObjectFullscreenView({
   open,
   onClose,
@@ -45,7 +68,7 @@ export function ObjectFullscreenView({
 }) {
   return (
     <Dialog open={open} onOpenChange={b => !b && onClose()}>
-      <DialogContent className={'!max-w-full h-full p-10 rounded-none'}>
+      <DialogContent className={'max-w-full! h-full p-10 rounded-none'}>
         <DialogHeader className={'sr-only'}>
           <DialogTitle>Object View</DialogTitle>
           <DialogDescription>{file.file_name}</DialogDescription>
@@ -80,7 +103,8 @@ function FileObjectDisplay({
       <ObjectFullscreenView
         file={file}
         open={fullscreen}
-        onClose={() => setFullscreen(false)}>
+        onClose={() => setFullscreen(false)}
+      >
         {object}
       </ObjectFullscreenView>
       <FullscreenToggle

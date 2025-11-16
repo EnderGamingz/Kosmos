@@ -14,11 +14,11 @@ import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { Clock, EllipsisVertical } from 'lucide-react';
-import useSelectFile from '@utils/selectFile.ts';
+import useSelectFile from '@utils/file.ts';
 
 export default function GridFileItem({
   index,
@@ -100,7 +100,8 @@ export default function GridFileItem({
         context.select.rangeStart === index &&
           'bg-indigo-50 dark:bg-indigo-900/50',
         dynamic && 'w-full',
-      )}>
+      )}
+    >
       <motion.div
         drag={
           !outerDisabled &&
@@ -124,7 +125,8 @@ export default function GridFileItem({
           context.dragMove.resetDrag();
           setDestination();
           setDisabled(false);
-        }}>
+        }}
+      >
         <div
           className={cn(
             'absolute z-30 flex items-center gap-2 px-2 py-1.5 ',
@@ -133,7 +135,8 @@ export default function GridFileItem({
             isDefaultDisplay &&
               'gap-2 pl-1.5 pt-2.5 [&>button>svg]:w-6 [&>button]:-mt-1',
             isHidden && 'left-0 top-0',
-          )}>
+          )}
+        >
           {!context.viewSettings?.noSelect && onSelect && (
             <Checkbox
               className={'h-4 w-4 bg-border'}
@@ -160,7 +163,8 @@ export default function GridFileItem({
                 ? '[&>div]:p-0 [&_svg]:h-12 [&_svg]:w-12'
                 : '[&>div]:p-0 [&_svg]:h-14 [&_svg]:w-14',
             isDynamic ? 'h-auto [&_.img-container]:h-auto [&_img]:h-auto' : '',
-          )}>
+          )}
+        >
           {fileHasPreview ? (
             <ItemIcon
               id={file.id}
@@ -182,7 +186,8 @@ export default function GridFileItem({
               key={`size-${file.id}`}
               className={
                 'absolute right-1.5 top-1.5 z-30 rounded-full bg-border !px-1.5 !py-0.5 text-xs'
-              }>
+              }
+            >
               {formattedSize}
             </p>
           )}
@@ -192,7 +197,8 @@ export default function GridFileItem({
               className={cn(
                 'absolute inset-0 z-20 flex rounded-lg !px-1.5 !py-1',
                 'bg-gradient-to-t from-stone-800/70 to-stone-800/0',
-              )}>
+              )}
+            >
               <p
                 onClick={handleClick}
                 key={`title-${file.id}`}
@@ -200,7 +206,8 @@ export default function GridFileItem({
                   'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                   'mt-auto text-sm text-stone-50',
                   !isCompact && 'lg:text-base',
-                )}>
+                )}
+              >
                 {file.file_name}
               </p>
             </div>
@@ -216,13 +223,15 @@ export default function GridFileItem({
                     'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                     'text-sm',
                     !isCompact && 'lg:text-base',
-                  )}>
+                  )}
+                >
                   {file.file_name}
                 </p>
                 <button
                   onClick={e => {
                     context.handleContext({ x: e.clientX, y: e.clientY }, file);
-                  }}>
+                  }}
+                >
                   <EllipsisVertical className={'h-5 w-5'} />
                 </button>
               </div>
@@ -230,7 +239,8 @@ export default function GridFileItem({
                 key={`updated-${file.updated_at}`}
                 className={
                   'flex items-center gap-1 whitespace-nowrap text-xs font-light text-muted-foreground'
-                }>
+                }
+              >
                 <Clock className={'h-3 w-3'} />{' '}
                 {formatDistanceToNow(file.updated_at)} ago
               </p>

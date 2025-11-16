@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { PreviewImage } from '@components/Image.tsx';
-import { AlbumFile } from '@models/album.ts';
+import type { AlbumFile } from '@models/album.ts';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
-import { Vec2 } from '@/types/vec2.ts';
+import type { Vec2 } from '@/types/vec2.ts';
 
 export default function AlbumDisplay() {
   const { overwriteDisplay, viewSettings } = useContext(DisplayContext);
@@ -34,6 +34,7 @@ export default function AlbumDisplay() {
 
   // Masonry doesn't place items correctly if not navigated to from another page
   // this fixes that
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we only want this to run on mount
   useEffect(() => {
     const t = setTimeout(() => setRender(true), 1);
     return () => {
@@ -89,7 +90,8 @@ function AlbumDisplayItem({
   onClick?: () => void;
 }) {
   return (
-    <div
+    <button
+      type={'button'}
       onClick={onClick}
       onContextMenu={e => {
         e.preventDefault();
@@ -101,13 +103,14 @@ function AlbumDisplayItem({
       className={cn(
         'w-full [&_.img-container]:h-full [&_.img-container]:min-h-24 [&_.img-container]:w-full',
         '[&_img]:aspect-auto [&_img]:h-auto [&_img]:min-h-[inherit] [&_img]:w-full',
-      )}>
+      )}
+    >
       <PreviewImage
         id={file.id}
         status={file.preview_status}
         alt={file.file_name}
         type={file.file_type}
       />
-    </div>
+    </button>
   );
 }

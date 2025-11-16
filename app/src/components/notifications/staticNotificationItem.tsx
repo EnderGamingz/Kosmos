@@ -1,4 +1,4 @@
-import { Notification } from '@stores/notificationStore.ts';
+import type { Notification } from '@stores/notificationStore.ts';
 import {
   getSeverityBorderColor,
   getSeverityIcon,
@@ -25,17 +25,19 @@ export function StaticNotificationItem({
       )}
       style={{
         animationDelay: `${index * 50}ms`,
-      }}>
+      }}
+    >
       <div className={'flex items-center gap-1 mt-1'}>
-        <Icon className={'h-4 w-4'} />
+        <Icon className={'size-4 shrink-0'} />
         <div className={'flex justify-between w-full'}>
           <p className={'font-medium'}>{data.title}</p>
           {data.status && (
             <span
               className={
                 'flex items-center gap-1 text-xs font-light text-muted-foreground'
-              }>
-              <Forward className={'h-3 w-3'} />
+              }
+            >
+              <Forward className={'size-3'} />
               {data.status}
             </span>
           )}
@@ -43,8 +45,8 @@ export function StaticNotificationItem({
       </div>
       <div className={'mb-1 grid text-sm font-light'}>
         {data.description && (
-          <p className={'flex items-center gap-1'}>
-            <TextQuote className={'h-3 w-3'} />
+          <p className={'flex items-center gap-2'}>
+            <TextQuote className={'size-3 shrink-0'} />
             {data.description}
           </p>
         )}

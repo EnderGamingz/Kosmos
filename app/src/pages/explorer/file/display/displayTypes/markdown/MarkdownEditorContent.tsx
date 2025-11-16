@@ -1,8 +1,8 @@
 import {
-  InitialConfigType,
+  type InitialConfigType,
   LexicalComposer,
 } from '@lexical/react/LexicalComposer';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -137,50 +137,36 @@ export function MarkdownEditorContent({
     });
   };
 
+  const Editor = isMarkdown ? RichTextPlugin : PlainTextPlugin;
+
   return (
     <>
       <div className={'flex flex-col grow w-full rounded-sm outline-none'}>
-        <div
-          className={
-            'h-full overflow-y-auto [&>div[role="textbox"]]:h-[calc(100%-44px)]'
-          }>
-          <LexicalComposer
-            initialConfig={{
-              editorState: () =>
-                $convertFromMarkdownString(initialData, TRANSFORMERS),
-              ...editorConfig,
-            }}>
-            {isMarkdown ? (
-              <>
-                <ToolbarPlugin />
-                <RichTextPlugin
-                  contentEditable={
-                    <ContentEditable
-                      className={'p-2 border outline-none rounded-md'}
-                      aria-placeholder={'Enter some text...'}
-                      placeholder={<></>}
-                    />
-                  }
-                  ErrorBoundary={LexicalErrorBoundary}
+        <LexicalComposer
+          initialConfig={{
+            editorState: () =>
+              $convertFromMarkdownString(initialData, TRANSFORMERS),
+            ...editorConfig,
+          }}
+        >
+          {isMarkdown && <ToolbarPlugin />}
+          <div className={'h-50 grow overflow-auto'}>
+            <Editor
+              contentEditable={
+                <ContentEditable
+                  className={'rounded-sm border p-2'}
+                  aria-placeholder={'Enter some text...'}
+                  // biome-ignore lint/complexity/noUselessFragments: empty placeholder to avoid default text
+                  placeholder={<></>}
                 />
-              </>
-            ) : (
-              <PlainTextPlugin
-                contentEditable={
-                  <ContentEditable
-                    className={'p-2 border outline-none rounded-md'}
-                    aria-placeholder={'Enter some text...'}
-                    placeholder={<></>}
-                  />
-                }
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-            )}
-            <HistoryPlugin />
-            <AutoFocusPlugin />
-            <OnChangePlugin onChange={onChange} />
-          </LexicalComposer>
-        </div>
+              }
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+          </div>
+          <HistoryPlugin />
+          <AutoFocusPlugin />
+          <OnChangePlugin onChange={onChange} />
+        </LexicalComposer>
       </div>
       <DialogFooter>
         <Button onClick={() => saveAction.mutate()}>

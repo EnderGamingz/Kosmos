@@ -1,7 +1,7 @@
 import { useUsageStats } from '@lib/query.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import FileUploader from '@pages/explorer/components/upload/fileUploader.tsx';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -27,7 +27,7 @@ export function FileUploadModal({
     <>
       {children}
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent>
+        <DialogContent className={'max-w-3xl! w-full'}>
           <DialogHeader>
             <DialogTitle>File Upload</DialogTitle>
             <DialogDescription>
@@ -50,7 +50,11 @@ export function FileUpload({ onClick }: { onClick: () => void }) {
   const { data } = useUsageStats();
   const full = (data?.limit || 0) - (data?.total || 0) <= 0;
   return (
-    <button className={'no-pre menu-button w-full py-2'} onClick={onClick}>
+    <button
+      type={'button'}
+      className={'no-pre menu-button w-full py-2'}
+      onClick={onClick}
+    >
       <CloudUpload className={'h-5 w-5'} />
       <div className={'flex flex-col text-start'}>
         Upload

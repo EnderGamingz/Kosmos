@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Checkbox } from '@/components/ui/checkbox';
+import { truncateString } from '@utils/truncate.ts';
 
 export function DisplayHeader({
   file,
@@ -11,21 +11,20 @@ export function DisplayHeader({
   selected?: boolean;
   onSelect?: (file: FileModelDTO) => void;
 }) {
+  const safeName = truncateString(file.file_name, 80);
   return (
-    <motion.div className={'flex items-center gap-2'}>
+    <div className={'flex items-center gap-2'}>
       {selected !== undefined && (
-        <motion.div layoutId={`check-${file.id}`}>
-          <Checkbox checked={selected} onClick={() => onSelect?.(file)} />
-        </motion.div>
+        <Checkbox checked={selected} onClick={() => onSelect?.(file)} />
       )}
-      <motion.p
-        exit={{ opacity: 0 }}
-        layoutId={`title-${file.id}`}
+      <p
         className={
           'select-all whitespace-break-spaces break-all text-xl font-semibold'
-        }>
-        {file.file_name}
-      </motion.p>
-    </motion.div>
+        }
+        title={file.file_name}
+      >
+        {safeName}
+      </p>
+    </div>
   );
 }

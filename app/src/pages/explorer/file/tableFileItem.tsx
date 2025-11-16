@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useFormatBytes } from '@utils/fileSize.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useKeyStore } from '@stores/keyStore.ts';
-import { CSSProperties, useContext } from 'react';
+import { type CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import Favorite from '@pages/explorer/components/favorite.tsx';
@@ -11,11 +11,11 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateBin, invalidateUsage } from '@lib/query.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { EllipsisVertical, RotateCcw, Shredder } from 'lucide-react';
-import useSelectFile from '@utils/selectFile.ts';
+import useSelectFile from '@utils/file.ts';
 import ConditionalWrapper from '@components/wrappers/ConditionalWrapper.tsx';
 
 export function BinActions({
@@ -60,7 +60,8 @@ export function BinActions({
           {c}
         </div>
       )}
-      condition={!inList}>
+      condition={!inList}
+    >
       <button title={'Restore'} className={'text-blue-500'} onClick={onRestore}>
         <RotateCcw />
         {inList && 'Restore File'}
@@ -120,7 +121,8 @@ export function TableFileItem({
         isShift && 'cursor-pointer',
         context.select.rangeStart === i &&
           'bg-indigo-50 dark:bg-indigo-600/60 hover:bg-indigo-100 dark:hover:bg-indigo-700/60',
-      )}>
+      )}
+    >
       {!context.viewSettings?.noSelect && (
         <div>
           <Checkbox checked={isSelected} onClick={() => onSelect(file)} />
@@ -130,13 +132,15 @@ export function TableFileItem({
         className={cn(
           'flex h-full !p-0 grow',
           !!context.viewSettings?.noSelect && '!pl-3',
-        )}>
+        )}
+      >
         <div
           className={'flex grow items-center'}
           onClick={() => {
             if (isControl || isShift || context.viewSettings?.noDisplay) return;
             selectFile(file.id);
-          }}>
+          }}
+        >
           <ItemIcon
             id={file.id}
             name={file.file_name}
@@ -146,7 +150,8 @@ export function TableFileItem({
           <p
             className={
               'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-3'
-            }>
+            }
+          >
             {file.file_name}
           </p>
         </div>
@@ -162,7 +167,8 @@ export function TableFileItem({
           onClick={e => {
             context.handleContext({ x: e.clientX, y: e.clientY }, file);
           }}
-          className={'p-2'}>
+          className={'p-2'}
+        >
           <EllipsisVertical className={'h-5 w-5'} />
         </button>
       </div>
@@ -170,7 +176,8 @@ export function TableFileItem({
         {useFormatBytes(file.file_size)}
       </div>
       <div
-        className={'whitespace-nowrap text-sm font-light text-right w-[155px]'}>
+        className={'whitespace-nowrap text-sm font-light text-right w-[155px]'}
+      >
         {formatDistanceToNow(file.updated_at)}
       </div>
       {context.viewSettings?.binView && (
