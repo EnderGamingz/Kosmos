@@ -2,6 +2,9 @@ stages:
   - build
   - release
 
+variables:
+  DOCKER_API_VERSION: "1.39"
+
 kosmos_app_build_job:
   stage: build
   image: docker:stable
