@@ -2,12 +2,9 @@ stages:
   - build
   - release
 
-variables:
-  DOCKER_API_VERSION: "1.39"
-
 kosmos_app_build_job:
   stage: build
-  image: docker:stable
+  image: docker:latest
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_TAG
   rules:
@@ -27,7 +24,7 @@ kosmos_app_build_job:
 
 kosmos_backend_build_job:
   stage: build
-  image: docker:stable
+  image: docker:latest
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_TAG
   rules:
