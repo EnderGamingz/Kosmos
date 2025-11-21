@@ -345,6 +345,27 @@ fn parse_multi_download_payload(
 
 const ZIP_FILE_NAME_LIMIT: usize = 255;
 
+fn check_is_single_folder_download(files: &[i64], folder_structure: &[Directory]) -> bool {
+    if !files.is_empty() {
+        return false;
+    }
+
+    let has_folders = !folder_structure.is_empty();
+
+    let is_only_one_top_level_folder = if has_folders {
+        // Check that only one directory has a path length of 0
+        let top_level_folders: Vec<&Directory> = folder_structure
+            .iter()
+            .filter(|dir| dir.path.is_empty())
+            .collect();
+
+        top_level_folders.len() == 1
+    } else {
+        false
+    };
+
+    has_folders && is_only_one_top_level_folder
+}
 
 async fn handle_multi_download(
     state: AppState,
@@ -358,7 +379,7 @@ async fn handle_multi_download(
     let temp_location = std::path::Path::new(&upload_location).join("temp");
     let temp_path = std::path::Path::new(&temp_location);
 
-    let is_folder_download = files.is_empty() && !folder_structure.is_empty();
+    let is_folder_download = check_is_single_folder_download(&files, &folder_structure);
 
     let root = if is_folder_download {
         folder_structure.first()
@@ -390,7 +411,6 @@ async fn handle_multi_download(
 
     let temp_zip_path = temp_upload_folder_path.join(&file_name);
     let temp_zip_path_str = temp_zip_path.to_str().unwrap();
-
 
     let file = std::fs::File::create(temp_zip_path_str).map_err(|e| {
         tracing::error!("Error creating zip file: {}", e);
@@ -437,7 +457,7 @@ async fn handle_multi_download(
             let file_id: &i64 = &dir.files[i];
             let file_name: &String = &dir.file_names[i];
 
-            let safe_file_name =  if file_name.len() > ZIP_FILE_NAME_LIMIT {
+            let safe_file_name = if file_name.len() > ZIP_FILE_NAME_LIMIT {
                 &file_name[..ZIP_FILE_NAME_LIMIT]
             } else {
                 file_name
