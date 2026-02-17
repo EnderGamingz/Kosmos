@@ -36,7 +36,7 @@ export function TableHeader({
             <SelectAllCheckBox files={files} folders={folders} />
           </div>
         )}
-        <div className={'w-full min-w-[300px]'}>
+        <div className={'w-full min-w-75'}>
           <ExplorerSort
             name={'Name'}
             sort={SortBy.Name}
@@ -45,7 +45,7 @@ export function TableHeader({
             currentOrder={currentSort.sort_order}
           />
         </div>
-        <div className={'min-w-[110px] text-right'}>
+        <div className={'min-w-27.5 text-right'}>
           <ExplorerSort
             name={'Size'}
             sort={SortBy.FileSize}
@@ -54,7 +54,7 @@ export function TableHeader({
             currentOrder={currentSort.sort_order}
           />
         </div>
-        <div className={'min-w-[155px] text-right'}>
+        <div className={'min-w-38.75 text-right'}>
           <ExplorerSort
             name={context.viewSettings?.binView ? 'Deleted' : 'Modified'}
             sort={SortBy.UpdatedAt}

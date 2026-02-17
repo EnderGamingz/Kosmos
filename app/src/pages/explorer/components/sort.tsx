@@ -38,7 +38,11 @@ export function ExplorerSort({
   };
 
   return (
-    <button type={'button'} className={'w-full'} onClick={handleSort}>
+    <button
+      type={'button'}
+      className={'text-start w-full'}
+      onClick={handleSort}
+    >
       {name}
       <SortIcon
         desc={currentSortBy === sort && currentOrder === SortOrder.Desc}
