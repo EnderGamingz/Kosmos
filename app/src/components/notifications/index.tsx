@@ -29,7 +29,7 @@ export default function NotificationIndicator() {
   return (
     <div
       className={
-        'fixed right-10 z-100 w-full max-w-[20rem] max-sm:left-5 max-sm:top-5 sm:bottom-10'
+        'fixed right-10 z-200 w-full max-w-[20rem] max-sm:left-5 max-sm:top-5 sm:bottom-10'
       }
     >
       {/** biome-ignore lint/a11y/useKeyWithClickEvents: only for desktop */}

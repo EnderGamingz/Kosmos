@@ -1,28 +1,25 @@
-import {
-  type CreateNotificationPayload,
-  Severity,
-} from '@stores/notificationStore.ts';
+import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import type { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
 import { buttonVariants } from '@components/ui/button.tsx';
 
 export function Copy({
-  notify,
   text,
   chip = true,
   children,
 }: {
-  notify: (data: CreateNotificationPayload) => void;
   text: string;
   chip?: boolean;
   children?: ReactNode;
 }) {
+  const notifications = useNotifications(s => s.actions);
+
   return (
     <button
       type={'button'}
       onClick={() =>
         navigator.clipboard.writeText(text).then(() => {
-          notify({
+          notifications.notify({
             title: 'Copy',
             description: 'Share link copied',
             status: 'Success',

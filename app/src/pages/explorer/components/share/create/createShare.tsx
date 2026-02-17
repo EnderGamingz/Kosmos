@@ -135,12 +135,17 @@ export function CreateShare({
       )}
       <div
         className={cn(
-          'grid [&>div]:overflow-hidden [&>div]:rounded-md [&>div]:bg-border [&>div]:p-2',
+          'grid [&>div]:overflow-hidden [&>div]:rounded-md [&>div]:border [&>div]:p-2',
           'gap-2 [&_input]:mt-2 [&_input]:bg-input [&_label]:text-sm [&_svg]:w-4',
           '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-muted-foreground',
         )}
       >
-        <div className={'p-0!'}>
+        <div
+          className={cn(
+            'p-0! transition-opacity',
+            type !== ShareType.Private && 'opacity-0',
+          )}
+        >
           <Collapse isOpened={type === ShareType.Private}>
             <div className={'p-2 space-y-2'}>
               <div>

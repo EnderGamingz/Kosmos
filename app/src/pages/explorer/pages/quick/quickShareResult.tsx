@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { getShareUrl } from '@lib/share/url.ts';
 import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
 import { Copy } from '@pages/explorer/components/share/copy.tsx';
-import { useNotifications } from '@stores/notificationStore.ts';
 import { Button } from '@/components/ui/button';
 import { ClipboardCopy, Fingerprint, Share } from 'lucide-react';
 
@@ -13,7 +12,6 @@ export function QuickShareResult({
   uuid: string;
   onReset: () => void;
 }) {
-  const notifications = useNotifications(s => s.actions);
   const shareData = {
     url: getShareUrl('folder', uuid),
     title: "Kosmos' quick share link",
@@ -50,7 +48,7 @@ export function QuickShareResult({
               <Share className={'h-5 w-5'} /> Share
             </Button>
           )}
-          <Copy text={shareData.url} notify={notifications.notify} chip={false}>
+          <Copy text={shareData.url} chip={false}>
             <ClipboardCopy className={'h-5 w-5'} /> Copy Link
           </Copy>
         </div>
