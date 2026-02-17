@@ -20,7 +20,9 @@ import { InviteUserButton } from '@pages/social/chats/chat/inviteUserButton.tsx'
 
 export function ChatHeader() {
   const { chat, getPartner } = useChatContext();
-  const partner = useMemo(getPartner, [getPartner, chat]);
+  const partner = useMemo(() => {
+    return getPartner();
+  }, [getPartner]);
 
   return (
     <div
@@ -57,7 +59,10 @@ function ChatMembers({ chat }: { chat: ChatModelDTO }) {
   return (
     <Drawer direction={'right'}>
       <DrawerTrigger asChild>
-        <button className={'text-sm text-muted-foreground underline'}>
+        <button
+          type={'button'}
+          className={'text-sm text-muted-foreground underline'}
+        >
           {chat.members.length} member{chat.members.length > 1 ? 's' : ''}
         </button>
       </DrawerTrigger>

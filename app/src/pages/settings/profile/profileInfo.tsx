@@ -3,7 +3,7 @@ import { Button } from '@components/ui/button.tsx';
 import { useUserState } from '@stores/userStore.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import type { FormEvent } from 'react';
+import type { SubmitEventHandler } from 'react';
 import type { UpdateProfileDTO } from '@bindings/UpdateProfileDTO.ts';
 import { ProfileQuery } from '@lib/queries/profileQuery.ts';
 import { Textarea } from '@components/ui/textarea.tsx';
@@ -14,8 +14,6 @@ import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 export default function ProfileInfoSettings() {
   const user = useUserState(s => s.user);
   const notifications = useNotifications(s => s.actions);
-
-  if (!user) return null;
 
   const { data } = ProfileQuery.useProfileSelfSuspense();
 
@@ -49,9 +47,11 @@ export default function ProfileInfoSettings() {
     },
   });
 
-  const onSubmit = (e: FormEvent) => {
+  if (!user) return null;
+
+  const onSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.target);
     const payload: UpdateProfileDTO = {
       full_name: formData.get('full_name') as string,
       email: formData.get('email') as string,

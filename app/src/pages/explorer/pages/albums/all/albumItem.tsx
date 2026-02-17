@@ -23,9 +23,12 @@ export function AlbumItem({ album }: { album: AlbumModelDTO }) {
 
   return (
     <li className={'flex items-center justify-between'}>
-      <div
+      <button
+        type={'button'}
         onClick={handleClick}
-        className={'w-full text-xl text-stone-700 dark:text-stone-300'}
+        className={
+          'text-start w-full text-xl text-stone-700 dark:text-stone-300'
+        }
       >
         <AlbumCover album={album} loading={loading} />
         <div className={'flex flex-col'}>
@@ -38,7 +41,7 @@ export function AlbumItem({ album }: { album: AlbumModelDTO }) {
             {album.name}
           </motion.p>
         </div>
-      </div>
+      </button>
     </li>
   );
 }

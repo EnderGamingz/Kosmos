@@ -8,6 +8,7 @@ export default function EmbedVideo({
   serveUrl: string;
 }) {
   return (
+    // biome-ignore lint/a11y/useMediaCaption: Captions are currently not supported
     <video
       controls
       className={
@@ -15,7 +16,7 @@ export default function EmbedVideo({
       }
       title={file.file_name}
     >
-      <source src={serveUrl} type={'video/mp4'} />;
+      <source src={serveUrl} type={'video/mp4'} />
     </video>
   );
 }

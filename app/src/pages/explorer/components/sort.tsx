@@ -18,7 +18,7 @@ export function ExplorerSort({
 }) {
   const updateSort = useSearchState(s => s.actions.sort);
 
-  // Return name if sorting is disabled
+  // Return the name if sorting is disabled
   if (disable) return <div className={'w-full'}>{name}</div>;
 
   const handleSort = () => {
@@ -38,12 +38,12 @@ export function ExplorerSort({
   };
 
   return (
-    <div className={'w-full'} onClick={handleSort}>
+    <button type={'button'} className={'w-full'} onClick={handleSort}>
       {name}
       <SortIcon
         desc={currentSortBy === sort && currentOrder === SortOrder.Desc}
       />
-    </div>
+    </button>
   );
 }
 

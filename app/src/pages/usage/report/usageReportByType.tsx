@@ -1,6 +1,6 @@
 import { getFileTypeString } from '@models/file.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import type { FileTypeSumDataDTO } from '@bindings/FileTypeSumDataDTO.ts';
 import { cn } from '@lib/utils.ts';
 
@@ -35,10 +35,9 @@ function FileTypeUsageItem({
   index: number;
 }) {
   const fileTypeString = getFileTypeString(type.file_type);
-  const navigate = useNavigate();
   return (
-    <div
-      onClick={() => navigate(`/home/files/${type.file_type}`)}
+    <Link
+      to={`/home/files/${type.file_type}`}
       style={{ animationDelay: `${index * 50 + 500}ms` }}
       className={cn(
         'overflow-hidden rounded-xl bg-stone-300/40 p-2 text-stone-700',
@@ -55,6 +54,6 @@ function FileTypeUsageItem({
       </p>
       <p className={'font-semibold'}>{useFormatBytes(type.sum)}</p>
       <p className={'text-sm italic'}>{type.count} Files</p>
-    </div>
+    </Link>
   );
 }

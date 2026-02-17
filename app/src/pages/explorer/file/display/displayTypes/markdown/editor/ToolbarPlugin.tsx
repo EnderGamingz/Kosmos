@@ -52,7 +52,7 @@ import {
 const LowPriority = 1;
 
 function Divider() {
-  return <div className={'mx-2 w-[1px] bg-muted-foreground/50 my-1'} />;
+  return <div className={'mx-2 w-px bg-muted-foreground/50 my-1'} />;
 }
 
 export const formatHeading = (
@@ -151,6 +151,7 @@ export default function ToolbarPlugin() {
       ref={toolbarRef}
     >
       <button
+        type={'button'}
         disabled={!canUndo}
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -161,6 +162,7 @@ export default function ToolbarPlugin() {
         <Undo />
       </button>
       <button
+        type={'button'}
         disabled={!canRedo}
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined);
@@ -212,6 +214,7 @@ export default function ToolbarPlugin() {
         </SelectContent>
       </Select>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
@@ -221,6 +224,7 @@ export default function ToolbarPlugin() {
         <Bold />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
         }}
@@ -230,6 +234,7 @@ export default function ToolbarPlugin() {
         <Italic />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
         }}
@@ -239,6 +244,7 @@ export default function ToolbarPlugin() {
         <Underline />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
         }}
@@ -248,6 +254,7 @@ export default function ToolbarPlugin() {
         <Strikethrough />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
         }}
@@ -258,6 +265,7 @@ export default function ToolbarPlugin() {
       </button>
       <Divider />
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
         }}
@@ -267,6 +275,7 @@ export default function ToolbarPlugin() {
         <AlignLeft />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
         }}
@@ -276,6 +285,7 @@ export default function ToolbarPlugin() {
         <AlignCenter />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
         }}
@@ -285,6 +295,7 @@ export default function ToolbarPlugin() {
         <AlignRight />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
         }}

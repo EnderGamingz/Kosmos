@@ -45,7 +45,7 @@ function AlbumAddItemsContent({
       selectNone();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialFiles.map, selectFile, selectNone]);
 
   const submit = () => {
     // Get added and removed

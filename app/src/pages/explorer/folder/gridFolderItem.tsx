@@ -145,7 +145,10 @@ export default function GridFolderItem({
               <Checkbox
                 className={'h-5 w-5 p-0'}
                 checked={isSelected}
-                onClick={() => !selectDisabled && onSelect(folder)}
+                onClick={e => {
+                  e.stopPropagation();
+                  if (!selectDisabled) onSelect(folder);
+                }}
               />
             </div>
           )}
@@ -163,16 +166,17 @@ export default function GridFolderItem({
             />
           </div>
         </div>
-        <div className={'flex flex-grow items-center'}>
+        <div className={'flex grow items-center'}>
           <span
             className={
-              'flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap max-md:min-w-12 md:w-0'
+              'grow overflow-hidden overflow-ellipsis whitespace-nowrap max-md:min-w-12 md:w-0'
             }
           >
             {folder.folder_name}
           </span>
         </div>
         <button
+          type={'button'}
           onClick={e => {
             e.stopPropagation();
             context.handleContext({ x: e.clientX, y: e.clientY }, folder);

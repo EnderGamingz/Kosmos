@@ -6,7 +6,6 @@ export function getLoadingComponent(id: ExplorerLoading) {
   switch (id) {
     case ExplorerLoading.Grid:
       return <FileGridLoading />;
-    case ExplorerLoading.Table:
     default:
       return <FileTableLoading />;
   }

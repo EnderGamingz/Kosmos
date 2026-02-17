@@ -1,6 +1,6 @@
 import {
   type ChangeEvent,
-  type FormEvent,
+  type SubmitEventHandler,
   useEffect,
   useMemo,
   useRef,
@@ -70,7 +70,7 @@ export function RenameModalContent({
     setInputName(e.target.value);
   };
 
-  const handleNameSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleNameSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (renameAction.isPending) return;
     renameAction.mutate();
@@ -81,9 +81,9 @@ export function RenameModalContent({
     inputRef.current?.setSelectionRange(0, nameLength);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to run this on mount
   useEffect(() => {
     handleFocus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

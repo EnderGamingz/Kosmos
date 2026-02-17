@@ -43,7 +43,7 @@ export function ShareItem({
       layout
       className={cn(
         'relative gap-2 rounded-md px-3 py-2 shadow-sm',
-        'border-l-3 animate-fade-in-top bg-gradient-to-br from-popover to-primary/5',
+        'border-l-3 animate-fade-in-top bg-linear-to-br from-popover to-primary/5',
         isActive ? 'border-l-green-300' : 'border-l-red-300',
       )}
       style={{
@@ -108,7 +108,10 @@ export function ShareItem({
               <QrCodeModal value={shareData.url} />
               {navigator.share !== undefined &&
                 navigator.canShare(shareData) && (
-                  <button onClick={() => navigator.share(shareData)}>
+                  <button
+                    type={'button'}
+                    onClick={() => navigator.share(shareData)}
+                  >
                     <Share className={'h-5 w-5'} />
                   </button>
                 )}

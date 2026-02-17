@@ -31,7 +31,7 @@ export function CreateAlbum() {
         canDismiss: false,
       });
       await axios
-        .post(BASE_URL + 'auth/album', payload)
+        .post(`${BASE_URL}auth/album`, payload)
         .then(() => {
           notifications.updateNotification(createId, {
             severity: Severity.SUCCESS,

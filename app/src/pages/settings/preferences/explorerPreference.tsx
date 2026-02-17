@@ -54,16 +54,17 @@ export function Preference({
     <div
       style={{ animationDelay: `${(index + 1) * 100}ms` }}
       className={cn(
-        'w-full rounded-xl bg-stone-400/10 p-3 shadow',
+        'w-full rounded-xl bg-stone-400/10 shadow',
         'outline outline-transparent animate-fade-in-top',
         open && 'shadow-md outline-stone-500/20',
-        Boolean(small) && 'p-2 shadow-none',
+        small && 'p-2 shadow-none',
         'dark:bg-stone-600/10 dark:outline-stone-300/20',
       )}
     >
-      <div
+      <button
+        type={'button'}
         onClick={() => setOpen(prev => !prev)}
-        className={'flex items-center justify-between'}
+        className={'text-start w-full flex items-center justify-between p-3'}
       >
         <div
           className={cn(
@@ -90,7 +91,7 @@ export function Preference({
         <ChevronDown
           className={cn('h-5 w-5 transition-transform', open && 'rotate-180')}
         />
-      </div>
+      </button>
       <Collapse isOpened={open}>
         <div className={'space-y-1 p-3'}>
           <h4

@@ -33,7 +33,7 @@ export function PagedWrapper({
         </div>
       }
     >
-      <>{children}</>
+      {children}
     </InfiniteScroll>
   );
 }

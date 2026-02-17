@@ -84,6 +84,7 @@ export default function GridFileItem({
 
   const formattedSize = useFormatBytes(file.file_size);
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events.
     <div
       id={file.id}
       onContextMenu={e => {
@@ -152,6 +153,8 @@ export default function GridFileItem({
             white
           />
         </div>
+        {/** biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with drag-and-drop interactions. */}
+        {/** biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events. */}
         <div
           onClick={handleClick}
           className={cn(
@@ -184,9 +187,7 @@ export default function GridFileItem({
           {!isHidden && (
             <p
               key={`size-${file.id}`}
-              className={
-                'absolute right-1.5 top-1.5 z-30 rounded-full bg-border !px-1.5 !py-0.5 text-xs'
-              }
+              className='absolute right-1.5 top-1.5 z-30 rounded-full bg-border px-1.5! py-0.5! text-xs'
             >
               {formattedSize}
             </p>
@@ -195,21 +196,22 @@ export default function GridFileItem({
             <div
               key={`compact-${file.id}`}
               className={cn(
-                'absolute inset-0 z-20 flex rounded-lg !px-1.5 !py-1',
-                'bg-gradient-to-t from-stone-800/70 to-stone-800/0',
+                'absolute inset-0 z-20 flex rounded-lg px-1.5! py-1!',
+                'bg-linear-to-t from-stone-800/70 to-stone-800/0',
               )}
             >
-              <p
+              <button
+                type={'button'}
                 onClick={handleClick}
                 key={`title-${file.id}`}
                 className={cn(
-                  'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
+                  'text-start w-0 grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                   'mt-auto text-sm text-stone-50',
                   !isCompact && 'lg:text-base',
                 )}
               >
                 {file.file_name}
-              </p>
+              </button>
             </div>
           )}
         </div>
@@ -217,10 +219,11 @@ export default function GridFileItem({
           {isDefaultDisplay && (
             <div className={'px-2 py-1'}>
               <div className={'flex items-center'}>
+                {/** biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with drag-and-drop interactions. */}
                 <p
                   onClick={handleClick}
                   className={cn(
-                    'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
+                    'w-0 grow overflow-hidden overflow-ellipsis whitespace-nowrap pr-2',
                     'text-sm',
                     !isCompact && 'lg:text-base',
                   )}
@@ -228,6 +231,7 @@ export default function GridFileItem({
                   {file.file_name}
                 </p>
                 <button
+                  type={'button'}
                   onClick={e => {
                     context.handleContext({ x: e.clientX, y: e.clientY }, file);
                   }}

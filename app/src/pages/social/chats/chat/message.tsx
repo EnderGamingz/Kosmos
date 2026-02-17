@@ -33,7 +33,7 @@ export function ChatMessages() {
     listRef.current?.scrollTo({
       top: listRef.current.scrollHeight,
     });
-  }, [listRef, data]);
+  }, []);
 
   const { debouncedValue: debouncedHoveredMessage } = useDebounce(
     hoveredMessage,

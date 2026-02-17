@@ -229,14 +229,13 @@ function VirtualGrid({
         {...rest}
         innerElementType={Inner}
         onItemsRendered={props => {
-          const style =
-            listRef.current &&
-            // @ts-expect-error private method access
-            listRef.current._getItemStyle(props.overscanStartIndex);
-          setTop((style && style.top) || 0);
+          const style = listRef.current?._getItemStyle(
+            props.overscanStartIndex,
+          );
+          setTop(style?.top || 0);
 
           // Call the original callback
-          rest.onItemsRendered && rest.onItemsRendered(props);
+          rest.onItemsRendered?.(props);
         }}
         ref={listRef}
       >

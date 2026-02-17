@@ -14,5 +14,5 @@ export function useHeaderMenu({ links }: { links: ExplorerLink[] }) {
     return () => {
       clearHeaderLinks();
     };
-  }, [links]);
+  }, [links, clearHeaderLinks, setHeaderLinks]);
 }

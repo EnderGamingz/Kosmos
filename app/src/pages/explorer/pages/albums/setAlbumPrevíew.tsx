@@ -68,7 +68,7 @@ export default function SetAlbumPreview({
   };
 
   return (
-    <button onClick={handleClick}>
+    <button type={'button'} onClick={handleClick}>
       <Fullscreen className={'w-5 h-5'} />
       Use as Preview
     </button>

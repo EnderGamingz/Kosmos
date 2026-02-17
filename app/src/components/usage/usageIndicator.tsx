@@ -12,7 +12,7 @@ function ActiveBar({ percent }: { percent: number }) {
       className={
         'active h-full rounded-full bg-indigo-400 transition-width dark:bg-indigo-600'
       }
-      style={{ width: percent + '%' }}
+      style={{ width: `${percent}%` }}
     />
   );
 }
@@ -25,7 +25,7 @@ function BinBar({ percent }: { percent: number }) {
       className={
         'bin h-full rounded-full bg-amber-500 transition-width dark:bg-amber-600'
       }
-      style={{ width: percent + '%' }}
+      style={{ width: `${percent}%` }}
     />
   );
 }
@@ -38,7 +38,7 @@ export function AvailableBar({ percent }: { percent: number }) {
       className={
         'remaining h-full rounded-full bg-stone-700/20 transition-width dark:bg-stone-500'
       }
-      style={{ width: percent + '%' }}
+      style={{ width: `${percent}%` }}
     />
   );
 }

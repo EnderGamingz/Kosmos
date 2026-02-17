@@ -76,6 +76,8 @@ export function TableFolderItem({
   const selectDisabled = context.viewSettings?.selectDisable?.folders;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with mobile touch interactions.
     <div
       style={style}
       onClick={() => {
@@ -104,7 +106,7 @@ export function TableFolderItem({
           />
         </div>
       )}
-      <div className={'!p-0 grow'}>
+      <div className={'p-0! grow'}>
         <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
@@ -146,7 +148,7 @@ export function TableFolderItem({
             />
             <span
               className={
-                'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
+                'w-0 grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
               }
             >
               {folder.folder_name}
@@ -159,6 +161,7 @@ export function TableFolderItem({
             iconOnly
           />
           <button
+            type={'button'}
             onClick={e => {
               context.handleContext({ x: e.clientX, y: e.clientY }, folder);
             }}

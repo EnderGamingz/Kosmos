@@ -109,7 +109,7 @@ export default function QuickSharePage() {
               <div className={'p-5 lg:col-span-2'}>
                 <motion.div
                   layout
-                  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                  // biome-ignore lint/suspicious/noExplicitAny: The getRootProps function from react-dropzone has a complex return type that is difficult to type correctly in this context, so we will use 'any' here to avoid unnecessary complexity.
                   {...(getRootProps() as any)}
                   className={cn(
                     'flex min-h-52 overflow-hidden rounded-xl border-4 border-dashed border-gray-400/50 p-4',
@@ -148,9 +148,7 @@ export default function QuickSharePage() {
                 <CreateShare
                   disabled={!files.length || uploadAction.isPending}
                   quick
-                  createButtonText={
-                    'Share' + (files.length ? ` (${files.length})` : '')
-                  }
+                  createButtonText={`Share${files.length ? ` (${files.length})` : ''}`}
                   onCreate={data => {
                     uploadAction.mutate({
                       ...data,
@@ -182,7 +180,11 @@ function FileItem({ file, onRemove }: { file: File; onRemove: () => void }) {
     >
       <FileIcon className={'h-5 min-w-5'} />
       <p className={'col-span-2 truncate'}>{file.name}</p>
-      <button className={'ml-auto p-1 text-red-500'} onClick={onRemove}>
+      <button
+        type={'button'}
+        className={'ml-auto p-1 text-red-500'}
+        onClick={onRemove}
+      >
         <X className={'h-4 w-4'} />
       </button>
     </motion.li>

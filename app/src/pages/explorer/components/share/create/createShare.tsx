@@ -140,16 +140,16 @@ export function CreateShare({
           '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-muted-foreground',
         )}
       >
-        <div className={'!p-0'}>
+        <div className={'p-0!'}>
           <Collapse isOpened={type === ShareType.Private}>
             <div className={'p-2 space-y-2'}>
-              <label>
+              <div>
                 <User />
                 User to share with*
                 {privateContact && (
                   <div className={'ml-auto text-sm'}>Active</div>
                 )}
-              </label>
+              </div>
               <ContactSelector
                 selected={privateContact}
                 onSelect={setPrivateContact}
@@ -173,10 +173,10 @@ export function CreateShare({
           />
         </div>
         <div>
-          <label>
+          <div>
             <Clock />
             Expiration
-          </label>
+          </div>
           <div className={'flex flex-wrap gap-2 p-2 [&_div]:text-sm'}>
             <Chip
               content={'Never'}

@@ -27,12 +27,14 @@ export function FileGridLoading() {
           }
         >
           {Array.from({ length: 5 }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: This is a static list of skeletons
             <motion.div variants={itemTransitionVariant} key={i}>
               <Skeleton className={'h-12 w-full rounded-lg'} />
             </motion.div>
           ))}
           <div className={'col-span-4'} />
           {Array.from({ length: 20 }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: This is a static list of skeletons
             <motion.div variants={itemTransitionVariant} key={i}>
               <Skeleton className={'h-40 w-full rounded-lg'} />
             </motion.div>

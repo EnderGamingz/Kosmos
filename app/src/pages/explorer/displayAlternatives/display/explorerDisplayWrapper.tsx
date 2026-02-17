@@ -160,6 +160,7 @@ export function ExplorerDisplayWrapper({
           handleClick={handleContext}
         />
       )}
+      {/** biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onContextMenu event. */}
       <div
         id={'display'}
         className={'h-full grow overflow-x-auto'}

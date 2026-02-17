@@ -50,7 +50,7 @@ export function ContactSelector({
         <div className={'flex gap-1'}>
           {selected && (
             <Button
-              className={'!p-0 aspect-square'}
+              className={'p-0! aspect-square'}
               variant={'secondary'}
               size={'sm'}
               onClick={() => onSelect(undefined)}
@@ -115,22 +115,23 @@ function ContactSelectorContent({
   });
 
   return (
-    <ul className={'max-h-72 overflow-y-auto'}>
+    <div className={'max-h-72 overflow-y-auto'}>
       {data.map(profile => (
-        <li
+        <button
+          type={'button'}
           key={profile.user_id}
           className={'group'}
           onClick={() => onSelect(profile)}
         >
           <ContactItem profile={profile} isSelected={selected === profile} />
-        </li>
+        </button>
       ))}
       {!data.length && (
         <div className={'overflow-hidden'}>
           <EmptyList noIcon message={'No contacts found'} />
         </div>
       )}
-    </ul>
+    </div>
   );
 }
 

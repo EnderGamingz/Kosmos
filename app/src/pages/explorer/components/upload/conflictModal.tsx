@@ -73,7 +73,7 @@ export function ConflictModal({
         const fileParts = file.file.name.split('.');
         const extension = fileParts.pop();
         const fileName = fileParts.join('');
-        const addedPart = new Date().getTime().toString().substring(8);
+        const addedPart = Date.now().toString().substring(8);
         const newFileName = `${fileName}[${addedPart}]${extension ? '.' : ''}${extension}`;
         const newFile = new File([file.file], newFileName, {
           type: file.file.type,

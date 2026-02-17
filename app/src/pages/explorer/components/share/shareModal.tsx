@@ -58,7 +58,7 @@ export function ShareSheetContent({
   return (
     <>
       <SheetHeader>
-        <SheetTitle>{'Share ' + shareElementType}</SheetTitle>
+        <SheetTitle>{`Share ${shareElementType}`}</SheetTitle>
         <SheetDescription>
           {data.data?.length
             ? `${data.data.length} share${data.data.length > 1 ? 's' : ''} created`

@@ -24,7 +24,6 @@ export function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
       return <FileGrid details={details} />;
     case ExplorerDisplay.Mobile:
       return <MobileList />;
-    case ExplorerDisplay.Table:
     default:
       return <FileTable />;
   }

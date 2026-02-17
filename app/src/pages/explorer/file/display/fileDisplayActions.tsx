@@ -36,6 +36,7 @@ const actions = (
       />
     ),
     <DownloadSingleAction
+      key={file.id}
       id={file.id}
       name={file.file_name}
       shareUuid={shareUuid}
@@ -89,7 +90,7 @@ export function FileDisplayActions({
   return (
     <div
       className={cn(
-        '!my-5 flex flex-wrap gap-2',
+        'my-5! flex flex-wrap gap-2',
         !left && 'justify-center',
         '[&_button>svg]:h-8 [&_button>svg]:w-8 [&_button]:rounded-xl [&_button]:p-2',
         '[&_button]:grid [&_button]:place-items-center',
@@ -101,7 +102,10 @@ export function FileDisplayActions({
     >
       {items.map((item, i) => (
         <div
-          key={`file-display-action-${i}`}
+          key={`file-display-action-${
+            // biome-ignore lint/suspicious/noArrayIndexKey: Only used for animation delay, not for rendering logic
+            i
+          }`}
           className={'animate-fade-in-left'}
           style={{ animationDelay: `${i * 50 + 100}ms` }}
         >

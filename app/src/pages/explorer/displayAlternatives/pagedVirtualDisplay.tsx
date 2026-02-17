@@ -32,7 +32,7 @@ function PartRenderer({
       });
       resizeObserver.observe(node);
     },
-    [children],
+    [onHeight],
   );
 
   return <Slot ref={elementRef}>{children}</Slot>;

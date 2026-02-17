@@ -22,7 +22,10 @@ export function AlbumMenu({
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <button className={'text-stone-800 dark:text-stone-100'}>
+        <button
+          type={'button'}
+          className={'text-stone-800 dark:text-stone-100'}
+        >
           <EllipsisVertical className={'h-6 w-6'} />
         </button>
       </PopoverTrigger>

@@ -161,7 +161,11 @@ export default function AlbumAction({
           <AddToAlbumModalContent files={files} />
         </DialogContent>
       </Dialog>
-      <button onClick={handleClick} className={'[&>svg]:w-6 [&>svg]:h-6'}>
+      <button
+        type={'button'}
+        onClick={handleClick}
+        className={'[&>svg]:w-6 [&>svg]:h-6'}
+      >
         {albumId ? <ImageMinus /> : <ImagePlus />}
         {dense ? 'Album' : albumId ? 'Remove from album' : 'Add to album'}
       </button>

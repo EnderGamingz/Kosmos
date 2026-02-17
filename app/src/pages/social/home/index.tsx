@@ -16,7 +16,7 @@ export default function SocialHomePage() {
     <div className={'space-y-5'}>
       <h1 className={'text-3xl font-bold animate-fade-in-top'}>
         Good {getCurrentTimeSection()}
-        {name && ' ' + name}!
+        {name && ` ${name}`}!
       </h1>
       <FetchBoundary
         fetchGoal={'unhandled requests'}

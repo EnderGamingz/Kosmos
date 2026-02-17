@@ -171,40 +171,35 @@ function List() {
   const deleteAction = PushQuery.useDeleteSubscriptionMutation(notifications);
 
   return (
-    <>
-      <ul
-        className={
-          'rounded-md bg-popover p-2 border animate-fade-in-top delay-300'
-        }
-      >
-        {!subscriptions.data?.length && (
-          <EmptyList noIcon message={'No subscriptions added'} />
-        )}
-        {subscriptions.data?.map(item => (
-          <li
-            key={item.id}
-            className={'flex items-center gap-2 px-2 space-y-2'}
+    <ul
+      className={
+        'rounded-md bg-popover p-2 border animate-fade-in-top delay-300'
+      }
+    >
+      {!subscriptions.data?.length && (
+        <EmptyList noIcon message={'No subscriptions added'} />
+      )}
+      {subscriptions.data?.map(item => (
+        <li key={item.id} className={'flex items-center gap-2 px-2 space-y-2'}>
+          <div>
+            <p className={'text-lg'}>{item.name}</p>
+            <p className={'text-sm text-muted-foreground'}>
+              Created{' '}
+              {formatDistanceToNow(new Date(item.created_at), {
+                addSuffix: true,
+              })}
+            </p>
+          </div>
+          <Button
+            variant={'ghost'}
+            className={'ml-auto'}
+            disabled={deleteAction.isPending}
+            onClick={() => deleteAction.mutate({ id: item.id })}
           >
-            <div>
-              <p className={'text-lg'}>{item.name}</p>
-              <p className={'text-sm text-muted-foreground'}>
-                Created{' '}
-                {formatDistanceToNow(new Date(item.created_at), {
-                  addSuffix: true,
-                })}
-              </p>
-            </div>
-            <Button
-              variant={'ghost'}
-              className={'ml-auto'}
-              disabled={deleteAction.isPending}
-              onClick={() => deleteAction.mutate({ id: item.id })}
-            >
-              <Trash />
-            </Button>
-          </li>
-        ))}
-      </ul>
-    </>
+            <Trash />
+          </Button>
+        </li>
+      ))}
+    </ul>
   );
 }

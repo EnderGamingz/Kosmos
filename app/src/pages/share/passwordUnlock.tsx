@@ -23,7 +23,7 @@ export function PasswordUnlock() {
         canDismiss: false,
       });
       await axios
-        .post(BASE_URL + 's/unlock', {
+        .post(`${BASE_URL}s/unlock`, {
           share_uuid: uuid,
           password: value,
         })

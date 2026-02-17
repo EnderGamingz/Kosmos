@@ -18,7 +18,7 @@ export function ContactActionMenu({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className={'px-1'}>
+        <button type={'button'} className={'px-1'}>
           <MoreHorizontal />
         </button>
       </PopoverTrigger>

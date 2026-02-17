@@ -26,7 +26,7 @@ export default function Login() {
     if (userState.user && !willRedirect.current) {
       navigate('/home');
     }
-  }, [userState.user]);
+  }, [userState.user, navigate]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async ({ username, password }: LoginData) => {

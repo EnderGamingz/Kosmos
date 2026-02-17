@@ -30,6 +30,7 @@ export function DismissedSystemMessages() {
                   {item.name}
                 </div>
                 <button
+                  type={'button'}
                   onClick={() => dismissStore.actions.reset(item.id)}
                   className={
                     'ml-auto rounded bg-stone-600 px-3 py-1 text-stone-50 dark:bg-stone-200 dark:text-stone-800'

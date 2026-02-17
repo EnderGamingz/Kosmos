@@ -70,7 +70,7 @@ export default function Favorite({
     >
       <Star
         className={cn(
-          'h-6 w-6 transition-all',
+          'size-5 transition-all stroke-1',
           active
             ? 'fill-amber-400 stroke-amber-600'
             : 'fill-transparent stroke-primary/80',

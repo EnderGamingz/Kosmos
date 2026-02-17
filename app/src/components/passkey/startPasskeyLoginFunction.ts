@@ -13,7 +13,7 @@ export const startPasskeyLoginFunction = ({
 }) => {
   const controller = new AbortController();
   const req = axios
-    .post(BASE_URL + 'auth/passkey/authentication/start')
+    .post(`${BASE_URL}auth/passkey/authentication/start`)
     .then(res => res.data)
     .then(credentialRequestOptions => {
       credentialRequestOptions.publicKey.challenge = Base64.toUint8Array(

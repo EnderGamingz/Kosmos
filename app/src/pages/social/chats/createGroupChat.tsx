@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
 import { Users } from 'lucide-react';
-import { type FormEvent, useState } from 'react';
+import { type SubmitEventHandler, useState } from 'react';
 import { Input } from '@components/ui/input.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
 import { useMutation } from '@tanstack/react-query';
@@ -29,19 +29,19 @@ export default function CreateGroupChat() {
     },
   });
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (event): void => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const name = form.get('name') as string;
     if (!name) return;
     mutate({ name });
     event.currentTarget.reset();
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className={'menu-button'}>
+        <button type={'button'} className={'menu-button'}>
           <Users />
           Group
         </button>

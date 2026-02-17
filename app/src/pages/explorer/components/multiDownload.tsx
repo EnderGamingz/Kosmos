@@ -74,7 +74,7 @@ export function MultiDownload({
         return;
       }
 
-      const total = parseInt(response.headers.get('content-length') || '0');
+      const total = parseInt(response.headers.get('content-length') || '0', 10);
 
       notificationActions.updateNotification(fileId, {
         status: 'Downloading',
@@ -150,9 +150,10 @@ export function MultiDownload({
   if (isContextAction) {
     return (
       <button
+        type={'button'}
         onClick={() => {
           downloadAction.mutate();
-          onClose && onClose();
+          onClose?.();
         }}
         disabled={downloadAction.isPending}
       >
@@ -164,6 +165,7 @@ export function MultiDownload({
 
   return (
     <button
+      type={'button'}
       className={'disabled:bg-gray-400'}
       onClick={() => downloadAction.mutate()}
       disabled={!files.length && !folders.length}

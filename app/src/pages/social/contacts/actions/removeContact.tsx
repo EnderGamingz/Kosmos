@@ -33,7 +33,7 @@ export function RemoveContact({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className={'menu-button w-full'}>
+        <button type={'button'} className={'menu-button w-full'}>
           <UserMinus className={'w-5 h-5'} />
           Remove Contact
         </button>
