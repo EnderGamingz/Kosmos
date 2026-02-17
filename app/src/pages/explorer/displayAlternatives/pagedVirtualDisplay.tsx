@@ -130,7 +130,8 @@ export function PagedVirtualDisplay({
 }: {
   inner?: ({ children }: { children: ReactNode }) => JSX.Element;
   header: ReactNode;
-  row: FixedSizeListProps['children'];
+  // biome-ignore lint/suspicious/noExplicitAny: I don't know anymore
+  row: any;
   itemSize: number;
   listWrapperType?: ReactElementType;
   wrapperType?: 'div' | 'table';

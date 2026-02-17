@@ -24,10 +24,10 @@ export function FileTableLoading() {
           <div className={'w-full'}>
             <Skeleton className={'h-5 w-1/5'} />
           </div>
-          <div className={'min-w-[100px] text-right'}>
+          <div className={'min-w-25 text-right'}>
             <Skeleton className={'h-5 w-full'} />
           </div>
-          <div className={'min-w-[155px] text-right'}>
+          <div className={'min-w-38.75 text-right'}>
             <Skeleton className={'h-5 w-2/3'} />
           </div>
         </div>
@@ -51,10 +51,10 @@ export function FileTableLoading() {
               <div className={'w-full'}>
                 <Skeleton className={'h-5 w-1/2'} />
               </div>
-              <div className={'min-w-[100px] text-right'}>
+              <div className={'min-w-25 text-right'}>
                 <Skeleton className={'h-5 w-full'} />
               </div>
-              <div className={'min-w-[155px] text-right'}>
+              <div className={'min-w-38.75 text-right'}>
                 <Skeleton className={'h-5 w-2/3'} />
               </div>
             </div>

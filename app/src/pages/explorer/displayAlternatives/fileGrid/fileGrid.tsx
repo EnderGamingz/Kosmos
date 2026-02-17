@@ -114,7 +114,7 @@ export default function FileGrid({
   return (
     <PagedWrapper height={!dynamic} viewSettings={viewSettings}>
       <div className={'flex h-full flex-col px-5 md:py-2'}>
-        <div className={'mb-[12px] flex items-center gap-2'}>
+        <div className={'mb-3 flex items-center gap-2'}>
           {!viewSettings?.noSelect && (
             <SelectAllCheckBox files={files} folders={folders} />
           )}
@@ -138,7 +138,7 @@ export default function FileGrid({
         )}
         <motion.div
           className={cn(
-            'flex-grow',
+            'grow',
             Boolean(dynamic) && 'mt-6 gap-3',
             !!viewSettings?.limitedView && 'mt-3',
             Boolean(isControl) && '[&>div]:cursor-copy',
@@ -229,9 +229,9 @@ function VirtualGrid({
         {...rest}
         innerElementType={Inner}
         onItemsRendered={props => {
-          const style = listRef.current?._getItemStyle(
-            props.overscanStartIndex,
-          );
+          const style =
+            // @ts-expect-error private method access
+            listRef.current?._getItemStyle(props.overscanStartIndex);
           setTop(style?.top || 0);
 
           // Call the original callback
