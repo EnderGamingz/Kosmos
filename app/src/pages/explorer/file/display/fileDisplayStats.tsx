@@ -18,9 +18,9 @@ export function FileDisplayStats({ file }: { file: FileModelDTO }) {
       exit={'hidden'}
       className={cn(
         'flex flex-wrap gap-1',
-        '[&>*]:flex [&>*]:flex-1 [&>*]:items-center [&>*]:gap-2 [&_svg]:h-4 [&_svg]:w-4',
-        '[&>*]:rounded-full [&>*]:px-3 [&>*]:py-1',
-        '[&>*]:text-sm [&>*]:bg-border',
+        '*:flex *:flex-1 *:items-center *:gap-2 [&_svg]:size-4',
+        '*:rounded-full *:px-3 *:py-1',
+        '*:text-sm *:bg-border',
       )}
     >
       <motion.div

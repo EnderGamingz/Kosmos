@@ -102,8 +102,6 @@ export function FileDisplayHandler({
     return () => clearTimeout(timeout);
   }, [previewOnHold]);
 
-  console.log(file);
-
   if (FileTypeActions.isZipArchive(file)) {
     return (
       <ArchiveDisplay
