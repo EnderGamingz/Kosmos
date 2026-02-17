@@ -1,8 +1,8 @@
 import {
-  CreateNotificationPayload,
+  type CreateNotificationPayload,
   Severity,
 } from '@stores/notificationStore.ts';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
 import { buttonVariants } from '@components/ui/button.tsx';
 
@@ -19,6 +19,7 @@ export function Copy({
 }) {
   return (
     <button
+      type={'button'}
       onClick={() =>
         navigator.clipboard.writeText(text).then(() => {
           notify({
@@ -40,7 +41,8 @@ export function Copy({
               }),
               'border-primary bg-transparent',
             ),
-      )}>
+      )}
+    >
       {children || 'Copy Link'}
     </button>
   );

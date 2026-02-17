@@ -11,7 +11,7 @@ import {
 } from '@components/notifications/getSeverityIcon.tsx';
 import { Collapse } from 'react-collapse';
 import { cn } from '@lib/utils.ts';
-import { X } from 'lucide-react';
+import { StopCircle, X } from 'lucide-react';
 
 const ExpandedNotificationHeight = 64;
 
@@ -106,6 +106,20 @@ export function NotificationItem({
             }
           >
             <X className={'h-5 w-5'} />
+          </button>
+        )}
+        {!data.canDismiss && data.cancelController && (
+          <button
+            type={'button'}
+            onClick={e => {
+              e.stopPropagation();
+              data.cancelController?.abort();
+            }}
+            className={
+              'text-red-500 ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
+            }
+          >
+            <StopCircle className={'h-5 w-5'} />
           </button>
         )}
       </div>

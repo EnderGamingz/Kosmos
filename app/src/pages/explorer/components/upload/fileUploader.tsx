@@ -84,12 +84,15 @@ export default function FileUploader({
       formData.append('file', file);
     }
 
+    const controller = new AbortController();
+
     const uploadId = notification.notify({
       title: 'File upload',
       loading: true,
       status: `${chunk.length} files${rest > 0 ? ` • ${rest} remaining` : ''}`,
       severity: Severity.INFO,
       canDismiss: false,
+      cancelController: controller,
     });
 
     // noinspection JSUnusedGlobalSymbols
@@ -103,6 +106,7 @@ export default function FileUploader({
               description: `${byteFormatter.formatBytes(loaded)} / ${total ? byteFormatter.formatBytes(total) : 'Unknown'}`,
             });
           },
+          signal: controller.signal,
         },
       )
       .then(res => {
@@ -116,9 +120,20 @@ export default function FileUploader({
         return res.data;
       })
       .catch(err => {
+        if (axios.isCancel(err)) {
+          notification.updateNotification(uploadId, {
+            status: 'Cancelled',
+            description: 'Upload cancelled',
+            severity: Severity.INFO,
+            canDismiss: true,
+            loading: false,
+            timeout: 1000,
+          });
+          return;
+        }
         notification.updateNotification(uploadId, {
           status: 'Failed',
-          description: err.response?.data?.error || 'Error',
+          description: err.response?.data?.error || err.message || 'Error',
           severity: Severity.ERROR,
           canDismiss: true,
         });
@@ -146,9 +161,7 @@ export default function FileUploader({
 
     const rest = files.slice(uploadChunk.length);
 
-    handleUpload(uploadChunk, rest.length).then(() => {
-      handleToUpload(rest);
-    });
+    handleUpload(uploadChunk, rest.length).then(() => handleToUpload(rest));
   }
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to run only on toUpload change

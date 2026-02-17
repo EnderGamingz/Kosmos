@@ -1,6 +1,6 @@
 services:
   kosmos_db:
-    image: postgres:16.2-alpine
+    image: postgres:16.4-alpine
     environment:
       - POSTGRES_USER=kosmos
       - POSTGRES_PASSWORD=secret

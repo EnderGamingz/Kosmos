@@ -20,6 +20,7 @@ export default function NotificationIndicator() {
   }, []);
 
   // Close notifications on updates
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to trigger on these specific changes
   useEffect(() => {
     setExpanded(false);
   }, [location.pathname, notifications.length, isMobile]);
@@ -28,8 +29,10 @@ export default function NotificationIndicator() {
   return (
     <div
       className={
-        'fixed right-10 z-[100] w-full max-w-[20rem] max-sm:left-5 max-sm:top-5 sm:bottom-10'
-      }>
+        'fixed right-10 z-100 w-full max-w-[20rem] max-sm:left-5 max-sm:top-5 sm:bottom-10'
+      }
+    >
+      {/** biome-ignore lint/a11y/useKeyWithClickEvents: only for desktop */}
       <ul
         onClick={() => {
           if (filteredNotifications.length > 1) setExpanded(!expanded);
@@ -39,7 +42,8 @@ export default function NotificationIndicator() {
           'group relative isolate',
           'flex max-h-64 flex-col-reverse gap-2 max-sm:flex-col',
           'bottom-0 [&_li]:absolute',
-        )}>
+        )}
+      >
         <AnimatePresence>
           {filteredNotifications
             .slice(0, maxNotificationsToShow)
