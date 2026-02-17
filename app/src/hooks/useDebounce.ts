@@ -9,6 +9,7 @@ export function useDebounce(
   const [debouncedValue, setDebouncedValue] = useState(value);
   const [loading, setLoading] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we intentionally don't want to include initial or initialFetch in the dependencies, as we only want to use them on the first render
   useEffect(() => {
     setLoading(initialFetch ? true : value !== debouncedValue);
     const handler = setTimeout(() => {

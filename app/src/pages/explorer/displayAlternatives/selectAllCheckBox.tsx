@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export function SelectAllCheckBox({

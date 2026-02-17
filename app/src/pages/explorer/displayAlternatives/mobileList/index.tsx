@@ -2,9 +2,9 @@ import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData
 import {
   getVirtualRowData,
   PagedVirtualDisplay,
-  VirtualDisplayItemData,
+  type VirtualDisplayItemData,
 } from '../pagedVirtualDisplay';
-import { CSSProperties, RefObject } from 'react';
+import type { CSSProperties, RefObject } from 'react';
 import { isFileModel } from '@models/file.ts';
 import { FileGridSort } from '@pages/explorer/displayAlternatives/fileGrid/fileGridSort.tsx';
 import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
@@ -66,13 +66,15 @@ function MobileListHeader({ ref }: { ref?: RefObject<HTMLDivElement> }) {
         )}
         <p
           key={`mobile-info-${currentFolder}`}
-          className={'text-sm text-stone-500 animate-fade-in-right'}>
+          className={'text-sm text-stone-500 animate-fade-in-right'}
+        >
           {folders.length} Folders &bull; {files.length} Files
         </p>
         {!viewSettings?.limitedView && !shareUuid && (
           <div
             key={`mobile-sort-${currentFolder}`}
-            className={'animate-fade-in-right delay-100'}>
+            className={'animate-fade-in-right delay-100'}
+          >
             <FileGridSort />
           </div>
         )}

@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@components/ui/dialog.tsx';
 import { Users } from 'lucide-react';
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Input } from '@components/ui/input.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
 import { useMutation } from '@tanstack/react-query';

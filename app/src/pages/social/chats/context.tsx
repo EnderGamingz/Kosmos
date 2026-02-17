@@ -1,8 +1,8 @@
-import React, { ReactNode, use, useEffect, useState } from 'react';
-import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
-import { ChatMemberModelDTO } from '@bindings/ChatMemberModelDTO.ts';
-import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
+import React, { type ReactNode, use, useEffect, useState } from 'react';
+import type { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { ChatMemberModelDTO } from '@bindings/ChatMemberModelDTO.ts';
+import type { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
 import { getPartner } from '@utils/social/getPartner.ts';
 
 export type ChatContext = {
@@ -67,7 +67,8 @@ export default function ChatProvider({
         setReplyTo,
         editMessage,
         setEditMessage,
-      }}>
+      }}
+    >
       {children}
     </ChatContext>
   );

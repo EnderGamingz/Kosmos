@@ -1,5 +1,5 @@
 import {
-  ExplorerLink,
+  type ExplorerLink,
   getAdditionalLinks,
 } from '@pages/explorer/nav/explorerLinks.tsx';
 import { useAppState } from '@stores/appStateStore.ts';

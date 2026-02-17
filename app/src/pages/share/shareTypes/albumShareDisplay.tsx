@@ -1,12 +1,12 @@
 import { useAccessAlbumShare } from '@lib/query.ts';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
 import { AlbumPageContent } from '@pages/explorer/pages/albums/single';
 import { useScrollThreshold } from '@hooks/useScrollDirection.ts';
 import { useRef } from 'react';
-import { AlbumShareResponse } from '@models/album.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { AlbumShareResponse } from '@models/album.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { PageMetadata } from '@components/metadata.tsx';
 
 export function AlbumShareDisplay({ uuid }: { uuid: string }) {
@@ -31,7 +31,8 @@ function Content({ share, uuid }: { share: AlbumShareResponse; uuid: string }) {
         ref={container}
         className={
           'flex h-full max-h-[calc(100dvh-90px)] flex-col space-y-5 overflow-y-auto p-5 max-md:max-h-[calc(100dvh-90px-80px)]'
-        }>
+        }
+      >
         {share && (
           <AlbumPageContent
             album={share.album}

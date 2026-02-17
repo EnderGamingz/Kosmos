@@ -1,4 +1,4 @@
-import { SortParams } from '@models/sort.ts';
+import type { SortParams } from '@models/sort.ts';
 import { create } from 'zustand';
 
 export type SortState = {

@@ -1,5 +1,5 @@
 import { Button } from '@components/ui/button.tsx';
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 export default function FallbackTester({
   component,
@@ -16,13 +16,15 @@ export default function FallbackTester({
     console.warn(
       `FallbackTester is used in ${component} component. It should be removed in production.`,
     );
-  }, []);
+  }, [component]);
+
   return (
     <>
       {show ? fallback : children}
       <Button
         className={'fixed bottom-4 right-4'}
-        onClick={() => setShow(!show)}>
+        onClick={() => setShow(!show)}
+      >
         Toggle Fallback
       </Button>
     </>

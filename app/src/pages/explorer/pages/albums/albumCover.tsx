@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { createPreviewUrl } from '@lib/file.ts';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 
 export default function AlbumCover({
   album,
@@ -16,12 +16,14 @@ export default function AlbumCover({
       layoutId={`album-cover-${album.id}`}
       className={
         'relative aspect-square h-auto w-full rounded-lg bg-stone-200 dark:bg-stone-700'
-      }>
+      }
+    >
       {loading && (
         <div
           className={
             'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-          }>
+          }
+        >
           <div className={'app-loading-indicator !h-10 !w-10'} />
         </div>
       )}

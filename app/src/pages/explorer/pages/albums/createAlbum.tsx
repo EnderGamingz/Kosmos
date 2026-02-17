@@ -1,9 +1,9 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { CreateAlbumPayload } from '@models/album.ts';
+import type { CreateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { FormEvent } from 'react';
+import type { FormEvent } from 'react';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
 import {
   Dialog,
@@ -77,7 +77,8 @@ export function CreateAlbum() {
           </DialogHeader>
           <form
             onSubmit={handleSubmit}
-            className={'space-y-4 [&_label]:block [&_input]:mt-2'}>
+            className={'space-y-4 [&_label]:block [&_input]:mt-2'}
+          >
             <div>
               <label className={'font-medium'} htmlFor={'name'}>
                 Name <span className={'text-red-500'}>*</span>
@@ -109,7 +110,8 @@ export function CreateAlbum() {
                   variant={'outline'}
                   disabled={createMutation.isPending}
                   type={'button'}
-                  className={'mr-auto'}>
+                  className={'mr-auto'}
+                >
                   Cancel
                 </Button>
               </DialogClose>

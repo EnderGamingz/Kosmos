@@ -16,12 +16,14 @@ export default function UsageReport() {
     <div
       className={
         'mx-auto flex w-full max-w-5xl flex-grow flex-col space-y-6 p-5 md:p-10'
-      }>
+      }
+    >
       <PageMetadata title={'Usage Report'} />
       <h1
         className={
           'text-2xl font-bold text-stone-700 dark:text-stone-300 animate-fade-in-top delay-100'
-        }>
+        }
+      >
         Usage Report
       </h1>
       {isLoading && !isError && (

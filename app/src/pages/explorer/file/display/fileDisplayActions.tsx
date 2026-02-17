@@ -4,11 +4,11 @@ import { RenameAction } from '@pages/explorer/components/rename';
 import { MoveAction } from '@pages/explorer/components/move';
 import { MoveToTrash } from '@pages/explorer/components/delete';
 import OpenExternally from '@pages/explorer/components/openExternally.tsx';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { EditMarkdownFile } from '@pages/explorer/file/display/displayTypes/markdown/FileMarkdownDisplay.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { isValidFileForAlbum, isValidFileForAvatar } from '@models/album.ts';
 import { cn } from '@lib/utils.ts';
 import SetAsAvatarAction from '@pages/explorer/components/setAsAvatarAction.tsx';
@@ -97,12 +97,14 @@ export function FileDisplayActions({
         '[&_button]:h-22 [&_button]:w-22 [&_button]:text-sm [&_button]:shadow-sm',
         '[&_button:hover]:bg-stone-400/20 [&_button:hover]:shadow-md',
         'dark:[&_button]:bg-stone-700/50 dark:[&_button]:shadow-stone-800/40',
-      )}>
+      )}
+    >
       {items.map((item, i) => (
         <div
           key={`file-display-action-${i}`}
           className={'animate-fade-in-left'}
-          style={{ animationDelay: `${i * 50 + 100}ms` }}>
+          style={{ animationDelay: `${i * 50 + 100}ms` }}
+        >
           {item}
         </div>
       ))}

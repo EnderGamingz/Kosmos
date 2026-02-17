@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, ImgHTMLAttributes, memo } from 'react';
+import { type DetailedHTMLProps, type ImgHTMLAttributes, memo } from 'react';
 
 const Image = (
   props: DetailedHTMLProps<

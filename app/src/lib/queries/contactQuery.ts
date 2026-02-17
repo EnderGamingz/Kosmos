@@ -2,9 +2,9 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
-import { ContactRequestsResponse } from '@bindings/ContactRequestsResponse.ts';
-import { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ContactRequestsResponse } from '@bindings/ContactRequestsResponse.ts';
+import type { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate.ts';
 
 type UseProfilesSuspenseParams = {
   limit?: number;
@@ -28,7 +28,7 @@ export class ContactQuery {
   };
 
   public static useProfilesSuspense = (props?: UseProfilesSuspenseParams) => {
-    let params: UseProfilesSuspenseParams = {};
+    const params: UseProfilesSuspenseParams = {};
     if (props?.query) params.query = props.query;
     if (props?.limit) params.limit = props.limit;
     if (props?.page) params.page = props.page;

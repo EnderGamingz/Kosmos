@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { AdminQuery, AdminUserUpdate } from '@lib/queries/adminQuery.ts';
+import { AdminQuery, type AdminUserUpdate } from '@lib/queries/adminQuery.ts';
 import { Role, roleToString } from '@models/user.ts';
 import { UsageReportStats } from '@pages/usage/report/usageReportStats.tsx';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent } from 'react';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { FormEvent } from 'react';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import useDisclosure from '@/hooks/useDisclosure';
 import {
   Dialog,
@@ -111,7 +111,8 @@ function UserInfoItem({
     <div
       className={
         'space-y-2 rounded-xl bg-stone-300 p-2 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
-      }>
+      }
+    >
       <p className={'text-lg'}>{label}</p>
       <span>{value ?? 'N/A'}</span>
     </div>

@@ -1,5 +1,5 @@
 import { Unit, usePreferenceStore } from '@stores/preferenceStore.ts';
-import { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
+import type { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 import { Container, Cuboid } from 'lucide-react';

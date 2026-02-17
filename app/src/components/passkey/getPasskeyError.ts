@@ -1,4 +1,4 @@
-export default function getPasskeyError(error: any) {
+export default function getPasskeyError(error: Error) {
   const string = error.toString();
   if (string.includes('NotAllowedError'))
     return 'The user has denied the request';

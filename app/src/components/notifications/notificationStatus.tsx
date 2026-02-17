@@ -1,4 +1,4 @@
-import { Notification, Severity } from '@stores/notificationStore.ts';
+import { type Notification, Severity } from '@stores/notificationStore.ts';
 
 import { cn } from '@lib/utils.ts';
 import { Progress } from '@components/ui/progress.tsx';

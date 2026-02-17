@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 export type User = UserModelDTO & { fetched_at: number };
 export type UserState = {
@@ -34,11 +34,11 @@ export const useUserState = create<UserState>(set => ({
         set({ initialized: true });
       });
 
-    if (user) set({ user: { ...user, fetched_at: new Date().getTime() } });
+    if (user) set({ user: { ...user, fetched_at: Date.now() } });
   },
   setUser: (data: UserModelDTO) => {
     set({
-      user: { ...data, fetched_at: new Date().getTime() },
+      user: { ...data, fetched_at: Date.now() },
       initialized: true,
       error: undefined,
     });

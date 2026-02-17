@@ -4,7 +4,7 @@ import { BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { invalidatePasskeys } from '@lib/query.ts';
-import { FormEvent } from 'react';
+import type { SubmitEventHandler } from 'react';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '@components/ui/button.tsx';
@@ -12,7 +12,7 @@ import { Input } from '@components/ui/input.tsx';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
 import { KeyRound, Send } from 'lucide-react';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: Credential type
 const completeFunction = (credential: any) =>
   axios
     .post(`${BASE_URL}auth/passkey/register/complete`, {
@@ -44,7 +44,7 @@ const startFunction = (name: string) =>
         credentialCreationOptions.publicKey.user.id,
       );
       credentialCreationOptions.publicKey.excludeCredentials?.forEach(
-        function (listItem: { id: string | Uint8Array }) {
+        (listItem: { id: string | Uint8Array }) => {
           if (typeof listItem.id === 'string') {
             listItem.id = Base64.toUint8Array(listItem.id);
           }
@@ -96,7 +96,7 @@ export default function PasskeyRegister() {
 
   const { isOpen, onOpenChange, onClose } = useDisclosure();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
@@ -112,7 +112,8 @@ export default function PasskeyRegister() {
         <Button
           disabled={registerMutation.isPending}
           variant={'outline'}
-          size={'sm'}>
+          size={'sm'}
+        >
           <KeyRound />
           Create Passkey
         </Button>

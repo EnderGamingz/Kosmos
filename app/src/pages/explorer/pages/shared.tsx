@@ -3,7 +3,7 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/exp
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import {
   containerVariant,
@@ -19,13 +19,13 @@ import {
 import { getShareUrl } from '@lib/share/url.ts';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
-import { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FileModelWithShareInfoDTO } from '@bindings/FileModelWithShareInfoDTO.ts';
-import { FolderModelWithShareInfoDTO } from '@bindings/FolderModelWithShareInfoDTO.ts';
-import { AlbumModelWithShareInfoDTO } from '@bindings/AlbumModelWithShareInfoDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
+import type { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelWithShareInfoDTO } from '@bindings/FileModelWithShareInfoDTO.ts';
+import type { FolderModelWithShareInfoDTO } from '@bindings/FolderModelWithShareInfoDTO.ts';
+import type { AlbumModelWithShareInfoDTO } from '@bindings/AlbumModelWithShareInfoDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { SharedAlbumModelDTO } from '@bindings/SharedAlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { PageMetadata } from '@components/metadata.tsx';
 import { SquareArrowOutUpRight } from 'lucide-react';
@@ -43,7 +43,8 @@ export default function ExplorerSharePage() {
           <TabsList
             className={
               'w-full [&>*]:grow [&>*]:text-center flex-wrap [&_button]:w-full'
-            }>
+            }
+          >
             <Link to={'/home/share/shared'}>
               <TabsTrigger value={'shared'}>Shared Items</TabsTrigger>
             </Link>
@@ -85,7 +86,8 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
         <div
           className={
             'flex flex-col relative grow max-h-[calc(100dvh-90px-2.5rem-52px-56px)] max-md:max-h-[calc(100dvh-90px-2.5rem-52px-56px-80px)]'
-          }>
+          }
+        >
           {itemsForUser ? (
             <SharedForMe shares={items.data} />
           ) : (
@@ -111,7 +113,8 @@ function SharedForMe({ shares }: { shares?: SharedItemsDTO }) {
       className={'space-y-2 p-5'}
       variants={containerVariant()}
       initial={'hidden'}
-      animate={'show'}>
+      animate={'show'}
+    >
       {shares?.folders.map(share => (
         <ShareForMeItem key={share.id} share={share} type={'folder'} />
       ))}
@@ -159,7 +162,8 @@ function ShareForMeItem({
         'dark:bg-stone-700/30 dark:hover:bg-stone-700/60',
       )}
       onClick={handleClick}
-      variants={itemTransitionVariant}>
+      variants={itemTransitionVariant}
+    >
       <div className={'flex items-center gap-2'}>
         <ItemIcon
           id={share.id}
@@ -174,7 +178,8 @@ function ShareForMeItem({
           name={itemName}
         />
         <div
-          className={'flex w-full text-stone-700 sm:grid dark:text-stone-300'}>
+          className={'flex w-full text-stone-700 sm:grid dark:text-stone-300'}
+        >
           <p className={'w-0 flex-grow truncate sm:w-full'}>{itemName}</p>
           <span className={'hidden text-xs text-stone-500 sm:flex'}>
             {share.share_uuid}

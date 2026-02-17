@@ -5,13 +5,13 @@ import {
   usePreferenceStore,
 } from '@stores/preferenceStore.ts';
 import { Suspense, useMemo } from 'react';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import useLayoutOptions from '@hooks/useLayoutOptions.ts';
 import AppScreen from '@components/overlay/appScreen.tsx';
 import { getDisplayComponent } from '@pages/explorer/displayAlternatives/display/getDisplayComponent.tsx';
 import { getLoadingComponent } from '@pages/explorer/displayAlternatives/display/getLoadingComponent.tsx';
-import {
+import type {
   OverwriteDisplay,
   ViewSettings,
 } from '@pages/explorer/displayAlternatives/display/types.ts';
@@ -67,7 +67,8 @@ export default function ExplorerDataDisplay({
         files={files}
         folders={folders}
         viewSettings={viewSettings}
-        overwriteDisplay={overwriteDisplay}>
+        overwriteDisplay={overwriteDisplay}
+      >
         {getDisplayComponent(displayMode(), displayType.details)}
       </ExplorerDisplayWrapper>
     </Suspense>

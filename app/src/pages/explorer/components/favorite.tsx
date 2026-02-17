@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { DataOperationType } from '@models/file.ts';
+import type { DataOperationType } from '@models/file.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import {
   invalidateData,
@@ -57,6 +57,7 @@ export default function Favorite({
 
   return (
     <button
+      type={'button'}
       className={cn(
         'flex items-center gap-1',
         iconOnly && 'p-2',
@@ -65,7 +66,8 @@ export default function Favorite({
       onClick={e => {
         e.stopPropagation();
         action.mutate();
-      }}>
+      }}
+    >
       <Star
         className={cn(
           'h-6 w-6 transition-all',

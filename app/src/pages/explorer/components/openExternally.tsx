@@ -1,5 +1,5 @@
 import { createServeUrl } from '@lib/file.ts';
-import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { DisplayContext, type DisplayContextType } from '@lib/contexts.ts';
 import { useContext } from 'react';
 import { SquareArrowOutUpRight } from 'lucide-react';
 
@@ -22,7 +22,7 @@ export default function OpenExternally({
   const openInNew = () => window.open(url, '_blank');
 
   return (
-    <button onClick={openInNew}>
+    <button type={'button'} onClick={openInNew}>
       <SquareArrowOutUpRight />
       Open
     </button>

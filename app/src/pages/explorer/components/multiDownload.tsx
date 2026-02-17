@@ -5,8 +5,8 @@ import { WritableStream } from 'web-streams-polyfill';
 import { useContext, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { DisplayContext } from '@lib/contexts.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { FolderDown } from 'lucide-react';
 
 export function MultiDownload({
@@ -154,7 +154,8 @@ export function MultiDownload({
           downloadAction.mutate();
           onClose && onClose();
         }}
-        disabled={downloadAction.isPending}>
+        disabled={downloadAction.isPending}
+      >
         <FolderDown />
         Download
       </button>
@@ -165,7 +166,8 @@ export function MultiDownload({
     <button
       className={'disabled:bg-gray-400'}
       onClick={() => downloadAction.mutate()}
-      disabled={!files.length && !folders.length}>
+      disabled={!files.length && !folders.length}
+    >
       Multi Download
     </button>
   );

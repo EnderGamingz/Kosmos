@@ -24,11 +24,13 @@ export default function FileListFab({ hide }: { hide: boolean }) {
           'z-50 hidden pointer-events-none max-md:flex flex-col max-md:pointer-events-auto',
           'absolute bottom-5 right-5 opacity-100 transition-all duration-200 items-end gap-3',
           hide && '!opacity-0 !pointer-events-none scale-70',
-        )}>
+        )}
+      >
         <AnimatePresence>
           <div
             key={'fab-create'}
-            className={'animate-fade-in-bottom delay-100'}>
+            className={'animate-fade-in-bottom delay-100'}
+          >
             <CreateFab open={create} onOpenChange={setCreate} />
           </div>
         </AnimatePresence>
@@ -51,7 +53,8 @@ function CreateFab({
         layoutId={'fab-create'}
         className={
           'bg-popover shadow-lg p-3 rounded-md flex flex-col gap-1 border border-primary/30'
-        }>
+        }
+      >
         <FileWindowContextMenu onClose={() => onOpenChange(false)} />
       </motion.div>
     );
@@ -64,7 +67,8 @@ function CreateFab({
       onClick={() => onOpenChange(true)}
       className={cn(
         'bg-popover bg-gradient-to-br from-popover to-stone-200 dark:to-stone-800 shadow-md hover:shadow-lg border border-primary/30 p-6 rounded-md hover:from-secondary transition-colors',
-      )}>
+      )}
+    >
       <Plus className={'w-8 h-8'} />
     </motion.button>
   );

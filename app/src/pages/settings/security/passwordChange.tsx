@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -79,10 +79,12 @@ export function PasswordChange() {
         <div
           className={
             'col-span-1 md:col-span-2 flex justify-end animate-fade-in-right delay-150'
-          }>
+          }
+        >
           <Button
             type={'submit'}
-            disabled={action.isPending || (!oldPassword && !newPassword)}>
+            disabled={action.isPending || (!oldPassword && !newPassword)}
+          >
             Change Password
           </Button>
         </div>

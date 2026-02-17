@@ -18,7 +18,8 @@ export function SettingsSubtitle({
         <p
           className={
             'text-sm text-muted-foreground animate-fade-in-top delay-50'
-          }>
+          }
+        >
           {description}
         </p>
       )}

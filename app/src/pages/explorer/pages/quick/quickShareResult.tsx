@@ -23,17 +23,20 @@ export function QuickShareResult({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={'grid place-items-center pt-5'}>
+      className={'grid place-items-center pt-5'}
+    >
       <div className={'w-full max-w-xl rounded-xl p-5 border'}>
         <h2 className={'text-3xl font-normal'}>Quick Share created!</h2>
         <span
           className={
             'mt-1 flex items-center gap-1 text-xs text-muted-foreground'
-          }>
+          }
+        >
           <Fingerprint className={'h-4 w-4'} /> {uuid}
         </span>
         <div
-          className={'mt-5 flex flex-wrap items-center justify-center gap-3'}>
+          className={'mt-5 flex flex-wrap items-center justify-center gap-3'}
+        >
           <QrCodeModal button value={shareData.url}>
             QR Code
           </QrCodeModal>
@@ -42,7 +45,8 @@ export function QuickShareResult({
             <Button
               onClick={() => navigator.share(shareData)}
               variant={'outline'}
-              className={'border-primary bg-transparent'}>
+              className={'border-primary bg-transparent'}
+            >
               <Share className={'h-5 w-5'} /> Share
             </Button>
           )}

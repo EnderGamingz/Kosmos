@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import {
   Popover,
   PopoverContent,
@@ -52,12 +52,14 @@ export function AddContact() {
       <PopoverContent>
         <form
           onSubmit={handleSubmit}
-          className={'flex items-center gap-1 group'}>
+          className={'flex items-center gap-1 group'}
+        >
           <Input name={'username'} placeholder={'Enter a username'} required />
           <Button
             type={'submit'}
             disabled={isPending}
-            className={'group-invalid:cursor-not-allowed '}>
+            className={'group-invalid:cursor-not-allowed '}
+          >
             <UserPlus />
           </Button>
         </form>

@@ -16,11 +16,13 @@ export default function NotificationTester() {
             description: 'This is a success notification',
             status: 'Done',
           })
-        }>
+        }
+      >
         Success
       </Button>
       <Button
-        onClick={() => notify({ severity: Severity.INFO, title: 'Info' })}>
+        onClick={() => notify({ severity: Severity.INFO, title: 'Info' })}
+      >
         Info
       </Button>
       <Button
@@ -31,22 +33,23 @@ export default function NotificationTester() {
             description: 'This is an error notification',
             status: 'Failed',
           })
-        }>
+        }
+      >
         Error
       </Button>
-        <Button
+      <Button
         onClick={() =>
           notify({
             severity: Severity.INFO,
             title: 'Loading',
             description: 'Progress ongoing',
-              loading: true,
-              canDismiss: false
+            loading: true,
+            canDismiss: false,
           })
-        }>
+        }
+      >
         Loading
       </Button>
-
     </div>
   );
 }

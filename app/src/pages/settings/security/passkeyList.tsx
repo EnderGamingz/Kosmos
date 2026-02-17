@@ -6,7 +6,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import PasskeyRegister from '@components/passkey/register.tsx';
 import { motion } from 'framer-motion';
-import { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
+import type { PasskeyModelDTO } from '@bindings/PasskeyModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 import { Trash2 } from 'lucide-react';
@@ -53,7 +53,8 @@ export default function PasskeyList() {
           <span
             className={
               'ml-1 animate-fade-in-left delay-200 text-sm text-stone-500 dark:text-stone-400'
-            }>
+            }
+          >
             ({passkeys.data?.length})
           </span>
         )}
@@ -64,7 +65,8 @@ export default function PasskeyList() {
       <ul
         className={
           'rounded-md bg-popover p-2 border animate-fade-in-top delay-300'
-        }>
+        }
+      >
         {!passkeys.data?.length && (
           <EmptyList noIcon message={'No passkeys added'} />
         )}
@@ -96,7 +98,8 @@ function PasskeyItem({
       className={cn(
         'flex items-center justify-between gap-2 border-b-1 border-stone-300 p-2 dark:border-stone-600',
         last && 'border-transparent dark:border-transparent',
-      )}>
+      )}
+    >
       <span>{passkey.name}</span>
       <Trash2 className={'h-5 w-5 text-red-500'} onClick={onDelete} />
     </motion.li>

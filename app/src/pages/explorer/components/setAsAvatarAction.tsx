@@ -1,4 +1,4 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { isValidFileForAvatar } from '@models/album.ts';
@@ -39,7 +39,7 @@ export default function SetAsAvatarAction({
   };
 
   return (
-    <button onClick={handleClick}>
+    <button type={'button'} onClick={handleClick}>
       <UserCircle />
       {dense ? 'Set Avatar' : 'Set as Avatar'}
     </button>

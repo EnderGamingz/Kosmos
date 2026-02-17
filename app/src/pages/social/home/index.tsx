@@ -20,7 +20,8 @@ export default function SocialHomePage() {
       </h1>
       <FetchBoundary
         fetchGoal={'unhandled requests'}
-        fallback={<UnhandledRequestLoading />}>
+        fallback={<UnhandledRequestLoading />}
+      >
         <UnhandledRequests />
       </FetchBoundary>
       <div>

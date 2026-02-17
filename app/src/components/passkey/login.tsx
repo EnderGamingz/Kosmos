@@ -4,7 +4,7 @@ import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
 import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
 import { Button } from '../ui/button';
-import { RefObject } from 'react';
+import type { RefObject } from 'react';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
 import { BadgeCheck } from 'lucide-react';
 
@@ -56,7 +56,8 @@ export default function PasskeyLogin({
       variant={'outline'}
       onClick={() => loginMutation.mutate()}
       className={'w-full'}
-      disabled={loginMutation.isPending}>
+      disabled={loginMutation.isPending}
+    >
       <BadgeCheck />
       Use Passkey
     </Button>

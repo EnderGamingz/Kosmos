@@ -1,4 +1,4 @@
-import { SortBy, SortOrder } from '@models/sort.ts';
+import { type SortBy, SortOrder } from '@models/sort.ts';
 import { useSearchState } from '@stores/searchStore.ts';
 import { cn } from '@lib/utils.ts';
 import { ChevronUp } from 'lucide-react';
@@ -53,7 +53,8 @@ function SortIcon({ desc }: { desc: boolean }) {
       className={cn(
         'ml-2 inline-block transition-transform',
         desc ? 'rotate-0' : 'rotate-180',
-      )}>
+      )}
+    >
       <ChevronUp className={'h-3.5 w-3.5'} />
     </span>
   );

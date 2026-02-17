@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { usePreferenceStore } from '@stores/preferenceStore.ts';
 import {
-  ExplorerStylePreference,
-  PreferenceOption,
+  type ExplorerStylePreference,
+  type PreferenceOption,
   selections,
 } from '@pages/settings/preferences/selections.tsx';
 import { Collapse } from 'react-collapse';
@@ -30,7 +30,8 @@ export default function ExplorerPreferences({
         className={cn(
           'space-y-3',
           Boolean(inPopup) && 'max-h-[350px] overflow-y-auto scrollbar-hide',
-        )}>
+        )}
+      >
         {items.map((item, i) => (
           <Preference small={inPopup} key={item.name} item={item} index={i} />
         ))}
@@ -58,23 +59,27 @@ export function Preference({
         open && 'shadow-md outline-stone-500/20',
         Boolean(small) && 'p-2 shadow-none',
         'dark:bg-stone-600/10 dark:outline-stone-300/20',
-      )}>
+      )}
+    >
       <div
         onClick={() => setOpen(prev => !prev)}
-        className={'flex items-center justify-between'}>
+        className={'flex items-center justify-between'}
+      >
         <div
           className={cn(
             'flex items-center gap-3 text-stone-600 [&_svg]:h-6 [&_svg]:w-6',
             Boolean(small) && 'gap-2 [&_svg]:h-6 [&_svg]:w-6',
             'dark:text-stone-300',
-          )}>
+          )}
+        >
           {item.icon}
           <div>
             <h3
               className={cn(
                 'text-lg font-medium',
                 Boolean(small) && 'text-base',
-              )}>
+              )}
+            >
               {item.name}
             </h3>
             <p className={cn('text-sm', Boolean(small) && 'text-xs')}>
@@ -90,12 +95,14 @@ export function Preference({
         <div className={'space-y-1 p-3'}>
           <h4
             className={'font-extralight animate-fade-in-left delay-200'}
-            key={`type-header-${item.name}${open}`}>
+            key={`type-header-${item.name}${open}`}
+          >
             Display as
           </h4>
           <div
             key={`options-${open}-type`}
-            className={'flex flex-col gap-3 sm:flex-row'}>
+            className={'flex flex-col gap-3 sm:flex-row'}
+          >
             {item.type.options.map((option, i) => (
               <PreferenceSelection
                 small={small}
@@ -113,12 +120,14 @@ export function Preference({
           <div className={'space-y-1 p-3 pt-2'}>
             <h4
               className={'font-extralight animate-fade-in-left delay-300'}
-              key={`details-header-${item.name}${open}`}>
+              key={`details-header-${item.name}${open}`}
+            >
               Details
             </h4>
             <div
               key={`options-${open}-details`}
-              className={'flex flex-col gap-3 sm:flex-row'}>
+              className={'flex flex-col gap-3 sm:flex-row'}
+            >
               {item.details.options.map((option, i) => (
                 <PreferenceSelection
                   small={small}
@@ -168,7 +177,8 @@ export function PreferenceSelection({
         'transition-colors [&_svg]:h-6 [&_svg]:w-6 animate-fade-in-top',
         Boolean(small) && 'gap-2 p-2 text-sm [&_svg]:h-4 [&_svg]:w-4',
         'dark:text-stone-300 dark:hover:bg-stone-300/20',
-      )}>
+      )}
+    >
       {item.icon}
       <div className={'text-start'}>
         <p>{item.name}</p>

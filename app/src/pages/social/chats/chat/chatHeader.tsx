@@ -12,7 +12,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@components/ui/drawer.tsx';
-import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import type { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import { LeaveGroupButton } from '@pages/social/chats/chat/leaveGroupButton.tsx';
@@ -26,7 +26,8 @@ export function ChatHeader() {
     <div
       className={
         'flex items-center gap-2 bg-popover/70 backdrop-blur-lg p-2 rounded-full animate-fade-in shadow'
-      }>
+      }
+    >
       {partner && (
         <div className={'animate-fade-in-left delay-100'}>
           <UserAvatar
@@ -41,7 +42,8 @@ export function ChatHeader() {
         className={cn(
           'text-xl animate-fade-in-left delay-200',
           !partner && 'ml-2',
-        )}>
+        )}
+      >
         {chat.name}
       </p>
       <div className={'ml-auto mr-3'}>

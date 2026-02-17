@@ -33,7 +33,8 @@ export default function BinPage() {
     <div
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-      }>
+      }
+    >
       <PageMetadata title={'Trash Bin'} />
       <div className={'flex items-center justify-between px-5 pt-5'}>
         <div>
@@ -42,7 +43,8 @@ export default function BinPage() {
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className={'text-stone-800 dark:text-stone-400'}>
+            className={'text-stone-800 dark:text-stone-400'}
+          >
             {usageData?.bin !== undefined
               ? `${binUsage} of files`
               : 'Loading...'}
@@ -55,7 +57,8 @@ export default function BinPage() {
               'border-primary bg-transparent animate-fade-in-right delay-300'
             }
             onClick={() => deleteAll.mutate()}
-            disabled={deleteAll.isPending || !deletedFiles.data?.length}>
+            disabled={deleteAll.isPending || !deletedFiles.data?.length}
+          >
             <Shredder />
             Clear Trash
           </Button>

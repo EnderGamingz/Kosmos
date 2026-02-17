@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { ShareOperationType } from '@models/file.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { ShareOperationType } from '@models/file.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export type SelectedResources = {
   selectedFolders: FolderModelDTO[];

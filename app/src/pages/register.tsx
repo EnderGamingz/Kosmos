@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent } from 'react';
+import type { SubmitEventHandler } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { AuthScreen } from '@pages/authScreen.tsx';
@@ -50,11 +50,11 @@ export default function Register() {
     },
   });
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
     const { username, password } = event.currentTarget;
     mutate({ username: username.value, password: password.value });
-  }
+  };
 
   if (!ALLOW_REGISTER) return <Navigate to={'/auth/login'} />;
 
@@ -68,7 +68,8 @@ export default function Register() {
         text: 'Already have an account?',
         actionText: 'Login',
         link: '/auth/login',
-      }}>
+      }}
+    >
       <label htmlFor={'username'} className={'animate-fade-in-top delay-200'}>
         <User />
         <Input
@@ -97,7 +98,8 @@ export default function Register() {
             'lg:text-lg w-full group-invalid:cursor-not-allowed group-invalid:opacity-50'
           }
           disabled={isPending}
-          type={'submit'}>
+          type={'submit'}
+        >
           Register
         </Button>
       </div>

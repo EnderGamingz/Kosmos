@@ -1,8 +1,8 @@
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { AlbumDelete } from '@pages/explorer/pages/albums/single/menu/albumDelete.tsx';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import ShareButton from '@pages/explorer/components/share/shareButton.tsx';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import useDisclosure from '@/hooks/useDisclosure';
 import {
   Popover,

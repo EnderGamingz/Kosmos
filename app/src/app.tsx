@@ -22,7 +22,8 @@ export function App() {
         <div
           className={
             'app-wrapper flex flex-grow flex-col ' + (darkMode ? 'dark' : '')
-          }>
+          }
+        >
           <AppRouter />
         </div>
       </LayoutOptionsContext>

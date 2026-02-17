@@ -1,6 +1,6 @@
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { ShareItem } from '@pages/explorer/components/share/shareItem.tsx';
-import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
+import type { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 
 const renderMessage = (message: string) => (
   <p className={'text-center text-stone-600'}>{message}</p>

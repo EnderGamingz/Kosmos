@@ -1,4 +1,4 @@
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -24,16 +24,18 @@ export default function ShareButton({
 
   return (
     <button
+      type={'button'}
       className={cn(
         'flex items-center gap-1',
-        className || '',
         iconOnly ? 'p-2' : '',
+        className,
       )}
       onClick={e => {
         e.stopPropagation();
         onClose?.();
         setShare(id, type);
-      }}>
+      }}
+    >
       <Share2 className={'h-6 w-6'} />
       {!iconOnly && 'Share'}
     </button>

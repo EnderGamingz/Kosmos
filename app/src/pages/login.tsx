@@ -2,7 +2,7 @@ import { useUserState } from '@stores/userStore';
 import axios from 'axios';
 import { ALLOW_REGISTER, BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent, useEffect, useRef } from 'react';
+import { type FormEvent, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { AuthScreen } from '@pages/authScreen.tsx';
@@ -84,7 +84,8 @@ export default function Login() {
         text: "Don't have an account?",
         actionText: 'Create one here',
         link: '/auth/register',
-      }}>
+      }}
+    >
       <label htmlFor={'username'} className={'animate-fade-in-top delay-200'}>
         <User />
         <Input
@@ -115,7 +116,8 @@ export default function Login() {
           type={'submit'}
           className={
             'lg:text-lg w-full group-invalid:cursor-not-allowed group-invalid:opacity-50'
-          }>
+          }
+        >
           Login
         </Button>
       </div>
@@ -124,7 +126,8 @@ export default function Login() {
         <p
           className={
             'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-sm'
-          }>
+          }
+        >
           or
         </p>
       </div>

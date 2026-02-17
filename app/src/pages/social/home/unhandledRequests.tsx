@@ -84,7 +84,8 @@ function UnhandledCard({
         attention
           ? 'isolate relative after:content-[""] after:rounded-md after:absolute after:inset-0 after:z-[-1] after:border after:animate-pulse after:opacity-10'
           : 'text-muted-foreground',
-      )}>
+      )}
+    >
       <div className={'flex gap-4'}>
         <span className={'text-7xl font-bold'}>{requests}</span>
         <div className={'grow py-1'}>
@@ -94,7 +95,8 @@ function UnhandledCard({
             className={cn(
               buttonVariants({ size: 'sm', variant: 'outline' }),
               'px-5',
-            )}>
+            )}
+          >
             {buttonText}
             <ArrowUpRight />
           </Link>

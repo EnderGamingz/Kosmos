@@ -24,7 +24,8 @@ export function FileGridLoading() {
           animate={'show'}
           className={
             'grid grid-cols-1 gap-4 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
-          }>
+          }
+        >
           {Array.from({ length: 5 }).map((_, i) => (
             <motion.div variants={itemTransitionVariant} key={i}>
               <Skeleton className={'h-12 w-full rounded-lg'} />

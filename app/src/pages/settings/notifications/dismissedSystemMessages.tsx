@@ -23,7 +23,8 @@ export function DismissedSystemMessages() {
                 className={cn(
                   'flex flex-col items-start gap-2 rounded-lg bg-stone-200 p-2 text-stone-800 md:flex-row md:items-center',
                   'dark:bg-stone-600/40 dark:text-stone-200 animate-fade-in-top',
-                )}>
+                )}
+              >
                 <div className={'flex items-center gap-2'}>
                   <item.icon className={'h-5 w-5'} />
                   {item.name}
@@ -32,7 +33,8 @@ export function DismissedSystemMessages() {
                   onClick={() => dismissStore.actions.reset(item.id)}
                   className={
                     'ml-auto rounded bg-stone-600 px-3 py-1 text-stone-50 dark:bg-stone-200 dark:text-stone-800'
-                  }>
+                  }
+                >
                   Reset
                 </button>
               </motion.li>

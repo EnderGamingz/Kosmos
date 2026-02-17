@@ -7,7 +7,8 @@ export default function NotFound() {
     <div
       className={
         'p-3 space-y-6 grow flex flex-col justify-center max-w-lg w-full mx-auto'
-      }>
+      }
+    >
       <div className={'space-y-2'}>
         <h1 className={'text-5xl font-bold'}>404</h1>
         <p className={'text-lg'}>This page does not exist.</p>

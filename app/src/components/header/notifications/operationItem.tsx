@@ -1,4 +1,4 @@
-import { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
+import type { OperationModelDTO } from '@bindings/OperationModelDTO.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -38,7 +38,8 @@ export function OperationItem({
       className={'py-1 animate-fade-in-top'}
       style={{
         animationDelay: `${index * 50}ms`,
-      }}>
+      }}
+    >
       <div className={'flex items-center justify-between gap-5'}>
         <p className={'text-base font-medium'}>
           {getOperationTypeString(data.operation_type)}
@@ -56,11 +57,13 @@ export function OperationItem({
         </p>
         {canRetry && !retry.isSuccess && (
           <button
+            type={'button'}
             disabled={retry.isPending}
             className={'text-xs underline'}
             onClick={() => {
               retry.mutate();
-            }}>
+            }}
+          >
             Retry
           </button>
         )}

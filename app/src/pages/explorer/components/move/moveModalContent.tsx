@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useFolders } from '@lib/query.ts';
 import { motion } from 'framer-motion';
-import { ContextOperationType } from '@models/file.ts';
+import type { ContextOperationType } from '@models/file.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
   DialogClose,
@@ -62,14 +62,16 @@ export function MoveModalContent({
     <>
       <DialogHeader className='grid gap-1'>
         <DialogTitle
-          className={'flex flex-wrap items-center gap-2 overflow-hidden'}>
+          className={'flex flex-wrap items-center gap-2 overflow-hidden'}
+        >
           Move {getMoveDescription()}
           {moveData.type !== 'multi' && (
             <span
               title={moveData.name}
               className={
                 'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 py-1 px-1.5 dark:bg-stone-700'
-              }>
+              }
+            >
               {moveData.name}
             </span>
           )}
@@ -77,7 +79,8 @@ export function MoveModalContent({
         <DialogDescription
           className={
             'flex justify-between gap-1 text-sm font-normal text-muted-foreground'
-          }>
+          }
+        >
           <span>
             Moving to <ArrowRight className={'inline h-3 w-3'} />{' '}
             {data?.folder?.folder_name || 'Home'}{' '}
@@ -95,12 +98,12 @@ export function MoveModalContent({
           className={cn(
             '[&_li:hover]:bg-indigo-100 [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
             'dark:[&_li:hover]:bg-indigo-700/50 dark:[&_li]:text-stone-100',
-          )}>
+          )}
+        >
           {data?.folder && (
             <motion.li
-              onClick={handleChangeFolder(
-                data?.folder?.parent_id || undefined,
-              )}>
+              onClick={handleChangeFolder(data?.folder?.parent_id || undefined)}
+            >
               ..
             </motion.li>
           )}
@@ -119,7 +122,8 @@ export function MoveModalContent({
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.2, bounce: 0.1 }}
                 key={folder.id}
-                onClick={handleChangeFolder(folder.id)}>
+                onClick={handleChangeFolder(folder.id)}
+              >
                 {folder.folder_name}
               </motion.li>
             ))}
@@ -131,7 +135,8 @@ export function MoveModalContent({
         </DialogClose>
         <Button
           disabled={selectedFolder === parent || moveAction.isPending}
-          onClick={() => moveAction.mutate()}>
+          onClick={() => moveAction.mutate()}
+        >
           {moveAction.isPending ? 'Moving' : 'Move here'}
         </Button>
       </DialogFooter>

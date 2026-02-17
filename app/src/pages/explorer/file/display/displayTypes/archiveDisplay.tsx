@@ -1,7 +1,7 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { useZipInformation } from '@lib/query.ts';
 import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
-import { ZipInformation } from '@bindings/ZipInformation.ts';
+import type { ZipInformation } from '@bindings/ZipInformation.ts';
 import { useState } from 'react';
 import { Collapse } from 'react-collapse';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
@@ -30,17 +30,20 @@ export default function ArchiveDisplay({
       id={file.id}
       name={file.file_name}
       type={file.file_type}
-      loading={loading || query.isLoading}>
+      loading={loading || query.isLoading}
+    >
       <div className={'h-full w-full overflow-auto p-3 text-left'}>
         <h2
           className={
             'flex items-center pb-2 text-xl [&_svg]:!h-10 [&_svg]:!w-10'
-          }>
+          }
+        >
           <ItemIcon id={file.id} name={file.file_name} type={file.file_type} />
           <span
             className={
               'overflow-hidden whitespace-nowrap animate-fade-in-left delay-300'
-            }>
+            }
+          >
             Archive Preview
           </span>
         </h2>
@@ -67,7 +70,8 @@ function ArchiveItem({
       className={cn(
         'flex items-center gap-2 rounded-lg px-2 py-1 transition-colors',
         onClick && 'bg-stone-600/60 hover:bg-stone-600/40 dark:bg-stone-700/60',
-      )}>
+      )}
+    >
       {onClick && (
         <ChevronDown
           className={cn(
@@ -99,7 +103,8 @@ function ArchiveFolder({
       )}
       style={{
         marginLeft: indent * 3,
-      }}>
+      }}
+    >
       <ArchiveItem
         name={data.name}
         active={open}

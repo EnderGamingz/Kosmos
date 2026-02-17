@@ -26,7 +26,8 @@ export default function UserChatPage({
       chatId={id}
       isPersonalChat={personalChat}
       chat={data}
-      user={user}>
+      user={user}
+    >
       <div className={'flex flex-col grow'}>
         <ChatHeader />
         <div className={'mb-2 mt-auto'}>

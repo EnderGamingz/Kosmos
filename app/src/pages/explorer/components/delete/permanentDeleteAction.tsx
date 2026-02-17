@@ -1,5 +1,5 @@
 import { invalidateShares } from '@lib/query.ts';
-import { DataOperationType } from '@models/file.ts';
+import type { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -8,8 +8,8 @@ import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext, useState } from 'react';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { DisplayContext } from '@lib/contexts.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Shredder } from 'lucide-react';
 
@@ -70,7 +70,8 @@ export function PermanentDeleteAction({
       type={'button'}
       className={
         'text-red-500 hover:!text-red-800 dark:text-red-300 dark:hover:!text-red-300'
-      }>
+      }
+    >
       <Shredder />
       {short ? 'Delete' : 'Delete Permanently'}
     </button>
@@ -153,7 +154,8 @@ export function MultiPermanentDelete({
         !confirmed && !shift
           ? 'text-gray-400 hover:!text-gray-400'
           : 'bg-red-400 !text-white hover:!bg-red-500',
-      )}>
+      )}
+    >
       <Shredder />
       Delete {deleteType}
     </button>

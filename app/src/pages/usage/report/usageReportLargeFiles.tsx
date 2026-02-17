@@ -1,7 +1,7 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/explorerDisplay.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export function UsageReportLargeFiles({ files }: { files: FileModelDTO[] }) {
   const setFilesInScope = useExplorerStore(s => s.current.setFilesInScope);
@@ -15,7 +15,8 @@ export function UsageReportLargeFiles({ files }: { files: FileModelDTO[] }) {
       <h3
         className={
           'text-xl font-bold text-stone-700 dark:text-stone-300 animate-fade-in-top delay-600'
-        }>
+        }
+      >
         Large Files
       </h3>
       <div className={'animate-fade-in-top delay-700'}>

@@ -12,20 +12,20 @@ import { containerVariant } from '@components/defaults/transition.ts';
 import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { FixedSizeList, FixedSizeListProps } from 'react-window';
+import { FixedSizeList, type FixedSizeListProps } from 'react-window';
 import {
   FILE_GRID_ROW_HEIGHT_COMPACT,
   FILE_GRID_ROW_HEIGHT_DEFAULT,
 } from '@lib/constants.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 
 function Footer(props: {
@@ -43,7 +43,8 @@ function Footer(props: {
             'w-full cursor-default select-none border-none text-sm text-muted-foreground',
             'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
             'flex gap-5 pb-28 pt-4',
-          )}>
+          )}
+        >
           <div>
             {props.folderModels.length} Folders <br />
             {props.fileModels.length} Files
@@ -74,7 +75,8 @@ function FolderGrid(props: {
         'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
         'xl:grid-cols-5 2xl:grid-cols-7',
         props.control && '[&>div]:cursor-copy',
-      )}>
+      )}
+    >
       {props.folderModels.map((folder, i) => (
         <GridFolderItem
           key={folder.id}
@@ -120,7 +122,8 @@ export default function FileGrid({
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className={'text-sm text-stone-500'}>
+            className={'text-sm text-stone-500'}
+          >
             {folders.length} Folders &bull; {files.length} Files
           </motion.p>
           {!viewSettings?.limitedView && !shareUuid && <FileGridSort />}
@@ -139,7 +142,8 @@ export default function FileGrid({
             Boolean(dynamic) && 'mt-6 gap-3',
             !!viewSettings?.limitedView && 'mt-3',
             Boolean(isControl) && '[&>div]:cursor-copy',
-          )}>
+          )}
+        >
           {!dynamic ? (
             <VirtualFileGrid
               files={files}
@@ -162,7 +166,8 @@ export default function FileGrid({
                 1024: 4,
                 1280: 5,
                 1536: 7,
-              }}>
+              }}
+            >
               <Masonry gutter={'0.75rem'}>
                 {files.map((file, i) => (
                   <GridFileItem
@@ -233,7 +238,8 @@ function VirtualGrid({
           // Call the original callback
           rest.onItemsRendered && rest.onItemsRendered(props);
         }}
-        ref={listRef}>
+        ref={listRef}
+      >
         {row}
       </FixedSizeList>
     </VirtualGridContext.Provider>
@@ -245,7 +251,8 @@ const Inner = ({ children }: { children: ReactNode }) => {
   return (
     <div
       className={'overflow-hidden text-left'}
-      style={{ top, position: 'absolute', width: '100%' }}>
+      style={{ top, position: 'absolute', width: '100%' }}
+    >
       {header}
       {children}
       {footer}
@@ -262,7 +269,8 @@ function Row({ index, data }: { index: number; data: VirtualGridRowData }) {
       className={'grid gap-1.5 p-1'}
       style={{
         gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
-      }}>
+      }}
+    >
       {files.map((file, j) => (
         <GridFileItem
           key={file.id}

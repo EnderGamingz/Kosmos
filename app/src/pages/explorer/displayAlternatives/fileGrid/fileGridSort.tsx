@@ -34,7 +34,8 @@ export function FileGridSort() {
         <button
           className={
             'flex items-center gap-1 px-2 text-sm text-stone-500 [&_svg]:h-5 [&_svg]:w-5'
-          }>
+          }
+        >
           {sortIcon()}
           {getSortString(currentSort.sort_by) ?? 'Sort'}
         </button>
@@ -44,7 +45,8 @@ export function FileGridSort() {
         className={cn(
           'max-w-42 p-3 [&>*]:rounded-md [&>*]:px-2 [&>*]:py-1 [&>*]:transition-colors',
           '[&>*:hover]:bg-muted [&>*]:flex [&>*]:items-center [&>*]:justify-between',
-        )}>
+        )}
+      >
         <ExplorerSort
           name={'Name'}
           sort={SortBy.Name}

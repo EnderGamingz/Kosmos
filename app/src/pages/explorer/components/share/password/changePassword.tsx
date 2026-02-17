@@ -65,7 +65,8 @@ function ChangePasswordForm({
           e.preventDefault();
           action.mutate();
         }}
-        className={'flex flex-col gap-2'}>
+        className={'flex flex-col gap-2'}
+      >
         <Input
           type={'password'}
           placeholder={'New Password'}
@@ -75,7 +76,8 @@ function ChangePasswordForm({
         />
         <Button
           type={'submit'}
-          disabled={action.isPending || !value || value.length < 3}>
+          disabled={action.isPending || !value || value.length < 3}
+        >
           Change
         </Button>
       </form>

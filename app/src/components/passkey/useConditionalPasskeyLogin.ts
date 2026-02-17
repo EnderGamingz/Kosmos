@@ -1,6 +1,6 @@
 import { useUserState } from '@stores/userStore.ts';
 import { useNavigate } from 'react-router-dom';
-import { RefObject, useEffect, useState } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
 import { startPasskeyLoginFunction } from '@components/passkey/startPasskeyLoginFunction.ts';
 
 export function useConditionalPasskeyLogin(
@@ -10,6 +10,7 @@ export function useConditionalPasskeyLogin(
   const setUser = useUserState(s => s.setUser);
   const navigate = useNavigate();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to run this on mount and when restart changes, not when controller changes
   useEffect(() => {
     if (
       typeof PublicKeyCredential.isConditionalMediationAvailable !== 'function'

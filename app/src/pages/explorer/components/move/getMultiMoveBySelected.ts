@@ -1,5 +1,5 @@
-import { SelectedResources } from '@stores/explorerStore.ts';
-import { MultiMoveData } from '@pages/explorer/components/move/moveModalContent.tsx';
+import type { SelectedResources } from '@stores/explorerStore.ts';
+import type { MultiMoveData } from '@pages/explorer/components/move/moveModalContent.tsx';
 
 export function getMultiMoveBySelected(
   selectedResources: SelectedResources,

@@ -9,7 +9,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 export default defineConfig({
-  envPrefix: ['VITE_', 'CF_PAGES_'],
+  envPrefix: ['VITE_'],
   plugins: [
     react({
       babel: {

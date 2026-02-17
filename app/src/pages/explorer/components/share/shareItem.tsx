@@ -1,7 +1,7 @@
 import { getShareTypeString } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { useNotifications } from '@stores/notificationStore.ts';
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { formatDistanceToNow } from 'date-fns';
 import { ChangePassword } from '@pages/explorer/components/share/password/changePassword.tsx';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
@@ -10,7 +10,7 @@ import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 import { getShareUrl } from '@lib/share/url.ts';
 import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
-import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
+import type { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Share } from 'lucide-react';
 
@@ -48,7 +48,8 @@ export function ShareItem({
       )}
       style={{
         animationDelay: `${index * 50}ms`,
-      }}>
+      }}
+    >
       <div>
         <p className={'font-medium'}>
           {getShareTypeString(share.share_type)}ly shared
@@ -86,11 +87,13 @@ export function ShareItem({
         <div className={'mr-auto flex items-center gap-2'}>
           <DeleteShare id={share.id} />
           <div
-            className={'flex items-center gap-1 text-xs text-muted-foreground'}>
+            className={'flex items-center gap-1 text-xs text-muted-foreground'}
+          >
             {share.share_target_username ? (
               <p
                 title={share.share_target_username}
-                className={'max-w-[100px] truncate'}>
+                className={'max-w-[100px] truncate'}
+              >
                 @{share.share_target_username}
               </p>
             ) : (

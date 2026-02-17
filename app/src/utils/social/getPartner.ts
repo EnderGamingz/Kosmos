@@ -1,5 +1,5 @@
-import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 export function getPartner(
   isPersonalChat: boolean,

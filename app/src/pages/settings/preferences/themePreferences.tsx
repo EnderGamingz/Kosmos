@@ -1,5 +1,5 @@
 import { Theme, usePreferenceStore } from '@stores/preferenceStore.ts';
-import { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
+import type { PreferenceOption } from '@pages/settings/preferences/selections.tsx';
 import { motion } from 'framer-motion';
 import { containerVariant } from '@components/defaults/transition.ts';
 import { PreferenceSelection } from '@pages/settings/preferences/explorerPreference.tsx';
@@ -28,7 +28,8 @@ export function ThemePreferences({ inPopup }: { inPopup?: boolean }) {
         variants={containerVariant(0.04, 0.2)}
         initial={'hidden'}
         animate={'show'}
-        className={'flex flex-col gap-3 sm:flex-row'}>
+        className={'flex flex-col gap-3 sm:flex-row'}
+      >
         {themeChoices.map((option, i) => (
           <PreferenceSelection
             small={inPopup}

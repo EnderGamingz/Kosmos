@@ -8,14 +8,14 @@ import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { invalidateShares } from '@lib/query.ts';
 import { cn } from '@lib/utils.ts';
 import { Collapse } from 'react-collapse';
 import { DateTimePicker } from '@/components/ui/date-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@components/ui/input.tsx';
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { ContactSelector } from '@pages/social/contacts/contactSelector.tsx';
 import { Check, Clock, KeyRound, MousePointerClick, User } from 'lucide-react';
 
@@ -108,7 +108,8 @@ export function CreateShare({
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.2 }}
-      className={'flex flex-col gap-2 overflow-hidden p-1'}>
+      className={'flex flex-col gap-2 overflow-hidden p-1'}
+    >
       {quick && (
         <h2 className={'text-lg font-medium'}>
           Create {getShareTypeString(type)} share
@@ -118,7 +119,8 @@ export function CreateShare({
         <div
           className={
             'grid grid-cols-1 rounded-md bg-border p-1 sm:grid-cols-2 gap-1'
-          }>
+          }
+        >
           <TypeButton
             type={ShareType.Public}
             selected={type === ShareType.Public}
@@ -136,7 +138,8 @@ export function CreateShare({
           'grid [&>div]:overflow-hidden [&>div]:rounded-md [&>div]:bg-border [&>div]:p-2',
           'gap-2 [&_input]:mt-2 [&_input]:bg-input [&_label]:text-sm [&_svg]:w-4',
           '[&_label]:flex [&_label]:items-center [&_label]:gap-1 [&_label]:font-medium [&_label]:text-muted-foreground',
-        )}>
+        )}
+      >
         <div className={'!p-0'}>
           <Collapse isOpened={type === ShareType.Private}>
             <div className={'p-2 space-y-2'}>
@@ -288,7 +291,8 @@ export function CreateShare({
             createAction.isPending ||
             (type === ShareType.Private && !privateContact)
           }
-          onClick={() => createAction.mutate()}>
+          onClick={() => createAction.mutate()}
+        >
           <Check />
           {createButtonText}
         </Button>

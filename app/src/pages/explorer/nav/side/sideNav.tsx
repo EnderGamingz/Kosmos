@@ -3,9 +3,12 @@ import { useUsageStats } from '@lib/query.ts';
 import { SideNavItem } from '@pages/explorer/nav/side/sideNavItem.tsx';
 import { UsageIndicator } from '@components/usage/usageIndicator.tsx';
 import { Link } from 'react-router-dom';
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { cn } from '@lib/utils.ts';
-import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.ts';
+import {
+  getLinks,
+  type LinkSource,
+} from '@pages/explorer/nav/side/getLinks.ts';
 import { ArrowLeft, Cloud, SquareArrowOutUpRight } from 'lucide-react';
 
 function SideNavWrapper({
@@ -21,7 +24,8 @@ function SideNavWrapper({
         'flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
         'overflow-hidden md:h-[initial] dark:border-stone-300/10',
         className,
-      )}>
+      )}
+    >
       {children}
     </aside>
   );
@@ -45,14 +49,16 @@ export function SideNavUsage({
         className={cn(
           'flex items-center gap-2 rounded-lg px-2 py-1 font-light',
           'hover:bg-stone-800/10 dark:hover:bg-stone-300/10',
-        )}>
+        )}
+      >
         <Cloud className={'h-5 w-5'} />
         Account Storage
         <SquareArrowOutUpRight className={'h-3 w-3'} />
       </Link>
       <UsageIndicator data={usage.data} loading={usage.isLoading} />
       <div
-        className={'text-sm text-stone-800 md:text-base dark:text-stone-300'}>
+        className={'text-sm text-stone-800 md:text-base dark:text-stone-300'}
+      >
         {useFormatBytes(total)}{' '}
         <span className={'text-stone-400 dark:text-stone-500'}>
           of {useFormatBytes(limit)}

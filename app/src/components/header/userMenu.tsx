@@ -34,7 +34,9 @@ export function UserMenu() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className={'p-1 flex items-center gap-2 rounded-full outline-none'}>
+          type={'button'}
+          className={'p-1 flex items-center gap-2 rounded-full outline-none'}
+        >
           <UserAvatar
             disabled={!user.user?.has_avatar}
             userId={user.user?.id}
@@ -45,8 +47,9 @@ export function UserMenu() {
           <div
             className={cn(
               'hidden max-w-32 flex-col overflow-hidden whitespace-nowrap pr-2 text-left sm:flex',
-              '[&_*]:overflow-hidden [&_*]:overflow-ellipsis',
-            )}>
+              '**:overflow-hidden **:overflow-ellipsis',
+            )}
+          >
             <p className={'text-sm font-semibold max-w-[120px] truncate'}>
               {user.user?.full_name?.split(' ')[0] || user.user?.username}
             </p>
@@ -62,7 +65,8 @@ export function UserMenu() {
           <p
             className={
               'font-light text-stone-600 dark:text-stone-400 animate-fade-in-top delay-75'
-            }>
+            }
+          >
             {user.user?.username}
           </p>
         </div>
@@ -76,7 +80,8 @@ export function UserMenu() {
               <Link
                 to={'/admin/user'}
                 className={'menu-button'}
-                onClick={handleClose}>
+                onClick={handleClose}
+              >
                 <Code className={'h-5 w-5'} />
                 Admin
               </Link>
@@ -86,7 +91,8 @@ export function UserMenu() {
             <Link
               to={'/settings/account'}
               className={'menu-button'}
-              onClick={handleClose}>
+              onClick={handleClose}
+            >
               <Bolt className={'h-5 w-5'} />
               Settings
             </Link>
@@ -105,7 +111,8 @@ export function UserMenu() {
               variant={'destructive'}
               className={'w-full justify-start'}
               size={'sm'}
-              onClick={() => logoutAction.mutate()}>
+              onClick={() => logoutAction.mutate()}
+            >
               <LogOut className={'h-5 w-5'} />
               Logout
             </Button>
@@ -135,8 +142,10 @@ function UserMenuThemeSwitcher() {
 
   return (
     <button
+      type={'button'}
       onClick={() => themePreferences.setType(other.value)}
-      className={'menu-button w-full [&_svg]:h-5 [&_svg]:w-5'}>
+      className={'menu-button w-full [&_svg]:h-5 [&_svg]:w-5'}
+    >
       {current.icon}
       {current.name}
     </button>

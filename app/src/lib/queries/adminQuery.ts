@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
-import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 
 export type AdminUserUpdate = {
   username?: string;

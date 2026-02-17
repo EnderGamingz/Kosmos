@@ -6,10 +6,10 @@ import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData
 import {
   getVirtualRowData,
   PagedVirtualDisplay,
-  VirtualDisplayItemData,
+  type VirtualDisplayItemData,
 } from '@pages/explorer/displayAlternatives/pagedVirtualDisplay.tsx';
 import { FILE_TABLE_ITEM_HEIGHT } from '@lib/constants.ts';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 function Row({
   index,

@@ -25,7 +25,8 @@ export default function Header() {
     <header
       className={
         'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5 dark:border-stone-300/10'
-      }>
+      }
+    >
       <RouterLoading />
       <HeaderMenu user={user} />
       {user && (
@@ -43,7 +44,8 @@ export default function Header() {
           '[&>a:hover]:bg-stone-600/10 dark:[&>a:hover]:bg-stone-300/20 [&>a]:rounded-lg [&>a]:transition-colors [&>a]:duration-150',
           '[&_svg]:h-5 [&_svg]:w-5',
           !user && 'ml-auto',
-        )}>
+        )}
+      >
         {user ? (
           <Suspense fallback={<Skeleton className={'h-11 w-24'} />}>
             <SearchPopup />
@@ -62,7 +64,8 @@ export default function Header() {
                 to={'/auth/register'}
                 className={
                   'header-login-btn bg-stone-700/80 text-stone-200 hover:bg-stone-700 dark:bg-stone-300/20 dark:text-stone-300'
-                }>
+                }
+              >
                 Register
               </Link>
             )}

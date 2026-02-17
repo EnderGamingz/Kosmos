@@ -38,9 +38,11 @@ export function DeleteShare({ id }: { id: string }) {
   });
   return (
     <button
+      type={'button'}
       className={'flex'}
       onClick={() => action.mutate()}
-      disabled={action.isPending}>
+      disabled={action.isPending}
+    >
       <Trash className={'w-4 text-red-400'} />
     </button>
   );

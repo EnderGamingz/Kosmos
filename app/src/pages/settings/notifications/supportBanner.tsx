@@ -40,7 +40,8 @@ export function SupportBanner({ error }: { error: string | null }) {
     <div
       className={
         'rounded-sm border bg-red-200/40 text-red-800 p-3 dark:bg-red-800/40 dark:text-red-200'
-      }>
+      }
+    >
       <p>{error}</p>
     </div>
   );

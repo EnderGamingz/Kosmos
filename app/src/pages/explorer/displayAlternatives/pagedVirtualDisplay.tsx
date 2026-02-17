@@ -1,13 +1,19 @@
-import { JSX, ReactNode, useCallback, useMemo, useState } from 'react';
+import {
+  type JSX,
+  type ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import {
   FixedSizeList,
-  FixedSizeListProps,
-  ReactElementType,
+  type FixedSizeListProps,
+  type ReactElementType,
 } from 'react-window';
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Slot } from '@radix-ui/react-slot';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 
@@ -66,7 +72,8 @@ export function VirtualDisplayElement({
       <FixedSizeList
         {...rest}
         height={showNoItems ? 0 : fixedHeight}
-        innerElementType={listWrapperType}>
+        innerElementType={listWrapperType}
+      >
         {row}
       </FixedSizeList>
       {showNoItems && <EmptyList />}

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { cn } from '@lib/utils.ts';
 
@@ -12,7 +12,8 @@ export function Chip({
   selected?: boolean;
 }) {
   return (
-    <div
+    <button
+      type={'button'}
       onClick={onClick}
       className={cn(
         'rounded-full px-2 py-0.5 text-xs font-light',
@@ -20,8 +21,9 @@ export function Chip({
         'transition-colors [&_svg]:h-3 [&_svg]:w-3',
         'dark:bg-stone-800/60 dark:text-stone-100',
         Boolean(selected) && 'bg-stone-600 text-stone-100 dark:bg-stone-500',
-      )}>
+      )}
+    >
       {content}
-    </div>
+    </button>
   );
 }

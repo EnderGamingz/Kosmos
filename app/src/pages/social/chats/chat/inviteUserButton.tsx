@@ -7,7 +7,7 @@ import { Button } from '@components/ui/button.tsx';
 import { Plus } from 'lucide-react';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import UserAvatar from '@components/UserAvatar.tsx';
 import { useMutation } from '@tanstack/react-query';
 import { useChatContext } from '@pages/social/chats/context.tsx';
@@ -72,7 +72,8 @@ function UserItem({
   return (
     <li
       onClick={handleClick}
-      className={'transition-colors hover:bg-border p-2 rounded-md'}>
+      className={'transition-colors hover:bg-border p-2 rounded-md'}
+    >
       <div className={'flex gap-2'}>
         <UserAvatar
           disabled={!user.has_avatar}

@@ -72,8 +72,7 @@ export default function NotificationsSheet() {
 
       setInitialSucceeded(ids);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [operations.data]);
+  }, [operations.data, initial, initialSucceeded]);
 
   useEffect(() => {
     if (open) setSeen(true);
@@ -84,7 +83,7 @@ export default function NotificationsSheet() {
       {open && <SheetBodyTransform />}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <button className={'flex p-2.5 sm:p-3 relative'}>
+          <button type={'button'} className={'flex p-2.5 sm:p-3 relative'}>
             {!seen && <AttentionDot />}
             <Bell className={'h-6 w-6'} />
           </button>
@@ -94,7 +93,8 @@ export default function NotificationsSheet() {
           <ul
             className={
               'max-h-[calc(50vh-150px)] divide-y divide-border overflow-y-auto scrollbar-hide'
-            }>
+            }
+          >
             {notifications.length ? (
               notifications.map((notification, i) => (
                 <StaticNotificationItem
@@ -107,7 +107,8 @@ export default function NotificationsSheet() {
               <li
                 className={
                   'self-center justify-self-center font-light text-muted-foreground'
-                }>
+                }
+              >
                 No notifications in the current session.
               </li>
             )}
@@ -116,13 +117,15 @@ export default function NotificationsSheet() {
             <h2
               className={
                 'mt-2 text-left text-base font-light text-stone-800 dark:text-stone-200'
-              }>
+              }
+            >
               Operations
             </h2>
             <div
               className={
                 'max-h-[calc(50vh-150px)] divide-y divide-border overflow-y-auto scrollbar-hide'
-              }>
+              }
+            >
               {operations.data?.length ? (
                 operations.data?.map((operation, i) => (
                   <OperationItem
@@ -135,7 +138,8 @@ export default function NotificationsSheet() {
                 <p
                   className={
                     'self-center justify-self-center font-light text-muted-foreground'
-                  }>
+                  }
+                >
                   No operations
                 </p>
               )}

@@ -1,9 +1,9 @@
 import { MoveModalContent } from './moveModalContent.tsx';
-import { ContextOperationType } from '@models/file.ts';
+import type { ContextOperationType } from '@models/file.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import {
   Dialog,
   DialogContent,

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DisplayContext } from '@lib/contexts.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
   Dialog,
@@ -42,7 +42,8 @@ function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
           className={cn(
             '[&_li:not(.added):hover]:bg-indigo-100 [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
             'dark:[&_li:not(.added):hover]:bg-indigo-700/50',
-          )}>
+          )}
+        >
           {albums.data?.available.map(album => (
             <motion.li
               layout
@@ -62,7 +63,8 @@ function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
                   .then(() => {
                     setLoading(loading.filter(id => id !== album.id));
                   });
-              }}>
+              }}
+            >
               {album.name}
               {loading.includes(album.id) && (
                 <span className={'ml-1 text-sm'}>Adding</span>
@@ -90,7 +92,8 @@ function AddToAlbumModalContent({ files }: { files: FileModelDTO[] }) {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.2, bounce: 0.1 }}
               key={album.id}
-              className={'added flex items-center gap-2 text-muted-foreground'}>
+              className={'added flex items-center gap-2 text-muted-foreground'}
+            >
               <Check className={'h-4 w-4'} />
               {album.name}
               <Link className={'ml-auto'} to={`/home/album/${album.id}`}>
@@ -152,7 +155,8 @@ export default function AlbumAction({
         onOpenChange={() => {
           onOpenChange();
           onClose?.();
-        }}>
+        }}
+      >
         <DialogContent>
           <AddToAlbumModalContent files={files} />
         </DialogContent>

@@ -4,11 +4,11 @@ import { FileDisplayStats } from '@pages/explorer/file/display/fileDisplayStats.
 import { FileDisplayFooter } from '@pages/explorer/file/display/fileDisplayFooter.tsx';
 import { FileDisplayActions } from '@pages/explorer/file/display/fileDisplayActions.tsx';
 import { useAccessShareFile } from '@lib/query.ts';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
 import { truncateString } from '@utils/truncate.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { PageMetadata } from '@components/metadata.tsx';
 import { cn } from '@lib/utils.ts';
 import { FileDisplayHandler } from '@/pages/explorer/file/display/displayTypes/fileDisplayHandler';
@@ -28,7 +28,8 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
     <div
       className={
         'mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 p-4 md:grid-cols-2 md:gap-10 md:p-10'
-      }>
+      }
+    >
       <PageMetadata
         title={truncateString(share.data.file_name) ?? 'Shared File'}
       />
@@ -36,7 +37,8 @@ export function FileShareDisplay({ uuid }: { uuid: string }) {
         className={cn(
           'not-dark:[&_*]:text-stone-950  rounded-md -mb-5 h-[300px] flex-grow overflow-hidden md:-mr-5 md:mb-0 md:h-[500px] md:min-h-[unset] [&>*]:absolute [&>*]:inset-0 [&>*]:overflow-visible',
           fullsScreenPreview ? 'z-20' : 'relative z-0',
-        )}>
+        )}
+      >
         <FileDisplayHandler
           file={file}
           shareUuid={uuid}

@@ -1,6 +1,6 @@
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 import { getError, SupportBanner } from './supportBanner';
-import { FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { PushQuery } from '@lib/queries/pushQuery.ts';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
@@ -140,7 +140,8 @@ function Register() {
           className={'animate-fade-in-right delay-300'}
           disabled={registerMutation.isPending}
           variant={'outline'}
-          size={'sm'}>
+          size={'sm'}
+        >
           <BellPlus />
           Register this device
         </Button>
@@ -174,14 +175,16 @@ function List() {
       <ul
         className={
           'rounded-md bg-popover p-2 border animate-fade-in-top delay-300'
-        }>
+        }
+      >
         {!subscriptions.data?.length && (
           <EmptyList noIcon message={'No subscriptions added'} />
         )}
         {subscriptions.data?.map(item => (
           <li
             key={item.id}
-            className={'flex items-center gap-2 px-2 space-y-2'}>
+            className={'flex items-center gap-2 px-2 space-y-2'}
+          >
             <div>
               <p className={'text-lg'}>{item.name}</p>
               <p className={'text-sm text-muted-foreground'}>
@@ -195,7 +198,8 @@ function List() {
               variant={'ghost'}
               className={'ml-auto'}
               disabled={deleteAction.isPending}
-              onClick={() => deleteAction.mutate({ id: item.id })}>
+              onClick={() => deleteAction.mutate({ id: item.id })}
+            >
               <Trash />
             </Button>
           </li>

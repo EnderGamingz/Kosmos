@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { useKeyStore } from '@stores/keyStore.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { CSSProperties, useContext } from 'react';
+import { type CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Check, EllipsisVertical } from 'lucide-react';
 
@@ -66,18 +66,18 @@ export function MobileFolderItem({
         isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
         isShift && 'cursor-pointer',
         context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
-      )}>
+      )}
+    >
       <div
         onClick={e => {
           e.stopPropagation();
           if (!context.viewSettings?.noSelect) onSelect(folder);
         }}
-        className={'cursor-pointer relative'}>
+        className={'cursor-pointer relative'}
+      >
         <div
-          className={cn(
-            'rounded-lg',
-            isSelected && 'bg-popover brightness-50',
-          )}>
+          className={cn('rounded-lg', isSelected && 'bg-popover brightness-50')}
+        >
           <ItemIcon
             id={folder.id}
             name={folder.folder_name}
@@ -105,7 +105,8 @@ export function MobileFolderItem({
         onClick={e => {
           e.stopPropagation();
           context.handleContext({ x: e.clientX, y: e.clientY }, folder);
-        }}>
+        }}
+      >
         <EllipsisVertical className={'w-5 h-5'} />
       </button>
     </div>

@@ -17,7 +17,8 @@ export function LeaveGroupButton() {
     <Button
       variant={'destructive'}
       disabled={isPending}
-      onClick={() => mutate()}>
+      onClick={() => mutate()}
+    >
       <LogOut />
       Leave
     </Button>

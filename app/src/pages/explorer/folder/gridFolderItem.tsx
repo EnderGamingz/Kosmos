@@ -13,7 +13,7 @@ import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { EllipsisVertical } from 'lucide-react';
@@ -86,7 +86,8 @@ export default function GridFolderItem({
         e.preventDefault();
         context.handleContext({ x: e.clientX, y: e.clientY }, folder);
       }}
-      className={'group/listItem group w-full cursor-pointer'}>
+      className={'group/listItem group w-full cursor-pointer'}
+    >
       <motion.div
         onClick={() => {
           if (isControl && !context.viewSettings?.noSelect && !selectDisabled)
@@ -130,7 +131,8 @@ export default function GridFolderItem({
           isSelected && 'bg-indigo-100 dark:bg-indigo-800',
           isShift && 'cursor-pointer',
           context.select.rangeStart === index && 'bg-indigo-50',
-        )}>
+        )}
+      >
         <div className={'relative min-h-10 min-w-10'}>
           {!context.viewSettings?.noSelect && (
             <div
@@ -138,7 +140,8 @@ export default function GridFolderItem({
                 'absolute inset-0 z-10 grid h-10 w-10 place-items-center opacity-0',
                 'transition-opacity group-hover:opacity-100',
                 isSelected && 'opacity-100',
-              )}>
+              )}
+            >
               <Checkbox
                 className={'h-5 w-5 p-0'}
                 checked={isSelected}
@@ -150,7 +153,8 @@ export default function GridFolderItem({
             className={cn(
               'absolute transition-opacity group-hover:opacity-0',
               isSelected && 'opacity-0',
-            )}>
+            )}
+          >
             <ItemIcon
               id={folder.id}
               name={folder.folder_name}
@@ -163,7 +167,8 @@ export default function GridFolderItem({
           <span
             className={
               'flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap max-md:min-w-12 md:w-0'
-            }>
+            }
+          >
             {folder.folder_name}
           </span>
         </div>
@@ -172,7 +177,8 @@ export default function GridFolderItem({
             e.stopPropagation();
             context.handleContext({ x: e.clientX, y: e.clientY }, folder);
           }}
-          className={'p-2'}>
+          className={'p-2'}
+        >
           <EllipsisVertical className={'h-5 w-5'} />
         </button>
       </motion.div>

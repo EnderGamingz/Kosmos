@@ -1,6 +1,9 @@
 import { BottomNavItem } from '@pages/explorer/nav/bottom/bottomNavItem.tsx';
 import { useMemo } from 'react';
-import { getLinks, LinkSource } from '@pages/explorer/nav/side/getLinks.ts';
+import {
+  getLinks,
+  type LinkSource,
+} from '@pages/explorer/nav/side/getLinks.ts';
 import { useHeaderMenu } from '@pages/explorer/nav/bottom/useHeaderMenu.tsx';
 
 export default function BottomNav({ source }: { source: LinkSource }) {

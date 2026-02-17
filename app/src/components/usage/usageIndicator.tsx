@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { getPercentageStats } from '@components/usage/getPercentage.ts';
-import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import type { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 import { cn } from '@lib/utils.ts';
 import { Progress } from '@components/ui/progress.tsx';
 
@@ -69,7 +69,8 @@ export function UsageIndicator({
           'flex h-full w-full items-center gap-[2px]',
           warningLimit && '[&>.active]:bg-yellow-500',
           alertLimit && '[&>.active]:bg-red-500',
-        )}>
+        )}
+      >
         {loading ? (
           <Progress
             className={'h-full'}

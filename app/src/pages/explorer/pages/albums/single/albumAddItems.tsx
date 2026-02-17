@@ -6,7 +6,7 @@ import { useFilesInfinite, useFolders } from '@lib/query.ts';
 import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import {
   Dialog,
@@ -79,7 +79,8 @@ function AlbumAddItemsContent({
       <div
         className={
           'file-list relative flex h-full flex-col overflow-y-auto max-md:max-h-[calc(100dvh-148px)]'
-        }>
+        }
+      >
         <ExplorerDataDisplay
           overwriteDisplay={{
             displayMode: ExplorerDisplay.Table,
@@ -134,7 +135,8 @@ export function AlbumAddItems({
       </Button>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent
-          className={'!max-w-full !max-h-full h-full rounded-none'}>
+          className={'!max-w-full !max-h-full h-full rounded-none'}
+        >
           <DialogHeader className={'sr-only'}>
             <DialogTitle>Add images to album</DialogTitle>
             <DialogDescription>

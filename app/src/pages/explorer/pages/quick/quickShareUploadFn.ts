@@ -1,5 +1,8 @@
-import { NotificationActions, Severity } from '@stores/notificationStore.ts';
-import { BytesFormatter } from '@utils/fileSize.ts';
+import {
+  type NotificationActions,
+  Severity,
+} from '@stores/notificationStore.ts';
+import type { BytesFormatter } from '@utils/fileSize.ts';
 import { BASE_URL } from '@lib/env.ts';
 import axios from 'axios';
 

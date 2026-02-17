@@ -6,7 +6,7 @@ import {
 import { ImageTooLargePrompt } from '@pages/explorer/file/display/displayTypes/image/imageTooLargePrompt.tsx';
 
 import { IMAGE_LOAD_SIZE_THRESHOLD } from '@lib/constants.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 
 export default function DisplayImage({

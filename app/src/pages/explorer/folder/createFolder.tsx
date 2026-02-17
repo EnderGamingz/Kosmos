@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, useRef, useState } from 'react';
+import { type FormEvent, type ReactNode, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -88,11 +88,13 @@ export function ButtonForm({
     <form onSubmit={handleSubmit}>
       <div
         className={'menu-button relative flex items-center py-2'}
-        onClick={handleActivate}>
+        onClick={handleActivate}
+      >
         <button
           disabled={!active || !value}
           type={'submit'}
-          className={'no-pre [&>svg]:h-5 [&>svg]:w-5 [&>svg]:min-w-5'}>
+          className={'no-pre [&>svg]:h-5 [&>svg]:w-5 [&>svg]:min-w-5'}
+        >
           {active ? <Check className={'h-5 w-5'} /> : icon}
         </button>
         <div className={'relative flex'}>
@@ -111,7 +113,8 @@ export function ButtonForm({
             <span
               className={
                 'pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-xs opacity-50'
-              }>
+              }
+            >
               {suffix}
             </span>
           )}

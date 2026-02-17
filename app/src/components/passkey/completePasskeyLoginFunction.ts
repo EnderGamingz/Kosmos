@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Base64 } from 'js-base64';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const completePasskeyLoginFunction = (assertion: any) =>

@@ -2,12 +2,12 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
-import {
+import type {
   AlbumResponse,
   AvailableAlbumsForFileResponse,
 } from '@models/album.ts';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export class AlbumQuery {
   private static getAlbumData = (id: string) =>

@@ -1,4 +1,4 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
   Dialog,
@@ -27,7 +27,8 @@ export function ImageFullscreenView({
   return (
     <Dialog open={open && !tooLarge} onOpenChange={b => !b && onDoubleClick()}>
       <DialogContent
-        className={'!max-w-full h-full pt-10 sm:p-10 rounded-none'}>
+        className={'!max-w-full h-full pt-10 sm:p-10 rounded-none'}
+      >
         <DialogHeader className={'sr-only'}>
           <DialogTitle>Image Fullscreen Preview</DialogTitle>
           <DialogDescription>{file.file_name}</DialogDescription>
@@ -35,7 +36,8 @@ export function ImageFullscreenView({
         <div
           className={
             'overflow-hidden drop-shadow-lg flex justify-center items-center'
-          }>
+          }
+        >
           <img
             onDoubleClick={onDoubleClick}
             className={'h-full w-auto rounded-xl max-h-fit'}
@@ -71,7 +73,8 @@ export function FullscreenToggle({
         '[&>svg]:h-5 [&>svg]:w-5',
         isFullscreen || noOffset ? 'right-3' : 'right-3 md:right-8',
         '[&>svg]:text-stone-800',
-      )}>
+      )}
+    >
       {isFullscreen ? <Minimize2 /> : <Maximize2 />}
     </div>
   );

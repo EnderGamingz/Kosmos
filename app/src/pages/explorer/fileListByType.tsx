@@ -30,7 +30,8 @@ export default function FileListByType() {
     <div
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-      }>
+      }
+    >
       <PageMetadata title={fileTypeString} />
       <div className={'p-5'}>
         <h1>

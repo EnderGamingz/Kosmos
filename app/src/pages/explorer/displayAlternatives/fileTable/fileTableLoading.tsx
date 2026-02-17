@@ -14,7 +14,8 @@ export function FileTableLoading() {
         <div
           className={
             'flex [&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700'
-          }>
+          }
+        >
           <div>
             <div className={'w-7'}>
               <Skeleton className={'h-5 w-5 rounded-md'} />
@@ -39,7 +40,8 @@ export function FileTableLoading() {
               }
               style={{
                 animationDelay: `${i * 30}ms`,
-              }}>
+              }}
+            >
               <div>
                 <div className={'w-7'}>
                   <Skeleton className={'h-5 w-5 rounded-md'} />

@@ -1,4 +1,4 @@
-import { FilePreviewStatus, FileType } from '@models/file.ts';
+import { type FilePreviewStatus, FileType } from '@models/file.ts';
 import { PreviewImage } from '@components/Image.tsx';
 import { cn } from '@lib/utils.ts';
 import {
@@ -87,7 +87,8 @@ export default function ItemIcon({
       )}
       style={{
         color: color || undefined,
-      }}>
+      }}
+    >
       {getFileIcon(type, id, name, status, dynamic, disablePreview)}
     </div>
   );

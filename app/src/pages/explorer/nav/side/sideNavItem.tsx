@@ -1,4 +1,4 @@
-import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
+import type { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 
@@ -28,7 +28,8 @@ export function SideNavItem({
               : '[&_svg]:h-6 [&_svg]:min-w-6',
             isActive && !!link.href && 'bg-stone-300/50 dark:bg-stone-700/40',
           )
-        }>
+        }
+      >
         <Icon className={'w-5 h-5'} />
         <div className={'flex w-full items-center justify-between'}>
           <p className={cn(small ? 'text-base' : 'text-lg')}>{link.name}</p>

@@ -1,4 +1,4 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 
 export default function EmbedAudio({
   file,
@@ -11,7 +11,8 @@ export default function EmbedAudio({
     <audio
       className={'animate-fade-scale-in duration-300'}
       controls
-      title={file.file_name}>
+      title={file.file_name}
+    >
       <source src={serveUrl} type={'video/mp4'} />;
     </audio>
   );

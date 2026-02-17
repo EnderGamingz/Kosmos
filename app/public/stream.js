@@ -104,7 +104,7 @@ self.onfetch = event => {
     'Cross-Origin-Embedder-Policy': 'require-corp',
   });
 
-  let headers = new Headers(data.headers || {});
+  const headers = new Headers(data.headers || {});
 
   if (headers.has('Content-Length')) {
     responseHeaders.set('Content-Length', headers.get('Content-Length'));

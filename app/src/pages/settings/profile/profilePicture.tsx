@@ -33,18 +33,21 @@ export default function ProfilePictureSettings() {
           <p
             className={
               'text-muted-foreground whitespace-pre-wrap animate-fade-in-top delay-100'
-            }>
+            }
+          >
             {user.has_avatar
               ? "Your avatar is set by a file you've uploaded."
               : "You don't have an avatar set yet. \nBrowse your files and select and image for your avatar."}
           </p>
           <div
-            className={'flex flex-wrap gap-2 animate-fade-in-left delay-200'}>
+            className={'flex flex-wrap gap-2 animate-fade-in-left delay-200'}
+          >
             {user.has_avatar && (
               <Button
                 variant={'outline'}
                 onClick={() => remove.mutate()}
-                disabled={remove.isPending}>
+                disabled={remove.isPending}
+              >
                 Remove Avatar
               </Button>
             )}

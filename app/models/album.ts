@@ -1,8 +1,8 @@
 import { FileType } from './file';
-import { ContextData } from '@hooks/useContextMenu.ts';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
+import type { ContextData } from '@hooks/useContextMenu.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { ShareFileModelDTO } from '@bindings/ShareFileModelDTO.ts';
 
 export type AlbumFile = FileModelDTO & {
   album: AlbumModelDTO;

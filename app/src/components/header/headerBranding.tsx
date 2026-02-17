@@ -1,7 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import ApplicationIcon from '@components/defaults/icon.tsx';
 import { motion } from 'framer-motion';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import {
   Popover,
@@ -44,19 +44,22 @@ export function HeaderBranding({
           'min-w-max flex items-center gap-2 text-stone-700 dark:text-stone-400'
         }
         layout={'position'}
-        layoutId={'header-branding'}>
+        layoutId={'header-branding'}
+      >
         <Link
           onClick={onClick}
           to={user ? '/home' : '/'}
           className={
             'rounded-lg p-2 flex gap-4 transition-all hover:bg-stone-700/5  dark:hover:bg-stone-300/20'
-          }>
+          }
+        >
           <ApplicationIcon className={'h-8 w-8'} />
           <span
             className={cn(
               'sm:flex gap-1.5 items-center',
               !expanded && 'hidden',
-            )}>
+            )}
+          >
             <span className={'text-2xl font-bold'}>Kosmos</span>
           </span>
         </Link>
@@ -69,13 +72,15 @@ export function HeaderBranding({
         'min-w-max flex items-center gap-2 text-stone-700 dark:text-stone-400'
       }
       layout={'position'}
-      layoutId={'header-branding'}>
+      layoutId={'header-branding'}
+    >
       <Link
         onClick={onClick}
         to={user ? '/home' : '/'}
         className={
           'rounded-lg p-2 transition-all hover:bg-stone-700/5  dark:hover:bg-stone-300/20'
-        }>
+        }
+      >
         <ApplicationIcon className={'h-8 w-8'} />
       </Link>
       <HeaderBrandingSitePartSwitcher expanded={expanded} />
@@ -100,17 +105,23 @@ export function HeaderBrandingSitePartSwitcher({
     <Popover>
       <PopoverTrigger asChild>
         <button
+          type={'button'}
           className={cn(
             'sm:flex gap-2 cursor-pointer items-center relative',
             !expanded && 'hidden',
-          )}>
-          {attention.data && <AttentionDot className={'bg-red-400 right-3 top-0'} />}
+          )}
+        >
+          {attention.data && (
+            <AttentionDot className={'bg-red-400 right-3 top-0'} />
+          )}
           {!noBrand && <span className={'text-2xl font-bold'}>Kosmos</span>}
           <div
             title={'Current location'}
-            className={'flex flex-col items-start text-lg w-max'}>
+            className={'flex flex-col items-start text-lg w-max'}
+          >
             <span
-              className={'text-primary tracking-wider flex items-center gap-1'}>
+              className={'text-primary tracking-wider flex items-center gap-1'}
+            >
               {currentPath?.title ?? fallbackTitle}
               <ChevronDown className={'w-4 h-4'} />
             </span>
@@ -123,7 +134,8 @@ export function HeaderBrandingSitePartSwitcher({
       <PopoverContent
         side={'bottom'}
         align={'start'}
-        className={'w-44 p-2 flex flex-col gap-1'}>
+        className={'w-44 p-2 flex flex-col gap-1'}
+      >
         {/* Fallback explanation */}
         {!currentPath && (
           <div className={'animate-fade-in-top'}>
@@ -142,8 +154,13 @@ export function HeaderBrandingSitePartSwitcher({
                 'menu-button aria-[current]:font-bold',
                 'animate-fade-in-top relative',
                 'hover:bg-stone-700/5 dark:hover:bg-stone-300/20',
-              )}>
-              {part.link.includes("social") && attention.data && <AttentionDot className={'bg-red-400 top-1/2 -translate-y-1/2 right-2'} />}
+              )}
+            >
+              {part.link.includes('social') && attention.data && (
+                <AttentionDot
+                  className={'bg-red-400 top-1/2 -translate-y-1/2 right-2'}
+                />
+              )}
               <part.icon className={'h-6 w-6'} />
               {part.title}
             </NavLink>

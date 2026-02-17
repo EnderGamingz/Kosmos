@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useUserState } from '@stores/userStore';
 import { NoAccess } from '@components/overlay/noAccess.tsx';
-import { Role } from '@models/user.ts';
+import type { Role } from '@models/user.ts';
 
 export default function AccessWrapper({
   el,
