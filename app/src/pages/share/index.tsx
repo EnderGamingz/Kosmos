@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { DataOperationType } from '@models/file.ts';
+import type { DataOperationType } from '@models/file.ts';
 import { FileShareDisplay } from '@pages/share/shareTypes/fileShareDisplay.tsx';
 import { FolderShareDisplay } from '@pages/share/shareTypes/folderShareDisplay.tsx';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';

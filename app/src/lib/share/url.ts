@@ -1,4 +1,4 @@
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { LOCAL_URL } from '@lib/env.ts';
 
 export function getShareUrl(

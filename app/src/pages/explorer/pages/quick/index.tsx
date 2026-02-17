@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { CreateShare } from '@pages/explorer/components/share/create/createShare.tsx';
-import { FileWithPath, useDropzone } from 'react-dropzone';
+import { type FileWithPath, useDropzone } from 'react-dropzone';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MAX_QUICK_SHARE_FILES } from '@lib/constants.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
@@ -85,7 +85,8 @@ export default function QuickSharePage() {
       <div
         className={
           'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5 md:max-h-[calc(100dvh-90px)]'
-        }>
+        }
+      >
         <div className={'grid gap-2'}>
           <h1 className={'text-3xl font-light'}>Quick Share</h1>
           <p className={'text-sm font-light'}>
@@ -103,23 +104,26 @@ export default function QuickSharePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}>
+              className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}
+            >
               <div className={'p-5 lg:col-span-2'}>
                 <motion.div
                   layout
-                  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                  // biome-ignore lint/suspicious/noExplicitAny: The getRootProps function from react-dropzone has a complex return type that is difficult to type correctly in this context, so we will use 'any' here to avoid unnecessary complexity.
                   {...(getRootProps() as any)}
                   className={cn(
                     'flex min-h-52 overflow-hidden rounded-xl border-4 border-dashed border-gray-400/50 p-4',
                     isDragActive && 'border-blue-400/50 bg-blue-50',
                     !files.length && 'items-center justify-center',
-                  )}>
+                  )}
+                >
                   <input {...getInputProps({ id: 'files' })} />
                   {!files.length && (
                     <p
                       className={
                         'text-center text-2xl font-bold text-stone-500'
-                      }>
+                      }
+                    >
                       {isDragActive
                         ? 'Release the files here'
                         : 'Drop some files here'}
@@ -144,9 +148,7 @@ export default function QuickSharePage() {
                 <CreateShare
                   disabled={!files.length || uploadAction.isPending}
                   quick
-                  createButtonText={
-                    'Share' + (files.length ? ` (${files.length})` : '')
-                  }
+                  createButtonText={`Share${files.length ? ` (${files.length})` : ''}`}
                   onCreate={data => {
                     uploadAction.mutate({
                       ...data,
@@ -174,10 +176,15 @@ function FileItem({ file, onRemove }: { file: File; onRemove: () => void }) {
       className={
         'flex w-full items-center gap-2 rounded-md p-1 hover:ring transition-all'
       }
-      onDoubleClick={onRemove}>
+      onDoubleClick={onRemove}
+    >
       <FileIcon className={'h-5 min-w-5'} />
       <p className={'col-span-2 truncate'}>{file.name}</p>
-      <button className={'ml-auto p-1 text-red-500'} onClick={onRemove}>
+      <button
+        type={'button'}
+        className={'ml-auto p-1 text-red-500'}
+        onClick={onRemove}
+      >
         <X className={'h-4 w-4'} />
       </button>
     </motion.li>

@@ -1,4 +1,4 @@
-import { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
+import type { DiskUsageStats } from '@bindings/DiskUsageStats.ts';
 
 const calculatePercentage = (value: number = 0, limit: number): number =>
   Math.min(100, Math.max(0, Math.floor((value / limit) * 100)));

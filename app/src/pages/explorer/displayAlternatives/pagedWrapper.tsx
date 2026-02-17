@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { cn } from '@lib/utils.ts';
-import { ViewSettings } from '@pages/explorer/displayAlternatives/display/types.ts';
-import { ReactElementType } from 'react-window';
+import type { ViewSettings } from '@pages/explorer/displayAlternatives/display/types.ts';
+import type { ReactElementType } from 'react-window';
 
 export function PagedWrapper({
   viewSettings,
@@ -31,8 +31,9 @@ export function PagedWrapper({
         <div className={'p-1 text-center text-sm text-stone-600'} key={0}>
           Loading ...
         </div>
-      }>
-      <>{children}</>
+      }
+    >
+      {children}
     </InfiniteScroll>
   );
 }

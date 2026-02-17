@@ -9,7 +9,6 @@ export function getSeverityIcon(severity: Severity) {
       return OctagonAlert;
     case Severity.WARN:
       return TriangleAlert;
-    case Severity.INFO:
     default:
       return Info;
   }
@@ -23,7 +22,6 @@ export function getSeverityBorderColor(severity: Severity) {
       return 'border-r-red-400';
     case Severity.WARN:
       return 'border-r-amber-400';
-    case Severity.INFO:
     default:
       return 'border-r-blue-300';
   }

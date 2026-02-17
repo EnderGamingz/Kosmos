@@ -18,7 +18,7 @@ export function GridSizeSlider({
         max={7}
         className={'slider'}
         step={1}
-        onChange={e => onChange(parseInt(e.target.value))}
+        onChange={e => onChange(parseInt(e.target.value, 10))}
       />
       <div className={'row mx-1 mt-1 flex justify-between text-sm font-light'}>
         <span>1</span>

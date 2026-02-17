@@ -1,8 +1,8 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { ProfileModelDTO } from '@bindings/ProfileModelDTO.ts';
-import { NotificationActions, Severity } from '@/stores/notificationStore';
+import type { ProfileModelDTO } from '@bindings/ProfileModelDTO.ts';
+import { type NotificationActions, Severity } from '@/stores/notificationStore';
 import { queryClient } from '@lib/query.ts';
 
 export class ProfileQuery {

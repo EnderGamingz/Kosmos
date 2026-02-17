@@ -13,7 +13,7 @@ async function onPush(event) {
     let tag = new Date().toISOString();
 
     if ('NewChatMessage' in action) {
-      let name =
+      const name =
         action.NewChatMessage.content.author.full_name ??
         action.NewChatMessage.content.author.username;
 
@@ -55,7 +55,9 @@ async function onPush(event) {
 
     // Send the push data to the application
     const clients = await self.clients.matchAll();
-    clients.forEach(client => client.postMessage(data));
+    clients.forEach(client => {
+      client.postMessage(data);
+    });
 
     event
       .waitUntil(
@@ -75,7 +77,7 @@ async function onPush(event) {
   }
 }
 
--self.addEventListener('notificationclick', function (event) {
+-self.addEventListener('notificationclick', event => {
   const notification = event.notification;
   const action = event.action;
 

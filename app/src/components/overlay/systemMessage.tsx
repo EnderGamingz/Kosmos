@@ -16,7 +16,8 @@ export default function SystemMessage() {
       className={cn(
         'fixed bottom-1 z-50 mx-1 flex items-center gap-2 rounded-lg bg-stone-600 px-4 py-2 text-sm text-stone-50',
         'md:bottom-[unset] md:right-1/2 md:top-1 md:translate-x-1/2',
-      )}>
+      )}
+    >
       {SYSTEM_MESSAGE}
       <DismissButton id={Dismiss.SystemMessage}>
         <X className={'h-5 w-5'} />

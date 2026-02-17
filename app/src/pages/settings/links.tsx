@@ -1,4 +1,4 @@
-import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
+import type { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import {
   AppWindow,
   BellRing,

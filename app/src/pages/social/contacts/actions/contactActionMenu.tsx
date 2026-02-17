@@ -1,4 +1,4 @@
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { useState } from 'react';
 import {
   Popover,
@@ -18,13 +18,14 @@ export function ContactActionMenu({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className={'px-1'}>
+        <button type={'button'} className={'px-1'}>
           <MoreHorizontal />
         </button>
       </PopoverTrigger>
       <PopoverContent
         className={'p-3'}
-        style={{ maxWidth: CONTEXT_MENU_WIDTH }}>
+        style={{ maxWidth: CONTEXT_MENU_WIDTH }}
+      >
         <div className={'-space-y-1'}>
           <p className={'text-sm animate-fade-in-top'}>Actions for </p>
           <p className={'text-lg animate-fade-in-top delay-50'}>

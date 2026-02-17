@@ -18,7 +18,8 @@ export function BuildIdDisplay() {
       {BUILD_ID && (
         <div
           title={'Build ID'}
-          className={'flex items-center gap-1 text-sm font-light'}>
+          className={'flex items-center gap-1 text-sm font-light'}
+        >
           <Fingerprint className={'h-5 w-5'} />
           {BUILD_ID}
         </div>
@@ -33,7 +34,8 @@ export function BuildTagDisplay({ noIcon }: { noIcon?: boolean }) {
       {BUILD_TAG && (
         <div
           title={'Build Tag'}
-          className={'flex items-center gap-1 text-sm font-light'}>
+          className={'flex items-center gap-1 text-sm font-light'}
+        >
           {!noIcon && <Tag className={'h-5 w-5'} />} {BUILD_TAG}
         </div>
       )}
@@ -52,7 +54,8 @@ export default function AppInfo() {
         <h2
           className={
             'text-2xl font-semibold text-stone-700 md:text-5xl dark:text-stone-300 animate-fade-in-left delay-50'
-          }>
+          }
+        >
           Kosmos
         </h2>
       </div>
@@ -64,7 +67,8 @@ export default function AppInfo() {
           <li key={link.name} className={'flex items-center gap-2'}>
             <span
               className={'animate-fade-in-left flex gap-1'}
-              style={{ animationDelay: `${(i + 1) * 100 + 100}ms` }}>
+              style={{ animationDelay: `${(i + 1) * 100 + 100}ms` }}
+            >
               <link.icon className={'h-6 w-6'} />
               {link.name}:{' '}
             </span>
@@ -76,7 +80,8 @@ export default function AppInfo() {
               }}
               className={
                 'w-0 flex-grow truncate text-stone-600 hover:underline dark:text-stone-300 animate-fade-in-left'
-              }>
+              }
+            >
               {link.href}
             </Link>
           </li>
@@ -88,7 +93,8 @@ export default function AppInfo() {
         }}
         className={
           'flex flex-wrap items-center gap-5 text-stone-500 dark:text-stone-400 animate-fade-in-bottom'
-        }>
+        }
+      >
         <p>
           © {new Date().getFullYear()}{' '}
           <Link to={'https://setilic.com'} target={'_blank'}>

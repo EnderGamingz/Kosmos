@@ -5,7 +5,7 @@ import { BASE_URL } from '@lib/env.ts';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { Fullscreen } from 'lucide-react';
 
 const useUpdateAlbumPreview = (albumId: string, fileId: string) => {
@@ -68,7 +68,7 @@ export default function SetAlbumPreview({
   };
 
   return (
-    <button onClick={handleClick}>
+    <button type={'button'} onClick={handleClick}>
       <Fullscreen className={'w-5 h-5'} />
       Use as Preview
     </button>

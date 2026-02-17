@@ -1,4 +1,4 @@
-import { AlbumFile } from '@models/album.ts';
+import type { AlbumFile } from '@models/album.ts';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import SetAlbumPreview from '@pages/explorer/pages/albums/setAlbumPrevíew.tsx';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';

@@ -1,12 +1,12 @@
 import {
-  ChangeEvent,
-  FormEvent,
+  type ChangeEvent,
+  type SubmitEventHandler,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { DataOperationType } from '@models/file.ts';
+import type { DataOperationType } from '@models/file.ts';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -70,7 +70,7 @@ export function RenameModalContent({
     setInputName(e.target.value);
   };
 
-  const handleNameSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleNameSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (renameAction.isPending) return;
     renameAction.mutate();
@@ -81,9 +81,9 @@ export function RenameModalContent({
     inputRef.current?.setSelectionRange(0, nameLength);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to run this on mount
   useEffect(() => {
     handleFocus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -96,7 +96,8 @@ export function RenameModalContent({
             className={cn(
               'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 px-1',
               'dark:bg-stone-700',
-            )}>
+            )}
+          >
             {renameData.name}
           </span>
         </DialogTitle>
@@ -123,7 +124,8 @@ export function RenameModalContent({
           </DialogClose>
           <Button
             type={'submit'}
-            disabled={inputName === renameData.name || renameAction.isPending}>
+            disabled={inputName === renameData.name || renameAction.isPending}
+          >
             {renameAction.isPending ? 'Renaming' : 'Rename'}
           </Button>
         </DialogFooter>

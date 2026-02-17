@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import merge from 'lodash.merge';
 import { HardDrive, MessageCircleWarning } from 'lucide-react';
-import { Icon } from '@/types/icon.ts';
+import type { Icon } from '@/types/icon.ts';
 
 export enum Dismiss {
   StorageLimit = 'storage_limit',

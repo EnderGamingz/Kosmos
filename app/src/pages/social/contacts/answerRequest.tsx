@@ -1,4 +1,4 @@
-import { ProfileContactPendingModelDTO } from '@bindings/ProfileContactPendingModelDTO.ts';
+import type { ProfileContactPendingModelDTO } from '@bindings/ProfileContactPendingModelDTO.ts';
 import UserAvatar from '@components/UserAvatar.tsx';
 import { useMutation } from '@tanstack/react-query';
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
@@ -25,7 +25,8 @@ export function AnswerRequest({
         variant={'outline'}
         onClick={() => mutate({ accept: true })}
         disabled={isPending}
-        size={'sm'}>
+        size={'sm'}
+      >
         <Check />
         Accept
       </Button>
@@ -33,7 +34,8 @@ export function AnswerRequest({
         variant={'destructive'}
         onClick={() => mutate({ accept: false })}
         disabled={isPending}
-        size={'sm'}>
+        size={'sm'}
+      >
         <X />
         Decline
       </Button>
@@ -57,7 +59,8 @@ export function CancelRequestButton({
       variant={'outline'}
       onClick={() => mutate()}
       disabled={isPending}
-      size={'sm'}>
+      size={'sm'}
+    >
       Cancel
     </Button>
   );
@@ -75,11 +78,13 @@ export function ContactRequestListItem({
       layout
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}>
+      exit={{ opacity: 0, height: 0 }}
+    >
       <div
         className={
           'flex gap-2 p-2 rounded-md transition-colors hover:bg-border'
-        }>
+        }
+      >
         <UserAvatar
           userId={request.user_id}
           username={request.username}

@@ -1,4 +1,4 @@
-import { DataOperationType } from '@models/file.ts';
+import type { DataOperationType } from '@models/file.ts';
 import { RenameModalContent } from './renameModalContent.tsx';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';

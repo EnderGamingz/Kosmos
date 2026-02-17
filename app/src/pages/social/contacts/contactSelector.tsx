@@ -1,4 +1,4 @@
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { useState } from 'react';
 import { useDebounce } from '@hooks/useDebounce.ts';
 import {
@@ -42,17 +42,19 @@ export function ContactSelector({
           <p>Select a contact</p>
           <Link
             to={'/social/contacts'}
-            className={'text-xs underline text-muted-foreground'}>
+            className={'text-xs underline text-muted-foreground'}
+          >
             View contact list
           </Link>
         </div>
         <div className={'flex gap-1'}>
           {selected && (
             <Button
-              className={'!p-0 aspect-square'}
+              className={'p-0! aspect-square'}
               variant={'secondary'}
               size={'sm'}
-              onClick={() => onSelect(undefined)}>
+              onClick={() => onSelect(undefined)}
+            >
               <X />
             </Button>
           )}
@@ -89,7 +91,8 @@ export function ContactSelector({
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}>
+            exit={{ opacity: 0, height: 0 }}
+          >
             <ContactItem profile={selected} />
           </motion.div>
         )}
@@ -112,21 +115,23 @@ function ContactSelectorContent({
   });
 
   return (
-    <ul className={'max-h-72 overflow-y-auto'}>
+    <div className={'max-h-72 overflow-y-auto'}>
       {data.map(profile => (
-        <li
+        <button
+          type={'button'}
           key={profile.user_id}
           className={'group'}
-          onClick={() => onSelect(profile)}>
+          onClick={() => onSelect(profile)}
+        >
           <ContactItem profile={profile} isSelected={selected === profile} />
-        </li>
+        </button>
       ))}
       {!data.length && (
         <div className={'overflow-hidden'}>
           <EmptyList noIcon message={'No contacts found'} />
         </div>
       )}
-    </ul>
+    </div>
   );
 }
 
@@ -142,7 +147,8 @@ function ContactItem({
       className={cn(
         'flex gap-2 p-2 items-center rounded-md group-hover:bg-border',
         isSelected && 'bg-border',
-      )}>
+      )}
+    >
       <UserAvatar username={profile.username} userId={profile.user_id} />
       <div className={'w-full overflow-hidden -space-y-1'}>
         <p>{profile.full_name ?? profile.username}</p>

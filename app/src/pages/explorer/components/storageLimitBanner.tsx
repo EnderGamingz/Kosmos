@@ -44,7 +44,8 @@ export default function StorageLimitBanner() {
               'bg-yellow-100/40 border-yellow-600 dark:bg-yellow-900/40',
             percentages.alertLimit &&
               'bg-red-100/40 border-red-600 dark:bg-red-900/40',
-          )}>
+          )}
+        >
           <div className={'space-y-3 p-4 '}>
             <h2 className={'text-xl'}>
               You have{' '}

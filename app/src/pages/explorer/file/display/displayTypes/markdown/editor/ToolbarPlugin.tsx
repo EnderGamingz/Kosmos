@@ -8,7 +8,7 @@ import {
   CAN_UNDO_COMMAND,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
-  LexicalEditor,
+  type LexicalEditor,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
@@ -16,7 +16,7 @@ import {
 import {
   $createHeadingNode,
   $isHeadingNode,
-  HeadingTagType,
+  type HeadingTagType,
 } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -52,7 +52,7 @@ import {
 const LowPriority = 1;
 
 function Divider() {
-  return <div className={'mx-2 w-[1px] bg-muted-foreground/50 my-1'} />;
+  return <div className={'mx-2 w-px bg-muted-foreground/50 my-1'} />;
 }
 
 export const formatHeading = (
@@ -148,23 +148,28 @@ export default function ToolbarPlugin() {
         '[&_.toolbar-item]:text-stone-800 [&_.toolbar-item_svg]:h-5 [&_.toolbar-item_svg]:w-5',
         '[&_.toolbar-item.active]:bg-stone-200 dark:[&_.toolbar-item.active]:bg-stone-800',
       )}
-      ref={toolbarRef}>
+      ref={toolbarRef}
+    >
       <button
+        type={'button'}
         disabled={!canUndo}
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
         className='toolbar-item'
-        aria-label='Undo'>
+        aria-label='Undo'
+      >
         <Undo />
       </button>
       <button
+        type={'button'}
         disabled={!canRedo}
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined);
         }}
         className='toolbar-item'
-        aria-label='Redo'>
+        aria-label='Redo'
+      >
         <Redo />
       </button>
       <Divider />
@@ -172,7 +177,8 @@ export default function ToolbarPlugin() {
         value={heading}
         onValueChange={v => {
           formatHeading(editor, v as HeadingTagType);
-        }}>
+        }}
+      >
         <SelectTrigger className={'h-9 min-w-36'} defaultValue={'paragraph'}>
           <SelectValue className={'p-1'} placeholder={'Text'} />
         </SelectTrigger>
@@ -208,76 +214,94 @@ export default function ToolbarPlugin() {
         </SelectContent>
       </Select>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
         className={`toolbar-item ${isBold ? 'active' : ''}`}
-        aria-label='Format Bold'>
+        aria-label='Format Bold'
+      >
         <Bold />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
         }}
         className={`toolbar-item ${isItalic ? 'active' : ''}`}
-        aria-label='Format Italics'>
+        aria-label='Format Italics'
+      >
         <Italic />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
         }}
         className={`toolbar-item ${isUnderline ? 'active' : ''}`}
-        aria-label='Format Underline'>
+        aria-label='Format Underline'
+      >
         <Underline />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
         }}
         className={`toolbar-item ${isStrikethrough ? 'active' : ''}`}
-        aria-label='Format Strikethrough'>
+        aria-label='Format Strikethrough'
+      >
         <Strikethrough />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
         }}
         className={`toolbar-item ${isCode ? 'active' : ''}`}
-        aria-label='Format Code'>
+        aria-label='Format Code'
+      >
         <Code />
       </button>
       <Divider />
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
         }}
         className='toolbar-item'
-        aria-label='Left Align'>
+        aria-label='Left Align'
+      >
         <AlignLeft />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
         }}
         className='toolbar-item'
-        aria-label='Center Align'>
+        aria-label='Center Align'
+      >
         <AlignCenter />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
         }}
         className='toolbar-item'
-        aria-label='Right Align'>
+        aria-label='Right Align'
+      >
         <AlignRight />
       </button>
       <button
+        type={'button'}
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
         }}
         className='toolbar-item'
-        aria-label='Justify Align'>
+        aria-label='Justify Align'
+      >
         <AlignJustify />
       </button>
     </div>

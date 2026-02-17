@@ -1,10 +1,10 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { NotificationActions, Severity } from '@/stores/notificationStore';
+import { type NotificationActions, Severity } from '@/stores/notificationStore';
 import { queryClient } from '@lib/query.ts';
-import { PushSubscriptionModelDTO } from '@bindings/PushSubscriptionModelDTO.ts';
-import { CreateNotificationSubscriptionRequest } from '@bindings/CreateNotificationSubscriptionRequest.ts';
+import type { PushSubscriptionModelDTO } from '@bindings/PushSubscriptionModelDTO.ts';
+import type { CreateNotificationSubscriptionRequest } from '@bindings/CreateNotificationSubscriptionRequest.ts';
 
 export class PushQuery {
   public static usePushSubscriptionsSuspense = () => {

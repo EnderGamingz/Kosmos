@@ -1,5 +1,5 @@
 import { createPreviewUrl, createServeUrl } from '@lib/file.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { ImageFullscreenView } from '@pages/explorer/file/display/displayTypes/image/imageFullscreenView.tsx';
 
 export function AlbumFullscreen({

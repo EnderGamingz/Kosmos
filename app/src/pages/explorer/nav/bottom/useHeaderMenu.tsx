@@ -1,5 +1,5 @@
 import {
-  ExplorerLink,
+  type ExplorerLink,
   getAdditionalLinks,
 } from '@pages/explorer/nav/explorerLinks.tsx';
 import { useAppState } from '@stores/appStateStore.ts';
@@ -14,5 +14,5 @@ export function useHeaderMenu({ links }: { links: ExplorerLink[] }) {
     return () => {
       clearHeaderLinks();
     };
-  }, [links]);
+  }, [links, clearHeaderLinks, setHeaderLinks]);
 }

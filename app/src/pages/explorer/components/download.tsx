@@ -3,7 +3,7 @@ import streamSaver from 'streamsaver';
 import { WritableStream } from 'web-streams-polyfill';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useContext, useState } from 'react';
-import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { DisplayContext, type DisplayContextType } from '@lib/contexts.ts';
 import { createDownloadUrl } from '@lib/file.ts';
 import { Download } from 'lucide-react';
 
@@ -115,11 +115,13 @@ export function DownloadSingleAction({
 
   return (
     <button
+      type={'button'}
       onClick={() => {
         downloadAction.mutate();
         onClose?.();
       }}
-      disabled={downloadAction.isPending}>
+      disabled={downloadAction.isPending}
+    >
       <Download />
       Download
     </button>

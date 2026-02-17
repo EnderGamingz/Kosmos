@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { ModalCloseButton } from '@pages/explorer/file/display/modalCloseButton.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 
 export function FileDisplayFooter({
@@ -20,7 +20,8 @@ export function FileDisplayFooter({
           'flex flex-col items-center justify-between gap-2 sm:flex-row',
           'text-xs text-stone-500',
           'dark:text-stone-400',
-        )}>
+        )}
+      >
         <p className={'animate-fade-in-left delay-300'}>
           Created {formatDistanceToNow(file.created_at, { addSuffix: true })}
         </p>

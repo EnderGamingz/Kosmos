@@ -1,7 +1,9 @@
 import { createServeUrl } from '@lib/file.ts';
-import { DisplayContext, DisplayContextType } from '@lib/contexts.ts';
+import { DisplayContext, type DisplayContextType } from '@lib/contexts.ts';
 import { useContext } from 'react';
-import { SquareArrowOutUpRight } from 'lucide-react';
+import { CopyIcon, SquareArrowOutUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Copy } from '@pages/explorer/components/share/copy.tsx';
 
 export default function OpenExternally({
   id,
@@ -19,12 +21,17 @@ export default function OpenExternally({
     false,
   );
 
-  const openInNew = () => window.open(url, '_blank');
-
   return (
-    <button onClick={openInNew}>
-      <SquareArrowOutUpRight />
-      Open
-    </button>
+    <div className={'flex gap-1'}>
+      <Copy text={url}>
+        <CopyIcon className={'size-4! -mx-0.5'} />
+      </Copy>
+      <Link to={url} target={'_blank'}>
+        <button type={'button'}>
+          <SquareArrowOutUpRight />
+          Open
+        </button>
+      </Link>
+    </div>
   );
 }

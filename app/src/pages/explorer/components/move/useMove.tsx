@@ -2,7 +2,7 @@ import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import {
+import type {
   MoveData,
   MultiMoveData,
 } from '@pages/explorer/components/move/moveModalContent.tsx';

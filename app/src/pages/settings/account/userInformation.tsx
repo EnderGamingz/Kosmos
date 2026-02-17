@@ -65,7 +65,8 @@ export function UserInformation() {
         }}
         className={
           'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block animate-fade-in-top delay-100'
-        }>
+        }
+      >
         <div>
           <label htmlFor={'username'}>Username</label>
           <Input
@@ -99,7 +100,8 @@ export function UserInformation() {
         <div
           className={
             'col-span-1 mt-1 md:col-span-2 animate-fade-in-top delay-200'
-          }>
+          }
+        >
           <Button
             type={'submit'}
             disabled={
@@ -107,7 +109,8 @@ export function UserInformation() {
               objectHash(user) ===
                 objectHash({ ...user, username, email, full_name: fullName })
             }
-            className={'float-right px-5'}>
+            className={'float-right px-5'}
+          >
             Update
           </Button>
         </div>

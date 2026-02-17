@@ -7,7 +7,7 @@ import { Button } from '@components/ui/button.tsx';
 import { Plus } from 'lucide-react';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import UserAvatar from '@components/UserAvatar.tsx';
 import { useMutation } from '@tanstack/react-query';
 import { useChatContext } from '@pages/social/chats/context.tsx';
@@ -35,16 +35,14 @@ function InviteUserPopoverContent() {
   const { data } = ChatQuery.useAvailableUsersForGroupChatSuspense({ chatId });
 
   return (
-    <ul className={'divide-y'}>
+    <div className={'divide-y'}>
       {data?.map(user => (
         <UserItem key={user.user_id} user={user} chatId={chatId} />
       ))}
       {data?.length === 0 && (
-        <li>
-          <EmptyList message={'No users available to invite.'} />
-        </li>
+        <EmptyList message={'No users available to invite.'} />
       )}
-    </ul>
+    </div>
   );
 }
 
@@ -70,9 +68,11 @@ function UserItem({
   };
 
   return (
-    <li
+    <button
+      type={'button'}
       onClick={handleClick}
-      className={'transition-colors hover:bg-border p-2 rounded-md'}>
+      className={'text-start transition-colors hover:bg-border p-2 rounded-md'}
+    >
       <div className={'flex gap-2'}>
         <UserAvatar
           disabled={!user.has_avatar}
@@ -87,6 +87,6 @@ function UserItem({
           </p>
         </div>
       </div>
-    </li>
+    </button>
   );
 }

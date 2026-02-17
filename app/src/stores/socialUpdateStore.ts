@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
+import type { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
 
 export const SOCIAL_UPDATE_TIMEOUT = 5000;
 

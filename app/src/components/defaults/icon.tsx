@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
+import type { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
 import { Theme, usePreferenceStore } from '@stores/preferenceStore.ts';
 
 const ApplicationIcon = (

@@ -2,7 +2,7 @@ import { Link, Outlet } from 'react-router-dom';
 import { SocialPageMetadata } from '@components/metadata.tsx';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
-import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import type { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { useMemo } from 'react';
 import UserAvatar from '@components/UserAvatar.tsx';
@@ -82,7 +82,8 @@ export function ChatList({ preview }: { preview?: boolean }) {
           preview
             ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
             : 'max-h-[calc(100dvh-90px-2.5rem-36px-1rem)] max-md:max-h-[calc(100dvh-90px-2.5rem-36px-1rem-80px)] overflow-y-auto divide-y grow',
-        )}>
+        )}
+      >
         {data?.map(chat => (
           <ChatItem
             key={chat.id}
@@ -121,7 +122,8 @@ function ChatItem({
         className={cn(
           'p-2 flex gap-3 hover:bg-border rounded-md transition-colors',
           small && 'flex-col border',
-        )}>
+        )}
+      >
         {partnerInfo && (
           <UserAvatar
             username={partnerInfo.username}

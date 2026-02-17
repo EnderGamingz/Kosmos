@@ -32,9 +32,11 @@ export function FileGridSort() {
     <Popover>
       <PopoverTrigger asChild>
         <button
+          type={'button'}
           className={
             'flex items-center gap-1 px-2 text-sm text-stone-500 [&_svg]:h-5 [&_svg]:w-5'
-          }>
+          }
+        >
           {sortIcon()}
           {getSortString(currentSort.sort_by) ?? 'Sort'}
         </button>
@@ -42,9 +44,10 @@ export function FileGridSort() {
       <PopoverContent
         side={'bottom'}
         className={cn(
-          'max-w-42 p-3 [&>*]:rounded-md [&>*]:px-2 [&>*]:py-1 [&>*]:transition-colors',
-          '[&>*:hover]:bg-muted [&>*]:flex [&>*]:items-center [&>*]:justify-between',
-        )}>
+          'max-w-42 p-3 *:rounded-md *:px-2 *:py-1 *:transition-colors',
+          '[&>*:hover]:bg-muted *:flex *:items-center *:justify-between',
+        )}
+      >
         <ExplorerSort
           name={'Name'}
           sort={SortBy.Name}
@@ -63,8 +66,8 @@ export function FileGridSort() {
           currentSortBy={currentSort.sort_by}
           currentOrder={currentSort.sort_order}
         />
-        <hr className={'my-1 border-stone-200 !p-0'} />
-        <button onClick={() => clear()} className={'w-full'}>
+        <hr className={'my-1 border-stone-200 p-0!'} />
+        <button type={'button'} onClick={() => clear()} className={'w-full'}>
           Clear
           <X className={'h-3 w-3'} />
         </button>

@@ -13,8 +13,8 @@ import { ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { GridSizeSlider } from '@pages/explorer/pages/albums/single/gridSizeSlider.tsx';
 import { AlbumFullscreen } from '@pages/explorer/pages/albums/single/albumFullscreen.tsx';
 import { DisplayContext } from '@lib/contexts.ts';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { getInitialGridSize } from '@utils/grid.ts';
 import { useArrowKeys } from '@utils/registers/arrowKeys.ts';
 import { cn } from '@lib/utils.ts';
@@ -47,7 +47,8 @@ export default function AlbumPage() {
         ref={container}
         className={
           'flex h-full max-h-[calc(100dvh-90px)] flex-col space-y-5 overflow-y-auto p-5 max-md:max-h-[calc(100dvh-90px-80px)]'
-        }>
+        }
+      >
         {albumQuery.data && (
           <AlbumPageContent
             album={albumQuery.data.album}
@@ -110,20 +111,23 @@ export function AlbumPageContent({
           setDrag: () => {},
           resetDrag: () => {},
         },
-      }}>
+      }}
+    >
       <div aria-hidden className={'max-h-[200px] min-h-[200px]'} />
       <div
         className={cn(
           'absolute left-5 right-5 top-5 z-40 !mt-0 flex items-start gap-5 rounded-b-xl transition-all',
           scrolling &&
             'left-0 right-0 top-0 bg-stone-50/70 p-2 backdrop-blur-lg dark:bg-stone-900/70',
-        )}>
+        )}
+      >
         <div
           className={'min-w-[60px] transition-all'}
           style={{
             height: scrolling ? 60 : 200,
             width: scrolling ? 60 : 200,
-          }}>
+          }}
+        >
           <AlbumCover album={album} shareUuid={shareUuid} />
         </div>
         <AlbumTitle album={album} dense={scrolling} disabled={!!shareUuid}>
@@ -132,7 +136,8 @@ export function AlbumPageContent({
           )}
         </AlbumTitle>
         <div
-          className={'ml-auto text-stone-800 animate-fade-in-right delay-200'}>
+          className={'ml-auto text-stone-800 animate-fade-in-right delay-200'}
+        >
           <AlbumMenu album={album}>
             <GridSizeSlider
               value={size}

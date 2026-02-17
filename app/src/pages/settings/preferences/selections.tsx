@@ -7,9 +7,9 @@ import {
   getExplorerLoading,
   getMobileView,
   MobileViewType,
-  PreferenceState,
+  type PreferenceState,
 } from '@stores/preferenceStore.ts';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   BringToFront,
   CircleEllipsis,

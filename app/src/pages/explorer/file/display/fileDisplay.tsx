@@ -171,12 +171,12 @@ function FileDisplayContent({
             <div
               className={cn(
                 'relative shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
-                'z-10 flex w-full flex-col space-y-5 transition-all',
-                'whitespace-nowrap rounded-xl max-md:rounded-b-none bg-gray-50 p-3 md:p-6',
+                'z-10 flex w-full flex-col space-y-3 transition-all',
+                'whitespace-nowrap rounded-md max-md:rounded-b-none bg-gray-50 p-3 md:p-4',
                 'max-sm:min-h-1/2 md:outline-2 -outline-offset-2 outline-transparent',
                 'dark:bg-stone-900 dark:outline-stone-400/20',
                 isSelected &&
-                  '-outline-offset-4 outline-blue-500 dark:outline-blue-400',
+                  '-outline-offset-2 outline-blue-500 dark:outline-blue-400',
               )}
             >
               <DisplayHeader
@@ -187,9 +187,8 @@ function FileDisplayContent({
               {/**
                * Disabled for now as the favorite changes, the file order
                * and file display currently relies on scope index which changes
-               !shareUuid && (
-               <FileDisplayFavorite file={file} onUpdate={onUpdate} />
-               )**/}
+               * !shareUuid && (<FileDisplayFavorite file={file} onUpdate={onUpdate} />)
+               **/}
               <FileDisplayStats file={prevFile} />
               <FileDisplayActions
                 shareUuid={shareUuid}

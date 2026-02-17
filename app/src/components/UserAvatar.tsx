@@ -21,7 +21,8 @@ export default function UserAvatar({
       className={cn(
         'isolate relative after:content-["_"] after:absolute after:inset-0 after:z-10 after:rounded-full after:inset-shadow-sm',
         className,
-      )}>
+      )}
+    >
       {userId && !disabled && (
         <AvatarImage
           className={'object-cover'}

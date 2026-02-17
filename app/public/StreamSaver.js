@@ -4,9 +4,11 @@
 
 ;((name, definition) => {
   typeof module !== 'undefined'
+    // biome-ignore lint/suspicious/noAssignInExpressions: This is a common pattern for UMD modules.
     ? module.exports = definition()
     : typeof define === 'function' && typeof define.amd === 'object'
       ? define(definition)
+      // biome-ignore lint/suspicious/noAssignInExpressions: This is a common pattern for UMD modules.
       : this[name] = definition()
 })('streamSaver', () => {
   'use strict'

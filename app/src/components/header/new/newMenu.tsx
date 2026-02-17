@@ -26,7 +26,10 @@ export default function NewMenu() {
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button className={'flex items-center gap-1 py-2.5 px-2.5'}>
+          <button
+            type={'button'}
+            className={'flex items-center gap-1 py-2.5 px-2.5'}
+          >
             <Plus className={'h-5 w-5 sm:mr-1'} />
             <span className={'text-md text-md hidden sm:inline'}>New</span>
           </button>
@@ -46,7 +49,8 @@ export default function NewMenu() {
                 title={'Quick Share'}
                 to={'/home/quick'}
                 onClick={handleClose}
-                className={'menu-button py-2 animate-fade-in-top delay-75'}>
+                className={'menu-button py-2 animate-fade-in-top delay-75'}
+              >
                 <Clock className={'h-5 w-5'} />
               </Link>
             </div>

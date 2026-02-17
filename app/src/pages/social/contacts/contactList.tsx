@@ -1,5 +1,5 @@
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import UserAvatar from '@components/UserAvatar.tsx';
 import { ContactActionMenu } from '@pages/social/contacts/actions/contactActionMenu.tsx';
 import { cn } from '@lib/utils.ts';
@@ -33,11 +33,13 @@ function ContactListItem({ profile }: { profile: ProfileContactModelDTO }) {
       layout
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}>
+      exit={{ opacity: 0, height: 0 }}
+    >
       <div
         className={
           'flex gap-2 p-2 rounded-md transition-colors hover:bg-border'
-        }>
+        }
+      >
         <UserAvatar
           userId={profile.user_id}
           username={profile.username}

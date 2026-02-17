@@ -1,5 +1,5 @@
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
-import { DetailType, ExplorerDisplay } from '@stores/preferenceStore.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { DetailType, ExplorerDisplay } from '@stores/preferenceStore.ts';
 
 export type ViewSettings = {
   /**

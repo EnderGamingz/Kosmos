@@ -1,4 +1,4 @@
-import { DetailType, ExplorerDisplay } from '@stores/preferenceStore.ts';
+import { type DetailType, ExplorerDisplay } from '@stores/preferenceStore.ts';
 import { lazy } from 'react';
 
 const FileTable = lazy(
@@ -24,7 +24,6 @@ export function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
       return <FileGrid details={details} />;
     case ExplorerDisplay.Mobile:
       return <MobileList />;
-    case ExplorerDisplay.Table:
     default:
       return <FileTable />;
   }

@@ -14,7 +14,8 @@ export default function SettingsPagesWrapper() {
         <div
           className={
             'grow p-5 max-w-5xl w-full mx-auto overflow-y-auto max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]'
-          }>
+          }
+        >
           <div className={'pb-10'}>
             <Outlet />
           </div>

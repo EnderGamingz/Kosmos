@@ -1,4 +1,4 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import AlbumAction from '@pages/explorer/pages/albums/AlbumAction.tsx';
 import { DownloadSingleAction } from '@pages/explorer/components/download.tsx';

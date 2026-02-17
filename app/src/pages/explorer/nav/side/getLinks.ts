@@ -15,7 +15,6 @@ export function getLinks(source: LinkSource, binUsage?: string) {
       return getSettingsLinks();
     case 'social':
       return getSocialLinks();
-    case 'default':
     default:
       return getExplorerLinks(binUsage);
   }

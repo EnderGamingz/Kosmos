@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type * as React from 'react';
 import * as ProgressPrimitive from '@radix-ui/react-progress';
 
 import { cn } from '@/lib/utils';
@@ -22,7 +22,8 @@ export function Progress({
         'relative h-2 w-full overflow-hidden rounded-full',
         className,
       )}
-      {...props}>
+      {...props}
+    >
       <ProgressPrimitive.Indicator
         data-slot='progress-indicator'
         className={cn(

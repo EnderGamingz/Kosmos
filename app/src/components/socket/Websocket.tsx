@@ -3,13 +3,13 @@ import { BASE_URL } from '@lib/env.ts';
 import { WEBSOCKET_ENDPOINT } from '@lib/constants.ts';
 import { useUserState } from '@stores/userStore.ts';
 import { useEffect } from 'react';
-import { PresenceMessage } from '@bindings/PresenceMessage.ts';
+import type { PresenceMessage } from '@bindings/PresenceMessage.ts';
 import { ChatQuery } from '@lib/queries/chatQuery.ts';
-import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
-import { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage';
-import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage';
-import { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate';
-import { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
+import type { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
+import type { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage';
+import type { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage';
+import type { PresenceSocialUpdate } from '@bindings/PresenceSocialUpdate';
+import type { PresenceOperationsUpdate } from '@bindings/PresenceOperationsUpdate.ts';
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
 import {
   handlePresenceOperationsUpdate,
@@ -18,10 +18,10 @@ import {
   invalidateUsage,
 } from '@lib/query.ts';
 import {
-  SocialUpdateState,
+  type SocialUpdateState,
   useSocialUpdate,
 } from '@stores/socialUpdateStore.ts';
-import { PresenceChatUpdate } from '@bindings/PresenceChatUpdate';
+import type { PresenceChatUpdate } from '@bindings/PresenceChatUpdate';
 
 export default function Websocket() {
   const user = useUserState(s => s.user);
@@ -43,7 +43,7 @@ function Connector() {
   useEffect(() => {
     if (lastJsonMessage)
       handleServerAction(lastJsonMessage as PresenceMessage, socialUpdate);
-  }, [lastJsonMessage]);
+  }, [lastJsonMessage, socialUpdate]);
 
   return null;
 }

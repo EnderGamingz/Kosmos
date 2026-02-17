@@ -1,4 +1,4 @@
-import { getShareTypeString, ShareType } from '@models/share.ts';
+import { getShareTypeString, type ShareType } from '@models/share.ts';
 import { motion } from 'framer-motion';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 import { cn } from '@lib/utils.ts';
@@ -14,12 +14,13 @@ export function TypeButton({
 }) {
   return (
     <button
+      type={'button'}
       onClick={onSelect}
       className={cn(
         'isolate relative flex rounded-md px-3 py-1 transition-colors hover:bg-stone-800/20',
         'items-center gap-4 text-lg',
       )}
-      aria-selected={selected}>
+    >
       {getShareTypeIcon(type)}
       {getShareTypeString(type)}
       {selected && (

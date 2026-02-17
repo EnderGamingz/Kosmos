@@ -19,7 +19,8 @@ export function ImageTooLargePrompt({
       exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
       className={
         'absolute inset-0 flex h-full w-full items-center justify-center'
-      }>
+      }
+    >
       <div
         className={cn(
           'space-y-3 rounded-xl bg-black/40 p-3 text-white backdrop-blur-lg',
@@ -27,7 +28,8 @@ export function ImageTooLargePrompt({
           '[&>button]:gap-2 [&>button]:bg-stone-200 [&>button]:p-1 [&>button]:text-stone-800',
           '[&>button]:w-full [&>button]:justify-center [&>button]:rounded-md [&>button]:px-3',
           'outline outline-1 outline-stone-400/40',
-        )}>
+        )}
+      >
         <p className={'text-lg'}>Image is above {useFormatBytes(threshold)}</p>
         <DownloadSingleAction id={id} name={name} />
       </div>

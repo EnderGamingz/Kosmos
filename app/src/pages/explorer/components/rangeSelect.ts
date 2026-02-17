@@ -1,5 +1,5 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 type SelectionResult = { files: FileModelDTO[]; folders: FolderModelDTO[] };
 

@@ -27,7 +27,7 @@ const definedColors = [
 export function ColorDisplay({ color }: { color: string }) {
   return (
     <div
-      className={'h-3.5 w-3.5 !rounded-full !p-0 shadow-md transition-colors'}
+      className={'h-3.5 w-3.5 rounded-full! p-0! shadow-md transition-colors'}
       style={{
         backgroundColor: color,
       }}
@@ -98,8 +98,7 @@ export function FolderColorChange({
     if (!isOpen && color !== selected && selected !== '') {
       recolorAction.mutate({});
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, color, recolorAction.mutate, selected]);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -110,9 +109,10 @@ export function FolderColorChange({
         <div className={'flex flex-wrap gap-2 justify-center'}>
           {definedColors.map(color => (
             <button
+              type={'button'}
               onClick={handleClick(color)}
               key={color}
-              className={'h-5 w-5 !rounded-full !p-0 shadow-md'}
+              className={'h-5 w-5 rounded-full! p-0! shadow-md'}
               style={{
                 backgroundColor: color,
               }}
@@ -127,19 +127,21 @@ export function FolderColorChange({
             onChange={color => setSelected(color.hex)}
           />
           <ShadeSlider
-            className={'overflow-hidden w-full border !rounded-xs'}
+            className={'overflow-hidden w-full border rounded-xs!'}
             hsva={hexToHsva(selected || color || '#ffffff')}
             onChange={newShade => {
-              const hsva = hexToHsva(selected || color || 'lightgray');
-              setSelected(hsvaToHex({ ...hsva, v: newShade.v }));
+              const parsedColor = hexToHsva(selected || color || 'lightgray');
+              setSelected(hsvaToHex({ ...parsedColor, v: newShade.v }));
             }}
           />
           {(color || selected) && (
             <button
+              type={'button'}
               onClick={() => recolorAction.mutate({ remove: true })}
               className={
                 'flex items-center gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
-              }>
+              }
+            >
               <Delete className={'h-5 w-5'} />
               Remove
             </button>

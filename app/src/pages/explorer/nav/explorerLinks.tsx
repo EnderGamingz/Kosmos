@@ -11,7 +11,7 @@ import {
   User,
 } from 'lucide-react';
 
-import { Icon } from '@/types/icon.ts';
+import type { Icon } from '@/types/icon.ts';
 
 export type ExplorerLink = {
   name: string;

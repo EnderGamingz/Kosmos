@@ -3,8 +3,8 @@ import { Button } from '@components/ui/button.tsx';
 import { useUserState } from '@stores/userStore.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { FormEvent } from 'react';
-import { UpdateProfileDTO } from '@bindings/UpdateProfileDTO.ts';
+import type { SubmitEventHandler } from 'react';
+import type { UpdateProfileDTO } from '@bindings/UpdateProfileDTO.ts';
 import { ProfileQuery } from '@lib/queries/profileQuery.ts';
 import { Textarea } from '@components/ui/textarea.tsx';
 import axios from 'axios';
@@ -14,8 +14,6 @@ import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 export default function ProfileInfoSettings() {
   const user = useUserState(s => s.user);
   const notifications = useNotifications(s => s.actions);
-
-  if (!user) return null;
 
   const { data } = ProfileQuery.useProfileSelfSuspense();
 
@@ -49,9 +47,11 @@ export default function ProfileInfoSettings() {
     },
   });
 
-  const onSubmit = (e: FormEvent) => {
+  if (!user) return null;
+
+  const onSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.target);
     const payload: UpdateProfileDTO = {
       full_name: formData.get('full_name') as string,
       email: formData.get('email') as string,
@@ -71,7 +71,8 @@ export default function ProfileInfoSettings() {
         onSubmit={onSubmit}
         className={
           'grid grid-cols-1 gap-2 sm:grid-cols-2 [&>div]:space-y-1 [&_label]:block animate-fade-in-top delay-300'
-        }>
+        }
+      >
         <div>
           <label htmlFor={'full_name'}>Full Name</label>
           <Input
@@ -136,11 +137,13 @@ export default function ProfileInfoSettings() {
         <div
           className={
             'mt-auto sm:col-span-2 justify-self-end animate-fade-in-top delay-400'
-          }>
+          }
+        >
           <Button
             type={'submit'}
             disabled={action.isPending}
-            className={'px-10'}>
+            className={'px-10'}
+          >
             Update
           </Button>
         </div>

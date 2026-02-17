@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useKeyStore } from '@stores/keyStore.ts';
 import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { CSSProperties, useContext, useState } from 'react';
+import { type CSSProperties, useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useExplorerStore } from '@stores/explorerStore.ts';
@@ -11,7 +11,7 @@ import { useMove } from '@pages/explorer/components/move/useMove.tsx';
 import { isTouchDevice } from '@utils/touch.ts';
 import Favorite from '@pages/explorer/components/favorite.tsx';
 import { getMultiMoveBySelected } from '@pages/explorer/components/move/getMultiMoveBySelected.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Checkbox } from '@components/ui/checkbox.tsx';
 import { EllipsisVertical } from 'lucide-react';
@@ -76,6 +76,8 @@ export function TableFolderItem({
   const selectDisabled = context.viewSettings?.selectDisable?.folders;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with mobile touch interactions.
     <div
       style={style}
       onClick={() => {
@@ -94,7 +96,8 @@ export function TableFolderItem({
         isShift && 'cursor-pointer',
         context.select.rangeStart === i &&
           'bg-indigo-50 dark:bg-indigo-600/60 hover:bg-indigo-100 dark:hover:bg-indigo-700/60',
-      )}>
+      )}
+    >
       {!context.viewSettings?.noSelect && (
         <div>
           <Checkbox
@@ -103,7 +106,7 @@ export function TableFolderItem({
           />
         </div>
       )}
-      <div className={'!p-0 grow'}>
+      <div className={'p-0! grow'}>
         <div className={'flex w-full items-center'}>
           <motion.div
             onClick={handleFolderClick}
@@ -135,7 +138,8 @@ export function TableFolderItem({
             onMouseLeave={() => {
               if (!disabled) setDragDestination();
             }}
-            className={'flex w-full cursor-pointer items-center'}>
+            className={'flex w-full cursor-pointer items-center'}
+          >
             <ItemIcon
               id={folder.id}
               name={folder.folder_name}
@@ -144,8 +148,9 @@ export function TableFolderItem({
             />
             <span
               className={
-                'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
-              }>
+                'w-0 grow overflow-hidden overflow-ellipsis whitespace-nowrap p-2'
+              }
+            >
               {folder.folder_name}
             </span>
           </motion.div>
@@ -156,17 +161,20 @@ export function TableFolderItem({
             iconOnly
           />
           <button
+            type={'button'}
             onClick={e => {
               context.handleContext({ x: e.clientX, y: e.clientY }, folder);
             }}
-            className={'p-2'}>
+            className={'p-2'}
+          >
             <EllipsisVertical className={'h-5 w-5'} />
           </button>
         </div>
       </div>
       <div className={'text-right w-[110px]'}></div>
       <div
-        className={'whitespace-nowrap text-sm font-light text-right w-[155px]'}>
+        className={'whitespace-nowrap text-sm font-light text-right w-[155px]'}
+      >
         {formatDistanceToNow(folder.updated_at)}
       </div>
     </div>

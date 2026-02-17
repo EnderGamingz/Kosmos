@@ -1,12 +1,12 @@
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { UpdateAlbumPayload } from '@models/album.ts';
+import type { UpdateAlbumPayload } from '@models/album.ts';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import { FormEvent, ReactNode } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlbumQuery } from '@lib/queries/albumQuery.ts';
-import { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
+import type { AlbumModelDTO } from '@bindings/AlbumModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Button } from '@components/ui/button.tsx';
 
@@ -80,11 +80,13 @@ export function AlbumTitle({
       className={cn(
         'flex flex-grow flex-col gap-5 transition-all',
         dense && 'gap-1',
-      )}>
+      )}
+    >
       <form
         className={'flex-grow'}
         onSubmit={handleAlbumUpdate}
-        onBlur={handleAlbumUpdate}>
+        onBlur={handleAlbumUpdate}
+      >
         <div className={'flex'}>
           <motion.input
             layout={'position'}

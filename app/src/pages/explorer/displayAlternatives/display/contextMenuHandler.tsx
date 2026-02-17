@@ -1,4 +1,4 @@
-import { ContextMenuType } from '@hooks/useContextMenu.ts';
+import type { ContextMenuType } from '@hooks/useContextMenu.ts';
 import { AnimatePresence } from 'framer-motion';
 import { Backdrop } from '@components/overlay/backdrop.tsx';
 import ExplorerContextMenu, {
@@ -25,7 +25,8 @@ function ContextMenuContent({
           <ExplorerContextMenu
             key={'context-menu'}
             pos={context.pos}
-            scrollControlMissing={scrollControlMissing}>
+            scrollControlMissing={scrollControlMissing}
+          >
             <ContextMenuExplorerContent data={context.data} onClose={onClose} />
           </ExplorerContextMenu>
         </>

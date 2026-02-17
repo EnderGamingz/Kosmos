@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button.tsx';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { ReactNode, Suspense } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import { LoaderCircle, RefreshCcw } from 'lucide-react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { cn } from '@/lib/utils.ts';
@@ -59,7 +59,8 @@ function QueryErrorBoundary({ children }: { children: ReactNode }) {
               </Button>
             </div>
           )}
-          fallback={undefined}>
+          fallback={undefined}
+        >
           {children}
         </ErrorBoundary>
       )}
@@ -75,7 +76,8 @@ function ErrorDisplay({ error }: { error: Error }) {
           <h2 className={'font-semibold'}>An error occurred</h2>
           <p
             className={'text-sm text-muted-foreground'}
-            title={new Date().toISOString()}>
+            title={new Date().toISOString()}
+          >
             {format(new Date(), 'pp')}
           </p>
         </div>
@@ -85,9 +87,11 @@ function ErrorDisplay({ error }: { error: Error }) {
         <Dialog>
           <DialogTrigger asChild>
             <button
+              type={'button'}
               className={
                 'flex flex-col gap-1 text-left relative px-2 my-2 border-l-4 border-red-500'
-              }>
+              }
+            >
               {error.message && (
                 <span className={'text-red-500 truncate'}>
                   &quot;
@@ -104,7 +108,7 @@ function ErrorDisplay({ error }: { error: Error }) {
               <DialogDescription>{error.message}</DialogDescription>
             </DialogHeader>
             <pre className={'max-h-[50vh] overflow-auto p-2 border rounded-md'}>
-              {error.stack && error.stack.toString()}
+              {error.stack?.toString()}
             </pre>
           </DialogContent>
         </Dialog>

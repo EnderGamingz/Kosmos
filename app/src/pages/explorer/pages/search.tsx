@@ -32,7 +32,8 @@ export default function SearchPage() {
     <div
       className={
         'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-      }>
+      }
+    >
       <PageMetadata title={`"${query}" - Search`} />
       {(!search?.data || search.isLoading) && <RouterLoadingBar />}
       <div className={'px-5 pt-5'}>
@@ -41,7 +42,8 @@ export default function SearchPage() {
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className={'text-stone-600 dark:text-stone-400'}>
+          className={'text-stone-600 dark:text-stone-400'}
+        >
           {search.data
             ? `Found ${search.data?.files.length} file${search.data?.files.length === 1 ? '' : 's'} and ${search.data?.folders.length} folder${search.data?.folders.length === 1 ? '' : 's'} for "${query}"`
             : search.isLoading

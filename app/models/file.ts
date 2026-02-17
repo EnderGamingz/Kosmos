@@ -34,7 +34,12 @@ export const FileTypeActions = {
   isAudio: (id: number) => [FileType.Audio].includes(id),
 
   canOpenExternal: (data: FileModelDTO) =>
-    [FileType.Document, FileType.Video].includes(data.file_type),
+    [
+      FileType.Image,
+      FileType.LargeImage,
+      FileType.Document,
+      FileType.Video,
+    ].includes(data.file_type),
 
   hasPreview: (data: FileModelDTO) =>
     [FileType.Image, FileType.RawImage].includes(data.file_type),

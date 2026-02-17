@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { AnimatePresence } from 'framer-motion';
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { useEffect, useState } from 'react';
 import { useUserShareData } from '@lib/query.ts';
 import { ShareData } from '@pages/explorer/components/share/shareData.tsx';
@@ -58,7 +58,7 @@ export function ShareSheetContent({
   return (
     <>
       <SheetHeader>
-        <SheetTitle>{'Share ' + shareElementType}</SheetTitle>
+        <SheetTitle>{`Share ${shareElementType}`}</SheetTitle>
         <SheetDescription>
           {data.data?.length
             ? `${data.data.length} share${data.data.length > 1 ? 's' : ''} created`
@@ -69,7 +69,8 @@ export function ShareSheetContent({
         <Button
           variant={'outline'}
           onClick={() => setCreate(prev => !prev)}
-          className={'w-full'}>
+          className={'w-full'}
+        >
           <Plus
             className={cn(
               'h-4 w-4  transition-all',
@@ -81,7 +82,8 @@ export function ShareSheetContent({
         <div
           className={
             'mb-3 flex h-full flex-col overflow-y-auto px-1 py-3 scrollbar-hide'
-          }>
+          }
+        >
           <AnimatePresence>
             {create ? (
               <CreateShare

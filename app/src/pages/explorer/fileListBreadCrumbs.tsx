@@ -1,6 +1,6 @@
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import BreadCrumbs, { BreadCrumbItem } from '@components/BreadCrumbs.tsx';
-import { SimpleDirectoryDTO } from '@bindings/SimpleDirectoryDTO.ts';
+import type { SimpleDirectoryDTO } from '@bindings/SimpleDirectoryDTO.ts';
 import { Home } from 'lucide-react';
 
 export function FileListBreadCrumbs({

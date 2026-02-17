@@ -1,18 +1,18 @@
-import { lazy, ReactNode, useEffect, useState } from 'react';
+import { lazy, type ReactNode, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { DataOperationType, Selected } from '@models/file.ts';
+import type { DataOperationType, Selected } from '@models/file.ts';
 import { DisplayContext } from '@lib/contexts.ts';
-import { ListOnScrollProps } from 'react-window';
-import { Vec2 } from '@/types/vec2.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import {
+import type { ListOnScrollProps } from 'react-window';
+import type { Vec2 } from '@/types/vec2.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type {
   OverwriteDisplay,
   ViewSettings,
 } from '@pages/explorer/displayAlternatives/display/types.ts';
 import { calculateDisplayHeight } from '@pages/explorer/displayAlternatives/calculateDisplayHeight.ts';
 import { prepareSelectRange } from '@pages/explorer/components/rangeSelect.ts';
-import useContextMenu, { ContextData } from '@hooks/useContextMenu.ts';
+import useContextMenu, { type ContextData } from '@hooks/useContextMenu.ts';
 import useLayoutOptions from '@hooks/useLayoutOptions.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 
@@ -152,25 +152,29 @@ export function ExplorerDisplayWrapper({
         // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
         onScroll: handleScroll,
-      }}>
+      }}
+    >
       {!viewSettings?.scrollControlMissing && !viewSettings?.noActions && (
         <MultipleActionButton
           someSelected={isSomeSelected}
           handleClick={handleContext}
         />
       )}
+      {/** biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onContextMenu event. */}
       <div
         id={'display'}
         className={'h-full grow overflow-x-auto'}
         onContextMenu={e => {
           if (viewSettings?.isCreateAllowed)
             handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
-        }}>
+        }}
+      >
         <FileUploader
           disabled={!viewSettings?.isCreateAllowed}
           folder={currentFolder}
           isInList
-          className={'h-full'}>
+          className={'h-full'}
+        >
           {children}
         </FileUploader>
       </div>

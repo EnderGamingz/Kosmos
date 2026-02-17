@@ -1,11 +1,11 @@
 import { createContext } from 'react';
-import { ContextData } from '@hooks/useContextMenu.ts';
-import { DataOperationType } from '@models/file.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
-import { ListOnScrollProps } from 'react-window';
-import { Vec2 } from '@/types/vec2.ts';
-import {
+import type { ContextData } from '@hooks/useContextMenu.ts';
+import type { DataOperationType } from '@models/file.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { ListOnScrollProps } from 'react-window';
+import type { Vec2 } from '@/types/vec2.ts';
+import type {
   OverwriteDisplay,
   ViewSettings,
 } from '@pages/explorer/displayAlternatives/display/types.ts';

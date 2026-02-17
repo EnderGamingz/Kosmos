@@ -1,5 +1,5 @@
-import { AxiosError } from 'axios';
-import { ShareOperationType } from '@models/file.ts';
+import type { AxiosError } from 'axios';
+import type { ShareOperationType } from '@models/file.ts';
 import { PasswordUnlock } from '@pages/share/passwordUnlock.tsx';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 

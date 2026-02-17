@@ -26,15 +26,18 @@ export function NoAccess({
   return (
     <div
       className={cn(
-        'body-bg absolute inset-0 z-20 !m-0 p-10 text-stone-700',
+        'body-bg absolute inset-0 z-20 m-0! p-10 text-stone-700',
         'flex flex-col items-center justify-center gap-2',
         'dark:text-stone-300',
-      )}>
+      )}
+    >
       <button
+        type={'button'}
         className={
           'mr-auto flex items-center gap-1 animate-fade-in-left delay-300'
         }
-        onClick={() => window.history.back()}>
+        onClick={() => window.history.back()}
+      >
         <ChevronLeft className={'h-4 w-4'} />
         Back
       </button>
@@ -42,10 +45,11 @@ export function NoAccess({
         <div
           className={
             'rounded-full bg-stone-500 p-5 text-stone-200 dark:bg-stone-700/50 animate-fade-in'
-          }>
+          }
+        >
           {loading ? (
             <div
-              className={'app-loading-indicator h-12 w-12 !border-t-stone-200'}
+              className={'app-loading-indicator h-12 w-12 border-t-stone-200!'}
             />
           ) : error ? (
             <OctagonAlert className={'h-12 w-12'} />
@@ -59,7 +63,8 @@ export function NoAccess({
         <p
           className={
             'text-center text-sm font-light animate-fade-in-top delay-200'
-          }>
+          }
+        >
           {loading ? loadingSubText : error ? error : noAccessSubText}
         </p>
       </div>
@@ -70,9 +75,8 @@ export function NoAccess({
               buttonVariants({ size: 'lg' }),
               'w-full max-w-2xl mx-auto',
             )}
-            to={
-              '/auth/login' + (pathname !== '/' ? `?return=${pathname}` : '')
-            }>
+            to={`/auth/login${pathname !== '/' ? `?return=${pathname}` : ''}`}
+          >
             Login
           </Link>
         </div>

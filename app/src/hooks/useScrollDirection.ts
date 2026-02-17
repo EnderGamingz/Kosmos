@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
 
 export function useScrollThreshold(
   ref: RefObject<HTMLElement | null>,

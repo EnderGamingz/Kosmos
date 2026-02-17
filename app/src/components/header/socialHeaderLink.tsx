@@ -8,7 +8,8 @@ export function SocialHeaderLink() {
   return (
     <Link
       to={'/social'}
-      className={'max-md:hidden flex p-2.5 sm:p-3 relative cursor-pointer'}>
+      className={'max-md:hidden flex p-2.5 sm:p-3 relative cursor-pointer'}
+    >
       {data && <AttentionDot className={'bg-red-400'} />}
       <MessageSquare className={'h-6 w-6'} />
     </Link>

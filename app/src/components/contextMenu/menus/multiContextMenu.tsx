@@ -1,4 +1,4 @@
-import { Selected } from '@models/file.ts';
+import type { Selected } from '@models/file.ts';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import { MultiDownload } from '@pages/explorer/components/multiDownload.tsx';
 import { MoveAction } from '@pages/explorer/components/move';

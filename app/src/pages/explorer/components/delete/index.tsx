@@ -6,7 +6,7 @@ import { useKeyStore } from '@stores/keyStore.ts';
 import { useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useExplorerStore } from '@stores/explorerStore.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Trash } from 'lucide-react';
 
 export function MoveToTrash({
@@ -44,14 +44,16 @@ export function MoveToTrash({
 
   return (
     <button
+      type={'button'}
       disabled={trashAction.isPending}
       onClick={() => {
         onClose?.();
         trashAction.mutate();
       }}
       className={
-        'text-red-500 hover:!text-red-800 dark:text-red-300 dark:hover:!text-red-300'
-      }>
+        'text-red-500 hover:text-red-800! dark:text-red-300 dark:hover:text-red-300!'
+      }
+    >
       <Trash />
       {short ? 'Trash' : 'Move to Trash'}
     </button>
@@ -94,7 +96,8 @@ export function MultiMoveToTrash({
     <button
       onClick={handleDelete}
       disabled={trashAction.isPending}
-      type={'button'}>
+      type={'button'}
+    >
       <Trash />
       Move to trash
     </button>

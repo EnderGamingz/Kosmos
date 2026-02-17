@@ -12,7 +12,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@components/ui/drawer.tsx';
-import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import type { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import { LeaveGroupButton } from '@pages/social/chats/chat/leaveGroupButton.tsx';
@@ -20,13 +20,16 @@ import { InviteUserButton } from '@pages/social/chats/chat/inviteUserButton.tsx'
 
 export function ChatHeader() {
   const { chat, getPartner } = useChatContext();
-  const partner = useMemo(getPartner, [getPartner, chat]);
+  const partner = useMemo(() => {
+    return getPartner();
+  }, [getPartner]);
 
   return (
     <div
       className={
         'flex items-center gap-2 bg-popover/70 backdrop-blur-lg p-2 rounded-full animate-fade-in shadow'
-      }>
+      }
+    >
       {partner && (
         <div className={'animate-fade-in-left delay-100'}>
           <UserAvatar
@@ -41,7 +44,8 @@ export function ChatHeader() {
         className={cn(
           'text-xl animate-fade-in-left delay-200',
           !partner && 'ml-2',
-        )}>
+        )}
+      >
         {chat.name}
       </p>
       <div className={'ml-auto mr-3'}>
@@ -55,7 +59,10 @@ function ChatMembers({ chat }: { chat: ChatModelDTO }) {
   return (
     <Drawer direction={'right'}>
       <DrawerTrigger asChild>
-        <button className={'text-sm text-muted-foreground underline'}>
+        <button
+          type={'button'}
+          className={'text-sm text-muted-foreground underline'}
+        >
           {chat.members.length} member{chat.members.length > 1 ? 's' : ''}
         </button>
       </DrawerTrigger>

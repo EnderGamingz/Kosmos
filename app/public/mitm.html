@@ -30,7 +30,7 @@ let keepAlive = () => {
 // the ready event
 // but since we need to wait for the Service Worker registration, we store the
 // message for later
-let messages = []
+const messages = []
 window.onmessage = evt => messages.push(evt)
 
 let sw = null
@@ -58,7 +58,7 @@ function registerWorker() {
 
 // Now that we have the Service Worker registered we can process messages
 function onMessage (event) {
-  let { data, ports, origin } = event
+  const { data, ports, origin } = event
 
   // It's important to have a messageChannel, don't want to interfere
   // with other simultaneous downloads
@@ -121,7 +121,7 @@ function onMessage (event) {
   data.pathname = data.pathname.replace(/^\/+/g, '')
 
   // remove protocol
-  let org = origin.replace(/(^\w+:|^)\/\//, '')
+  const org = origin.replace(/(^\w+:|^)\/\//, '')
 
   // set the absolute pathname to the download url.
   data.url = new URL(`${scope + org}/${data.pathname}`).toString()

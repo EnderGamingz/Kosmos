@@ -1,4 +1,4 @@
-import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
+import type { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@lib/utils.ts';
 
@@ -28,11 +28,13 @@ export function BottomNavItem({
             !!link.href &&
             '[&>.icon-wrapper]:bg-gradient-to-br [&>.icon-wrapper]:ring-border',
         )
-      }>
+      }
+    >
       <div
         className={
           'py-1 px-5 rounded-full icon-wrapper group-hover:ring ring-stone-400 transition-all from-primary/5 to-primary/20'
-        }>
+        }
+      >
         <Icon className={'h-5 w-5'} />
       </div>
       <p className={'py-0.5 text-center sm:px-4 text-sm'}>{link.name}</p>

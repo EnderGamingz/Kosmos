@@ -1,7 +1,6 @@
 import { getShareTypeString } from '@models/share.ts';
 import { motion } from 'framer-motion';
-import { useNotifications } from '@stores/notificationStore.ts';
-import { ShareOperationType } from '@models/file.ts';
+import type { ShareOperationType } from '@models/file.ts';
 import { formatDistanceToNow } from 'date-fns';
 import { ChangePassword } from '@pages/explorer/components/share/password/changePassword.tsx';
 import { Chip } from '@pages/explorer/components/share/chip.tsx';
@@ -10,9 +9,10 @@ import { DeleteShare } from '@pages/explorer/components/share/deleteShare.tsx';
 import { getShareTypeIcon } from '@pages/explorer/components/share/getShareTypeIcon.tsx';
 import { getShareUrl } from '@lib/share/url.ts';
 import QrCodeModal from '@pages/explorer/components/QrCodeModal.tsx';
-import { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
+import type { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Share } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function ShareItem({
   share,
@@ -23,8 +23,6 @@ export function ShareItem({
   type: ShareOperationType;
   index: number;
 }) {
-  const notifications = useNotifications(s => s.actions);
-
   const isExpired = share.expires_at
     ? new Date() > new Date(share.expires_at)
     : false;
@@ -42,17 +40,18 @@ export function ShareItem({
     <motion.li
       layout
       className={cn(
-        'relative gap-2 rounded-md px-3 py-2 shadow-sm',
-        'border-l-3 animate-fade-in-top bg-gradient-to-br from-popover to-primary/5',
+        'relative gap-2 rounded-l-xs px-3 py-2 shadow-sm',
+        'border-l-3 animate-fade-in-top bg-linear-to-br from-popover to-primary/5',
         isActive ? 'border-l-green-300' : 'border-l-red-300',
       )}
       style={{
         animationDelay: `${index * 50}ms`,
-      }}>
+      }}
+    >
       <div>
         <p className={'font-medium'}>
           {getShareTypeString(share.share_type)}ly shared
-          <span className={'ml-1 text-xs font-light text-stone-600/95'}>
+          <span className={'ml-1 text-xs font-light text-muted-foreground'}>
             {formatDistanceToNow(share.created_at, { addSuffix: true })}
           </span>
         </p>
@@ -86,11 +85,13 @@ export function ShareItem({
         <div className={'mr-auto flex items-center gap-2'}>
           <DeleteShare id={share.id} />
           <div
-            className={'flex items-center gap-1 text-xs text-muted-foreground'}>
+            className={'flex items-center gap-1 text-xs text-muted-foreground'}
+          >
             {share.share_target_username ? (
               <p
                 title={share.share_target_username}
-                className={'max-w-[100px] truncate'}>
+                className={'max-w-[100px] truncate'}
+              >
                 @{share.share_target_username}
               </p>
             ) : (
@@ -105,11 +106,24 @@ export function ShareItem({
               <QrCodeModal value={shareData.url} />
               {navigator.share !== undefined &&
                 navigator.canShare(shareData) && (
-                  <button onClick={() => navigator.share(shareData)}>
+                  <button
+                    type={'button'}
+                    onClick={() => navigator.share(shareData)}
+                  >
                     <Share className={'h-5 w-5'} />
                   </button>
                 )}
-              <Copy text={shareData.url} notify={notifications.notify} />
+              <div className={'flex flex-col gap-1'}>
+                <Link
+                  to={shareData.url}
+                  className={
+                    'text-center rounded-full bg-stone-500/20 px-2 py-0.5 text-xs transition-colors hover:bg-stone-500/50 dark:bg-stone-300/30'
+                  }
+                >
+                  View
+                </Link>
+                <Copy text={shareData.url} />
+              </div>
             </>
           )}
         </div>

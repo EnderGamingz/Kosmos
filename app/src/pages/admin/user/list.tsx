@@ -2,10 +2,10 @@ import { AdminQuery } from '@lib/queries/adminQuery.ts';
 import { roleToString } from '@models/user.ts';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { UserModelDTO } from '@bindings/UserModelDTO.ts';
+import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
 import useDisclosure from '@hooks/useDisclosure.ts';
 import {
   Dialog,
@@ -34,7 +34,8 @@ function UserItem({ user }: { user: UserModelDTO }) {
   return (
     <tr
       className={'transition-colors hover:bg-stone-200 dark:hover:bg-stone-700'}
-      onClick={() => navigate(`/admin/user/${user.id}`)}>
+      onClick={() => navigate(`/admin/user/${user.id}`)}
+    >
       <td>{user.username}</td>
       <td>{user.full_name}</td>
       <td>{user.email}</td>
@@ -58,7 +59,8 @@ export default function AdminUserList() {
         <table
           className={
             'w-full whitespace-nowrap text-left [&_td]:p-3 [&_th]:p-3 [&_th]:font-light'
-          }>
+          }
+        >
           <thead>
             <tr>
               <th>Username</th>
@@ -177,7 +179,8 @@ export function CreateUserModal() {
             <Select
               name={'multi'}
               onValueChange={setMultiplier}
-              defaultValue={multiplier}>
+              defaultValue={multiplier}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={'Select Data Size'} />
               </SelectTrigger>

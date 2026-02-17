@@ -62,11 +62,21 @@ export function BinActions({
       )}
       condition={!inList}
     >
-      <button title={'Restore'} className={'text-blue-500'} onClick={onRestore}>
+      <button
+        type={'button'}
+        title={'Restore'}
+        className={'text-blue-500'}
+        onClick={onRestore}
+      >
         <RotateCcw />
         {inList && 'Restore File'}
       </button>
-      <button title={'Delete'} className={'text-red-500'} onClick={onDelete}>
+      <button
+        type={'button'}
+        title={'Delete'}
+        className={'text-red-500'}
+        onClick={onDelete}
+      >
         <Shredder />
         {inList && 'Delete permanently'}
       </button>
@@ -102,6 +112,8 @@ export function TableFileItem({
   const context = useContext(DisplayContext);
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with potential keyboard shortcuts for file selection and context menu actions.
     <div
       style={style}
       id={file.id}
@@ -130,12 +142,13 @@ export function TableFileItem({
       )}
       <div
         className={cn(
-          'flex h-full !p-0 grow',
-          !!context.viewSettings?.noSelect && '!pl-3',
+          'flex h-full p-0! grow',
+          !!context.viewSettings?.noSelect && 'pl-3!',
         )}
       >
-        <div
-          className={'flex grow items-center'}
+        <button
+          type={'button'}
+          className={'flex grow items-center text-start'}
           onClick={() => {
             if (isControl || isShift || context.viewSettings?.noDisplay) return;
             selectFile(file.id);
@@ -149,12 +162,12 @@ export function TableFileItem({
           />
           <p
             className={
-              'w-0 flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap p-3'
+              'w-0 grow overflow-hidden overflow-ellipsis whitespace-nowrap p-3'
             }
           >
             {file.file_name}
           </p>
-        </div>
+        </button>
         {!context.viewSettings?.binView && (
           <Favorite
             id={file.id}
@@ -164,6 +177,7 @@ export function TableFileItem({
           />
         )}
         <button
+          type={'button'}
           onClick={e => {
             context.handleContext({ x: e.clientX, y: e.clientY }, file);
           }}

@@ -22,7 +22,8 @@ export function FileWindowContextMenu({ onClose }: { onClose: () => void }) {
           title={'Quick Share'}
           to={'/home/quick'}
           onClick={onClose}
-          className={'menu-button py-2'}>
+          className={'menu-button py-2'}
+        >
           <Clock className={'h-5 w-5'} />
           Quick Share
         </Link>

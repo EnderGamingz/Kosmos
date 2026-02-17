@@ -1,6 +1,6 @@
 import {
   ResolveAction,
-  UploadFile,
+  type UploadFile,
 } from '@pages/explorer/components/upload/uploadFile.ts';
 import { useEffect, useState } from 'react';
 import { cn } from '@lib/utils.ts';
@@ -73,7 +73,7 @@ export function ConflictModal({
         const fileParts = file.file.name.split('.');
         const extension = fileParts.pop();
         const fileName = fileParts.join('');
-        const addedPart = new Date().getTime().toString().substring(8);
+        const addedPart = Date.now().toString().substring(8);
         const newFileName = `${fileName}[${addedPart}]${extension ? '.' : ''}${extension}`;
         const newFile = new File([file.file], newFileName, {
           type: file.file.type,
@@ -138,7 +138,8 @@ export function ConflictModal({
               <Button
                 variant={'outline'}
                 key={a.allName}
-                onClick={() => handleAllResolve(a.action)}>
+                onClick={() => handleAllResolve(a.action)}
+              >
                 {a.allName}
               </Button>
             ))}
@@ -146,7 +147,8 @@ export function ConflictModal({
           <Button
             className={'cursor-pointer'}
             onClick={handleSubmit}
-            disabled={resolved.length !== files.length || disabled}>
+            disabled={resolved.length !== files.length || disabled}
+          >
             Submit
           </Button>
         </div>
@@ -167,7 +169,8 @@ function FileConflictItem({
       className={cn(
         'flex flex-col gap-1 py-1 transition-opacity',
         file.resolveAction !== undefined && 'opacity-60',
-      )}>
+      )}
+    >
       <p className={'rounded-md bg-stone-700 p-1 text-stone-50'}>
         {file.file.name}
       </p>
@@ -176,7 +179,8 @@ function FileConflictItem({
           'flex flex-wrap gap-2',
           '[&>button]:rounded-lg [&>button]:px-2 [&>button]:py-1 [&>button]:text-center',
           '[&>button]:outline [&>button]:outline-stone-500/20 [&>button]:transition-colors',
-        )}>
+        )}
+      >
         {actions.map(a => (
           <Badge
             key={a.name}
@@ -185,7 +189,8 @@ function FileConflictItem({
               a.action === file.resolveAction &&
                 'bg-muted-foreground dark:text-white',
             )}
-            onClick={() => selectAction(a.action)}>
+            onClick={() => selectAction(a.action)}
+          >
             {a.name}
           </Badge>
         ))}

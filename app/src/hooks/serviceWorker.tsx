@@ -27,6 +27,7 @@ export function useServiceWorker() {
           canDismiss: false,
           child: (
             <button
+              type={'button'}
               onClick={() => {
                 notifications.updateNotification(updateId, {
                   loading: true,
@@ -44,7 +45,8 @@ export function useServiceWorker() {
                 'my-1 flex w-full items-center gap-4 rounded-lg px-4 py-1 shadow-md',
                 'bg-stone-900 text-stone-50 transition-colors hover:bg-stone-600 hover:text-stone-100',
                 'border',
-              )}>
+              )}
+            >
               <RefreshCw className={'h-4 w-4'} />
               Update now
             </button>
@@ -52,5 +54,5 @@ export function useServiceWorker() {
         });
       },
     });
-  }, []);
+  }, [notifications.notify, notifications.updateNotification]);
 }

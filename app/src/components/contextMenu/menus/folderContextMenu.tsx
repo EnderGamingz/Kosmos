@@ -1,4 +1,4 @@
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { ContextMenuTitle } from '@components/contextMenu/contextMenuTitle.tsx';
 import {
   ColorDisplay,

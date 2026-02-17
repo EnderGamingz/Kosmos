@@ -1,5 +1,5 @@
-import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
-import { User } from '@stores/userStore.ts';
+import type { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
+import type { User } from '@stores/userStore.ts';
 import { useState } from 'react';
 import {
   Sheet,
@@ -34,7 +34,7 @@ function HeaderLinksMenu({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button>
+        <button type={'button'}>
           <Menu className={'h-6 w-6'} />
           <span className={'sr-only'}>Menu</span>
         </button>

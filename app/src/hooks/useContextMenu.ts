@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { ContextOperationType, Selected } from '@models/file.ts';
-import { AlbumFile } from '@models/album.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { ContextOperationType, Selected } from '@models/file.ts';
+import type { AlbumFile } from '@models/album.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 
 export type ContextData =
   | AlbumFile

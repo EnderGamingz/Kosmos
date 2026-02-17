@@ -1,7 +1,7 @@
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { useZipInformation } from '@lib/query.ts';
 import { FileTypeDisplay } from '@pages/explorer/file/display/displayTypes/fileDisplayHandler.tsx';
-import { ZipInformation } from '@bindings/ZipInformation.ts';
+import type { ZipInformation } from '@bindings/ZipInformation.ts';
 import { useState } from 'react';
 import { Collapse } from 'react-collapse';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
@@ -30,17 +30,16 @@ export default function ArchiveDisplay({
       id={file.id}
       name={file.file_name}
       type={file.file_type}
-      loading={loading || query.isLoading}>
+      loading={loading || query.isLoading}
+    >
       <div className={'h-full w-full overflow-auto p-3 text-left'}>
-        <h2
-          className={
-            'flex items-center pb-2 text-xl [&_svg]:!h-10 [&_svg]:!w-10'
-          }>
+        <h2 className={'flex items-center pb-2 text-xl [&_svg]:size-10!'}>
           <ItemIcon id={file.id} name={file.file_name} type={file.file_type} />
           <span
             className={
               'overflow-hidden whitespace-nowrap animate-fade-in-left delay-300'
-            }>
+            }
+          >
             Archive Preview
           </span>
         </h2>
@@ -62,16 +61,18 @@ function ArchiveItem({
   active?: boolean;
 }) {
   return (
-    <div
+    <button
+      type={'button'}
       onClick={onClick}
       className={cn(
         'flex items-center gap-2 rounded-lg px-2 py-1 transition-colors',
         onClick && 'bg-stone-600/60 hover:bg-stone-600/40 dark:bg-stone-700/60',
-      )}>
+      )}
+    >
       {onClick && (
         <ChevronDown
           className={cn(
-            '!h-4 !w-4 transition-all',
+            'size-4! transition-all',
             active ? 'rotate-180' : 'rotate-0',
           )}
         />
@@ -79,7 +80,7 @@ function ArchiveItem({
       <p title={name} className={'truncate'}>
         {name}
       </p>
-    </div>
+    </button>
   );
 }
 
@@ -95,11 +96,12 @@ function ArchiveFolder({
     <div
       className={cn(
         'transition-colors',
-        indent > 0 && 'mt-1 border-l-1 border-stone-700/50 pl-1',
+        indent > 0 && 'mt-1 border-l border-stone-700/50 pl-1',
       )}
       style={{
         marginLeft: indent * 3,
-      }}>
+      }}
+    >
       <ArchiveItem
         name={data.name}
         active={open}
@@ -114,7 +116,13 @@ function ArchiveFolder({
           />
         ))}
         {data.files.map((file, i) => (
-          <ArchiveItem key={`${file}-${i}`} name={file} />
+          <ArchiveItem
+            key={`${file}-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: This is a zip file structure, the same file name can appear multiple times in different folders, so we need to use the index as well to ensure uniqueness.
+              i
+            }`}
+            name={file}
+          />
         ))}
       </Collapse>
     </div>

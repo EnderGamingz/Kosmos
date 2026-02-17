@@ -1,5 +1,5 @@
-import { ContextOperationType } from '@models/file.ts';
-import { ReactNode } from 'react';
+import type { ContextOperationType } from '@models/file.ts';
+import type { ReactNode } from 'react';
 import { cn } from '@lib/utils.ts';
 import { File, Folder, Images, Plus, Shapes } from 'lucide-react';
 
@@ -26,13 +26,15 @@ export function ContextMenuTitle({
     <div
       className={
         'max-w-[inherit] overflow-hidden overflow-ellipsis border-b border-stone-300/50 pb-1'
-      }>
+      }
+    >
       <div
         title={title}
         className={cn(
           'flex items-center gap-2 whitespace-nowrap text-sm font-light text-stone-800 dark:text-stone-300',
           '[&_>svg]:h-4 [&_>svg]:min-w-4',
-        )}>
+        )}
+      >
         {children}
         <span className={'truncate'}>{title}</span>
         <span className={'ml-auto min-w-4'}>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
+import type { ExplorerLink } from '@pages/explorer/nav/explorerLinks.tsx';
 
 export type AppState = {
   headerLinks?: ExplorerLink[];

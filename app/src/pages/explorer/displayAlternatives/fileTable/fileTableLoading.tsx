@@ -14,7 +14,8 @@ export function FileTableLoading() {
         <div
           className={
             'flex [&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700'
-          }>
+          }
+        >
           <div>
             <div className={'w-7'}>
               <Skeleton className={'h-5 w-5 rounded-md'} />
@@ -33,13 +34,15 @@ export function FileTableLoading() {
         <div className={'overflow-hidden'}>
           {Array.from({ length: 20 }).map((_, i) => (
             <div
+              // biome-ignore lint/suspicious/noArrayIndexKey: This is a static list of skeleton loaders, so using the index as a key is acceptable here.
               key={i}
               className={
                 'flex [&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700 animate-fade-in-top'
               }
               style={{
                 animationDelay: `${i * 30}ms`,
-              }}>
+              }}
+            >
               <div>
                 <div className={'w-7'}>
                   <Skeleton className={'h-5 w-5 rounded-md'} />

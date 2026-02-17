@@ -2,12 +2,12 @@ import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
-import { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
-import { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
-import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
-import { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage.ts';
-import { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage.ts';
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
+import type { ChatModelDTO } from '@bindings/ChatModelDTO.ts';
+import type { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
+import type { PresenceDeletedChatMessage } from '@bindings/PresenceDeletedChatMessage.ts';
+import type { PresenceUpdatedChatMessage } from '@bindings/PresenceUpdatedChatMessage.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 
 export type OptimisticMessage = ChatMessageModelDTO & {
   loading?: boolean;

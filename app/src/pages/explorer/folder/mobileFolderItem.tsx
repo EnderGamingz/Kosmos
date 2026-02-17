@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { useKeyStore } from '@stores/keyStore.ts';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
-import { CSSProperties, useContext } from 'react';
+import { type CSSProperties, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
 import { useShallow } from 'zustand/react/shallow';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 import { Check, EllipsisVertical } from 'lucide-react';
 
@@ -49,6 +49,8 @@ export function MobileFolderItem({
   const selectDisabled = context.viewSettings?.selectDisable?.folders;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with mobile touch interactions.
     <div
       style={style}
       onClick={() => {
@@ -66,18 +68,19 @@ export function MobileFolderItem({
         isSelected && 'bg-indigo-100 dark:bg-indigo-700/50',
         isShift && 'cursor-pointer',
         context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
-      )}>
-      <div
+      )}
+    >
+      <button
+        type={'button'}
         onClick={e => {
           e.stopPropagation();
           if (!context.viewSettings?.noSelect) onSelect(folder);
         }}
-        className={'cursor-pointer relative'}>
+        className={'cursor-pointer relative'}
+      >
         <div
-          className={cn(
-            'rounded-lg',
-            isSelected && 'bg-popover brightness-50',
-          )}>
+          className={cn('rounded-lg', isSelected && 'bg-popover brightness-50')}
+        >
           <ItemIcon
             id={folder.id}
             name={folder.folder_name}
@@ -93,7 +96,7 @@ export function MobileFolderItem({
             )}
           />
         )}
-      </div>
+      </button>
       <div className={'flex flex-col overflow-hidden'}>
         <p className={'truncate'}>{folder.folder_name}</p>
         <div className={'flex gap-1 flex-wrap text-xs text-muted-foreground'}>
@@ -101,11 +104,13 @@ export function MobileFolderItem({
         </div>
       </div>
       <button
+        type={'button'}
         className={'p-2 cursor-pointer ml-auto'}
         onClick={e => {
           e.stopPropagation();
           context.handleContext({ x: e.clientX, y: e.clientY }, folder);
-        }}>
+        }}
+      >
         <EllipsisVertical className={'w-5 h-5'} />
       </button>
     </div>

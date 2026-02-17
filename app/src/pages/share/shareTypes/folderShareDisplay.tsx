@@ -2,13 +2,13 @@ import ExplorerDataDisplay from '@pages/explorer/displayAlternatives/display/exp
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useAccessShareFolder } from '@lib/query.ts';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { useExplorerStore } from '@stores/explorerStore.ts';
 import { useEffect } from 'react';
 import { ShareMessage } from '@pages/share/shareMessage.tsx';
 import { ShareError } from '@pages/share/shareError.tsx';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { PageMetadata } from '@components/metadata.tsx';
 
 export function FolderShareDisplay({ uuid }: { uuid: string }) {

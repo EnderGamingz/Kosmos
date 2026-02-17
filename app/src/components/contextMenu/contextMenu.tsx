@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { isEmpty, isFileModel, isMultiple } from '@models/file.ts';
 import { isFolderModel } from '@models/folder.ts';
-import { ContextData } from '@hooks/useContextMenu.ts';
+import type { ContextData } from '@hooks/useContextMenu.ts';
 import { CONTEXT_MENU_HEIGHT, CONTEXT_MENU_WIDTH } from '@lib/constants.ts';
 import { isAlbumFile } from '@models/album.ts';
 import { isFileWindow } from '@utils/contextDataParse.ts';
@@ -55,7 +55,8 @@ export default function ContextMenu({
           minWidth: CONTEXT_MENU_WIDTH,
           maxWidth: CONTEXT_MENU_WIDTH,
         }}
-        onContextMenu={e => e.preventDefault()}>
+        onContextMenu={e => e.preventDefault()}
+      >
         {children}
       </motion.div>
     </>

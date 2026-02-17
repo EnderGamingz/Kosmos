@@ -61,6 +61,6 @@ export const useArrowKeys = ({
       document.removeEventListener('keydown', onArrowLeft);
       document.removeEventListener('keydown', onArrowRight);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // biome-ignore lint/correctness/useExhaustiveDependencies: The dependencies are passed in as an argument to the hook, so we don't want to include them in the dependency array.
   }, deps);
 };

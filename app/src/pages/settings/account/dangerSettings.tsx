@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { BASE_URL } from '@lib/env.ts';
 import axios from 'axios';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import useLogout from '@hooks/useLogout.ts';
 import { useUsageStats } from '@lib/query.ts';
 import { useFormatBytes } from '@utils/fileSize.ts';
@@ -74,7 +74,8 @@ function DeleteAccount() {
       </p>
       <form
         onSubmit={handleSubmit}
-        className={'flex flex-col gap-2 sm:flex-row mt-4'}>
+        className={'flex flex-col gap-2 sm:flex-row mt-4'}
+      >
         <Input
           placeholder={'Password'}
           type={'password'}
@@ -87,7 +88,8 @@ function DeleteAccount() {
             variant={'destructive'}
             type={'submit'}
             className={'h-11'}
-            disabled={action.isPending || !password}>
+            disabled={action.isPending || !password}
+          >
             {confirm ? 'Are you sure?' : 'Delete Account'}
           </Button>
         </div>
@@ -103,7 +105,8 @@ export function DangerSettings() {
         '!mt-12 space-y-2 rounded-xl  p-4',
         'text-red-950 border-2 border-red-700/50',
         'dark:text-red-50 animate-fade-in-bottom delay-200',
-      )}>
+      )}
+    >
       <SettingsSubtitle title={'Danger Zone'} className={'delay-300'} />
       <DeleteAccount />
     </section>

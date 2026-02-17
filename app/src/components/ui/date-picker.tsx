@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { add, format } from 'date-fns';
-import { type Locale } from 'date-fns/locale';
+import type { Locale } from 'date-fns/locale';
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -18,7 +18,7 @@ import {
   Clock,
 } from 'lucide-react';
 import * as React from 'react';
-import { ReactNode, useEffect, useImperativeHandle, useRef } from 'react';
+import { type ReactNode, useEffect, useImperativeHandle, useRef } from 'react';
 
 import {
   Select,
@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { DayPicker, Matcher } from 'react-day-picker';
+import { DayPicker, type Matcher } from 'react-day-picker';
 import { APP_TIME_LOCALE } from '@/lib/constants';
 
 // ---------- utils start ----------
@@ -276,9 +276,9 @@ function Calendar({
       };
     }
     return genMonths(locale);
-  }, []);
+  }, [props.locale]);
 
-  const YEARS = React.useMemo(() => genYears(yearRange), []);
+  const YEARS = React.useMemo(() => genYears(yearRange), [yearRange]);
   const disableLeftNavigation = () => {
     const today = new Date();
     const startDate = new Date(today.getFullYear() - yearRange, 0, 1);
@@ -371,7 +371,8 @@ function Calendar({
                   const newDate = new Date(calendarMonth.date);
                   newDate.setMonth(Number.parseInt(value, 10));
                   props.onMonthChange?.(newDate);
-                }}>
+                }}
+              >
                 <SelectTrigger className='w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground'>
                   <SelectValue />
                 </SelectTrigger>
@@ -379,7 +380,8 @@ function Calendar({
                   {MONTHS.map(month => (
                     <SelectItem
                       key={month.value}
-                      value={month.value.toString()}>
+                      value={month.value.toString()}
+                    >
                       {month.label}
                     </SelectItem>
                   ))}
@@ -391,7 +393,8 @@ function Calendar({
                   const newDate = new Date(calendarMonth.date);
                   newDate.setFullYear(Number.parseInt(value, 10));
                   props.onMonthChange?.(newDate);
-                }}>
+                }}
+              >
                 <SelectTrigger className='w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground'>
                   <SelectValue />
                 </SelectTrigger>
@@ -461,11 +464,13 @@ const TimePeriodSelect = React.forwardRef<
       <div className='flex h-10 items-center'>
         <Select
           defaultValue={period}
-          onValueChange={(value: Period) => handleValueChange(value)}>
+          onValueChange={(value: Period) => handleValueChange(value)}
+        >
           <SelectTrigger
             ref={ref}
             className='w-[65px] focus:bg-accent focus:text-accent-foreground'
-            onKeyDown={handleKeyDown}>
+            onKeyDown={handleKeyDown}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -633,7 +638,7 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
         secondRef: secondRef.current,
         periodRef: periodRef.current,
       }),
-      [minuteRef, hourRef, secondRef],
+      [],
     );
     return (
       <div className='flex items-center justify-center gap-2'>
@@ -864,7 +869,8 @@ const DateTimePicker = React.forwardRef<
               !displayDate && 'text-muted-foreground',
               className,
             )}
-            ref={buttonRef}>
+            ref={buttonRef}
+          >
             <CalendarIcon className='mr-2 h-4 w-4' />
             {displayDate
               ? format(

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { FormEvent, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import axios from 'axios';
@@ -23,7 +23,7 @@ export function PasswordUnlock() {
         canDismiss: false,
       });
       await axios
-        .post(BASE_URL + 's/unlock', {
+        .post(`${BASE_URL}s/unlock`, {
           share_uuid: uuid,
           password: value,
         })
@@ -78,7 +78,8 @@ export function PasswordUnlock() {
             disabled={!value || unlock.isPending}
             className={
               'grid min-w-10 place-items-center p-2 animate-fade-in-right delay-500'
-            }>
+            }
+          >
             <Check className={'h-5 w-5'} />
           </Button>
         </form>

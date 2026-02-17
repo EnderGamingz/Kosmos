@@ -13,7 +13,8 @@ export default function AlbumsPage() {
       <div
         className={
           'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5'
-        }>
+        }
+      >
         <div className={'flex items-center justify-between'}>
           <SubPageTitle>Albums</SubPageTitle>
           <CreateAlbum />
@@ -21,7 +22,8 @@ export default function AlbumsPage() {
         <ul
           className={
             'grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
-          }>
+          }
+        >
           {!albums.data?.length && <EmptyList grid message={'No albums'} />}
           {albums.data?.map(album => (
             <AlbumItem key={album.id} album={album} />

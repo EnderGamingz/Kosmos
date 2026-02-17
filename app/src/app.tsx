@@ -20,9 +20,8 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <LayoutOptionsContext value={layoutOptions}>
         <div
-          className={
-            'app-wrapper flex flex-grow flex-col ' + (darkMode ? 'dark' : '')
-          }>
+          className={`app-wrapper flex flex-grow flex-col ${darkMode ? 'dark' : ''}`}
+        >
           <AppRouter />
         </div>
       </LayoutOptionsContext>

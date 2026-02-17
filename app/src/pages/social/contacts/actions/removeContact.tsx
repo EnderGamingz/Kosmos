@@ -1,4 +1,4 @@
-import { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
+import type { ProfileContactModelDTO } from '@bindings/ProfileContactModelDTO.ts';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { ContactQuery } from '@lib/queries/contactQuery.ts';
@@ -33,7 +33,7 @@ export function RemoveContact({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className={'menu-button w-full'}>
+        <button type={'button'} className={'menu-button w-full'}>
           <UserMinus className={'w-5 h-5'} />
           Remove Contact
         </button>
@@ -61,7 +61,8 @@ export function RemoveContact({
             <Button
               variant={'destructive'}
               onClick={() => mutate()}
-              disabled={isPending}>
+              disabled={isPending}
+            >
               <UserMinus /> Remove Contact
             </Button>
           </DialogFooter>

@@ -3,10 +3,10 @@ import { SortBy } from '@models/sort.ts';
 
 import { SelectAllCheckBox } from '@pages/explorer/displayAlternatives/selectAllCheckBox.tsx';
 import { ExplorerSort } from '@pages/explorer/components/sort.tsx';
-import { RefObject, useContext } from 'react';
+import { type RefObject, useContext } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
-import { FileModelDTO } from '@bindings/FileModelDTO.ts';
-import { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
+import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
+import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import { cn } from '@lib/utils.ts';
 
 export function TableHeader({
@@ -29,7 +29,8 @@ export function TableHeader({
         className={cn(
           '[&>div]:p-3 [&>div]:font-bold [&>div]:text-stone-700 dark:[&>div]:text-stone-300',
           'flex',
-        )}>
+        )}
+      >
         {!context.viewSettings?.noSelect && (
           <div>
             <SelectAllCheckBox files={files} folders={folders} />

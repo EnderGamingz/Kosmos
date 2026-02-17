@@ -130,6 +130,7 @@ export function MarkdownEditorContent({
     },
   });
 
+  // biome-ignore lint/suspicious/noExplicitAny: Lexical editorState type is complex and not worth defining here
   const onChange = (editorState: any) => {
     editorState.read(() => {
       const markdown = $convertToMarkdownString(TRANSFORMERS);

@@ -1,4 +1,4 @@
-import { SortBy, SortOrder } from '@models/sort.ts';
+import { type SortBy, SortOrder } from '@models/sort.ts';
 import { useSearchState } from '@stores/searchStore.ts';
 import { cn } from '@lib/utils.ts';
 import { ChevronUp } from 'lucide-react';
@@ -18,7 +18,7 @@ export function ExplorerSort({
 }) {
   const updateSort = useSearchState(s => s.actions.sort);
 
-  // Return name if sorting is disabled
+  // Return the name if sorting is disabled
   if (disable) return <div className={'w-full'}>{name}</div>;
 
   const handleSort = () => {
@@ -38,12 +38,12 @@ export function ExplorerSort({
   };
 
   return (
-    <div className={'w-full'} onClick={handleSort}>
+    <button type={'button'} className={'w-full'} onClick={handleSort}>
       {name}
       <SortIcon
         desc={currentSortBy === sort && currentOrder === SortOrder.Desc}
       />
-    </div>
+    </button>
   );
 }
 
@@ -53,7 +53,8 @@ function SortIcon({ desc }: { desc: boolean }) {
       className={cn(
         'ml-2 inline-block transition-transform',
         desc ? 'rotate-0' : 'rotate-180',
-      )}>
+      )}
+    >
       <ChevronUp className={'h-3.5 w-3.5'} />
     </span>
   );

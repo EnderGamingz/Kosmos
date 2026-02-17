@@ -3,7 +3,7 @@ import {
   useSocialUpdate,
 } from '@stores/socialUpdateStore.ts';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
+import type { PresenceNewChatMessage } from '@bindings/PresenceNewChatMessage.ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@lib/utils.ts';
 import { Button, buttonVariants } from '@components/ui/button.tsx';
@@ -31,7 +31,8 @@ export default function SocialUpdateOverlay() {
       className={cn(
         'fixed top-2 left-2 max-sm:right-2 max-w-sm sm:w-full flex flex-col gap-2 z-50',
         !shouldShow && 'pointer-events-none',
-      )}>
+      )}
+    >
       <AnimatePresence>
         {chatMessage && shouldShowChatMessage && (
           <NewChatMessage key={'chat-message'} message={chatMessage} />
@@ -65,7 +66,8 @@ function NewChatMessage({ message }: { message: PresenceNewChatMessage }) {
       exit={{ height: 0, opacity: 0 }}
       className={
         'bg-background gap-1 rounded-md border shadow-lg overflow-hidden'
-      }>
+      }
+    >
       <div className={'p-1'}>
         <div className={'flex justify-between px-2 gap-2'}>
           {message.content.author && (
@@ -76,7 +78,8 @@ function NewChatMessage({ message }: { message: PresenceNewChatMessage }) {
                   <p
                     className={
                       'text-xl animate-fade-in-left delay-50 truncate w-0 grow'
-                    }>
+                    }
+                  >
                     {message.content.author.full_name ??
                       message.content.author.username}
                   </p>
@@ -84,7 +87,8 @@ function NewChatMessage({ message }: { message: PresenceNewChatMessage }) {
                 <p
                   className={
                     'text-muted-foreground text-xs animate-fade-in-left delay-100'
-                  }>
+                  }
+                >
                   Wrote a message
                 </p>
               </div>
@@ -101,20 +105,23 @@ function NewChatMessage({ message }: { message: PresenceNewChatMessage }) {
                 message.chat_type === 'Personal',
                 message.chat_id,
                 message.chat_id,
-              )}>
-              <ExternalLink className={'!w-4'} />
+              )}
+            >
+              <ExternalLink className={'w-4!'} />
             </Link>
             <Button
               size={'sm'}
               onClick={close}
-              className={'animate-fade-in-right delay-100'}>
+              className={'animate-fade-in-right delay-100'}
+            >
               <X />
             </Button>
           </div>
         </div>
         <hr className={'my-1 animate-fade-in-top delay-200'} />
+        {/** biome-ignore lint/a11y/useKeyWithClickEvents: Should be clickable */}
         <ul
-          className={'[&>*]:!m-0 cursor-pointer animate-fade-in-top delay-300'}
+          className={'*:m-0! cursor-pointer animate-fade-in-top delay-300'}
           onClick={() => {
             navigate(
               getChatUrl(
@@ -124,7 +131,8 @@ function NewChatMessage({ message }: { message: PresenceNewChatMessage }) {
               ),
             );
             close();
-          }}>
+          }}
+        >
           <ChatMessage message={message.content} />
         </ul>
       </div>

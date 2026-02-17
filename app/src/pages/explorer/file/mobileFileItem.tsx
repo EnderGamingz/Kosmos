@@ -36,6 +36,8 @@ export function MobileFileItem({
   const context = useContext(DisplayContext);
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with mobile touch interactions.
     <div
       style={style}
       id={file.id}
@@ -58,6 +60,8 @@ export function MobileFileItem({
         context.select.rangeStart === i && 'bg-indigo-50 dark:bg-indigo-600/60',
       )}
     >
+      {/** biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard interactions are intentionally not implemented for this element to avoid conflicts with mobile touch interactions. */}
+      {/** biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onClick and onContextMenu events. */}
       <div
         onClick={e => {
           e.stopPropagation();
@@ -101,6 +105,7 @@ export function MobileFileItem({
         </p>
       </div>
       <button
+        type={'button'}
         className={'p-2 cursor-pointer ml-auto'}
         onClick={e => {
           e.stopPropagation();
