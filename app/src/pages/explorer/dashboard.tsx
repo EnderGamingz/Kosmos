@@ -13,7 +13,7 @@ export default function Dashboard() {
         </div>
         <div
           className={
-            'grow flex flex-col bg-primary-foreground/50 rounded-xl md:mb-2 md:mr-2'
+            'grow flex flex-col bg-background-end/60 rounded-xl md:mb-2 md:mr-2'
           }
         >
           <Outlet />

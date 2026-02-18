@@ -10,6 +10,7 @@
     "preview": "vite preview --port 3000"
   },
   "dependencies": {
+    "@fastify/deepmerge": "^3.2.0",
     "@internationalized/date": "^3.11.0",
     "@lexical/react": "^0.31.2",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -30,7 +31,6 @@
     "framer-motion": "^12.34.2",
     "lexical": "^0.31.2",
     "lucide-react": "^0.503.0",
-    "minidenticons": "^4.2.1",
     "react": "^19.2.4",
     "react-collapse": "^5.1.1",
     "react-day-picker": "^9.13.2",

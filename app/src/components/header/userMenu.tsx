@@ -50,10 +50,10 @@ export function UserMenu() {
               '**:overflow-hidden **:overflow-ellipsis',
             )}
           >
-            <p className={'text-sm font-semibold max-w-[120px] truncate'}>
+            <p className={'text-sm font-semibold max-w-30 truncate'}>
               {user.user?.full_name?.split(' ')[0] || user.user?.username}
             </p>
-            <span className={'text-xs font-light max-w-[120px] truncate'}>
+            <span className={'text-xs font-light max-w-30 truncate'}>
               {`@${user.user?.username}`}
             </span>
           </div>

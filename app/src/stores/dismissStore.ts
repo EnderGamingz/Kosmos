@@ -2,6 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { HardDrive, MessageCircleWarning } from 'lucide-react';
 import type { Icon } from '@/types/icon.ts';
+import createDeepMerge from '@fastify/deepmerge';
+
+const deepMerge = createDeepMerge({ all: true });
 
 export enum Dismiss {
   StorageLimit = 'storage_limit',
@@ -68,10 +71,8 @@ export const useDismissStore = create<DismissState>()(
     }),
     {
       name: 'kosmos.dismiss',
-      merge: (persistedState, currentState) => {
-        // Needed to persist nested functions
-        return Object.assign({}, currentState, persistedState);
-      },
+      merge: (persistedState, currentState) =>
+        deepMerge(currentState, persistedState) as never,
     },
   ),
 );

@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import createDeepMerge from '@fastify/deepmerge';
+
+const deepMerge = createDeepMerge({ all: true });
 
 export enum ExplorerDisplay {
   Mobile,
@@ -179,10 +182,8 @@ export const usePreferenceStore = create<PreferenceState>()(
     }),
     {
       name: 'kosmos.preference',
-      merge: (persistedState, currentState) => {
-        // Needed to persist nested functions
-        return Object.assign({}, currentState, persistedState);
-      },
+      merge: (persistedState, currentState) =>
+        deepMerge(currentState, persistedState) as never,
     },
   ),
 );
