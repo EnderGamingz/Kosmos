@@ -18,7 +18,6 @@ import {
 } from 'react-router-dom';
 import { getShareUrl } from '@lib/share/url.ts';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
-import SubPageTitle from '@pages/explorer/components/subPageTitle.tsx';
 import type { SharedItems as SharedItemsDTO } from '@bindings/SharedItems.ts';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import type { FileModelWithShareInfoDTO } from '@bindings/FileModelWithShareInfoDTO.ts';
@@ -42,7 +41,7 @@ export default function ExplorerSharePage() {
         <Tabs value={active} className={'max-w-sm w-full mx-auto'}>
           <TabsList
             className={
-              'w-full [&>*]:grow [&>*]:text-center flex-wrap [&_button]:w-full'
+              'w-full *:grow *:text-center flex-wrap [&_button]:w-full'
             }
           >
             <Link to={'/home/share/shared'}>
@@ -80,14 +79,7 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
       <PageMetadata title={`Shared ${sharingType}`} />
       <div className={'file-list relative flex flex-col overflow-y-auto grow'}>
         {(!items?.data || items.isLoading) && <RouterLoadingBar />}
-        <div className={'px-5 pt-5'}>
-          <SubPageTitle>{`Shared Items ${sharingType}`}</SubPageTitle>
-        </div>
-        <div
-          className={
-            'flex flex-col relative grow max-h-[calc(100dvh-90px-2.5rem-52px-56px)] max-md:max-h-[calc(100dvh-90px-2.5rem-52px-56px-80px)]'
-          }
-        >
+        <div className={'flex flex-col relative grow'}>
           {itemsForUser ? (
             <SharedForMe shares={items.data} />
           ) : (
@@ -180,7 +172,7 @@ function ShareForMeItem({
         <div
           className={'flex w-full text-stone-700 sm:grid dark:text-stone-300'}
         >
-          <p className={'w-0 flex-grow truncate sm:w-full'}>{itemName}</p>
+          <p className={'w-0 grow truncate sm:w-full'}>{itemName}</p>
           <span className={'hidden text-xs text-stone-500 sm:flex'}>
             {share.share_uuid}
           </span>

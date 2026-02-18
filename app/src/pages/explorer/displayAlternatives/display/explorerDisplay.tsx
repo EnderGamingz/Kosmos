@@ -8,7 +8,6 @@ import { Suspense, useMemo } from 'react';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import useLayoutOptions from '@hooks/useLayoutOptions.ts';
-import AppScreen from '@components/overlay/appScreen.tsx';
 import { getDisplayComponent } from '@pages/explorer/displayAlternatives/display/getDisplayComponent.tsx';
 import { getLoadingComponent } from '@pages/explorer/displayAlternatives/display/getLoadingComponent.tsx';
 import type {
@@ -57,11 +56,12 @@ export default function ExplorerDataDisplay({
     if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
     else return displayType.type;
   };
+  const loadingComponent = getLoadingComponent(preferences.loading.type);
 
-  if (isLoading) return getLoadingComponent(preferences.loading.type);
+  if (isLoading) return loadingComponent;
 
   return (
-    <Suspense fallback={<AppScreen loading showText={false} />}>
+    <Suspense fallback={loadingComponent}>
       <ExplorerDisplayWrapper
         shareUuid={shareUuid}
         files={files}
