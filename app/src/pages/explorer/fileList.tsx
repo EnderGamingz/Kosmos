@@ -49,7 +49,7 @@ export default function FileList() {
         'h-full max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]',
       )}
     >
-      <div className={'flex items-center shadow-sm'}>
+      <div className={'flex items-center'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />

@@ -75,7 +75,7 @@ export function BreadCrumbItem({
       <span
         className={cn(
           'text-muted-foreground transition-opacity',
-          last ? 'opacity-0' : 'opacity-100',
+          last && 'opacity-0',
         )}
       >
         /

@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import merge from 'lodash.merge';
 import { HardDrive, MessageCircleWarning } from 'lucide-react';
 import type { Icon } from '@/types/icon.ts';
 
@@ -71,7 +70,7 @@ export const useDismissStore = create<DismissState>()(
       name: 'kosmos.dismiss',
       merge: (persistedState, currentState) => {
         // Needed to persist nested functions
-        return merge({}, currentState, persistedState);
+        return Object.assign({}, currentState, persistedState);
       },
     },
   ),

@@ -1,7 +1,6 @@
 import { invalidateFiles, useOperations } from '@lib/query.ts';
 import { OperationStatus, OperationType } from '@models/operation.ts';
 import { useEffect, useRef, useState } from 'react';
-import objectHash from 'object-hash';
 import { useUserState } from '@stores/userStore.ts';
 import { useNotifications } from '@stores/notificationStore.ts';
 import { StaticNotificationItem } from '@components/notifications/staticNotificationItem.tsx';
@@ -15,6 +14,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@components/ui/sheet.tsx';
+
+const simpleHash = (data: unknown): string => {
+  return JSON.stringify(data);
+};
 
 export default function NotificationsSheet() {
   const [open, setOpen] = useState(false);
@@ -32,7 +35,7 @@ export default function NotificationsSheet() {
 
     // Generate a hash based on the operations-data,
     // this is used for checking if the data has changed
-    const newHash = objectHash(operations.data);
+    const newHash = simpleHash(operations.data);
 
     if (initial) {
       // Save the initial state upon the first run
@@ -59,7 +62,7 @@ export default function NotificationsSheet() {
       const ids = newSucceeded.map(o => o.id);
 
       // If the set of succeeded operations has changed
-      if (objectHash(ids) !== objectHash(initialSucceeded)) {
+      if (simpleHash(ids) !== simpleHash(initialSucceeded)) {
         const types = newSucceeded
           .filter(o => initialSucceeded.includes(o.id))
           .map(o => o.operation_type);

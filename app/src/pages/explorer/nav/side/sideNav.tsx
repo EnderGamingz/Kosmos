@@ -21,8 +21,8 @@ function SideNavWrapper({
   return (
     <aside
       className={cn(
-        'flex flex-col whitespace-nowrap border-r border-stone-800/10 md:flex-grow md:bg-[initial] md:bg-none',
-        'overflow-hidden md:h-[initial] dark:border-stone-300/10',
+        'flex flex-col whitespace-nowrap md:grow md:bg-[initial] md:bg-none',
+        'overflow-hidden md:h-[initial]',
         className,
       )}
     >

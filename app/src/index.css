@@ -144,6 +144,14 @@ body {
   background-color: transparent;
 }
 
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
 .file-list {
   -ms-overflow-style: none;
   scrollbar-width: none;

@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { invalidateFolder } from '@lib/query.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { hexToHsva, hsvaToHex, ShadeSlider, Wheel } from '@uiw/react-color';
+import { colord } from 'colord';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import useDisclosure from '@/hooks/useDisclosure';
-import { Delete, SwatchBook } from 'lucide-react';
+import { Delete, Pointer, SwatchBook } from 'lucide-react';
+import { cn } from '@lib/utils.ts';
 
 const definedColors = [
   '#f44336',
@@ -94,52 +95,103 @@ export function FolderColorChange({
     setSelected(color);
   };
 
+  const handleBrightnessChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const brightness = parseInt(e.target.value, 10);
+    const col = colord(selected || color || '#ffffff');
+    setSelected(col.lighten(brightness / 100 - col.toHsl().l / 100).toHex());
+  };
+
   useEffect(() => {
     if (!isOpen && color !== selected && selected !== '') {
       recolorAction.mutate({});
     }
   }, [isOpen, color, recolorAction.mutate, selected]);
 
+  const lightnessValue = useMemo(
+    () => colord(selected || color || '#ffffff').toHsl().l,
+    [selected, color],
+  );
+
+  const pointerColor = useMemo(() => {
+    const col = colord(selected || color || '#ffffff');
+    return col.isDark() ? 'white' : 'black';
+  }, [selected, color]);
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger>
         <SwatchBook /> Folder Color
       </PopoverTrigger>
-      <PopoverContent className={'max-w-52'}>
+      <PopoverContent className={'max-w-72'}>
         <div className={'flex flex-wrap gap-2 justify-center'}>
-          {definedColors.map(color => (
+          {definedColors.map(c => (
             <button
               type={'button'}
-              onClick={handleClick(color)}
-              key={color}
-              className={'h-5 w-5 rounded-full! p-0! shadow-md'}
+              onClick={handleClick(c)}
+              key={c}
+              className={cn(
+                'h-5 w-5 rounded-full! p-0! shadow-md transition-all',
+                selected === c &&
+                  'ring-2 ring-offset-2 ring-blue-500 scale-110',
+              )}
               style={{
-                backgroundColor: color,
+                backgroundColor: c,
               }}
+              title={c}
             />
           ))}
         </div>
-        <div className={'mt-4 grid gap-2 place-items-center'}>
-          <Wheel
-            width={150}
-            height={150}
-            color={selected || color || '#ffffff'}
-            onChange={color => setSelected(color.hex)}
-          />
-          <ShadeSlider
-            className={'overflow-hidden w-full border rounded-xs!'}
-            hsva={hexToHsva(selected || color || '#ffffff')}
-            onChange={newShade => {
-              const parsedColor = hexToHsva(selected || color || 'lightgray');
-              setSelected(hsvaToHex({ ...parsedColor, v: newShade.v }));
-            }}
-          />
+        <div className={'mt-4 space-y-3'}>
+          <div>
+            <label
+              htmlFor={'color'}
+              className={'block text-sm font-medium mb-2'}
+            >
+              Custom Color
+            </label>
+            <div className={'overflow-hidden border h-10 rounded-md relative'}>
+              <input
+                id={'color'}
+                name={'color'}
+                type={'color'}
+                value={selected || color || '#ffffff'}
+                onChange={e => setSelected(e.target.value)}
+                className={'w-full h-10 cursor-pointer'}
+              />
+              <Pointer
+                className={
+                  'opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 pointer-events-none transition-colors'
+                }
+                style={{ color: pointerColor }}
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor={'brightness'}
+              className={'block text-sm font-medium mb-2'}
+            >
+              Brightness
+            </label>
+            <input
+              name={'brightness'}
+              id={'brightness'}
+              type={'range'}
+              min={'0'}
+              max={'100'}
+              value={lightnessValue}
+              onChange={handleBrightnessChange}
+              className={
+                'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
+              }
+            />
+          </div>
           {(color || selected) && (
             <button
               type={'button'}
               onClick={() => recolorAction.mutate({ remove: true })}
               className={
-                'flex items-center gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
+                'w-full flex items-center justify-center gap-2 rounded-md bg-stone-200 px-2 py-1 hover:bg-stone-300 dark:bg-stone-700 dark:hover:bg-stone-600'
               }
             >
               <Delete className={'h-5 w-5'} />

@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
       <Suspense fallback={<AppScreen loading showText logo />}>
         <DefaultMetadata />
         <Header />
-        <main className={'relative flex flex-grow flex-col'}>
+        <main className={'relative flex grow flex-col'}>
           <Outlet />
         </main>
         <NotificationIndicator />

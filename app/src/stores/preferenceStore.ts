@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import merge from 'lodash.merge';
 
 export enum ExplorerDisplay {
   Mobile,
@@ -182,7 +181,7 @@ export const usePreferenceStore = create<PreferenceState>()(
       name: 'kosmos.preference',
       merge: (persistedState, currentState) => {
         // Needed to persist nested functions
-        return merge({}, currentState, persistedState);
+        return Object.assign({}, currentState, persistedState);
       },
     },
   ),

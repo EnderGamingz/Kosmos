@@ -31,7 +31,7 @@ export function FileListBreadCrumbs({
       {!firstHome && (
         <BreadCrumbItem
           initial
-          name={<Home className={'!w-4.5 !h-4.5'} />}
+          name={<Home className={'size-4.5!'} />}
           href={!clickOverwrite ? '/home' : undefined}
           onClick={() => clickOverwrite?.(undefined)}
           last={!crumbs.length}
