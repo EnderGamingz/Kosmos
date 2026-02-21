@@ -22,6 +22,8 @@ import { $convertFromMarkdownString, TRANSFORMERS } from '@lexical/markdown';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { $getRoot } from 'lexical';
+import MarkdownUpdater from '@pages/explorer/file/display/displayTypes/markdown/editor/MarkdownUpdater.tsx';
 
 export function EditMarkdownFile({
   file,
@@ -96,7 +98,8 @@ export function MarkdownFullscreenView({
         </DialogHeader>
         <LexicalComposer
           initialConfig={{
-            editorState: () => $convertFromMarkdownString(data, TRANSFORMERS),
+            editorState: () =>
+              $convertFromMarkdownString(data, TRANSFORMERS, undefined, true),
             ...editorConfig,
           }}
         >
@@ -151,15 +154,24 @@ export default function FileMarkdownDisplay({
         {query.data && (
           <LexicalComposer
             initialConfig={{
-              editorState: () =>
-                $convertFromMarkdownString(query.data, TRANSFORMERS),
+              editorState: () => {
+                const root = $getRoot();
+                root.clear();
+                $convertFromMarkdownString(
+                  query.data,
+                  TRANSFORMERS,
+                  undefined,
+                  true,
+                );
+              },
               ...editorConfig,
             }}
           >
-            <div className={'h-50 grow overflow-auto'}>
+            <MarkdownUpdater markdown={query.data} />
+            <div className='h-50 grow overflow-auto'>
               <RichTextPlugin
                 contentEditable={
-                  <ContentEditable contentEditable={false} className={'p-2'} />
+                  <ContentEditable contentEditable={false} className='p-2' />
                 }
                 ErrorBoundary={LexicalErrorBoundary}
               />

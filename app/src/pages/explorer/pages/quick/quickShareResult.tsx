@@ -57,7 +57,7 @@ export function QuickShareResult({
         <button
           type={'button'}
           onClick={onReset}
-          className={'text-stone-600 underline'}
+          className={'text-stone-600 underline dark:text-stone-400'}
         >
           Create another share
         </button>

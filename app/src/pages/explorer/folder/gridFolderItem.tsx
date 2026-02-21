@@ -127,7 +127,7 @@ export default function GridFolderItem({
         className={cn(
           'flex items-center',
           'rounded-lg bg-stone-400/40 dark:bg-stone-700/40',
-          'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg',
+          'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg dark:hover:bg-stone-600/50',
           isSelected && 'bg-indigo-100 dark:bg-indigo-800',
           isShift && 'cursor-pointer',
           context.select.rangeStart === index && 'bg-indigo-50',

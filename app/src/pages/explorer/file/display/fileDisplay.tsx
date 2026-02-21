@@ -159,10 +159,10 @@ function FileDisplayContent({
           onClick={onClose}
           aria-label={'Close'}
           className={
-            'md:hidden border absolute top-5 right-5 z-110 rounded-full bg-stone-50/50 p-2 backdrop-blur-sm animate-fade-scale-in'
+            'md:hidden border absolute top-5 right-5 z-110 rounded-full bg-stone-50/50 p-2 backdrop-blur-sm animate-fade-scale-in dark:bg-stone-900/50'
           }
         >
-          <X className={'size-5 text-stone-800'} />
+          <X className={'size-5 text-stone-800 dark:text-stone-200'} />
         </button>
         {prevFile && (
           <>

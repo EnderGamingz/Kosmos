@@ -4,7 +4,7 @@ import {
 } from '@lexical/react/LexicalComposer';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -100,7 +100,8 @@ export function MarkdownEditorContent({
   const saveAction = useMutation({
     mutationFn: async () => {
       const updateId = notifications.notify({
-        title: 'Update file',
+        title: 'Updating file',
+        status: `Updating...`,
         severity: Severity.INFO,
         loading: true,
         canDismiss: false,
@@ -131,10 +132,24 @@ export function MarkdownEditorContent({
     },
   });
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+        event.preventDefault();
+        saveAction.mutate();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [saveAction.mutate]);
+
   // biome-ignore lint/suspicious/noExplicitAny: Lexical editorState type is complex and not worth defining here
   const onChange = (editorState: any) => {
     editorState.read(() => {
-      const markdown = $convertToMarkdownString(TRANSFORMERS);
+      const markdown = $convertToMarkdownString(TRANSFORMERS, undefined, true);
       setCode(markdown);
     });
   };
@@ -151,7 +166,12 @@ export function MarkdownEditorContent({
               root.clear();
 
               if (isMarkdown) {
-                $convertFromMarkdownString(initialData, TRANSFORMERS);
+                $convertFromMarkdownString(
+                  initialData,
+                  TRANSFORMERS,
+                  undefined,
+                  true,
+                );
                 return;
               }
 
@@ -175,7 +195,7 @@ export function MarkdownEditorContent({
             <Editor
               contentEditable={
                 <ContentEditable
-                  className={'outline-none p-2'}
+                  className={'grow outline-none p-2'}
                   aria-placeholder={'Enter some text...'}
                   // biome-ignore lint/complexity/noUselessFragments: empty placeholder to avoid default text
                   placeholder={<></>}
@@ -194,7 +214,7 @@ export function MarkdownEditorContent({
           disabled={saveAction.isPending}
           onClick={() => saveAction.mutate()}
         >
-          <Check /> Save
+          <Check /> {saveAction.isPending ? 'Saving...' : 'Save'}
         </Button>
       </DialogFooter>
     </>

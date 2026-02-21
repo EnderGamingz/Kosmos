@@ -102,7 +102,7 @@ export function NotificationItem({
               update(data.id, { popup: false });
             }}
             className={
-              'ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
+              'ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50 dark:hover:bg-slate-600/50'
             }
           >
             <X className={'h-5 w-5'} />
@@ -116,7 +116,7 @@ export function NotificationItem({
               data.cancelController?.abort();
             }}
             className={
-              'text-red-500 ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50'
+              'text-red-500 ml-auto self-start rounded-full p-1 transition-colors hover:bg-slate-300/50 dark:hover:bg-slate-600/50'
             }
           >
             <StopCircle className={'h-5 w-5'} />

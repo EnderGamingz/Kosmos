@@ -47,7 +47,7 @@ export default function AppInfo() {
   return (
     <div className={'space-y-2 p-4'}>
       <SettingsPageMetadata title={'Info'} />
-      <div className={'flex items-center gap-3 text-stone-700'}>
+      <div className={'flex items-center gap-3 text-stone-700 dark:text-stone-300'}>
         <ApplicationIcon
           className={'h-12 w-12 md:h-16 md:w-16 animate-fade-in-left'}
         />

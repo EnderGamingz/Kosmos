@@ -71,7 +71,8 @@ export function FullscreenToggle({
       onClick={toggle}
       className={cn(
         'border absolute top-3 z-110 rounded-full bg-stone-50/50 p-2 backdrop-blur-sm animate-fade-scale-in',
-        '[&>svg]:w-5 [&>svg]:h-5 [&>svg]:text-stone-800',
+        '[&>svg]:w-5 [&>svg]:h-5 [&>svg]:text-stone-800 dark:[&>svg]:text-stone-200',
+        'dark:bg-stone-900/50',
         isFullscreen || noOffset
           ? 'max-md:left-3 md:right-3'
           : 'max-md:left-3 md:right-8',

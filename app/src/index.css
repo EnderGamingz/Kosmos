@@ -140,6 +140,10 @@ body {
   border-radius: 10px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgb(168, 162, 158);
+}
+
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
@@ -203,6 +207,18 @@ input[type="color"]::-webkit-color-swatch-wrapper {
   height: 18px;
   border-radius: 50%;
   background: rgb(41 37 36);
+}
+
+.dark .slider {
+  background: rgb(120 113 108);
+}
+
+.dark .slider::-webkit-slider-thumb {
+  background: rgb(231 229 228);
+}
+
+.dark .slider::-moz-range-thumb {
+  background: rgb(231 229 228);
 }
 
 .delay-50 {

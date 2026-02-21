@@ -157,7 +157,11 @@ export function FileDisplayHandler({
   }
 
   // Needs to be before Embed as text files also count as embeds
-  if (FileTypeActions.hasFilePlainDisplayableContent(file)) {
+  if (
+    FileTypeActions.hasFilePlainDisplayableContent(file) &&
+    // Exclude Markdown files from this check since they have a custom display in EmbedFile
+    !FileTypeActions.isMarkdown(file)
+  ) {
     if (
       FileTypeActions.isFileTooLargeForContentDisplay(file) ||
       previewOnHold

@@ -65,7 +65,7 @@ function MobileListHeader({ ref }: { ref?: RefObject<HTMLDivElement> }) {
         )}
         <p
           key={`mobile-info-${currentFolder}`}
-          className={'text-sm text-stone-500 animate-fade-in-right'}
+          className={'text-sm text-stone-500 animate-fade-in-right dark:text-stone-400'}
         >
           {folders.length} Folders &bull; {files.length} Files
         </p>
