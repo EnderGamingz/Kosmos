@@ -6,9 +6,17 @@ import {
 } from '@/components/ui/popover';
 import useDisclosure from '@/hooks/useDisclosure';
 import { Search } from 'lucide-react';
+import getCurrentTimeSection, { getRandomGreeting } from '@utils/greeting.ts';
 
 export function SearchBar() {
-  return <SearchForm />;
+  return (
+    <div className={'text-center space-y-1'}>
+      <p className={'text-xs text-muted-foreground'}>
+        Good {getCurrentTimeSection()}! <b>{getRandomGreeting()}</b>
+      </p>
+      <SearchForm />
+    </div>
+  );
 }
 
 export function SearchPopup() {

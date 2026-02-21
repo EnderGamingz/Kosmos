@@ -1,4 +1,11 @@
-import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
+import {
+  lazy,
+  type ReactNode,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { DataOperationType, Selected } from '@models/file.ts';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -48,6 +55,8 @@ export function ExplorerDisplayWrapper({
     undefined | { type: DataOperationType; id: string }
   >(undefined);
   const { isMobile } = useLayoutOptions();
+
+  const displayRef = useRef<HTMLDivElement>(null);
 
   const {
     selectedFolders,
@@ -153,6 +162,7 @@ export function ExplorerDisplayWrapper({
         // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
         onScroll: handleScroll,
+        displayRef,
       }}
     >
       {!viewSettings?.scrollControlMissing && !viewSettings?.noActions && (
@@ -171,6 +181,7 @@ export function ExplorerDisplayWrapper({
           if (viewSettings?.isCreateAllowed)
             handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
         }}
+        ref={displayRef}
       >
         <FileUploader
           disabled={!viewSettings?.isCreateAllowed}

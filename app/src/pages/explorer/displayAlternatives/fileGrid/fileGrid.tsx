@@ -112,7 +112,7 @@ export default function FileGrid({
   const isControl = useKeyStore(s => s.keys.ctrl);
 
   return (
-    <PagedWrapper height={!dynamic} viewSettings={viewSettings}>
+    <PagedWrapper willAutoFetch={!dynamic} viewSettings={viewSettings}>
       <div className={'flex h-full flex-col px-5 md:py-2'}>
         <div className={'mb-3 flex items-center gap-2'}>
           {!viewSettings?.noSelect && (

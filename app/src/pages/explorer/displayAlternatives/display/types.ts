@@ -13,6 +13,7 @@ export type ViewSettings = {
   paged?: boolean;
   onLoadNextPage?: () => void;
   hasNextPage?: boolean;
+  isLoading?: boolean;
   /**
    * If the display is for the trash view
    */

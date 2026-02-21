@@ -23,7 +23,9 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
     <form onSubmit={handleSubmit}>
       <div className={'relative'}>
         <Search
-          className={'absolute left-2 top-1/2 h-5 w-5 -translate-y-1/2'}
+          className={
+            'absolute left-2 top-1/2 size-4 -translate-y-1/2 opacity-50'
+          }
         />
         <input
           type={'text'}
@@ -33,14 +35,14 @@ export function SearchForm({ onClose }: { onClose?: () => void }) {
           onChange={e => setValue(e.target.value)}
           autoComplete={'off'}
           className={
-            'w-full truncate rounded-md border-primary/50 p-2.5 px-9 border placeholder:text-sm'
+            'w-full truncate rounded-md border-primary/30 py-1 px-9 border placeholder:text-sm'
           }
         />
         <button
           type={'submit'}
           disabled={!value}
           className={cn(
-            'transition-opacity absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2',
+            'transition-opacity absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 opacity-50',
             !value && 'opacity-0',
           )}
         >

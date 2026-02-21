@@ -165,7 +165,7 @@ export default function GridFileItem({
               : isCompact
                 ? '[&>div]:p-0 [&_svg]:h-12 [&_svg]:w-12'
                 : '[&>div]:p-0 [&_svg]:h-14 [&_svg]:w-14',
-            isDynamic ? 'h-auto [&_.img-container]:h-auto [&_img]:h-auto' : '',
+            isDynamic ? 'h-auto [&_.img-container]:h-auto [&_img]:h-full' : '',
           )}
         >
           {fileHasPreview ? (
