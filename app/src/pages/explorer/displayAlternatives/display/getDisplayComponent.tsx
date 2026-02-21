@@ -23,8 +23,8 @@ export function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
       return <AlbumDisplay />;
     case ExplorerDisplay.DynamicGrid:
       return <FileGrid dynamic details={details} />;
-    case ExplorerDisplay.StaticGrid:
-      return <FileGrid details={details} />;
+    /*    case ExplorerDisplay.StaticGrid:
+      return <FileGrid details={details} />;*/
     case ExplorerDisplay.Mobile:
       return <MobileList />;
     default:
