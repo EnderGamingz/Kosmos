@@ -22,7 +22,7 @@ function HeroLink({
     <Link
       to={to}
       className={cn(
-        'flex items-center gap-2 rounded-full bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
+        'flex items-center gap-2 rounded-lg bg-stone-50 px-6 py-2 font-medium text-stone-900 sm:px-10 sm:py-4',
         'text-lg transition-colors hover:bg-stone-300 sm:text-2xl dark:bg-stone-300 dark:text-stone-800 dark:hover:bg-stone-400',
         className,
       )}
@@ -36,10 +36,10 @@ function HeroLink({
 export function Hero() {
   const user = useUserState(s => s.user);
   return (
-    <div className={'flex sm:h-[calc(100dvh-90px)] sm:max-h-[600px]'}>
+    <div className={'flex sm:h-[calc(100dvh-90px)] sm:max-h-150'}>
       <div
         className={cn(
-          'relative flex-grow overflow-hidden bg-stone-900 shadow-lg',
+          'relative grow overflow-hidden bg-stone-900 shadow-lg',
           'grid p-10 md:p-16 lg:p-24',
         )}
       >
@@ -50,7 +50,7 @@ export function Hero() {
             'absolute inset-0 z-0 h-full w-full object-cover brightness-50 animate-fade-in'
           }
         />
-        <div className={'z-10 flex flex-grow flex-col gap-10 sm:gap-12'}>
+        <div className={'z-10 flex grow flex-col gap-10 sm:gap-12'}>
           <div className={'flex gap-4 items-center'}>
             {user?.has_avatar && (
               <UserAvatar
@@ -108,7 +108,7 @@ export function Hero() {
               </>
             ) : (
               <HeroLink
-                className={'animate-fade-in-bottom delay-300'}
+                className={'animate-fade-in-bottom'}
                 to={'/auth/login'}
                 icon={<LogIn className={'h-8 w-8'} />}
               >
@@ -117,7 +117,7 @@ export function Hero() {
             )}
             {ALLOW_REGISTER && !user && (
               <HeroLink
-                className={'animate-fade-in-bottom delay-400'}
+                className={'animate-fade-in-bottom'}
                 to={'/auth/register'}
               >
                 Register

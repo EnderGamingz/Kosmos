@@ -35,7 +35,9 @@ export function UserMenu() {
       <PopoverTrigger asChild>
         <button
           type={'button'}
-          className={'p-1 flex items-center gap-2 rounded-full outline-none'}
+          className={
+            'px-1.5  py-1 flex items-center gap-2 rounded-full outline-none'
+          }
         >
           <UserAvatar
             disabled={!user.user?.has_avatar}
