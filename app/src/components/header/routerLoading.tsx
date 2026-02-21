@@ -12,7 +12,6 @@ export function RouterLoading() {
 export function RouterLoadingBar() {
   return (
     <Progress
-      color={'primary'}
       indeterminate
       className={
         'z-1000 h-1 fixed top-0 left-0 right-0 bg-transparent animate-fade-in'

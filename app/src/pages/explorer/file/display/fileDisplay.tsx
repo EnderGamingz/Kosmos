@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@lib/utils.ts';
 import { useSearchParams } from 'react-router-dom';
+import { X } from 'lucide-react';
 
 export default function FileDisplay({
   onSelect,
@@ -146,13 +147,23 @@ function FileDisplayContent({
     <Dialog open={!!file} onOpenChange={b => !b && onClose()}>
       <CleanDialogContent
         className={
-          'flex flex-col h-full w-full max-w-5xl focus:outline-none focus-visible:outline-none md:grid md:max-h-[600px] md:grid-cols-2'
+          'p-2 flex flex-col h-full w-full max-w-5xl focus:outline-none focus-visible:outline-none md:grid md:max-h-150 md:grid-cols-2'
         }
       >
         <DialogHeader className={'sr-only'}>
           <DialogTitle>{prevFile?.file_name || 'File'}</DialogTitle>
           <DialogDescription>{prevFile?.mime_type || ''}</DialogDescription>
         </DialogHeader>
+        <button
+          type={'button'}
+          onClick={onClose}
+          aria-label={'Close'}
+          className={
+            'md:hidden border absolute top-5 right-5 z-110 rounded-full bg-stone-50/50 p-2 backdrop-blur-sm animate-fade-scale-in'
+          }
+        >
+          <X className={'size-5 text-stone-800'} />
+        </button>
         {prevFile && (
           <>
             <div
@@ -172,8 +183,8 @@ function FileDisplayContent({
               className={cn(
                 'relative shadow-[-5px_0_10px_0_rgba(0,0,0,0.1)]',
                 'z-10 flex w-full flex-col space-y-3 transition-all',
-                'whitespace-nowrap rounded-md max-md:rounded-b-none bg-gray-50 p-3 md:p-4',
-                'max-sm:min-h-1/2 md:outline-2 -outline-offset-2 outline-transparent',
+                'whitespace-nowrap rounded-md bg-gray-50 p-3 md:p-4',
+                'max-sm:min-h-1/2 outline-2 outline-transparent',
                 'dark:bg-stone-900 dark:outline-stone-400/20',
                 isSelected &&
                   '-outline-offset-2 outline-blue-500 dark:outline-blue-400',
@@ -186,7 +197,7 @@ function FileDisplayContent({
               />
               {/**
                * Disabled for now as the favorite changes, the file order
-               * and file display currently relies on scope index which changes
+               * and file display currently rely on scope index which changes
                * !shareUuid && (<FileDisplayFavorite file={file} onUpdate={onUpdate} />)
                **/}
               <FileDisplayStats file={prevFile} />

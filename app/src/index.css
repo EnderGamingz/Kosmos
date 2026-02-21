@@ -9,7 +9,7 @@
   }
 
   .menu-button {
-    @apply flex items-center gap-2 rounded-md bg-stone-700/5 p-2 text-stone-700 transition-colors hover:bg-stone-700/10 dark:bg-stone-300/5 dark:text-stone-300 dark:hover:bg-stone-300/10;
+    @apply h-10 flex items-center gap-2 rounded-md bg-stone-700/5 p-2 text-stone-700 transition-colors hover:bg-stone-700/10 dark:bg-stone-300/5 dark:text-stone-300 dark:hover:bg-stone-300/10;
   }
 }
 

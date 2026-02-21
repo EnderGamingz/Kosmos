@@ -29,7 +29,7 @@ function Row({
     itemData,
   } = getVirtualRowData({ index, data });
 
-  if (isFileModel(itemData)) {
+  if (isFileModel(itemData))
     return (
       <MobileFileItem
         i={index}
@@ -40,7 +40,6 @@ function Row({
         style={style}
       />
     );
-  }
 
   return (
     <MobileFolderItem

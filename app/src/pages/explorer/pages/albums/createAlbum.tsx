@@ -110,7 +110,7 @@ export function CreateAlbum() {
                   variant={'outline'}
                   disabled={createMutation.isPending}
                   type={'button'}
-                  className={'mr-auto'}
+                  className={'md:mr-auto'}
                 >
                   Cancel
                 </Button>

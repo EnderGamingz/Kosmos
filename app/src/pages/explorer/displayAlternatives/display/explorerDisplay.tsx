@@ -63,7 +63,10 @@ export default function ExplorerDataDisplay({
     displayType.details,
   );
 
-  if (isLoading) return loadingComponent;
+  if (isLoading)
+    return (
+      <div className={'animate-fade-in delay-200'}>{loadingComponent}</div>
+    );
 
   return (
     <ExplorerDisplayWrapper

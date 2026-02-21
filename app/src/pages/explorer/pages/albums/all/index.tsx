@@ -8,14 +8,10 @@ import { PageMetadata } from '@components/metadata.tsx';
 export default function AlbumsPage() {
   const albums = AlbumQuery.useAlbums();
   return (
-    <div className={'relative'}>
+    <>
       <PageMetadata title={'Albums'} />
-      <div
-        className={
-          'h-full max-h-[calc(100dvh-90px-80px)] space-y-5 overflow-y-auto p-5'
-        }
-      >
-        <div className={'flex items-center justify-between'}>
+      <div className={'h-0 grow space-y-5 overflow-y-auto p-5'}>
+        <div className={'flex items-center justify-between flex-wrap gap-2'}>
           <SubPageTitle>Albums</SubPageTitle>
           <CreateAlbum />
         </div>
@@ -30,6 +26,6 @@ export default function AlbumsPage() {
           ))}
         </ul>
       </div>
-    </div>
+    </>
   );
 }

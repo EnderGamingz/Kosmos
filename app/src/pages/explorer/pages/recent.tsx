@@ -15,25 +15,21 @@ export default function RecentFiles() {
     <>
       <PageMetadata title={'Recent Files'} />
       <div
-        className={
-          'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-        }
+        className={'file-list relative flex h-full flex-col overflow-y-auto'}
       >
         <div className={'p-5'}>
           <SubPageTitle>Recent Files</SubPageTitle>
         </div>
-        <div className={'relative grow'}>
-          <ExplorerDataDisplay
-            isLoading={files.isLoading}
-            files={files.data || []}
-            folders={[]}
-            viewSettings={{
-              limitedView: true,
-              // Magic shit again
-              additionalHeightReduction: [36],
-            }}
-          />
-        </div>
+        <ExplorerDataDisplay
+          isLoading={files.isLoading}
+          files={files.data || []}
+          folders={[]}
+          viewSettings={{
+            limitedView: true,
+            // Magic shit again
+            additionalHeightReduction: [36],
+          }}
+        />
       </div>
     </>
   );

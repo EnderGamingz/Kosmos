@@ -44,7 +44,7 @@ export default function DisplayImage({
       onDoubleClick={toggleFullScreen}
       className={cn(
         'h-full w-full rounded-xl bg-center bg-no-repeat transition-colors',
-        isTooLarge && 'scale blur-sm grayscale-[50%]',
+        isTooLarge && 'scale blur-sm grayscale-50',
         fullScreen
           ? 'bg-contain object-contain drop-shadow-lg'
           : 'bg-cover object-cover shadow-lg',

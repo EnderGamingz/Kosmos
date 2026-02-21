@@ -36,7 +36,7 @@ export default function ExplorerSharePage() {
   const active = pathname.split('/').pop() || '';
 
   return (
-    <div className={'flex flex-col py-5 grow'}>
+    <div className={'flex flex-col pt-5 grow'}>
       <div className={'pb-4'}>
         <Tabs value={active} className={'max-w-sm w-full mx-auto'}>
           <TabsList
