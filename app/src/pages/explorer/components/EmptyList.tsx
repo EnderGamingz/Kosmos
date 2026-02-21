@@ -29,10 +29,9 @@ export default function EmptyList({
     >
       <div
         className={cn(
-          'grid w-full flex-grow place-items-center gap-4 px-2 py-4 animate-fade-in-top delay-200',
-          grid
-            ? 'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7'
-            : '',
+          'grid w-full place-items-center gap-4 px-2 py-4 animate-fade-in delay-200',
+          grid &&
+            'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
         )}
       >
         {!noIcon && <Illustration.NoData className={'h-20 w-20'} />}
@@ -43,7 +42,7 @@ export default function EmptyList({
         >
           {message ?? 'No items'}
         </p>
-        <div className={'animate-fade-in-top delay-400'}>{action}</div>
+        <div className={'animate-fade-in delay-400'}>{action}</div>
       </div>
     </ConditionalWrapper>
   );
