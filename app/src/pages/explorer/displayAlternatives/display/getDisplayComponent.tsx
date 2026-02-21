@@ -1,7 +1,10 @@
 import { type DetailType, ExplorerDisplay } from '@stores/preferenceStore.ts';
-import { lazy } from 'react';
+import AlbumDisplay from '@pages/explorer/displayAlternatives/album/albumDisplay.tsx';
+import FileGrid from '@pages/explorer/displayAlternatives/fileGrid/fileGrid.tsx';
+import MobileList from '@pages/explorer/displayAlternatives/mobileList';
+import FileTable from '@pages/explorer/displayAlternatives/fileTable/fileTable.tsx';
 
-const FileTable = lazy(
+/*const FileTable = lazy(
   () => import('@pages/explorer/displayAlternatives/fileTable/fileTable.tsx'),
 );
 const MobileList = lazy(
@@ -12,7 +15,7 @@ const FileGrid = lazy(
 );
 const AlbumDisplay = lazy(
   () => import('@pages/explorer/displayAlternatives/album/albumDisplay.tsx'),
-);
+);*/
 
 export function getDisplayComponent(id: ExplorerDisplay, details: DetailType) {
   switch (id) {

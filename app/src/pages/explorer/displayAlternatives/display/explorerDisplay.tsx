@@ -4,7 +4,7 @@ import {
   isTypeIgnoredForMobile,
   usePreferenceStore,
 } from '@stores/preferenceStore.ts';
-import { Suspense, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import useLayoutOptions from '@hooks/useLayoutOptions.ts';
@@ -58,19 +58,22 @@ export default function ExplorerDataDisplay({
   };
   const loadingComponent = getLoadingComponent(preferences.loading.type);
 
+  const DisplayComponent = getDisplayComponent(
+    displayMode(),
+    displayType.details,
+  );
+
   if (isLoading) return loadingComponent;
 
   return (
-    <Suspense fallback={loadingComponent}>
-      <ExplorerDisplayWrapper
-        shareUuid={shareUuid}
-        files={files}
-        folders={folders}
-        viewSettings={viewSettings}
-        overwriteDisplay={overwriteDisplay}
-      >
-        {getDisplayComponent(displayMode(), displayType.details)}
-      </ExplorerDisplayWrapper>
-    </Suspense>
+    <ExplorerDisplayWrapper
+      shareUuid={shareUuid}
+      files={files}
+      folders={folders}
+      viewSettings={viewSettings}
+      overwriteDisplay={overwriteDisplay}
+    >
+      {DisplayComponent}
+    </ExplorerDisplayWrapper>
   );
 }

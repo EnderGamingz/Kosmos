@@ -1,4 +1,4 @@
-import { lazy, type ReactNode, useEffect, useState } from 'react';
+import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { DataOperationType, Selected } from '@models/file.ts';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -179,13 +179,15 @@ export function ExplorerDisplayWrapper({
         </FileUploader>
       </div>
       {viewSettings?.isCreateAllowed && <FileListFab hide={!showFab} />}
-      {!viewSettings?.noDisplay && (
-        <FileDisplay
-          onSelect={selectFile}
-          selected={selectedFiles}
-          shareUuid={shareUuid}
-        />
-      )}
+      <Suspense>
+        {!viewSettings?.noDisplay && (
+          <FileDisplay
+            onSelect={selectFile}
+            selected={selectedFiles}
+            shareUuid={shareUuid}
+          />
+        )}
+      </Suspense>
       {!shareUuid && <ShareModal />}
       <ContextMenuHandler
         key={'context-menu'}
