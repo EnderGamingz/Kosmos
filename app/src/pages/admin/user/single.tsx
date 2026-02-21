@@ -50,7 +50,7 @@ export default function AdminUser() {
     <div className={'p-4 sm:p-6 max-w-5xl mx-auto'}>
       <AdminPageMetadata title={`${data.username} | User`} />
 
-      {/* Header Card */}
+      {/* Header */}
       <div
         className={
           'rounded-2xl bg-linear-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900 p-6 sm:p-8 shadow-sm border border-stone-300 dark:border-stone-700'
@@ -65,7 +65,7 @@ export default function AdminUser() {
             <div className={'p-3 rounded-full bg-stone-300 dark:bg-stone-700'}>
               <UserCircle className={'w-8 h-8 sm:w-10 sm:h-10'} />
             </div>
-            <div>
+            <div className={'-space-y-1'}>
               <h1
                 className={
                   'text-2xl sm:text-3xl font-bold text-stone-800 dark:text-stone-100'
@@ -76,13 +76,13 @@ export default function AdminUser() {
               {data.full_name && (
                 <p
                   className={
-                    'text-sm sm:text-base text-stone-600 dark:text-stone-400 mt-1'
+                    'text-sm sm:text-base text-stone-600 dark:text-stone-400'
                   }
                 >
                   @{data.username}
                 </p>
               )}
-              <div className={'mt-2'}>
+              <div className={'mt-3'}>
                 <Badge
                   variant={data.role === Role.Admin ? 'default' : 'secondary'}
                   className={'text-xs sm:text-sm'}
@@ -98,7 +98,6 @@ export default function AdminUser() {
 
       {/* Info Sections */}
       <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6'}>
-        {/* Account Information */}
         <div
           className={
             'rounded-xl bg-stone-100 dark:bg-stone-800 p-5 sm:p-6 shadow-sm border border-stone-200 dark:border-stone-700'
