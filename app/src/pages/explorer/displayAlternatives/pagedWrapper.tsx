@@ -35,7 +35,7 @@ export function PagedWrapper({
       }
       hasMore={viewSettings.hasNextPage}
       useWindow={false}
-      threshold={500}
+      threshold={1500}
       loader={
         willAutoFetch ? (
           <Progress

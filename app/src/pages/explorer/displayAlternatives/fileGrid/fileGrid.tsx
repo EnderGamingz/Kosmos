@@ -8,7 +8,6 @@ import { FileGridSort } from '@pages/explorer/displayAlternatives/fileGrid/fileG
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { PagedWrapper } from '@pages/explorer/displayAlternatives/pagedWrapper.tsx';
 import useExplorerData from '@pages/explorer/displayAlternatives/useExplorerData.ts';
-import { containerVariant } from '@components/defaults/transition.ts';
 import GridFolderItem from '@pages/explorer/folder/gridFolderItem.tsx';
 import {
   createContext,
@@ -38,7 +37,7 @@ function Footer(props: {
       {!props.fileModels.length && !props.folderModels.length ? (
         <EmptyList grid />
       ) : (
-        <motion.div
+        <div
           className={cn(
             'w-full cursor-default select-none border-none text-sm text-muted-foreground',
             'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 2xl:col-span-7',
@@ -50,7 +49,7 @@ function Footer(props: {
             {props.fileModels.length} Files
           </div>
           <div>{props.totalFileSize}</div>
-        </motion.div>
+        </div>
       )}
     </>
   );
@@ -66,12 +65,9 @@ function FolderGrid(props: {
   if (!props.folderModels.length) return null;
   const selectedIds = props.selected.map(folder => folder.id);
   return (
-    <motion.div
-      variants={containerVariant()}
-      initial={'hidden'}
-      animate={'show'}
+    <div
       className={cn(
-        'mb-5 flex gap-3 overflow-x-auto py-2 md:grid',
+        'flex gap-3 py-2 md:grid',
         'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
         'xl:grid-cols-5 2xl:grid-cols-7',
         props.control && '[&>div]:cursor-copy',
@@ -87,7 +83,7 @@ function FolderGrid(props: {
           outerDisabled={props.outerDisabled}
         />
       ))}
-    </motion.div>
+    </div>
   );
 }
 
@@ -136,7 +132,7 @@ export default function FileGrid({
             selected={selectedFolders}
           />
         )}
-        <motion.div
+        <div
           className={cn(
             'grow',
             Boolean(dynamic) && 'mt-6 gap-3',
@@ -191,7 +187,7 @@ export default function FileGrid({
               totalFileSize={totalFileSize}
             />
           )}
-        </motion.div>
+        </div>
       </div>
     </PagedWrapper>
   );
