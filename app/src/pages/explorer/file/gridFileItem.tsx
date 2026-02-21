@@ -96,7 +96,7 @@ export default function GridFileItem({
         'group relative rounded-lg',
         'transition-all',
         isSelected &&
-          'bg-indigo-100/50 ring-2 ring-indigo-500 dark:ring-indigo-300',
+          'bg-indigo-100/50 ring-offset-1 ring-2 ring-indigo-500 dark:ring-indigo-300',
         isShift && 'cursor-pointer',
         context.select.rangeStart === index &&
           'bg-indigo-50 dark:bg-indigo-900/50',
