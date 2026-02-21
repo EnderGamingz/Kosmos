@@ -156,12 +156,7 @@ export function FileDisplayHandler({
     );
   }
 
-  if (FileTypeActions.hasFileEmbedData(file) && !previewOnHold) {
-    return (
-      <EmbedFile file={file} serveUrl={highResUrl} isShared={!!shareUuid} />
-    );
-  }
-
+  // Needs to be before Embed as text files also count as embeds
   if (FileTypeActions.hasFilePlainDisplayableContent(file)) {
     if (
       FileTypeActions.isFileTooLargeForContentDisplay(file) ||
@@ -179,6 +174,12 @@ export function FileDisplayHandler({
     }
 
     return <PlainTextFileDisplay file={file} serveUrl={highResUrl} />;
+  }
+
+  if (FileTypeActions.hasFileEmbedData(file) && !previewOnHold) {
+    return (
+      <EmbedFile file={file} serveUrl={highResUrl} isShared={!!shareUuid} />
+    );
   }
 
   return (

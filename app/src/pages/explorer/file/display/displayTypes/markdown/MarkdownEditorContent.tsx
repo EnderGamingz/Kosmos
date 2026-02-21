@@ -36,6 +36,7 @@ import { OverflowNode } from '@lexical/overflow';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
+import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
 
 const nodes = [
   CodeNode,
@@ -109,9 +110,9 @@ export function MarkdownEditorContent({
           content: code,
         })
         .then(() => {
-          onClose();
           setFileContent(file.id, code);
           invalidateFiles().then();
+          onClose();
           notifications.updateNotification(updateId, {
             severity: Severity.SUCCESS,
             status: 'Updated',
@@ -145,17 +146,36 @@ export function MarkdownEditorContent({
       <div className={'flex flex-col grow w-full rounded-sm outline-none'}>
         <LexicalComposer
           initialConfig={{
-            editorState: () =>
-              $convertFromMarkdownString(initialData, TRANSFORMERS),
+            editorState: () => {
+              const root = $getRoot();
+              root.clear();
+
+              if (isMarkdown) {
+                $convertFromMarkdownString(initialData, TRANSFORMERS);
+                return;
+              }
+
+              // Preserve line breaks for plain text by creating a new paragraph for each line
+              const lines = initialData.split('\n');
+              for (let i = 0; i < lines.length; i++) {
+                const paragraph = $createParagraphNode();
+                paragraph.append($createTextNode(lines[i]));
+                root.append(paragraph);
+              }
+            },
             ...editorConfig,
           }}
         >
           {isMarkdown && <ToolbarPlugin />}
-          <div className={'h-50 grow overflow-auto'}>
+          <div
+            className={
+              'min-h-50 h-0 grow overflow-auto flex flex-col border rounded-sm'
+            }
+          >
             <Editor
               contentEditable={
                 <ContentEditable
-                  className={'rounded-sm border p-2'}
+                  className={'outline-none p-2'}
                   aria-placeholder={'Enter some text...'}
                   // biome-ignore lint/complexity/noUselessFragments: empty placeholder to avoid default text
                   placeholder={<></>}
@@ -170,7 +190,10 @@ export function MarkdownEditorContent({
         </LexicalComposer>
       </div>
       <DialogFooter>
-        <Button onClick={() => saveAction.mutate()}>
+        <Button
+          disabled={saveAction.isPending}
+          onClick={() => saveAction.mutate()}
+        >
           <Check /> Save
         </Button>
       </DialogFooter>

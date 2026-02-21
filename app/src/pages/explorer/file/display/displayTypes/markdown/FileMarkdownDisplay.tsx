@@ -26,7 +26,6 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 export function EditMarkdownFile({
   file,
   isMarkdown,
-  onClose,
 }: {
   file: FileModelDTO;
   isMarkdown: boolean;
@@ -42,7 +41,7 @@ export function EditMarkdownFile({
 
   const handleClose = () => {
     onDisclosureClose();
-    !isMarkdown && onClose?.();
+    //if (!isMarkdown) onClose?.();
   };
 
   return (
