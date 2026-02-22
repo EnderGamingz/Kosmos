@@ -362,7 +362,6 @@ export const useFileContent = (fileId: string, url?: string) => {
         .get(url ?? `${BASE_URL}auth/file/${fileId}/action/Serve`)
         .then(res => res.data.toString()),
     queryKey: ['file', 'content', fileId],
-    placeholderData: 'test',
   });
 };
 
