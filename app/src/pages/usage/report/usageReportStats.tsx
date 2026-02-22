@@ -40,7 +40,7 @@ export function UsageReportStats({
           <UsageReportItem
             sum={report.active_storage.sum}
             count={report.active_storage.count}
-            icon={<Files className="text-blue-600 dark:text-blue-400" />}
+            icon={<Files />}
             label={'Files'}
             index={0}
           />
@@ -48,13 +48,19 @@ export function UsageReportStats({
             sum={report.bin_storage.sum}
             count={report.bin_storage.count}
             link={'/home/bin'}
-            icon={<Trash2 className="text-red-600 dark:text-red-400" />}
+            icon={
+              <Trash2
+                className={cn(
+                  report.bin_storage.count > 0 && 'text-destructive',
+                )}
+              />
+            }
             label={'Files in Bin'}
             index={1}
           />
           <UsageReportItem
             sum={usage.limit - usage.total}
-            icon={<HardDrive className="text-green-600 dark:text-green-400" />}
+            icon={<HardDrive />}
             label={'Free Space'}
             index={2}
           />

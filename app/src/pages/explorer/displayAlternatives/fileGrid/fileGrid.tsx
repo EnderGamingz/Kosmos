@@ -109,7 +109,7 @@ export default function FileGrid({
 
   return (
     <PagedWrapper willAutoFetch={!dynamic} viewSettings={viewSettings}>
-      <div className={'flex h-full flex-col px-1'}>
+      <div className={'flex h-full flex-col px-4'}>
         <div className={'mb-3 flex items-center gap-2'}>
           {!viewSettings?.noSelect && (
             <SelectAllCheckBox files={files} folders={folders} />
