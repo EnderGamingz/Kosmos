@@ -173,7 +173,11 @@ function ShareForMeItem({
           className={'flex w-full text-stone-700 sm:grid dark:text-stone-300'}
         >
           <p className={'w-0 grow truncate sm:w-full'}>{itemName}</p>
-          <span className={'hidden text-xs text-stone-500 sm:flex dark:text-stone-400'}>
+          <span
+            className={
+              'hidden text-xs text-stone-500 sm:flex dark:text-stone-400'
+            }
+          >
             {share.share_uuid}
           </span>
         </div>

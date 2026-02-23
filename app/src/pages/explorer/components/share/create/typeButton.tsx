@@ -26,7 +26,9 @@ export function TypeButton({
       {selected && (
         <motion.div
           layoutId={`share-type`}
-          className={'absolute inset-0 -z-10 rounded-md bg-stone-400/60 dark:bg-stone-600/60'}
+          className={
+            'absolute inset-0 -z-10 rounded-md bg-stone-400/60 dark:bg-stone-600/60'
+          }
         />
       )}
     </button>

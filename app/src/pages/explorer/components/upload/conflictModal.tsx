@@ -171,7 +171,11 @@ function FileConflictItem({
         file.resolveAction !== undefined && 'opacity-60',
       )}
     >
-      <p className={'rounded-md bg-stone-700 p-1 text-stone-50 dark:bg-stone-300 dark:text-stone-900'}>
+      <p
+        className={
+          'rounded-md bg-stone-700 p-1 text-stone-50 dark:bg-stone-300 dark:text-stone-900'
+        }
+      >
         {file.file.name}
       </p>
       <div

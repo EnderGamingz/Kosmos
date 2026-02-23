@@ -7,12 +7,7 @@ import path from 'node:path';
 
 export default defineConfig({
   envPrefix: ['VITE_'],
-  plugins: [
-    react(),
-    tailwindcss(),
-    webfontDownload(),
-    tsconfigPaths(),
-  ],
+  plugins: [react(), tailwindcss(), webfontDownload(), tsconfigPaths()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

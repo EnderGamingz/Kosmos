@@ -1,4 +1,4 @@
-import { useUserState } from '@stores/userStore.ts';
+import { type User, useUserState } from '@stores/userStore.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -9,8 +9,8 @@ import { Button } from '@components/ui/button.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 
 const hasChanged = (
-  original: any,
-  updated: any,
+  original: User,
+  updated: Pick<User, 'username' | 'email' | 'full_name'>,
 ): boolean => {
   return (
     original.username !== updated.username ||

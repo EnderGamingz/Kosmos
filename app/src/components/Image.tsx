@@ -65,9 +65,15 @@ export function PreviewImage({
         <Skeleton className={cn('h-full w-full', 'rounded-lg shadow-inner')} />
       )}
 
-      {isFailed && <OctagonAlert className={'h-8 w-8 text-red-500/20 dark:text-red-400/30'} />}
+      {isFailed && (
+        <OctagonAlert
+          className={'h-8 w-8 text-red-500/20 dark:text-red-400/30'}
+        />
+      )}
       {isUnavailable && (
-        <TriangleAlert className={'h-8 w-8 text-gray-500/20 dark:text-gray-400/30'} />
+        <TriangleAlert
+          className={'h-8 w-8 text-gray-500/20 dark:text-gray-400/30'}
+        />
       )}
     </div>
   );
