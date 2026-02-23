@@ -25,11 +25,11 @@ function Content({ share, uuid }: { share: AlbumShareResponse; uuid: string }) {
   const scrolling = useScrollThreshold(container, 20);
 
   return (
-    <div className={'relative h-full'}>
+    <div className={'grow relative flex flex-col'}>
       <PageMetadata title={share.album.name ?? 'Shared Album'} />
       <div
         ref={container}
-        className={'flex h-full flex-col space-y-5 overflow-y-auto p-5'}
+        className={'flex flex-col space-y-5 p-5 overflow-auto grow'}
       >
         {share && (
           <AlbumPageContent

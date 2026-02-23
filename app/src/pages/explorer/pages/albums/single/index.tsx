@@ -115,6 +115,7 @@ export function AlbumPageContent({
       <div aria-hidden className={'max-h-50 min-h-50'} />
       <div
         className={cn(
+          'pointer-events-none *:pointer-events-auto',
           'absolute left-5 right-5 top-5 z-40 mt-0! flex items-start gap-5 rounded-b-xl transition-all',
           scrolling &&
             'left-0 right-0 top-0 bg-stone-50/80 p-2 backdrop-blur-xl dark:bg-stone-900/70',
