@@ -63,6 +63,24 @@ export const useDismissStore = create<DismissState>()(
     }),
     {
       name: 'kosmos.dismiss',
+      version: 1,
+      // biome-ignore lint/suspicious/noExplicitAny: Type of persisted state is unknown
+      migrate: (persistedState: any, version) => {
+        if (version === 0) {
+          console.log('[kosmos.dismiss] Version 0 -> 1');
+          // In version 0 the dismissed items were stored in full in the state, now we only store the ids
+          const dismissedIds = persistedState.dismissible.map(
+            // biome-ignore lint/suspicious/noExplicitAny: Type of persisted state is unknown
+            (item: any) => item.id,
+          );
+          persistedState.dismissed = Array.from(
+            new Set(dismissedIds),
+          ) as Dismiss[];
+          delete persistedState.dismissible;
+        }
+
+        return persistedState;
+      },
       merge: (persistedState, currentState) =>
         deepMerge(currentState, persistedState) as never,
     },
