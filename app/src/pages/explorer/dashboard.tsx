@@ -11,11 +11,7 @@ export default function Dashboard() {
         <div className={'w-64 hidden md:flex'}>
           <ExplorerSideNav source={'default'} />
         </div>
-        <div
-          className={
-            'grow flex flex-col bg-background-end/60 rounded-xl shadow-[inset_0_2px_8px_-3px_rgba(0,0,0,0.2)]'
-          }
-        >
+        <div className={'grow flex flex-col bg-background-end/60 rounded-xl'}>
           <Outlet />
         </div>
       </div>
