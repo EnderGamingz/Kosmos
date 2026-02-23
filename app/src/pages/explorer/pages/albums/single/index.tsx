@@ -136,7 +136,7 @@ export function AlbumPageContent({
           )}
         </AlbumTitle>
         <div
-          className={'ml-auto text-stone-800 animate-fade-in-right delay-200'}
+          className={'ml-auto text-stone-800 animate-fade-in-right delay-200 dark:text-stone-200'}
         >
           <AlbumMenu album={album}>
             <GridSizeSlider

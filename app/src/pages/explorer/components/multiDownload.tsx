@@ -166,7 +166,7 @@ export function MultiDownload({
   return (
     <button
       type={'button'}
-      className={'disabled:bg-gray-400'}
+      className={'disabled:bg-gray-400 dark:disabled:bg-gray-600'}
       onClick={() => downloadAction.mutate()}
       disabled={!files.length && !folders.length}
     >

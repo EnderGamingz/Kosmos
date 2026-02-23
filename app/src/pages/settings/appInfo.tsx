@@ -45,9 +45,11 @@ export function BuildTagDisplay({ noIcon }: { noIcon?: boolean }) {
 
 export default function AppInfo() {
   return (
-    <div className={'space-y-2 p-4 md:p-10'}>
+    <div className={'space-y-2 p-4'}>
       <SettingsPageMetadata title={'Info'} />
-      <div className={'flex items-center gap-3 text-stone-700'}>
+      <div
+        className={'flex items-center gap-3 text-stone-700 dark:text-stone-300'}
+      >
         <ApplicationIcon
           className={'h-12 w-12 md:h-16 md:w-16 animate-fade-in-left'}
         />
@@ -60,26 +62,24 @@ export default function AppInfo() {
         </h2>
       </div>
       <p className={'italic animate-fade-in-top delay-100'}>
-        High performance file hosting platform
+        High performance file hosting
       </p>
       <ul className={'py-5'}>
         {links.map((link, i) => (
-          <li key={link.name} className={'flex items-center gap-2'}>
-            <span
-              className={'animate-fade-in-left flex gap-1'}
-              style={{ animationDelay: `${(i + 1) * 100 + 100}ms` }}
-            >
+          <li
+            key={link.name}
+            className={'flex items-center gap-2 animate-fade-in-bottom'}
+            style={{ animationDelay: `${(i + 1) * 100 + 100}ms` }}
+          >
+            <span className={'flex gap-1'}>
               <link.icon className={'h-6 w-6'} />
               {link.name}:{' '}
             </span>
             <Link
               to={link.href}
               target={'_blank'}
-              style={{
-                animationDelay: `${(i + 1) * 150 + 100}ms`,
-              }}
               className={
-                'w-0 flex-grow truncate text-stone-600 hover:underline dark:text-stone-300 animate-fade-in-left'
+                'w-0 grow truncate text-stone-600 hover:underline dark:text-stone-300'
               }
             >
               {link.href}

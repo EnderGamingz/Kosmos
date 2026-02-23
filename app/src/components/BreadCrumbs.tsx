@@ -44,7 +44,6 @@ export function BreadCrumbItem({
       className={
         'flex items-center gap-1 text-stone-800 dark:text-stone-200 [&_svg]:h-5 [&_svg]:w-5'
       }
-      initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 10, opacity: 0 }}
     >
@@ -75,7 +74,7 @@ export function BreadCrumbItem({
       <span
         className={cn(
           'text-muted-foreground transition-opacity',
-          last ? 'opacity-0' : 'opacity-100',
+          last && 'opacity-0',
         )}
       >
         /

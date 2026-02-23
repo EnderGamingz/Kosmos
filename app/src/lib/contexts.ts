@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, type RefObject } from 'react';
 import type { ContextData } from '@hooks/useContextMenu.ts';
 import type { DataOperationType } from '@models/file.ts';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
@@ -28,9 +28,11 @@ export type DisplayContextType = {
   };
   shareUuid?: string;
   onScroll?: (props: ListOnScrollProps) => void;
+  displayRef: RefObject<HTMLDivElement | null>;
 };
 
 export const DisplayContext = createContext<DisplayContextType>({
+  displayRef: { current: null },
   handleContext: () => {},
   files: [],
   folders: [],

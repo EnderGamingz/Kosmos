@@ -1,36 +1,55 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, use } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import { cn } from '@lib/utils.ts';
 import type { ViewSettings } from '@pages/explorer/displayAlternatives/display/types.ts';
 import type { ReactElementType } from 'react-window';
+import { Progress } from '@components/ui/progress.tsx';
+import { DisplayContext } from '@lib/contexts.ts';
 
 export function PagedWrapper({
   viewSettings,
   children,
-  height,
+  willAutoFetch = true,
   type,
 }: {
-  height?: boolean;
+  willAutoFetch?: boolean;
   viewSettings?: ViewSettings;
   children: ReactNode;
   type?: ReactElementType;
 }) {
+  const display = use(DisplayContext);
+
   if (!viewSettings?.paged) return children;
 
   return (
     <InfiniteScroll
       element={type as string}
       pageStart={0}
-      loadMore={viewSettings.onLoadNextPage || (() => {})}
+      loadMore={
+        viewSettings.onLoadNextPage || (() => console.warn('No callback'))
+      }
+      getScrollParent={
+        display.displayRef !== undefined
+          ? () => display.displayRef.current
+          : undefined
+      }
       hasMore={viewSettings.hasNextPage}
       useWindow={false}
-      threshold={500}
-      className={cn(Boolean(height) && 'h-full')}
+      threshold={1500}
       loader={
-        <div className={'p-1 text-center text-sm text-stone-600'} key={0}>
-          Loading ...
-        </div>
+        willAutoFetch ? (
+          <Progress
+            indeterminate
+            className={'absolute bottom-0 h-0.5 animate-fade-in delay-200'}
+            aria-label={'Loading more items'}
+            indicatorClassName={'bg-primary'}
+            key={0}
+          />
+        ) : (
+          <p key={0} className={'text-muted-foreground text-center'}>
+            Loading more items...
+          </p>
+        )
       }
     >
       {children}

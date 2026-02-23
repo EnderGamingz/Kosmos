@@ -4,11 +4,10 @@ import {
   isTypeIgnoredForMobile,
   usePreferenceStore,
 } from '@stores/preferenceStore.ts';
-import { Suspense, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import type { FolderModelDTO } from '@bindings/FolderModelDTO.ts';
 import useLayoutOptions from '@hooks/useLayoutOptions.ts';
-import AppScreen from '@components/overlay/appScreen.tsx';
 import { getDisplayComponent } from '@pages/explorer/displayAlternatives/display/getDisplayComponent.tsx';
 import { getLoadingComponent } from '@pages/explorer/displayAlternatives/display/getLoadingComponent.tsx';
 import type {
@@ -57,20 +56,27 @@ export default function ExplorerDataDisplay({
     if (overwriteDisplay?.displayMode) return overwriteDisplay.displayMode;
     else return displayType.type;
   };
+  const loadingComponent = getLoadingComponent(preferences.loading.type);
 
-  if (isLoading) return getLoadingComponent(preferences.loading.type);
+  const DisplayComponent = getDisplayComponent(
+    displayMode(),
+    displayType.details,
+  );
+
+  if (isLoading)
+    return (
+      <div className={'animate-fade-in delay-200'}>{loadingComponent}</div>
+    );
 
   return (
-    <Suspense fallback={<AppScreen loading showText={false} />}>
-      <ExplorerDisplayWrapper
-        shareUuid={shareUuid}
-        files={files}
-        folders={folders}
-        viewSettings={viewSettings}
-        overwriteDisplay={overwriteDisplay}
-      >
-        {getDisplayComponent(displayMode(), displayType.details)}
-      </ExplorerDisplayWrapper>
-    </Suspense>
+    <ExplorerDisplayWrapper
+      shareUuid={shareUuid}
+      files={files}
+      folders={folders}
+      viewSettings={viewSettings}
+      overwriteDisplay={overwriteDisplay}
+    >
+      {DisplayComponent}
+    </ExplorerDisplayWrapper>
   );
 }

@@ -107,20 +107,22 @@ export function HeaderBrandingSitePartSwitcher({
         <button
           type={'button'}
           className={cn(
-            'sm:flex gap-2 cursor-pointer items-center relative',
+            'sm:flex flex-col cursor-pointer relative justify-start text-start',
             !expanded && 'hidden',
           )}
         >
           {attention.data && (
             <AttentionDot className={'bg-red-400 right-3 top-0'} />
           )}
-          {!noBrand && <span className={'text-2xl font-bold'}>Kosmos</span>}
+          {!noBrand && <span className={'text-xl font-bold'}>Kosmos</span>}
           <div
             title={'Current location'}
             className={'flex flex-col items-start text-lg w-max'}
           >
             <span
-              className={'text-primary tracking-wider flex items-center gap-1'}
+              className={
+                'text-sm text-primary tracking-wider flex items-center gap-1'
+              }
             >
               {currentPath?.title ?? fallbackTitle}
               <ChevronDown className={'w-4 h-4'} />

@@ -1,4 +1,3 @@
-import { Base64 } from 'js-base64';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { useMutation } from '@tanstack/react-query';
@@ -12,21 +11,36 @@ import { Input } from '@components/ui/input.tsx';
 import getPasskeyError from '@components/passkey/getPasskeyError.ts';
 import { KeyRound, Send } from 'lucide-react';
 
+const uint8ArrayToBase64 = (buffer: Uint8Array): string => {
+  let binary = '';
+  for (let i = 0; i < buffer.length; i++) {
+    binary += String.fromCharCode(buffer[i]);
+  }
+  return btoa(binary);
+};
+
+const base64ToUint8Array = (str: string): Uint8Array => {
+  const binary = atob(str);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+};
+
 // biome-ignore lint/suspicious/noExplicitAny: Credential type
 const completeFunction = (credential: any) =>
   axios
     .post(`${BASE_URL}auth/passkey/register/complete`, {
       id: credential?.id,
-      rawId: Base64.fromUint8Array(new Uint8Array(credential?.rawId), true),
+      rawId: uint8ArrayToBase64(new Uint8Array(credential?.rawId)),
       type: credential?.type,
       response: {
-        attestationObject: Base64.fromUint8Array(
+        attestationObject: uint8ArrayToBase64(
           new Uint8Array(credential?.response.attestationObject),
-          true,
         ),
-        clientDataJSON: Base64.fromUint8Array(
+        clientDataJSON: uint8ArrayToBase64(
           new Uint8Array(credential?.response.clientDataJSON),
-          true,
         ),
       },
     })
@@ -37,16 +51,16 @@ const startFunction = (name: string) =>
     .post(`${BASE_URL}auth/passkey/register/start`, { name })
     .then(res => res.data)
     .then(credentialCreationOptions => {
-      credentialCreationOptions.publicKey.challenge = Base64.toUint8Array(
+      credentialCreationOptions.publicKey.challenge = base64ToUint8Array(
         credentialCreationOptions.publicKey.challenge,
       );
-      credentialCreationOptions.publicKey.user.id = Base64.toUint8Array(
+      credentialCreationOptions.publicKey.user.id = base64ToUint8Array(
         credentialCreationOptions.publicKey.user.id,
       );
       credentialCreationOptions.publicKey.excludeCredentials?.forEach(
         (listItem: { id: string | Uint8Array }) => {
           if (typeof listItem.id === 'string') {
-            listItem.id = Base64.toUint8Array(listItem.id);
+            listItem.id = base64ToUint8Array(listItem.id);
           }
         },
       );

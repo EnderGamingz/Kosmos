@@ -3,7 +3,7 @@ import { ShareItem } from '@pages/explorer/components/share/shareItem.tsx';
 import type { ExtendedShareModelDTO } from '@bindings/ExtendedShareModelDTO.ts';
 
 const renderMessage = (message: string) => (
-  <p className={'text-center text-stone-600'}>{message}</p>
+  <p className={'text-center text-stone-600 dark:text-stone-400'}>{message}</p>
 );
 
 export function ShareData({

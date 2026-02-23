@@ -3,10 +3,8 @@ import { FileGridLoading } from '@pages/explorer/displayAlternatives/fileGrid/fi
 import { FileTableLoading } from '@pages/explorer/displayAlternatives/fileTable/fileTableLoading.tsx';
 
 export function getLoadingComponent(id: ExplorerLoading) {
-  switch (id) {
-    case ExplorerLoading.Grid:
-      return <FileGridLoading />;
-    default:
-      return <FileTableLoading />;
-  }
+  if (id === ExplorerLoading.Grid)
+    return <FileGridLoading key={'grid-loading'} />;
+
+  return <FileTableLoading key={'table-loading'} />;
 }

@@ -4,10 +4,20 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
-import objectHash from 'object-hash';
 import { Input } from '@components/ui/input.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
+
+const hasChanged = (
+  original: any,
+  updated: any,
+): boolean => {
+  return (
+    original.username !== updated.username ||
+    original.email !== updated.email ||
+    original.full_name !== updated.full_name
+  );
+};
 
 export function UserInformation() {
   const user = useUserState(s => s.user);
@@ -106,8 +116,7 @@ export function UserInformation() {
             type={'submit'}
             disabled={
               action.isPending ||
-              objectHash(user) ===
-                objectHash({ ...user, username, email, full_name: fullName })
+              !hasChanged(user, { username, email, full_name: fullName })
             }
             className={'float-right px-5'}
           >

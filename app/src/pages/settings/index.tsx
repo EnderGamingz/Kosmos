@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { SettingsPageMetadata } from '@components/metadata.tsx';
 import { ExplorerSideNav } from '@pages/explorer/nav/side/sideNav.tsx';
 import BottomNav from '@pages/explorer/nav/bottom/bottomNav.tsx';
+import { cn } from '@lib/utils.ts';
 
 export default function SettingsPagesWrapper() {
   return (
@@ -12,9 +13,10 @@ export default function SettingsPagesWrapper() {
           <ExplorerSideNav source={'settings'} />
         </div>
         <div
-          className={
-            'grow p-5 max-w-5xl w-full mx-auto overflow-y-auto max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]'
-          }
+          className={cn(
+            'grow p-5 max-w-5xl w-full mx-auto overflow-y-auto max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]',
+            'bg-background-end/60 rounded-xl md:mb-2',
+          )}
         >
           <div className={'pb-10'}>
             <Outlet />

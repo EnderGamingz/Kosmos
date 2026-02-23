@@ -113,7 +113,10 @@ export function ButtonForm({
         </button>
         <div className={'relative flex w-full'}>
           <input
-            ref={inputRef}
+            ref={ref => {
+              inputRef.current = ref;
+              if (ref) ref.focus();
+            }}
             type={'text'}
             placeholder={'Name'}
             value={active ? value : label}

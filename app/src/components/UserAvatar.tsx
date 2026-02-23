@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar.tsx';
-import { MinidentIcon } from '@components/MinidentIcon.tsx';
 import { getAvatarUrl } from '@utils/user.ts';
 import { cn } from '@lib/utils.ts';
+import { UserInitialsAvatar } from '@components/UserInitialsAvatar.tsx';
 
 export default function UserAvatar({
   userId,
@@ -32,7 +32,7 @@ export default function UserAvatar({
       )}
       {username && (
         <AvatarFallback>
-          <MinidentIcon username={username} />
+          <UserInitialsAvatar username={username} />
         </AvatarFallback>
       )}
     </Avatar>

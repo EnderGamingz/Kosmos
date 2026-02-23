@@ -188,7 +188,7 @@ export function PreferenceSelection({
       {selected && (
         <motion.div
           layoutId={`selection-${type}`}
-          className={'absolute inset-0 -z-10 rounded-lg bg-stone-400/50'}
+          className={'absolute inset-0 -z-10 rounded-lg bg-stone-400/50 dark:bg-stone-600/50'}
         />
       )}
     </motion.button>

@@ -72,10 +72,7 @@ export function ShareSheetContent({
           className={'w-full'}
         >
           <Plus
-            className={cn(
-              'h-4 w-4  transition-all',
-              create && 'rotate-[45deg]',
-            )}
+            className={cn('h-4 w-4  transition-all', create && 'rotate-45')}
           />
           {create ? 'Cancel creation' : 'Create new'}
         </Button>

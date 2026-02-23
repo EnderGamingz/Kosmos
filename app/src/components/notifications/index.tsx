@@ -4,6 +4,7 @@ import { useNotifications } from '@stores/notificationStore';
 import { useEffect, useState } from 'react';
 import { cn } from '@lib/utils.ts';
 import { useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 
 export default function NotificationIndicator() {
   const [expanded, setExpanded] = useState(false);
@@ -26,7 +27,7 @@ export default function NotificationIndicator() {
   }, [location.pathname, notifications.length, isMobile]);
 
   const maxNotificationsToShow = 8;
-  return (
+  return createPortal(
     <div
       className={
         'fixed right-10 z-200 w-full max-w-[20rem] max-sm:left-5 max-sm:top-5 sm:bottom-10'
@@ -58,6 +59,7 @@ export default function NotificationIndicator() {
             ))}
         </AnimatePresence>
       </ul>
-    </div>
+    </div>,
+    document.body,
   );
 }

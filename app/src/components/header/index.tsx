@@ -22,11 +22,7 @@ export default function Header() {
   const user = useUserState(s => s.user);
 
   return (
-    <header
-      className={
-        'z-30 flex h-[90px] items-center border-b border-stone-800/10 px-6 py-5 dark:border-stone-300/10'
-      }
-    >
+    <header className={'z-30 flex h-22.5 items-center px-6 py-5'}>
       <RouterLoading />
       <HeaderMenu user={user} />
       {user && (

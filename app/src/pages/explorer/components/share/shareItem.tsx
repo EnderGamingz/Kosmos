@@ -90,7 +90,7 @@ export function ShareItem({
             {share.share_target_username ? (
               <p
                 title={share.share_target_username}
-                className={'max-w-[100px] truncate'}
+                className={'max-w-25 truncate'}
               >
                 @{share.share_target_username}
               </p>

@@ -20,7 +20,7 @@ export default function Footer() {
               Kosmos
               <BuildTagDisplay noIcon />
             </h2>
-            <p className={'italic'}>High performance file hosting platform</p>
+            <p className={'italic'}>High performance file hosting</p>
           </div>
         </div>
         <Link

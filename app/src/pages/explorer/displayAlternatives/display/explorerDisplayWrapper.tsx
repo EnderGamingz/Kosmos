@@ -1,4 +1,11 @@
-import { lazy, type ReactNode, useEffect, useState } from 'react';
+import {
+  lazy,
+  type ReactNode,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { DataOperationType, Selected } from '@models/file.ts';
 import { DisplayContext } from '@lib/contexts.ts';
@@ -48,6 +55,8 @@ export function ExplorerDisplayWrapper({
     undefined | { type: DataOperationType; id: string }
   >(undefined);
   const { isMobile } = useLayoutOptions();
+
+  const displayRef = useRef<HTMLDivElement>(null);
 
   const {
     selectedFolders,
@@ -129,6 +138,7 @@ export function ExplorerDisplayWrapper({
   const handleScroll = (props: ListOnScrollProps) => {
     if (props.scrollDirection === 'forward' && props.scrollOffset === 0)
       setShowFab(true);
+
     if (props.scrollDirection === 'backward') setShowFab(true);
     else if (props.scrollDirection === 'forward' && props.scrollOffset !== 0)
       setShowFab(false);
@@ -152,6 +162,7 @@ export function ExplorerDisplayWrapper({
         // Share Uuid in the context implies that this component is used in a folder share
         shareUuid: shareUuid,
         onScroll: handleScroll,
+        displayRef,
       }}
     >
       {!viewSettings?.scrollControlMissing && !viewSettings?.noActions && (
@@ -163,11 +174,14 @@ export function ExplorerDisplayWrapper({
       {/** biome-ignore lint/a11y/noStaticElementInteractions: This div is meant to be interactive and is handled with onContextMenu event. */}
       <div
         id={'display'}
-        className={'h-full grow overflow-x-auto'}
+        className={
+          'h-0 grow overflow-x-auto flex flex-col animate-fade-in duration-200'
+        }
         onContextMenu={e => {
           if (viewSettings?.isCreateAllowed)
             handleContext({ x: e.clientX, y: e.clientY }, 'fileWindow');
         }}
+        ref={displayRef}
       >
         <FileUploader
           disabled={!viewSettings?.isCreateAllowed}
@@ -179,13 +193,15 @@ export function ExplorerDisplayWrapper({
         </FileUploader>
       </div>
       {viewSettings?.isCreateAllowed && <FileListFab hide={!showFab} />}
-      {!viewSettings?.noDisplay && (
-        <FileDisplay
-          onSelect={selectFile}
-          selected={selectedFiles}
-          shareUuid={shareUuid}
-        />
-      )}
+      <Suspense>
+        {!viewSettings?.noDisplay && (
+          <FileDisplay
+            onSelect={selectFile}
+            selected={selectedFiles}
+            shareUuid={shareUuid}
+          />
+        )}
+      </Suspense>
       {!shareUuid && <ShareModal />}
       <ContextMenuHandler
         key={'context-menu'}

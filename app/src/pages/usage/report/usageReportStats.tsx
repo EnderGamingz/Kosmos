@@ -48,7 +48,13 @@ export function UsageReportStats({
             sum={report.bin_storage.sum}
             count={report.bin_storage.count}
             link={'/home/bin'}
-            icon={<Trash2 />}
+            icon={
+              <Trash2
+                className={cn(
+                  report.bin_storage.count > 0 && 'text-destructive',
+                )}
+              />
+            }
             label={'Files in Bin'}
             index={1}
           />

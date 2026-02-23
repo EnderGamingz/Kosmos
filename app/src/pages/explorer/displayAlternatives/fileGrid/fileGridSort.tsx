@@ -66,7 +66,7 @@ export function FileGridSort() {
           currentSortBy={currentSort.sort_by}
           currentOrder={currentSort.sort_order}
         />
-        <hr className={'my-1 border-stone-200 p-0!'} />
+        <hr className={'my-1 border-stone-200 p-0! dark:border-stone-700'} />
         <button type={'button'} onClick={() => clear()} className={'w-full'}>
           Clear
           <X className={'h-3 w-3'} />

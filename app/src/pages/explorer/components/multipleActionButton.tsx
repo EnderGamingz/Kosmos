@@ -20,6 +20,7 @@ export default function MultipleActionButton({
           className={cn(
             'z-20 absolute right-2 top-1 flex items-center gap-1 rounded-full bg-stone-400/50',
             'transition-all hover:bg-stone-400/80 hover:text-stone-800 hover:shadow-sm',
+            'dark:bg-stone-600/50 dark:hover:bg-stone-600/80 dark:hover:text-stone-200',
             'px-2 py-1 pr-4 backdrop-blur-lg',
           )}
         >

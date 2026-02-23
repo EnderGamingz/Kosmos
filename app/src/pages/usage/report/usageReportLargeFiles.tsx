@@ -11,15 +11,15 @@ export function UsageReportLargeFiles({ files }: { files: FileModelDTO[] }) {
   }, [files, setFilesInScope]);
 
   return (
-    <div>
+    <div className={'h-200 flex flex-col'}>
       <h3
         className={
-          'text-xl font-bold text-stone-700 dark:text-stone-300 animate-fade-in-top delay-600'
+          'px-4 text-xl font-bold text-stone-700 dark:text-stone-300 animate-fade-in-top delay-600'
         }
       >
         Large Files
       </h3>
-      <div className={'animate-fade-in-top delay-700'}>
+      <div className={'animate-fade-in-top delay-700 grow flex flex-col'}>
         <ExplorerDataDisplay
           files={files}
           folders={[]}

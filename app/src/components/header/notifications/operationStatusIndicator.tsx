@@ -21,7 +21,7 @@ export function OperationStatusIndicator({
       <NotificationCircle className={'bg-red-500 shadow-red-500'} />
     ),
     [OperationStatus.Interrupted]: (
-      <NotificationCircle className={'bg-gray-600 shadow-gray-600'} />
+      <NotificationCircle className={'bg-gray-600 shadow-gray-600 dark:bg-gray-400 dark:shadow-gray-400'} />
     ),
     [OperationStatus.Unrecoverable]: (
       <NotificationCircle className={'bg-red-800 shadow-red-800'} />

@@ -4,7 +4,7 @@ import {
 } from '@lexical/react/LexicalComposer';
 import type { FileModelDTO } from '@bindings/FileModelDTO.ts';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { BASE_URL } from '@lib/env.ts';
@@ -36,6 +36,7 @@ import { OverflowNode } from '@lexical/overflow';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
+import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
 
 const nodes = [
   CodeNode,
@@ -99,7 +100,8 @@ export function MarkdownEditorContent({
   const saveAction = useMutation({
     mutationFn: async () => {
       const updateId = notifications.notify({
-        title: 'Update file',
+        title: 'Updating file',
+        status: `Updating...`,
         severity: Severity.INFO,
         loading: true,
         canDismiss: false,
@@ -109,9 +111,9 @@ export function MarkdownEditorContent({
           content: code,
         })
         .then(() => {
-          onClose();
           setFileContent(file.id, code);
           invalidateFiles().then();
+          onClose();
           notifications.updateNotification(updateId, {
             severity: Severity.SUCCESS,
             status: 'Updated',
@@ -130,10 +132,24 @@ export function MarkdownEditorContent({
     },
   });
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+        event.preventDefault();
+        saveAction.mutate();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [saveAction.mutate]);
+
   // biome-ignore lint/suspicious/noExplicitAny: Lexical editorState type is complex and not worth defining here
   const onChange = (editorState: any) => {
     editorState.read(() => {
-      const markdown = $convertToMarkdownString(TRANSFORMERS);
+      const markdown = $convertToMarkdownString(TRANSFORMERS, undefined, true);
       setCode(markdown);
     });
   };
@@ -145,17 +161,41 @@ export function MarkdownEditorContent({
       <div className={'flex flex-col grow w-full rounded-sm outline-none'}>
         <LexicalComposer
           initialConfig={{
-            editorState: () =>
-              $convertFromMarkdownString(initialData, TRANSFORMERS),
+            editorState: () => {
+              const root = $getRoot();
+              root.clear();
+
+              if (isMarkdown) {
+                $convertFromMarkdownString(
+                  initialData,
+                  TRANSFORMERS,
+                  undefined,
+                  true,
+                );
+                return;
+              }
+
+              // Preserve line breaks for plain text by creating a new paragraph for each line
+              const lines = initialData.split('\n');
+              for (let i = 0; i < lines.length; i++) {
+                const paragraph = $createParagraphNode();
+                paragraph.append($createTextNode(lines[i]));
+                root.append(paragraph);
+              }
+            },
             ...editorConfig,
           }}
         >
           {isMarkdown && <ToolbarPlugin />}
-          <div className={'h-50 grow overflow-auto'}>
+          <div
+            className={
+              'min-h-50 h-0 grow overflow-auto flex flex-col border rounded-sm'
+            }
+          >
             <Editor
               contentEditable={
                 <ContentEditable
-                  className={'rounded-sm border p-2'}
+                  className={'grow outline-none p-2'}
                   aria-placeholder={'Enter some text...'}
                   // biome-ignore lint/complexity/noUselessFragments: empty placeholder to avoid default text
                   placeholder={<></>}
@@ -170,8 +210,11 @@ export function MarkdownEditorContent({
         </LexicalComposer>
       </div>
       <DialogFooter>
-        <Button onClick={() => saveAction.mutate()}>
-          <Check /> Save
+        <Button
+          disabled={saveAction.isPending}
+          onClick={() => saveAction.mutate()}
+        >
+          <Check /> {saveAction.isPending ? 'Saving...' : 'Save'}
         </Button>
       </DialogFooter>
     </>

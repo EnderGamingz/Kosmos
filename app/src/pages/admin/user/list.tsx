@@ -2,7 +2,7 @@ import { AdminQuery } from '@lib/queries/adminQuery.ts';
 import { roleToString } from '@models/user.ts';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { type FormEvent, useState } from 'react';
+import { type SubmitEventHandler, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Severity, useNotifications } from '@stores/notificationStore.ts';
 import type { UserModelDTO } from '@bindings/UserModelDTO.ts';
@@ -19,15 +19,7 @@ import { AdminPageMetadata } from '@components/metadata.tsx';
 import { Button } from '@components/ui/button.tsx';
 import { Plus } from 'lucide-react';
 import { Input } from '@components/ui/input.tsx';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ui/select.tsx';
-import { getBytesBySuffix } from '@utils/fileSize.ts';
+import { StorageLimitSelector } from '@pages/admin/user/storageLimitSelector.tsx';
 
 function UserItem({ user }: { user: UserModelDTO }) {
   const navigate = useNavigate();
@@ -55,7 +47,7 @@ export default function AdminUserList() {
         <h1 className={'text-2xl font-semibold'}>Users</h1>
         <CreateUserModal />
       </div>
-      <div className={'flex flex-grow flex-col overflow-x-auto'}>
+      <div className={'flex grow flex-col overflow-x-auto'}>
         <table
           className={
             'w-full whitespace-nowrap text-left [&_td]:p-3 [&_th]:p-3 [&_th]:font-light'
@@ -85,8 +77,7 @@ export default function AdminUserList() {
 export function CreateUserModal() {
   const notification = useNotifications(s => s.actions);
   const { isOpen, onClose, onOpenChange } = useDisclosure();
-  // The default multiplier is set to MB
-  const [multiplier, setMultiplier] = useState<string>('mb');
+  const [limit, setLimit] = useState<number>(0);
 
   const createMutation = useMutation({
     mutationFn: async ({
@@ -129,16 +120,14 @@ export function CreateUserModal() {
     },
   });
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
-    const limit =
-      Number(formData.get('limit')) * getBytesBySuffix(multiplier) || 0;
 
     createMutation.mutate({ username, password, limit });
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -167,32 +156,7 @@ export function CreateUserModal() {
             placeholder={'Password'}
             required
           />
-          <div className={'flex gap-3'}>
-            <Input
-              className={'grow'}
-              type={'number'}
-              name={'limit'}
-              id={'limit'}
-              placeholder={'Limit'}
-              required
-            />
-            <Select
-              name={'multi'}
-              onValueChange={setMultiplier}
-              defaultValue={multiplier}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={'Select Data Size'} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value={'mb'}>MB</SelectItem>
-                  <SelectItem value={'gb'}>GB</SelectItem>
-                  <SelectItem value={'tb'}>TB</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+          <StorageLimitSelector limit={limit} onChange={setLimit} />
           <DialogFooter className={'mt-2'}>
             <Button type={'submit'}>
               <Plus />

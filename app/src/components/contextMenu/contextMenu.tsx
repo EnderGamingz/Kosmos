@@ -37,7 +37,7 @@ export default function ContextMenu({
       </style>
       <motion.div
         className={cn(
-          'fixed z-50 grid select-none gap-1 rounded-md bg-white p-3 shadow-lg',
+          'fixed z-50 grid select-none gap-1 rounded-md p-3 shadow-lg',
           '[&_button>svg]:h-5 [&_button]:flex [&_button]:items-center [&_button]:gap-2 [&_button]:text-left',
           '[&_button:not(.no-pre):hover]:bg-stone-100 [&_button:not(.no-pre):hover]:text-stone-900 [&_button:not(.no-pre)]:px-3 [&_button:not(.no-pre)]:py-1.5',
           '[&_button]:rounded-md [&_button]:transition-colors',

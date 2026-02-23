@@ -15,7 +15,7 @@ export default function UsageReport() {
   return (
     <div
       className={
-        'mx-auto flex w-full max-w-5xl flex-grow flex-col space-y-6 p-5 md:p-10'
+        'mx-auto flex w-full max-w-5xl grow flex-col space-y-6 p-5 md:p-10'
       }
     >
       <PageMetadata title={'Usage Report'} />
@@ -27,7 +27,7 @@ export default function UsageReport() {
         Usage Report
       </h1>
       {isLoading && !isError && (
-        <div className={'grid flex-grow place-content-center'}>
+        <div className={'grid grow place-content-center'}>
           <div className={'app-loading-indicator'} />
         </div>
       )}

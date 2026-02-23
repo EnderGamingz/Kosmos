@@ -156,13 +156,12 @@ export function FileDisplayHandler({
     );
   }
 
-  if (FileTypeActions.hasFileEmbedData(file) && !previewOnHold) {
-    return (
-      <EmbedFile file={file} serveUrl={highResUrl} isShared={!!shareUuid} />
-    );
-  }
-
-  if (FileTypeActions.hasFilePlainDisplayableContent(file)) {
+  // Needs to be before Embed as text files also count as embeds
+  if (
+    FileTypeActions.hasFilePlainDisplayableContent(file) &&
+    // Exclude Markdown files from this check since they have a custom display in EmbedFile
+    !FileTypeActions.isMarkdown(file)
+  ) {
     if (
       FileTypeActions.isFileTooLargeForContentDisplay(file) ||
       previewOnHold
@@ -179,6 +178,12 @@ export function FileDisplayHandler({
     }
 
     return <PlainTextFileDisplay file={file} serveUrl={highResUrl} />;
+  }
+
+  if (FileTypeActions.hasFileEmbedData(file) && !previewOnHold) {
+    return (
+      <EmbedFile file={file} serveUrl={highResUrl} isShared={!!shareUuid} />
+    );
   }
 
   return (

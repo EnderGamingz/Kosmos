@@ -2,10 +2,6 @@ import { useKeyStore } from '@stores/keyStore.ts';
 import { useShallow } from 'zustand/react/shallow';
 import { useContext, useState } from 'react';
 import { DisplayContext } from '@lib/contexts.ts';
-import {
-  itemTransitionVariant,
-  transitionStop,
-} from '@components/defaults/transition.ts';
 import { motion } from 'framer-motion';
 import ItemIcon from '@pages/explorer/components/ItemIcon.tsx';
 import { useNavigate } from 'react-router-dom';
@@ -78,9 +74,8 @@ export default function GridFolderItem({
   const selectDisabled = context.viewSettings?.selectDisable?.folders;
 
   return (
-    <motion.div
-      layout
-      variants={index < transitionStop ? itemTransitionVariant : undefined}
+    // biome-ignore lint/a11y/noStaticElementInteractions: This div has a context menu, but it is handled by the onContextMenu event and does not require keyboard interaction.
+    <div
       onContextMenu={e => {
         e.stopPropagation();
         e.preventDefault();
@@ -127,7 +122,7 @@ export default function GridFolderItem({
         className={cn(
           'flex items-center',
           'rounded-lg bg-stone-400/40 dark:bg-stone-700/40',
-          'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg',
+          'shadow-md transition-colors hover:bg-stone-500/40 hover:shadow-lg dark:hover:bg-stone-600/50',
           isSelected && 'bg-indigo-100 dark:bg-indigo-800',
           isShift && 'cursor-pointer',
           context.select.rangeStart === index && 'bg-indigo-50',
@@ -186,6 +181,6 @@ export default function GridFolderItem({
           <EllipsisVertical className={'h-5 w-5'} />
         </button>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }

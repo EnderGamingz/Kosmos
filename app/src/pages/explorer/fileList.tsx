@@ -8,7 +8,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { FileListBreadCrumbs } from '@pages/explorer/fileListBreadCrumbs.tsx';
 import StorageLimitBanner from '@pages/explorer/components/storageLimitBanner.tsx';
 import { useFolderBreadCrumbs } from '@hooks/useFolderBreadCrumbs.ts';
-import { cn } from '@lib/utils.ts';
 
 export default function FileList() {
   const { setCurrentFolder, setFilesInScope, setSelectedNone } =
@@ -37,19 +36,12 @@ export default function FileList() {
   }, [files, setFilesInScope]);
 
   const folders = useFolders(folder, sort);
-
   const breadCrumbs = useFolderBreadCrumbs(folders.data);
-
   const isLoading = files.isLoading || folders.isLoading;
 
   return (
-    <div
-      className={cn(
-        'file-list relative flex flex-col overflow-hidden',
-        'h-full max-h-[calc(100dvh-90px)] max-md:max-h-[calc(100dvh-90px-80px)]',
-      )}
-    >
-      <div className={'flex items-center shadow-sm'}>
+    <div className={'file-list relative flex flex-col overflow-hidden grow'}>
+      <div className={'flex items-center'}>
         <FileListBreadCrumbs crumbs={breadCrumbs} />
       </div>
       <StorageLimitBanner />

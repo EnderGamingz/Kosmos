@@ -15,7 +15,9 @@ export default function AdminPagesWrapper() {
         <div className={'w-64 hidden md:flex'}>
           <ExplorerSideNav source={'admin'} />
         </div>
-        <div className={'grow p-5'}>
+        <div
+          className={'grow p-5 bg-background-end/60 rounded-xl md:mb-2 md:mr-2'}
+        >
           <div className={'pb-10'}>
             <Outlet />
           </div>

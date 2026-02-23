@@ -35,7 +35,9 @@ export function UserMenu() {
       <PopoverTrigger asChild>
         <button
           type={'button'}
-          className={'p-1 flex items-center gap-2 rounded-full outline-none'}
+          className={
+            'px-1.5  py-1 flex items-center gap-2 rounded-full outline-none'
+          }
         >
           <UserAvatar
             disabled={!user.user?.has_avatar}
@@ -50,10 +52,10 @@ export function UserMenu() {
               '**:overflow-hidden **:overflow-ellipsis',
             )}
           >
-            <p className={'text-sm font-semibold max-w-[120px] truncate'}>
+            <p className={'text-sm font-semibold max-w-30 truncate'}>
               {user.user?.full_name?.split(' ')[0] || user.user?.username}
             </p>
-            <span className={'text-xs font-light max-w-[120px] truncate'}>
+            <span className={'text-xs font-light max-w-30 truncate'}>
               {`@${user.user?.username}`}
             </span>
           </div>

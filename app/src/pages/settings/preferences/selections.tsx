@@ -106,11 +106,11 @@ export const selections = (
           value: ExplorerDisplay.Table,
           icon: <TableProperties />,
         },
-        {
+        /*        {
           name: 'Static Grid',
           value: ExplorerDisplay.StaticGrid,
           icon: <LayoutGrid />,
-        },
+        },*/
         {
           name: 'Dynamic Grid',
           value: ExplorerDisplay.DynamicGrid,
@@ -151,11 +151,11 @@ export const selections = (
           value: ExplorerDisplay.Table,
           icon: <TableProperties />,
         },
-        {
+        /*        {
           name: 'Static Grid',
           value: ExplorerDisplay.StaticGrid,
           icon: <LayoutGrid />,
-        },
+        },*/
         {
           name: 'Dynamic Grid',
           value: ExplorerDisplay.DynamicGrid,

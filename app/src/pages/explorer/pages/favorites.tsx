@@ -14,11 +14,7 @@ export default function FavoritesPage() {
   }, [favorites.data?.files, setFilesInScope]);
 
   return (
-    <div
-      className={
-        'file-list relative flex h-full max-h-[calc(100dvh-90px)] flex-col overflow-y-auto max-md:max-h-[calc(100dvh-90px-80px)]'
-      }
-    >
+    <div className={'file-list relative flex h-full flex-col overflow-y-auto'}>
       <PageMetadata title={'Favorites'} />
       <div className={'flex items-center justify-between px-5 pt-5'}>
         <SubPageTitle>Favorites</SubPageTitle>

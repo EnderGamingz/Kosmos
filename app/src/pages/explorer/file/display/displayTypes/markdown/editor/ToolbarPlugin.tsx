@@ -145,8 +145,9 @@ export default function ToolbarPlugin() {
       className={cn(
         'w-full flex flex-wrap p-1 gap-0.5',
         '[&_.toolbar-item]:flex [&_.toolbar-item]:p-2 [&_.toolbar-item]:rounded-md [&_.toolbar-item]:hover:bg-muted',
-        '[&_.toolbar-item]:text-stone-800 [&_.toolbar-item_svg]:h-5 [&_.toolbar-item_svg]:w-5',
+        '[&_.toolbar-item]:text-stone-800 dark:[&_.toolbar-item]:text-stone-200 [&_.toolbar-item_svg]:h-5 [&_.toolbar-item_svg]:w-5',
         '[&_.toolbar-item.active]:bg-stone-200 dark:[&_.toolbar-item.active]:bg-stone-800',
+        '[&_.toolbar-item:hover]:bg-stone-300 dark:[&_.toolbar-item:hover]:bg-stone-700',
       )}
       ref={toolbarRef}
     >

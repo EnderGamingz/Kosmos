@@ -1,11 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import merge from 'lodash.merge';
+import createDeepMerge from '@fastify/deepmerge';
+
+const deepMerge = createDeepMerge({ all: true });
 
 export enum ExplorerDisplay {
   Mobile,
   Table,
-  StaticGrid,
+
+  // The Static grid has a lot of problems and is not usable right now.
+  // It will require a complete logical and architectural rework to make it completely work,
+  // so it is removed for now, and I will maybe bring it back sometime in the future
+  /*  StaticGrid,*/
   DynamicGrid,
   Album,
 }
@@ -22,8 +28,8 @@ export function getExplorerDisplay(type: ExplorerDisplay) {
       return 'Album';
     case ExplorerDisplay.Table:
       return 'Table';
-    case ExplorerDisplay.StaticGrid:
-      return 'Static Grid';
+    /*    case ExplorerDisplay.StaticGrid:
+      return 'Static Grid';*/
     case ExplorerDisplay.DynamicGrid:
       return 'Dynamic Grid';
     case ExplorerDisplay.Mobile:
@@ -180,10 +186,8 @@ export const usePreferenceStore = create<PreferenceState>()(
     }),
     {
       name: 'kosmos.preference',
-      merge: (persistedState, currentState) => {
-        // Needed to persist nested functions
-        return merge({}, currentState, persistedState);
-      },
+      merge: (persistedState, currentState) =>
+        deepMerge(currentState, persistedState) as never,
     },
   ),
 );

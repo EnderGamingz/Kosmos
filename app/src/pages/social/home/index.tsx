@@ -1,4 +1,4 @@
-import getCurrentTimeSection from '@utils/getCurrentTimeSection.ts';
+import getCurrentTimeSection from '@utils/greeting.ts';
 import { useUserState } from '@stores/userStore.ts';
 import FetchBoundary from '@components/wrappers/fetch.tsx';
 import {
