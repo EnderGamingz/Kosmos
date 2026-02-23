@@ -1,4 +1,4 @@
-import { useDismissStore } from '@stores/dismissStore.ts';
+import { dismissIcons, useDismissStore } from '@stores/dismissStore.ts';
 import { SettingsSubtitle } from '@pages/settings/settingsTitle.tsx';
 import EmptyList from '@pages/explorer/components/EmptyList.tsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -8,6 +8,7 @@ export function DismissedSystemMessages() {
   const dismissStore = useDismissStore();
   const dismissed = dismissStore.getDismissed();
 
+  console.log(dismissed);
   return (
     <>
       <SettingsSubtitle title={'Dismissed System messages'} />
@@ -15,6 +16,7 @@ export function DismissedSystemMessages() {
         {!dismissed.length && <EmptyList message={'No dismissed messages'} />}
         <AnimatePresence>
           {dismissed.map((item, i) => {
+            const Icon = dismissIcons[item.id];
             return (
               <motion.li
                 layout
@@ -26,7 +28,7 @@ export function DismissedSystemMessages() {
                 )}
               >
                 <div className={'flex items-center gap-2'}>
-                  <item.icon className={'h-5 w-5'} />
+                  <Icon className={'h-5 w-5'} />
                   {item.name}
                 </div>
                 <button

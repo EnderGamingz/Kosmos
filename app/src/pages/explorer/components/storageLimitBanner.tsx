@@ -41,9 +41,9 @@ export default function StorageLimitBanner() {
           className={cn(
             'm-4 shrink-0 overflow-hidden rounded-xl border',
             percentages.warningLimit &&
-              'bg-yellow-100/40 border-yellow-600 dark:bg-yellow-900/40',
+              'bg-linear-to-br from-amber-100/40 to-amber-300/30 border-amber-600 dark:bg-yellow-900/40',
             percentages.alertLimit &&
-              'bg-red-100/40 border-red-600 dark:bg-red-900/40',
+              'bg-linear-to-br from-red-100/40 to-red-300/40 border-red-600 dark:bg-red-900/40',
           )}
         >
           <div className={'space-y-3 p-4 '}>
