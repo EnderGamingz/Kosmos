@@ -69,7 +69,7 @@ export function MoveModalContent({
             <span
               title={moveData.name}
               className={
-                'max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 py-1 px-1.5 dark:bg-stone-700'
+                'max-w-62.5 overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 py-1 px-1.5 dark:bg-stone-700'
               }
             >
               {moveData.name}
@@ -77,23 +77,30 @@ export function MoveModalContent({
           )}
         </DialogTitle>
         <DialogDescription
+          asChild
           className={
-            'flex justify-between gap-1 text-sm font-normal text-muted-foreground'
+            'flex gap-1 text-sm font-normal text-muted-foreground overflow-hidden'
           }
         >
-          <span>
+          <div className={'flex items-center gap-1 overflow-hidden w-full'}>
             Moving to <ArrowRight className={'inline h-3 w-3'} />{' '}
-            {data?.folder?.folder_name || 'Home'}{' '}
-          </span>
-          {isLoading && (
-            <LoaderCircle
-              aria-label={'Folder loading...'}
-              className={'w-4 h-4 animate-spin'}
-            />
-          )}
+            <span
+              className={
+                'max-w-80 overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-stone-200 py-1 px-1.5 dark:bg-stone-700'
+              }
+            >
+              {data?.folder?.folder_name || 'Home'}{' '}
+            </span>
+            {isLoading && (
+              <LoaderCircle
+                aria-label={'Folder loading...'}
+                className={'ml-auto size-4 animate-spin'}
+              />
+            )}
+          </div>
         </DialogDescription>
       </DialogHeader>
-      <div className={'min-h-32'}>
+      <div className={'min-h-32 overflow-y-auto'}>
         <ul
           className={cn(
             '[&_li:hover]:bg-indigo-100 [&_li]:rounded-md [&_li]:px-2 [&_li]:py-1 [&_li]:transition-colors',
@@ -103,6 +110,7 @@ export function MoveModalContent({
           {data?.folder && (
             <motion.li
               onClick={handleChangeFolder(data?.folder?.parent_id || undefined)}
+              className={'cursor-pointer italic font-black'}
             >
               ..
             </motion.li>
@@ -123,6 +131,10 @@ export function MoveModalContent({
                 transition={{ duration: 0.2, bounce: 0.1 }}
                 key={folder.id}
                 onClick={handleChangeFolder(folder.id)}
+                className={
+                  'w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-md cursor-pointer'
+                }
+                title={folder.folder_name}
               >
                 {folder.folder_name}
               </motion.li>

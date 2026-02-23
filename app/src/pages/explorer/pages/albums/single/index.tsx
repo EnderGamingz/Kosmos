@@ -45,9 +45,7 @@ export default function AlbumPage() {
       />
       <div
         ref={container}
-        className={
-          'flex h-full max-h-[calc(100dvh-90px)] flex-col space-y-5 overflow-y-auto p-5 max-md:max-h-[calc(100dvh-90px-80px)]'
-        }
+        className={'flex h-full flex-col space-y-5 overflow-y-auto p-5'}
       >
         {albumQuery.data && (
           <AlbumPageContent
@@ -119,7 +117,7 @@ export function AlbumPageContent({
         className={cn(
           'absolute left-5 right-5 top-5 z-40 mt-0! flex items-start gap-5 rounded-b-xl transition-all',
           scrolling &&
-            'left-0 right-0 top-0 bg-stone-50/70 p-2 backdrop-blur-lg dark:bg-stone-900/70',
+            'left-0 right-0 top-0 bg-stone-50/80 p-2 backdrop-blur-xl dark:bg-stone-900/70',
         )}
       >
         <div
@@ -149,7 +147,11 @@ export function AlbumPageContent({
           </AlbumMenu>
         </div>
       </div>
-      <div className={'flex grow flex-col animate-fade-in delay-200'}>
+      <div
+        className={
+          'flex grow flex-col animate-fade-in delay-200 [&>#display>div>div]:pb-10 [&>#display]:overflow-visible [&>#display>div]:overflow-visible [&>#display>div]:px-0'
+        }
+      >
         <ExplorerDataDisplay
           isLoading={false}
           files={files}

@@ -26,8 +26,6 @@ export default function RecentFiles() {
           folders={[]}
           viewSettings={{
             limitedView: true,
-            // Magic shit again
-            additionalHeightReduction: [36],
           }}
         />
       </div>

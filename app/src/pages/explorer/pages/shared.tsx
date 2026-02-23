@@ -75,9 +75,9 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
 
   const sharingType = itemsForUser ? 'with me' : 'by me';
   return (
-    <div className={'relative grow flex flex-col'}>
+    <div className={'h-full flex flex-col'}>
       <PageMetadata title={`Shared ${sharingType}`} />
-      <div className={'file-list relative flex flex-col overflow-y-auto grow'}>
+      <div className={'file-list flex flex-col grow'}>
         {(!items?.data || items.isLoading) && <RouterLoadingBar />}
         <div className={'flex flex-col relative grow'}>
           {itemsForUser ? (
@@ -89,7 +89,6 @@ function SharedItems({ itemsForUser }: { itemsForUser: boolean }) {
               folders={(items.data?.folders as FolderModelDTO[]) || []}
               viewSettings={{
                 limitedView: true,
-                additionalHeightReduction: [108],
               }}
             />
           )}

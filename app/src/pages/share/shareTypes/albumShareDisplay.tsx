@@ -29,9 +29,7 @@ function Content({ share, uuid }: { share: AlbumShareResponse; uuid: string }) {
       <PageMetadata title={share.album.name ?? 'Shared Album'} />
       <div
         ref={container}
-        className={
-          'flex h-full max-h-[calc(100dvh-90px)] flex-col space-y-5 overflow-y-auto p-5 max-md:max-h-[calc(100dvh-90px-80px)]'
-        }
+        className={'flex h-full flex-col space-y-5 overflow-y-auto p-5'}
       >
         {share && (
           <AlbumPageContent
