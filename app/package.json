@@ -24,7 +24,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@tailwindcss/vite": "^4.2.0",
     "@tanstack/react-query": "^5.90.21",
-    "axios": "1.15.0",
+    "axios": "^1.15.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "colord": "^2.9.3",
@@ -66,16 +66,12 @@
     "@types/react-responsive-masonry": "^2.7.0",
     "@types/react-window": "^1.8.8",
     "@types/streamsaver": "^2.0.5",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.24",
-    "eslint": "^9.39.3",
-    "eslint-plugin-react-hooks": "^6.1.1",
-    "eslint-plugin-react-refresh": "^0.4.26",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.2.0",
     "typescript": "^5.9.3",
-    "vite": "^8.0.8"
+    "vite": "^6.4.1",
+    "vite-tsconfig-paths": "^4.3.2"
   }
 }
