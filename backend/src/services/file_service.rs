@@ -477,9 +477,9 @@ impl FileService {
         file_name: &String,
         user_id: UserId,
         parent_folder_id: Option<i64>,
-    ) -> Result<Option<i64>, AppError> {
+    ) -> Result<Option<(i64, FileType)>, AppError> {
         let result = sqlx::query!(
-            "SELECT id FROM files WHERE file_name = $1
+            "SELECT id, file_type FROM files WHERE file_name = $1
              AND user_id = $2
              AND parent_folder_id IS NOT DISTINCT FROM $3
              LIMIT 1",
@@ -493,7 +493,9 @@ impl FileService {
             tracing::error!("Error checking if file {} exists: {}", file_name, e);
             AppError::InternalError
         })?
-        .map(|row| row.id);
+        .map(|row| {
+            (row.id, FileType::new(row.file_type))
+        });
         Ok(result)
     }
 
@@ -568,10 +570,9 @@ impl FileService {
             self.delete_formats_from_file_id(file_id).await?;
         }
 
-
         tokio::fs::remove_file(self.upload_path.join(file_id.to_string()))
             .await
-            // If the file does not exist ignore the error
+            // If the file does not exist, ignore the error
             .ok();
 
         sqlx::query!("DELETE FROM files WHERE id = $1", file_id)

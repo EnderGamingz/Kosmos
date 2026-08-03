@@ -17,6 +17,7 @@ use crate::routes::api::v1::auth::folder::SortByFolders;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
 
+// 50MB
 pub static FILE_SIZE_LIMIT: u64 = 50 * 1024 * 1024;
 
 #[derive(Debug, Deserialize, PartialEq)]

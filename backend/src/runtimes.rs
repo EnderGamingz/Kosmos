@@ -3,7 +3,7 @@ use std::env;
 use tokio::runtime::Runtime;
 
 lazy_static! {
-    pub static ref IMAGE_PROCESSING_RUNTIME: Runtime = {
+    pub static ref ImageProcessingRuntime: Runtime = {
         let default_threads = 4;
         let threads_str =
             env::var("IMAGE_PROCESSING_THREADS").unwrap_or_else(|_| default_threads.to_string());

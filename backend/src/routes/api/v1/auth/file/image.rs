@@ -1,12 +1,7 @@
 use crate::model::file::FileModel;
+use crate::model::internal::file_type::FileType;
 use crate::model::internal::image_format::ImageFormat;
 use crate::model::internal::operation_status::OperationStatus;
-use axum::extract::{Path, State};
-use axum::response::{IntoResponse, Response};
-use std::path::Path as StdPath;
-use std::sync::Arc;
-use tower_sessions::Session;
-use crate::model::internal::file_type::FileType;
 use crate::model::internal::preview_status::PreviewStatus;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -14,11 +9,16 @@ use crate::routes::api::v1::share::{
     get_share_access_for_folder_items, get_share_album_data, get_share_file,
     is_allowed_to_access_share, AccessShareItemType,
 };
-use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
+use crate::runtimes::ImageProcessingRuntime;
 use crate::services::file_service::FileService;
 use crate::services::image_service::ImageService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
+use axum::extract::{Path, State};
+use axum::response::{IntoResponse, Response};
+use std::path::Path as StdPath;
+use std::sync::Arc;
+use tower_sessions::Session;
 
 pub async fn get_image_format_data(
     format: ImageFormat,
@@ -161,7 +161,6 @@ pub async fn reprocess_images_from_operation(
         .get_operation_for_user_by_id(operation_id, user_id)
         .await?;
 
-
     if operation.operation_status == OperationStatus::Unrecoverable {
         return Err(AppError::BadRequest {
             error: Some("Operation is unrecoverable".to_string()),
@@ -198,7 +197,7 @@ pub async fn reprocess_images_from_operation(
             .update_preview_status_for_file_ids(&metadata, PreviewStatus::Processing)
             .await?;
 
-        IMAGE_PROCESSING_RUNTIME.spawn(async move {
+        ImageProcessingRuntime.spawn(async move {
             let _ = image_service_clone
                 .generate_all_formats(
                     metadata,

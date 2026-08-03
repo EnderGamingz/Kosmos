@@ -1,5 +1,7 @@
 use crate::constants::MAX_QUICK_SHARE_FILES;
 use crate::model::internal::file_type::FileType;
+use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
+use crate::model::internal::presence::messages::PresenceExplorerUpdate;
 use crate::model::internal::preview_status::PreviewStatus;
 use crate::response::error_handling::AppError;
 use crate::response::success_handling::{AppSuccess, ResponseResult};
@@ -8,7 +10,7 @@ use crate::routes::api::v1::auth::file::upload::{
     check_storage, folder_segments, quick_share_destination, stream,
 };
 use crate::routes::api::v1::share::create::ShareFolderPublicRequest;
-use crate::runtimes::IMAGE_PROCESSING_RUNTIME;
+use crate::runtimes::ImageProcessingRuntime;
 use crate::services::file_service::FileService;
 use crate::services::session_service::SessionService;
 use crate::state::KosmosState;
@@ -21,8 +23,6 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::Arc;
 use tower_sessions::Session;
-use crate::model::internal::presence::index::{PresenceAction, PresenceMessage};
-use crate::model::internal::presence::messages::{PresenceExplorerUpdate};
 
 #[derive(Deserialize)]
 pub struct FileUploadParams {
@@ -40,7 +40,6 @@ impl FileUploadParams {
     pub fn get_hash(&self) -> Result<Option<String>, AppError> {
         if let Some(password) = &self.password {
             let hashed_password = auth::hash_password(password.as_str())?;
-
             Ok(Some(hashed_password))
         } else {
             Ok(None)
@@ -106,7 +105,7 @@ pub async fn upload_file(
             continue;
         }
         let file_name_from_field = if let Some(file_name) = field.file_name() {
-            if file_name.len() > 255 {
+            if file_name.chars().count() > 255 {
                 return Err(AppError::BadRequest {
                     error: Some("File name is too long".to_string()),
                 });
@@ -144,56 +143,64 @@ pub async fn upload_file(
             .check_file_exists_by_name(&file_name, user.id, relative_parent_folder)
             .await?;
 
-        if let Some(file) = exists {
-            state
-                .file_service
-                .permanently_delete_file(file, None)
-                .await?;
-
-            tracing::info!(
-                "File {} deleted for replacement {} for user {}",
-                file,
-                id,
-                user.id
-            );
-        }
-
-        match stream::stream_to_file(&location, &id.to_string(), field).await {
-            Ok(len) => {
-                storage_remaining -= len as i64;
-
-                if storage_remaining < 0 {
-                    return Err(AppError::BadRequest {
-                        error: Some("Storage limit exceeded".to_string()),
-                    })?;
-                }
-
-                if file_type_res.file_type == FileType::Image && len > FILE_SIZE_LIMIT {
-                    file_type_res.file_type = FileType::LargeImage;
-                }
-
-                state
-                    .file_service
-                    .create_file(
-                        user.id,
-                        id,
-                        file_name,
-                        len as i64,
-                        file_type_res.file_type,
-                        file_type_res.normalized_mime_type,
-                        relative_parent_folder,
-                    )
-                    .await?;
-
-                if file_type_res.file_type == FileType::Image {
-                    pending_image_formats.push(id);
-                }
-            }
+        let len = match stream::stream_to_file(&location, &id.to_string(), field).await {
+            Ok(len) => len,
             Err(err) => {
+                state.file_service.permanently_delete_file(id, None).await?;
                 tracing::error!("Error uploading file {}: {}", id, err);
                 return Err(AppError::InternalError);
             }
         };
+
+        storage_remaining -= len as i64;
+
+        if storage_remaining < 0 {
+            state.file_service.permanently_delete_file(id, None).await?;
+            return Err(AppError::BadRequest {
+                error: Some("Storage limit exceeded".to_string()),
+            })?;
+        }
+
+        if file_type_res.file_type == FileType::Image && len > FILE_SIZE_LIMIT {
+            file_type_res.file_type = FileType::LargeImage;
+        }
+
+        let creation_result = state
+            .file_service
+            .create_file(
+                user.id,
+                id,
+                file_name,
+                len as i64,
+                file_type_res.file_type,
+                file_type_res.normalized_mime_type,
+                relative_parent_folder,
+            )
+            .await;
+
+        if let Err(err) = creation_result {
+            state.file_service.permanently_delete_file(id, None).await?;
+            tracing::error!("Error creating file {}", id);
+            return Err(err);
+        }
+
+        if file_type_res.file_type == FileType::Image {
+            pending_image_formats.push(id);
+        }
+
+        if let Some((old_file_id, old_file_type)) = exists {
+            state
+                .file_service
+                .permanently_delete_file(old_file_id, Some(old_file_type))
+                .await?;
+
+            tracing::info!(
+                "File {} deleted for replacement {} for user {}",
+                old_file_id,
+                id,
+                user.id
+            );
+        }
 
         if files_allowed_to_upload > 0 {
             files_allowed_to_upload -= 1;
@@ -217,12 +224,18 @@ pub async fn upload_file(
         None
     };
 
-    state.presence_handler.broadcast_to_user(user_id, PresenceMessage {
-        action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
-            folder_id: folder.map(|f| f.to_string()),
-        }),
-        important: false,
-    }).await;
+    state
+        .presence_handler
+        .broadcast_to_user(
+            user_id,
+            PresenceMessage {
+                action: PresenceAction::ExplorerUpdate(PresenceExplorerUpdate {
+                    folder_id: folder.map(|f| f.to_string()),
+                }),
+                important: false,
+            },
+        )
+        .await;
 
     tracing::debug!("Pending {}", pending_image_formats.len());
 
@@ -235,7 +248,7 @@ pub async fn upload_file(
             .update_preview_status_for_file_ids(&pending_image_formats, PreviewStatus::Processing)
             .await?;
 
-        IMAGE_PROCESSING_RUNTIME.spawn(async move {
+        ImageProcessingRuntime.spawn(async move {
             let _ = image_service_clone
                 .generate_all_formats(
                     pending_image_formats,
