@@ -5,6 +5,7 @@
   "observability": {
     "enabled": true
   },
+  "workers_dev": false,
   "cache": {
     "enabled": true
   },
