@@ -367,6 +367,22 @@ fn check_is_single_folder_download(files: &[i64], folder_structure: &[Directory]
     has_folders && is_only_one_top_level_folder
 }
 
+fn truncate_filename(name: &str, limit: usize) -> String {
+    if name.chars().count() <= limit {
+        return name.to_string();
+    }
+
+    name.chars().take(limit).collect()
+}
+
+struct TempDirCleanup(std::path::PathBuf);
+
+impl Drop for TempDirCleanup {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
 async fn handle_multi_download(
     state: AppState,
     files: Vec<i64>,
@@ -382,7 +398,7 @@ async fn handle_multi_download(
     let is_folder_download = check_is_single_folder_download(&files, &folder_structure);
 
     let root = if is_folder_download {
-        folder_structure.first()
+        folder_structure.iter().find(|dir| dir.path.is_empty())
     } else {
         None
     };
@@ -396,7 +412,11 @@ async fn handle_multi_download(
     };
 
     // Make upload dir for zip archive so it no name conflicts happen
-    let temp_upload_folder_name = chrono::Utc::now().format("%Y-%m-%d_%H-%M-%S").to_string();
+    let temp_upload_folder_name = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_nanos()
+        .to_string();
     let temp_upload_folder_path = temp_path.join(&temp_upload_folder_name);
 
     // Clean up if exists (should not)
@@ -408,6 +428,11 @@ async fn handle_multi_download(
             tracing::error!("Error creating temp archive folder: {}", e);
             AppError::InternalError
         })?;
+
+    // Remove the temp folder on every code path. The archive stays readable for
+    // the response stream because the file handles below keep it open after the
+    // 'unlink' syscall (see the note at the end of this function).
+    let _cleanup = TempDirCleanup(temp_upload_folder_path.clone());
 
     let temp_zip_path = temp_upload_folder_path.join(&file_name);
     let temp_zip_path_str = temp_zip_path.to_str().unwrap();
@@ -430,53 +455,61 @@ async fn handle_multi_download(
 
         let path_to_file = upload_path.join(database_file.id.to_string());
 
-        if let Ok(mut file) = File::open(&path_to_file).await {
-            write_file_to_zip(options, &mut zip, &database_file.file_name, &mut file).await?;
-        }
+        let mut file = File::open(&path_to_file).await.map_err(|_| AppError::NotFound {
+            error: "File not found".to_string(),
+        })?;
+
+        let safe_file_name = truncate_filename(&database_file.file_name, ZIP_FILE_NAME_LIMIT);
+
+        write_file_to_zip(options, &mut zip, &safe_file_name, &mut file).await?;
     }
 
     for dir in &folder_structure {
-        let path = if is_folder_download && dir.path.len() > 1 {
-            // Remove the first folder from the path as it is the root
-            dir.path[1..].to_vec()
+        // When downloading a single folder, that folder becomes the archive
+        // itself, so its name is stripped from the paths of its contents.
+        let is_root_folder = is_folder_download && dir.path.is_empty();
+
+        let mut segments: Vec<String> = dir
+            .path
+            .iter()
+            .skip(usize::from(is_folder_download))
+            .map(|segment| truncate_filename(segment, ZIP_FILE_NAME_LIMIT))
+            .collect();
+
+        let safe_folder_name = truncate_filename(&dir.folder_name, ZIP_FILE_NAME_LIMIT);
+
+        let path_in_zip = if is_root_folder {
+            String::new()
         } else {
-            dir.path.to_owned()
+            segments.push(safe_folder_name);
+            segments.join("/")
         };
 
-        let safe_folder_name = if dir.folder_name.len() > ZIP_FILE_NAME_LIMIT {
-            &dir.folder_name[..ZIP_FILE_NAME_LIMIT]
-        } else {
-            &dir.folder_name
-        };
-
-        let dir_paths = [path.join("/").to_owned(), safe_folder_name.to_string()];
-
-        let path_in_zip = dir_paths.join("/");
+        // Add an explicit directory entry so that empty folders are preserved
+        // in the archive. Errors are ignored as duplicates can be encountered.
+        if !path_in_zip.is_empty() {
+            let _ = zip.add_directory(&path_in_zip, options);
+        }
 
         for i in 0..dir.files.len() {
             let file_id: &i64 = &dir.files[i];
             let file_name: &String = &dir.file_names[i];
 
-            let safe_file_name = if file_name.len() > ZIP_FILE_NAME_LIMIT {
-                &file_name[..ZIP_FILE_NAME_LIMIT]
-            } else {
-                file_name
-            };
+            let safe_file_name = truncate_filename(file_name, ZIP_FILE_NAME_LIMIT);
 
             let path_to_file = upload_path.join(file_id.to_string());
 
-            if let Ok(mut file) = File::open(&path_to_file).await {
-                // Ignore the error as this can fail when a folder with the name already exists
-                let _ = zip.add_directory(&path_in_zip, options);
+            let mut file = File::open(&path_to_file).await.map_err(|_| AppError::NotFound {
+                error: "File not found".to_string(),
+            })?;
 
-                let file_in_zip = format!("{}/{}", path_in_zip, safe_file_name);
-
-                write_file_to_zip(options, &mut zip, &file_in_zip, &mut file).await?;
+            let file_in_zip = if path_in_zip.is_empty() {
+                safe_file_name
             } else {
-                return Err(AppError::NotFound {
-                    error: "File not found".to_string(),
-                });
-            }
+                format!("{}/{}", path_in_zip, safe_file_name)
+            };
+
+            write_file_to_zip(options, &mut zip, &file_in_zip, &mut file).await?;
         }
     }
 
@@ -520,7 +553,7 @@ async fn handle_multi_download(
 
     let response: Result<Response<Body>, AppError> = Ok((header, body).into_response());
 
-    let _ = tokio::fs::remove_dir_all(&temp_upload_folder_path).await;
+    // The temp folder is removed by `TempDirCleanup` once this function returns.
     response
 }
 
@@ -565,7 +598,11 @@ async fn write_file_to_zip(
         AppError::InternalError
     })?;
     let mut buffer = vec![0; 1024];
-    while let Ok(n) = file.read(&mut buffer).await {
+    loop {
+        let n = file.read(&mut buffer).await.map_err(|e| {
+            tracing::error!("Error reading file to archive: {}", e);
+            AppError::InternalError
+        })?;
         if n == 0 {
             break;
         }
