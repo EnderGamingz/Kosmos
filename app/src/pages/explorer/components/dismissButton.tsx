@@ -10,7 +10,7 @@ export function DismissButton({
   id: Dismiss;
   children?: ReactNode;
 }) {
-  const dismiss = useDismissStore(s => s.actions.dismiss);
+  const dismiss = useDismissStore(s => s.dismiss);
 
   const dismissHandler = () => dismiss(id);
 

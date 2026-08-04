@@ -5,8 +5,9 @@ import { cn } from '@lib/utils.ts';
 import { X } from 'lucide-react';
 
 export default function SystemMessage() {
-  const dismissStore = useDismissStore();
-  const isDismissed = dismissStore.isDismissed(Dismiss.SystemMessage);
+  const isDismissed = useDismissStore(s =>
+    s.isDismissed(Dismiss.SystemMessage),
+  );
 
   if (isDismissed || !SYSTEM_MESSAGE) return null;
 

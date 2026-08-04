@@ -2,7 +2,7 @@ stages:
   - build
   - release
 
-# Handled by Vercel
+# Handled by CF
 #kosmos_app_build_job:
 #  stage: build
 #  image: docker:latest

@@ -1,4 +1,3 @@
-import useWebSocket from 'react-use-websocket';
 import { BASE_URL } from '@lib/env.ts';
 import { WEBSOCKET_ENDPOINT } from '@lib/constants.ts';
 import { useUserState } from '@stores/userStore.ts';
@@ -22,6 +21,11 @@ import {
   useSocialUpdate,
 } from '@stores/socialUpdateStore.ts';
 import type { PresenceChatUpdate } from '@bindings/PresenceChatUpdate';
+import useWebSocketModule from 'react-use-websocket';
+
+const useWebSocket = (
+  useWebSocketModule as unknown as { default: typeof useWebSocketModule }
+).default;
 
 export default function Websocket() {
   const user = useUserState(s => s.user);

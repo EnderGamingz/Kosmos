@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import { BASE_URL } from '@lib/env.ts';
 import { queryClient } from '@lib/query.ts';
 import type { ChatMessageModelDTO } from '@bindings/ChatMessageModelDTO.ts';
@@ -87,7 +87,7 @@ export class ChatQuery {
     parentId?: string;
     isPersonalChat?: boolean;
     editMessageId?: string;
-  }) => {
+  }): Promise<AxiosResponse> => {
     const section = isPersonalChat ? 'user' : 'group';
 
     if (editMessageId) {

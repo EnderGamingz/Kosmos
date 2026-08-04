@@ -17,7 +17,7 @@ export default function StorageLimitBanner() {
   const storageLimit = useFormatBytes(usage.data?.limit || 0);
 
   const isDismissed = useDismissStore(s => s.isDismissed(Dismiss.StorageLimit));
-  const resetDismiss = useDismissStore(s => s.actions.reset);
+  const resetDismiss = useDismissStore(s => s.reset);
 
   useEffect(() => {
     // Reset the dismissed state when the warning is gone

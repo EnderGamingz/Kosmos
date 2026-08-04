@@ -1,9 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { HardDrive, MessageCircleWarning } from 'lucide-react';
-import createDeepMerge from '@fastify/deepmerge';
-
-const deepMerge = createDeepMerge({ all: true });
 
 export enum Dismiss {
   StorageLimit = 'storage_limit',
@@ -35,10 +32,8 @@ export type DismissState = {
   dismissed: Dismiss[];
   isDismissed: (id: Dismiss) => boolean;
   getDismissed: () => DismissItem[];
-  actions: {
-    dismiss: (id: Dismiss) => void;
-    reset: (id: Dismiss) => void;
-  };
+  dismiss: (id: Dismiss) => void;
+  reset: (id: Dismiss) => void;
 };
 
 export const useDismissStore = create<DismissState>()(
@@ -48,17 +43,15 @@ export const useDismissStore = create<DismissState>()(
       isDismissed: (id: Dismiss) => get().dismissed.some(x => x === id),
       getDismissed: () =>
         get().dismissed.map(id => dismissible.find(x => x.id === id)!),
-      actions: {
-        dismiss: (id: Dismiss) => {
-          set({
-            dismissed: [...get().dismissed, id],
-          });
-        },
-        reset: (id: Dismiss) => {
-          set({
-            dismissed: get().dismissed.filter(x => x !== id),
-          });
-        },
+      dismiss: (id: Dismiss) => {
+        set({
+          dismissed: [...get().dismissed, id],
+        });
+      },
+      reset: (id: Dismiss) => {
+        set({
+          dismissed: get().dismissed.filter(x => x !== id),
+        });
       },
     }),
     {
@@ -81,8 +74,6 @@ export const useDismissStore = create<DismissState>()(
 
         return persistedState;
       },
-      merge: (persistedState, currentState) =>
-        deepMerge(currentState, persistedState) as never,
     },
   ),
 );
